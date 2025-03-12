@@ -6,6 +6,20 @@
     <title>Cerbi - AI-Driven Logging & Insights</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(120deg, #1a202c, #2d3748);
+            overflow-x: hidden;
+        }
+        .parallax {
+            background: url('https://source.unsplash.com/1600x900/?technology') no-repeat center center/cover;
+            height: 300px;
+            width: 100%;
+            position: relative;
+            filter: brightness(50%);
+        }
+    </style>
     <script>
         function toggleTheme() {
             document.documentElement.classList.toggle('dark');
@@ -13,10 +27,11 @@
     </script>
 </head>
 <body class="bg-gray-900 text-white transition-all duration-300" x-data="{ darkMode: true }">
+    <div class="parallax"></div>
     <header class="text-center py-10 bg-gray-800 shadow-lg">
         <h1 class="text-5xl font-extrabold">Cerbi - AI-Driven Logging & Insights</h1>
         <p class="text-lg mt-2">The Future of Standardized Logging & AI-Powered Observability</p>
-        <button class="mt-4 px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition" @click="toggleTheme()">
+        <button class="mt-4 px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition transform hover:scale-105" @click="toggleTheme()">
             Toggle Dark/Light Mode
         </button>
     </header>
@@ -25,60 +40,64 @@
         <ul class="flex justify-center space-x-6 text-lg">
             <li><a href="#ecosystem" class="hover:underline">Ecosystem</a></li>
             <li><a href="#setup" class="hover:underline">Setup</a></li>
-            <li><a href="#logging-types" class="hover:underline">Logging Types</a></li>
-            <li><a href="#features" class="hover:underline">Features</a></li>
-            <li><a href="#interactive" class="hover:underline">Live Demo</a></li>
-            <li><a href="#contact" class="hover:underline">Contact</a></li>
+            <li><a href="#dashboard" class="hover:underline">Live Dashboard</a></li>
+            <li><a href="#interactive" class="hover:underline">API Playground</a></li>
+            <li><a href="#upload" class="hover:underline">Upload Logs</a></li>
         </ul>
     </nav>
     
-    <section id="ecosystem" class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Cerbi Ecosystem</h2>
-        <p class="text-center mt-4">Empowering developers with intelligent, secure, and efficient logging solutions.</p>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
-                <h3 class="text-2xl font-bold">CerbiStream</h3>
-                <p>Lightweight logging library with built-in metadata support.</p>
-                <a href="https://www.nuget.org/packages/CerbiStream/" class="text-blue-400 underline">View on NuGet</a>
-            </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
-                <h3 class="text-2xl font-bold">CerbIQ</h3>
-                <p>Smart log routing to observability tools & storage.</p>
-            </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
-                <h3 class="text-2xl font-bold">CerbiSense</h3>
-                <p>AI-powered log insights & anomaly detection.</p>
-            </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
-                <h3 class="text-2xl font-bold">CerbiSentinel</h3>
-                <p>Ensures logging compliance & governance across applications.</p>
-            </div>
-        </div>
-    </section>
-    
-    <section id="interactive" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
-        <h2 class="text-4xl font-semibold text-center">Live Logging Simulation</h2>
-        <p class="text-center mt-4">Experience real-time structured logging using CerbiStream.</p>
-        <div class="bg-gray-900 p-6 mt-6 rounded-lg text-sm overflow-auto text-green-400" id="log-console" style="height: 200px; overflow-y: auto; border: 1px solid #444;"></div>
-        <button onclick="generateLog()" class="mt-4 px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Generate Log Entry</button>
+    <section id="dashboard" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
+        <h2 class="text-4xl font-semibold text-center">Live Logging Dashboard</h2>
+        <p class="text-center mt-4">Watch logs update in real-time with analytics.</p>
+        <canvas id="logChart" class="mt-6 bg-gray-900 p-4 rounded-lg"></canvas>
     </section>
     
     <script>
-        function generateLog() {
-            const logConsole = document.getElementById('log-console');
-            const logLevels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL'];
-            const messages = [
-                'User login successful',
-                'Database query executed',
-                'API call failed',
-                'Memory usage exceeding limit',
-                'Unauthorized access detected'
-            ];
-            const randomLevel = logLevels[Math.floor(Math.random() * logLevels.length)];
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            const logEntry = `[${new Date().toISOString()}] [${randomLevel}] - ${randomMessage}`;
-            logConsole.innerHTML += `<div>${logEntry}</div>`;
-            logConsole.scrollTop = logConsole.scrollHeight;
+        const ctx = document.getElementById('logChart').getContext('2d');
+        const logChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Log Events',
+                    backgroundColor: 'rgb(75, 192, 192)',
+                    borderColor: 'rgb(75, 192, 192)',
+                    data: [],
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        function updateChart() {
+            if (logChart.data.labels.length > 10) {
+                logChart.data.labels.shift();
+                logChart.data.datasets[0].data.shift();
+            }
+            logChart.data.labels.push(new Date().toLocaleTimeString());
+            logChart.data.datasets[0].data.push(Math.floor(Math.random() * 50));
+            logChart.update();
+        }
+        setInterval(updateChart, 3000);
+    </script>
+    
+    <section id="upload" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
+        <h2 class="text-4xl font-semibold text-center">Upload Logs for Analysis</h2>
+        <p class="text-center mt-4">Drag & drop your log files below to process them.</p>
+        <div class="border-dashed border-4 border-gray-500 p-10 text-center mt-6" ondrop="handleDrop(event)" ondragover="event.preventDefault();">
+            Drag & Drop Logs Here
+        </div>
+        <pre id="logOutput" class="bg-gray-900 p-4 mt-4 rounded-lg text-green-400"></pre>
+    </section>
+    
+    <script>
+        function handleDrop(event) {
+            event.preventDefault();
+            const file = event.dataTransfer.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('logOutput').innerText = `Processing: \n${e.target.result}`;
+            };
+            reader.readAsText(file);
         }
     </script>
     
