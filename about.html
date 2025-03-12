@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Cerbi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const counters = document.querySelectorAll(".counter");
+            counters.forEach(counter => {
+                let target = +counter.getAttribute("data-target");
+                let count = 0;
+                let increment = target / 100;
+                let updateCount = () => {
+                    count += increment;
+                    counter.innerText = Math.floor(count);
+                    if (count < target) {
+                        requestAnimationFrame(updateCount);
+                    }
+                };
+                updateCount();
+            });
+        });
+    </script>
     <style>
         body {
             background: linear-gradient(120deg, #1a202c, #2d3748);
@@ -20,6 +38,7 @@
         .team-card:hover {
             transform: scale(1.05);
             transition: all 0.3s ease-in-out;
+            background-color: rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -31,11 +50,33 @@
     <section class="container mx-auto px-6 py-10">
         <h2 class="text-4xl font-semibold text-center">Who We Are</h2>
         <p class="mt-4 text-center max-w-3xl mx-auto">Cerbi is dedicated to providing cutting-edge logging solutions that integrate AI-powered insights with seamless observability. Our focus is on security, efficiency, and an intuitive developer experience.</p>
-        
-        <h2 class="text-4xl font-semibold mt-10 text-center">Our Mission</h2>
+    </section>
+    
+    <section class="container mx-auto px-6 py-10 text-center">
+        <h2 class="text-4xl font-semibold">Our Impact</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
+                <h3 class="text-3xl font-bold counter" data-target="500000">0</h3>
+                <p>Logs Processed</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
+                <h3 class="text-3xl font-bold counter" data-target="99.99">0</h3>
+                <p>Uptime Percentage</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
+                <h3 class="text-3xl font-bold counter" data-target="50">0</h3>
+                <p>Enterprise Clients</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="container mx-auto px-6 py-10">
+        <h2 class="text-4xl font-semibold text-center">Our Mission</h2>
         <p class="mt-4 text-center max-w-3xl mx-auto">At Cerbi, we believe in simplifying enterprise logging while ensuring that teams gain actionable insights from their data. We strive to make observability accessible, scalable, and highly intelligent.</p>
-        
-        <h2 class="text-4xl font-semibold mt-10 text-center">Meet the Team</h2>
+    </section>
+    
+    <section class="container mx-auto px-6 py-10">
+        <h2 class="text-4xl font-semibold text-center">Meet the Team</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-center">
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
                 <h3 class="text-2xl font-bold">John Doe</h3>
