@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cerbi - AI-Driven Logging & Insights</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
 </head>
 <body class="bg-gray-900 text-white">
-    <header class="text-center py-10">
-        <h1 class="text-4xl font-bold">Cerbi - AI-Driven Logging & Insights</h1>
+    <header class="text-center py-10 bg-gray-800 shadow-lg">
+        <h1 class="text-5xl font-extrabold">Cerbi - AI-Driven Logging & Insights</h1>
         <p class="text-lg mt-2">The Future of Standardized Logging & AI-Powered Observability</p>
     </header>
     
-    <section class="container mx-auto px-6 py-10">
-        <h2 class="text-3xl font-semibold">Why Choose Cerbi?</h2>
-        <p class="mt-4">Cerbi is a modern logging and observability solution that simplifies log management, enhances routing, and provides AI-driven insights.</p>
-        <ul class="list-disc ml-6 mt-4">
-            <li>📌 Standardized Logging Signatures</li>
-            <li>📌 AI-Powered Log Analysis & Predictions</li>
-            <li>📌 Supports Multiple Queues (RabbitMQ, Kafka, AWS SQS)</li>
-            <li>📌 Open Source & Enterprise Ready</li>
-            <li>📌 Governance & Compliance Enforcement via CerbiSentinel</li>
+    <nav class="bg-gray-700 py-4">
+        <ul class="flex justify-center space-x-6 text-lg">
+            <li><a href="#ecosystem" class="hover:underline">Ecosystem</a></li>
+            <li><a href="#setup" class="hover:underline">Setup</a></li>
+            <li><a href="#logging-types" class="hover:underline">Logging Types</a></li>
+            <li><a href="#contact" class="hover:underline">Contact</a></li>
         </ul>
-    </section>
+    </nav>
     
-    <section class="bg-gray-800 py-10 px-6">
-        <h2 class="text-3xl font-semibold text-center">Cerbi Ecosystem</h2>
+    <section id="ecosystem" class="container mx-auto px-6 py-10">
+        <h2 class="text-4xl font-semibold text-center">Cerbi Ecosystem</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
             <div class="p-6 bg-gray-700 rounded-lg text-center">
                 <h3 class="text-2xl font-bold">CerbiStream</h3>
@@ -47,46 +45,58 @@
         </div>
     </section>
     
-    <section class="container mx-auto px-6 py-10">
-        <h2 class="text-3xl font-semibold">Get Started</h2>
+    <section id="setup" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
+        <h2 class="text-4xl font-semibold">Getting Started</h2>
         <p class="mt-4">Install CerbiStream and integrate it into your project:</p>
-        <pre class="bg-gray-800 p-4 rounded-lg mt-4">
-            <code class="text-green-400">dotnet add package CerbiStream --version 1.0.2</code>
-        </pre>
+        <pre class="bg-gray-900 p-4 rounded-lg mt-4 text-green-400">dotnet add package CerbiStream --version 1.0.2</pre>
         <h3 class="text-2xl font-semibold mt-6">Quick Start (Minimal Setup)</h3>
-        <pre class="bg-gray-800 p-4 rounded-lg mt-4 text-sm overflow-auto">
-            <code class="text-green-400">using System;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using CerbiStream.Logging.Extensions;
+        <details class="bg-gray-700 p-4 rounded-lg mt-4 cursor-pointer" x-data="{ open: false }" @click="open = !open">
+            <summary class="text-xl font-bold cursor-pointer">Show Code Example</summary>
+            <pre class="bg-gray-900 p-4 mt-2 rounded-lg text-sm overflow-auto text-green-400">
+                using System;
+                using Microsoft.Extensions.DependencyInjection;
+                using Microsoft.Extensions.Logging;
+                using CerbiStream.Logging.Extensions;
 
-class Program
-{
-    static void Main()
-    {
-        var serviceProvider = new ServiceCollection()
-            .AddLogging(builder =>
-            {
-                builder.AddConsole();
-                builder.AddCerbiStream(options =>
+                class Program
                 {
-                    options.SetQueue("RabbitMQ", "localhost", "logs-queue");
-                    options.EnableDevMode();
-                    options.EnableGovernance();
-                });
-            })
-            .BuildServiceProvider();
+                    static void Main()
+                    {
+                        var serviceProvider = new ServiceCollection()
+                            .AddLogging(builder =>
+                            {
+                                builder.AddConsole();
+                                builder.AddCerbiStream(options =>
+                                {
+                                    options.SetQueue("RabbitMQ", "localhost", "logs-queue");
+                                    options.EnableDevMode();
+                                    options.EnableGovernance();
+                                });
+                            })
+                            .BuildServiceProvider();
 
-        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+                        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-        logger.LogInformation("Application started successfully!");
-        logger.LogError("This is a test error log.");
-        logger.LogWarning("Potential issue detected.");
-        logger.LogCritical("Critical failure occurred!");
-    }
-}</code>
-        </pre>
+                        logger.LogInformation("Application started successfully!");
+                        logger.LogError("This is a test error log.");
+                        logger.LogWarning("Potential issue detected.");
+                        logger.LogCritical("Critical failure occurred!");
+                    }
+                }
+            </pre>
+        </details>
         <p class="mt-4">Check out the full <a href="https://github.com/Zeroshi/Cerbi-CerbiStream" class="text-blue-400">source code</a>.</p>
+    </section>
+    
+    <section id="logging-types" class="container mx-auto px-6 py-10">
+        <h2 class="text-4xl font-semibold">Types of Logging</h2>
+        <ul class="list-disc ml-6 mt-4">
+            <li>📌 **Structured Logging** - Includes metadata & context.</li>
+            <li>📌 **Error Logging** - Captures critical failures.</li>
+            <li>📌 **Performance Logging** - Tracks execution time of tasks.</li>
+            <li>📌 **Transaction Logging** - Ensures tracking across distributed systems.</li>
+            <li>📌 **Security Logging** - Captures authentication & access details.</li>
+        </ul>
     </section>
     
     <footer class="text-center py-6 bg-gray-800 mt-10">
