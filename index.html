@@ -53,6 +53,39 @@
         <pre class="bg-gray-800 p-4 rounded-lg mt-4">
             <code class="text-green-400">dotnet add package CerbiStream --version 1.0.2</code>
         </pre>
+        <h3 class="text-2xl font-semibold mt-6">Quick Start (Minimal Setup)</h3>
+        <pre class="bg-gray-800 p-4 rounded-lg mt-4 text-sm overflow-auto">
+            <code class="text-green-400">using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using CerbiStream.Logging.Extensions;
+
+class Program
+{
+    static void Main()
+    {
+        var serviceProvider = new ServiceCollection()
+            .AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddCerbiStream(options =>
+                {
+                    options.SetQueue("RabbitMQ", "localhost", "logs-queue");
+                    options.EnableDevMode();
+                    options.EnableGovernance();
+                });
+            })
+            .BuildServiceProvider();
+
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+        logger.LogInformation("Application started successfully!");
+        logger.LogError("This is a test error log.");
+        logger.LogWarning("Potential issue detected.");
+        logger.LogCritical("Critical failure occurred!");
+    }
+}</code>
+        </pre>
         <p class="mt-4">Check out the full <a href="https://github.com/Zeroshi/Cerbi-CerbiStream" class="text-blue-400">source code</a>.</p>
     </section>
     
