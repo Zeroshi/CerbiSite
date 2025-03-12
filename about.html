@@ -3,39 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - Cerbi</title>
+    <title>Features - Cerbi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const counters = document.querySelectorAll(".counter");
-            counters.forEach(counter => {
-                let target = +counter.getAttribute("data-target");
-                let count = 0;
-                let increment = target / 100;
-                let updateCount = () => {
-                    count += increment;
-                    counter.innerText = Math.floor(count);
-                    if (count < target) {
-                        requestAnimationFrame(updateCount);
-                    }
-                };
-                updateCount();
-            });
+            let logsProcessed = document.getElementById("logsProcessed");
+            let count = 500000;
+            setInterval(() => {
+                count += Math.floor(Math.random() * 50) + 1;
+                logsProcessed.textContent = count.toLocaleString();
+            }, 2000);
         });
     </script>
     <style>
         body {
             background: linear-gradient(120deg, #1a202c, #2d3748);
         }
-        .header-bg {
-            background: url('https://source.unsplash.com/1600x900/?technology') no-repeat center center/cover;
-            height: 350px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-        }
-        .team-card:hover {
+        .feature-card:hover {
             transform: scale(1.05);
             transition: all 0.3s ease-in-out;
             background-color: rgba(255, 255, 255, 0.1);
@@ -43,52 +28,62 @@
     </style>
 </head>
 <body class="bg-gray-900 text-white">
-    <header class="header-bg text-center shadow-lg">
-        <h1 class="text-6xl font-extrabold text-white">About Cerbi</h1>
+    <header class="text-center py-10 bg-gray-800 shadow-lg">
+        <h1 class="text-5xl font-extrabold">Cerbi Features</h1>
+        <p class="text-lg mt-2">Explore the power of AI-driven logging and observability</p>
+        <a href="index.html" class="mt-4 inline-block px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Back to Home</a>
     </header>
     
     <section class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Who We Are</h2>
-        <p class="mt-4 text-center max-w-3xl mx-auto">Cerbi is dedicated to providing cutting-edge logging solutions that integrate AI-powered insights with seamless observability. Our focus is on security, efficiency, and an intuitive developer experience.</p>
+        <h2 class="text-4xl font-semibold text-center">Key Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-center">
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
+                <h3 class="text-2xl font-bold">AI-Powered Insights</h3>
+                <p class="mt-2">Analyze logs with real-time machine learning models.</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
+                <h3 class="text-2xl font-bold">Multi-Cloud Ready</h3>
+                <p class="mt-2">Seamlessly integrates with AWS, Azure, and GCP.</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
+                <h3 class="text-2xl font-bold">Secure & Encrypted</h3>
+                <p class="mt-2">End-to-end encryption ensures log security.</p>
+            </div>
+        </div>
     </section>
     
     <section class="container mx-auto px-6 py-10 text-center">
-        <h2 class="text-4xl font-semibold">Our Impact</h2>
+        <h2 class="text-4xl font-semibold">Real-Time Stats</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold counter" data-target="500000">0</h3>
+                <h3 class="text-3xl font-bold" id="logsProcessed">500,000</h3>
                 <p>Logs Processed</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold counter" data-target="99.99">0</h3>
-                <p>Uptime Percentage</p>
+                <h3 class="text-3xl font-bold">99.99%</h3>
+                <p>Uptime Guarantee</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold counter" data-target="50">0</h3>
+                <h3 class="text-3xl font-bold">50+</h3>
                 <p>Enterprise Clients</p>
             </div>
         </div>
     </section>
     
     <section class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Our Mission</h2>
-        <p class="mt-4 text-center max-w-3xl mx-auto">At Cerbi, we believe in simplifying enterprise logging while ensuring that teams gain actionable insights from their data. We strive to make observability accessible, scalable, and highly intelligent.</p>
-    </section>
-    
-    <section class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Meet the Team</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-center">
-            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
-                <h3 class="text-2xl font-bold">John Doe</h3>
-                <p class="mt-2">Founder & CEO</p>
+        <h2 class="text-4xl font-semibold text-center">Expandable Features</h2>
+        <div class="mt-6 space-y-4 max-w-3xl mx-auto">
+            <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🚀 High Performance</button>
+                <p x-show="open" class="mt-2">Cerbi processes millions of logs in real-time with minimal latency.</p>
             </div>
-            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
-                <h3 class="text-2xl font-bold">Jane Smith</h3>
-                <p class="mt-2">CTO & AI Architect</p>
+            <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🔍 Deep Observability</button>
+                <p x-show="open" class="mt-2">Leverage AI to uncover hidden patterns and trends in your logs.</p>
             </div>
-            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
-                <h3 class="text-2xl font-bold">Michael Lee</h3>
-                <p class="mt-2">Head of Engineering</p>
+            <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">⚙️ Developer Friendly</button>
+                <p x-show="open" class="mt-2">Easily integrate with your application using a simple API.</p>
             </div>
         </div>
     </section>
