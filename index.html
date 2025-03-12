@@ -38,12 +38,10 @@
     
     <nav class="bg-gray-700 py-4">
         <ul class="flex justify-center space-x-6 text-lg">
-            <li><a href="#ecosystem" class="hover:underline">Ecosystem</a></li>
-            <li><a href="#setup" class="hover:underline">Setup</a></li>
-            <li><a href="#dashboard" class="hover:underline">Live Dashboard</a></li>
-            <li><a href="#interactive" class="hover:underline">API Playground</a></li>
-            <li><a href="#upload" class="hover:underline">Upload Logs</a></li>
-            <li><a href="#simulator" class="hover:underline">Log Simulator</a></li>
+            <li><a href="features/index.html" class="hover:underline">Features</a></li>
+            <li><a href="docs/index.html" class="hover:underline">Docs</a></li>
+            <li><a href="pricing/index.html" class="hover:underline">Pricing</a></li>
+            <li><a href="about/index.html" class="hover:underline">About</a></li>
         </ul>
     </nav>
     
@@ -79,43 +77,6 @@
             logChart.update();
         }
         setInterval(updateChart, 3000);
-    </script>
-    
-    <section id="upload" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
-        <h2 class="text-4xl font-semibold text-center">Upload Logs for Analysis</h2>
-        <p class="text-center mt-4">Drag & drop your log files below to process them.</p>
-        <div class="border-dashed border-4 border-gray-500 p-10 text-center mt-6" ondrop="handleDrop(event)" ondragover="event.preventDefault();">
-            Drag & Drop Logs Here
-        </div>
-        <pre id="logOutput" class="bg-gray-900 p-4 mt-4 rounded-lg text-green-400"></pre>
-    </section>
-    
-    <script>
-        function handleDrop(event) {
-            event.preventDefault();
-            const file = event.dataTransfer.files[0];
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('logOutput').innerText = `Processing: \n${e.target.result}`;
-            };
-            reader.readAsText(file);
-        }
-    </script>
-    
-    <section id="simulator" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
-        <h2 class="text-4xl font-semibold text-center">Log Event Simulator</h2>
-        <p class="text-center mt-4">Click to generate a simulated log entry with AI-driven insights.</p>
-        <button onclick="simulateLog()" class="mt-4 px-6 py-3 bg-green-500 rounded-lg text-white hover:bg-green-600 transition transform hover:scale-105">Generate Log</button>
-        <pre id="simulatedLog" class="bg-gray-900 p-4 mt-4 rounded-lg text-green-400"></pre>
-    </section>
-    
-    <script>
-        function simulateLog() {
-            const levels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL'];
-            const messages = ['User login successful', 'Database query executed', 'API call failed', 'Memory usage high', 'Unauthorized access detected'];
-            const logEntry = `[${new Date().toISOString()}] [${levels[Math.floor(Math.random() * levels.length)]}] - ${messages[Math.floor(Math.random() * messages.length)]}`;
-            document.getElementById('simulatedLog').innerText = logEntry;
-        }
     </script>
     
     <footer class="text-center py-6 bg-gray-800 mt-10">
