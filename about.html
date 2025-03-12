@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Cerbi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(120deg, #1a202c, #2d3748);
+        }
+        .header-bg {
+            background: url('https://source.unsplash.com/1600x900/?technology') no-repeat center center/cover;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+        .team-card:hover {
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <header class="header-bg text-center shadow-lg">
+        <h1 class="text-6xl font-extrabold text-white">About Cerbi</h1>
+    </header>
+    
+    <section class="container mx-auto px-6 py-10">
+        <h2 class="text-4xl font-semibold text-center">Who We Are</h2>
+        <p class="mt-4 text-center max-w-3xl mx-auto">Cerbi is dedicated to providing cutting-edge logging solutions that integrate AI-powered insights with seamless observability. Our focus is on security, efficiency, and an intuitive developer experience.</p>
+        
+        <h2 class="text-4xl font-semibold mt-10 text-center">Our Mission</h2>
+        <p class="mt-4 text-center max-w-3xl mx-auto">At Cerbi, we believe in simplifying enterprise logging while ensuring that teams gain actionable insights from their data. We strive to make observability accessible, scalable, and highly intelligent.</p>
+        
+        <h2 class="text-4xl font-semibold mt-10 text-center">Meet the Team</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-center">
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
+                <h3 class="text-2xl font-bold">John Doe</h3>
+                <p class="mt-2">Founder & CEO</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
+                <h3 class="text-2xl font-bold">Jane Smith</h3>
+                <p class="mt-2">CTO & AI Architect</p>
+            </div>
+            <div class="p-6 bg-gray-700 rounded-lg shadow-lg team-card">
+                <h3 class="text-2xl font-bold">Michael Lee</h3>
+                <p class="mt-2">Head of Engineering</p>
+            </div>
+        </div>
+    </section>
+    
+    <footer class="text-center py-6 bg-gray-800 mt-10">
+        <p>&copy; 2025 Cerbi. All rights reserved.</p>
+    </footer>
+</body>
+</html>
