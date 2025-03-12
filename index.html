@@ -6,11 +6,19 @@
     <title>Cerbi - AI-Driven Logging & Insights</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
+    </script>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-900 text-white transition-all duration-300" x-data="{ darkMode: true }">
     <header class="text-center py-10 bg-gray-800 shadow-lg">
         <h1 class="text-5xl font-extrabold">Cerbi - AI-Driven Logging & Insights</h1>
         <p class="text-lg mt-2">The Future of Standardized Logging & AI-Powered Observability</p>
+        <button class="mt-4 px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition" @click="toggleTheme()">
+            Toggle Dark/Light Mode
+        </button>
     </header>
     
     <nav class="bg-gray-700 py-4">
@@ -18,86 +26,61 @@
             <li><a href="#ecosystem" class="hover:underline">Ecosystem</a></li>
             <li><a href="#setup" class="hover:underline">Setup</a></li>
             <li><a href="#logging-types" class="hover:underline">Logging Types</a></li>
+            <li><a href="#features" class="hover:underline">Features</a></li>
+            <li><a href="#interactive" class="hover:underline">Live Demo</a></li>
             <li><a href="#contact" class="hover:underline">Contact</a></li>
         </ul>
     </nav>
     
     <section id="ecosystem" class="container mx-auto px-6 py-10">
         <h2 class="text-4xl font-semibold text-center">Cerbi Ecosystem</h2>
+        <p class="text-center mt-4">Empowering developers with intelligent, secure, and efficient logging solutions.</p>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-            <div class="p-6 bg-gray-700 rounded-lg text-center">
+            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
                 <h3 class="text-2xl font-bold">CerbiStream</h3>
                 <p>Lightweight logging library with built-in metadata support.</p>
                 <a href="https://www.nuget.org/packages/CerbiStream/" class="text-blue-400 underline">View on NuGet</a>
             </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center">
+            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
                 <h3 class="text-2xl font-bold">CerbIQ</h3>
                 <p>Smart log routing to observability tools & storage.</p>
             </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center">
+            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
                 <h3 class="text-2xl font-bold">CerbiSense</h3>
                 <p>AI-powered log insights & anomaly detection.</p>
             </div>
-            <div class="p-6 bg-gray-700 rounded-lg text-center">
+            <div class="p-6 bg-gray-700 rounded-lg text-center transform hover:scale-105 transition">
                 <h3 class="text-2xl font-bold">CerbiSentinel</h3>
                 <p>Ensures logging compliance & governance across applications.</p>
             </div>
         </div>
     </section>
     
-    <section id="setup" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
-        <h2 class="text-4xl font-semibold">Getting Started</h2>
-        <p class="mt-4">Install CerbiStream and integrate it into your project:</p>
-        <pre class="bg-gray-900 p-4 rounded-lg mt-4 text-green-400">dotnet add package CerbiStream --version 1.0.2</pre>
-        <h3 class="text-2xl font-semibold mt-6">Quick Start (Minimal Setup)</h3>
-        <details class="bg-gray-700 p-4 rounded-lg mt-4 cursor-pointer" x-data="{ open: false }" @click="open = !open">
-            <summary class="text-xl font-bold cursor-pointer">Show Code Example</summary>
-            <pre class="bg-gray-900 p-4 mt-2 rounded-lg text-sm overflow-auto text-green-400">
-                using System;
-                using Microsoft.Extensions.DependencyInjection;
-                using Microsoft.Extensions.Logging;
-                using CerbiStream.Logging.Extensions;
-
-                class Program
-                {
-                    static void Main()
-                    {
-                        var serviceProvider = new ServiceCollection()
-                            .AddLogging(builder =>
-                            {
-                                builder.AddConsole();
-                                builder.AddCerbiStream(options =>
-                                {
-                                    options.SetQueue("RabbitMQ", "localhost", "logs-queue");
-                                    options.EnableDevMode();
-                                    options.EnableGovernance();
-                                });
-                            })
-                            .BuildServiceProvider();
-
-                        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-
-                        logger.LogInformation("Application started successfully!");
-                        logger.LogError("This is a test error log.");
-                        logger.LogWarning("Potential issue detected.");
-                        logger.LogCritical("Critical failure occurred!");
-                    }
-                }
-            </pre>
-        </details>
-        <p class="mt-4">Check out the full <a href="https://github.com/Zeroshi/Cerbi-CerbiStream" class="text-blue-400">source code</a>.</p>
+    <section id="interactive" class="container mx-auto px-6 py-10 bg-gray-800 rounded-lg">
+        <h2 class="text-4xl font-semibold text-center">Live Logging Simulation</h2>
+        <p class="text-center mt-4">Experience real-time structured logging using CerbiStream.</p>
+        <div class="bg-gray-900 p-6 mt-6 rounded-lg text-sm overflow-auto text-green-400" id="log-console" style="height: 200px; overflow-y: auto; border: 1px solid #444;"></div>
+        <button onclick="generateLog()" class="mt-4 px-4 py-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Generate Log Entry</button>
     </section>
     
-    <section id="logging-types" class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold">Types of Logging</h2>
-        <ul class="list-disc ml-6 mt-4">
-            <li>📌 **Structured Logging** - Includes metadata & context.</li>
-            <li>📌 **Error Logging** - Captures critical failures.</li>
-            <li>📌 **Performance Logging** - Tracks execution time of tasks.</li>
-            <li>📌 **Transaction Logging** - Ensures tracking across distributed systems.</li>
-            <li>📌 **Security Logging** - Captures authentication & access details.</li>
-        </ul>
-    </section>
+    <script>
+        function generateLog() {
+            const logConsole = document.getElementById('log-console');
+            const logLevels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL'];
+            const messages = [
+                'User login successful',
+                'Database query executed',
+                'API call failed',
+                'Memory usage exceeding limit',
+                'Unauthorized access detected'
+            ];
+            const randomLevel = logLevels[Math.floor(Math.random() * logLevels.length)];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            const logEntry = `[${new Date().toISOString()}] [${randomLevel}] - ${randomMessage}`;
+            logConsole.innerHTML += `<div>${logEntry}</div>`;
+            logConsole.scrollTop = logConsole.scrollHeight;
+        }
+    </script>
     
     <footer class="text-center py-6 bg-gray-800 mt-10">
         <p>&copy; 2025 Cerbi. All rights reserved.</p>
