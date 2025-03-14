@@ -3,38 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cerbi - AI-Driven Logging & Insights</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
+    <title>Cerbi - AI-Driven Logging & Intelligence</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            background: linear-gradient(120deg, #1a202c, #2d3748);
-            overflow-x: hidden;
-        }
-        .parallax {
-            background: url('https://source.unsplash.com/1600x900/?technology') no-repeat center center/cover;
-            height: 300px;
-            width: 100%;
-            position: relative;
-            filter: brightness(50%);
-        }
-    </style>
-    <script>
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-        }
-    </script>
 </head>
-<body class="bg-gray-900 text-white transition-all duration-300" x-data="{ darkMode: true }">
-    <div class="parallax"></div>
-    <header class="text-center py-10 bg-gray-800 shadow-lg">
-        <h1 class="text-5xl font-extrabold">Cerbi - AI-Driven Logging & Insights</h1>
-        <p class="text-lg mt-2">The Future of Standardized Logging & AI-Powered Observability</p>
-        <button class="mt-4 px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition transform hover:scale-105" @click="toggleTheme()">
-            Toggle Dark/Light Mode
-        </button>
+<body>
+    <header class="header">
+        <h1 class="title">Cerbi - AI-Driven Logging & Intelligence</h1>
+        <p class="subtitle">The Future of Standardized Logging & AI-Powered Observability</p>
     </header>
+<<<<<<< HEAD
+=======
     
     <nav class="bg-gray-700 py-4">
         <ul class="flex justify-center space-x-6 text-lg">
@@ -66,7 +45,64 @@
             },
             options: { responsive: true }
         });
+>>>>>>> d61e6be76de2c64b771fd66e5c68a1c9401a8f47
 
+    <section class="container">
+        <h2 class="section-title">Cerbi Ecosystem</h2>
+        <ul>
+            <li><strong>CerbiStream</strong>: Open-source logging library for structured logs.</li>
+            <li><strong>CerbiLogIQ</strong>: Intelligent routing and processing of logs.</li>
+            <li><strong>CerbiShield</strong>: Security and governance enforcement.</li>
+            <li><strong>CerbiSense</strong>: AI-powered log analysis and anomaly detection.</li>
+        </ul>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Getting Started with CerbiStream</h2>
+        <p>Install CerbiStream via NuGet:</p>
+        <pre class="command-text">dotnet add package CerbiStream --version 1.0.2</pre>
+        <p>Basic implementation:</p>
+        <pre class="command-text">
+using CerbiStream;
+Logger.LogInformation("Application started successfully.");
+        </pre>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Real-Time Logging</h2>
+        <canvas id="logChart"></canvas>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Pattern Recognition & Downtime Detection</h2>
+        <p id="patternAnalysis">Analyzing logs...</p>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 Cerbi. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let logs = [];
+        let logChart;
+        
+        function initializeChart() {
+            const ctx = document.getElementById("logChart").getContext("2d");
+            logChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: "Log Events",
+                        backgroundColor: "rgb(75, 192, 192)",
+                        borderColor: "rgb(75, 192, 192)",
+                        data: [],
+                    }],
+                },
+                options: { responsive: true }
+            });
+        }
+        
         function updateChart() {
             if (logChart.data.labels.length > 10) {
                 logChart.data.labels.shift();
@@ -76,11 +112,35 @@
             logChart.data.datasets[0].data.push(Math.floor(Math.random() * 50));
             logChart.update();
         }
-        setInterval(updateChart, 3000);
+        
+        function analyzePatterns() {
+            let errorCount = logs.filter(log => log.level === "error").length;
+            let warningCount = logs.filter(log => log.level === "warning").length;
+            let analysisText = "System is stable.";
+
+            if (errorCount > 10) {
+                analysisText = "High number of errors detected, potential service instability.";
+            } else if (warningCount > 5) {
+                analysisText = "Multiple warnings detected, possible configuration issues.";
+            }
+
+            document.getElementById("patternAnalysis").innerText = analysisText;
+        }
+        
+        function simulateLogs() {
+            logs.push({
+                timestamp: new Date().toISOString(),
+                level: Math.random() > 0.8 ? "error" : (Math.random() > 0.6 ? "warning" : "info"),
+                message: "Simulated log event"
+            });
+            analyzePatterns();
+            updateChart();
+        }
+        
+        window.onload = () => {
+            initializeChart();
+            setInterval(simulateLogs, 3000);
+        };
     </script>
-    
-    <footer class="text-center py-6 bg-gray-800 mt-10">
-        <p>&copy; 2025 Cerbi. All rights reserved.</p>
-    </footer>
 </body>
 </html>
