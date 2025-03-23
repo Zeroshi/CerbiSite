@@ -1,4 +1,11 @@
 ---
+title: Cerbi Suite – Unified Logging, Governance, and Observability
+description: Enterprise-grade structured logging, governance enforcement, and predictive ML insights
+layout: default
+---
+
+
+---
 
 # Cerbi Suite – Unified Logging, Governance, and Observability
 
