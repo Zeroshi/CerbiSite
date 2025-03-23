@@ -25,6 +25,61 @@ layout: default
 
 All tools work together but are fully **decoupled**, giving you total control and flexibility.
 
+Cerbi’s approach is **not to compete** directly with traditional centralized log processors like Splunk, Datadog, Fluentd, Logstash, Graylog, or Papertrail. Instead, Cerbi complements them by focusing on:
+
+- ✅ **Decoupled architecture**: Individual components can be used independently or together
+- ✅ **Developer-first design**: Cerbi enforces best practices for telemetry through build-time validation
+- ✅ **Governance-driven logging**: Create and enforce standards tailored to your org's needs
+- ✅ **Portable insights**: Logs are enriched at the source, routed anywhere you choose, and stay under your control
+
+**CerbiStream** doesn’t care which tool you use downstream — you can interface with Azure App Insights, AWS CloudWatch, GCP Trace, Datadog, or send your messages to queues that forward into Splunk, Loggly, Sumo Logic, SolarWinds, Graylog, Papertrail, and others.
+
+We’re **not replacing** those tools — they do their job extremely well. Cerbi is here to help you **log better** from the start:
+- 💡 Consistent structured logs
+- ✅ Governance rules to guide teams as they scale
+- 🧩 Plug-and-play with your favorite services
+
+You can build your own interface or use ours. Even CerbiIQ is optional — you can route however you’d like. Cerbi tools are completely tool-agnostic and cloud-agnostic.
+
+Every component is designed with **developer simplicity** in mind:
+- 🧪 Pre-wired integrations
+- ⚙️ Simple developer setup
+- 🧱 Cloud and tool-agnostic by design
+
+---
+
+### 🔁 Language Support
+CerbiStream will be released in multiple top programming languages:
+- ✅ .NET (already available)
+- 🟦 Python
+- 🟧 JavaScript / Node.js
+- 🟫 Java
+- 🟨 Go
+- 🟪 Ruby *(planned)*
+- ⬛ Rust *(planned)*
+- ⬜ Kotlin / Swift *(future roadmap)*
+
+---
+
+![Cerbi Architecture Diagram](https://github.com/Zeroshi/CerbiSite/blob/main/Cerbi-updated.png?raw=true)
+
+---
+
+## 📥 Getting Started
+
+To get started with Cerbi:
+1. Install the base logging library:
+```bash
+dotnet add package CerbiStream
+```
+
+2. (Optional) Add governance enforcement:
+```bash
+dotnet add package CerbiStream.GovernanceAnalyzer
+```
+
+3. [Visit the GitHub Repo](https://github.com/Zeroshi/Cerbi-CerbiStream) to explore full documentation, samples, and integration guides.
+
 ---
 
 ## 🔧 CerbiStream – Logging Library
@@ -73,6 +128,7 @@ A lightweight message router hosted in the client’s tenant:
 - Reads messages from CerbiStream queues
 - Parses metadata for routing to appropriate destinations
 - Supports custom schema logic and business filtering
+- Prebuilt interfaces to Splunk, Loggly, SolarWinds, Sumo Logic, Elasticsearch, and more
 
 ---
 
@@ -91,7 +147,7 @@ A centralized AI engine hosted by Cerbi:
 | Package | NuGet | Downloads | License | Framework |
 |--------|--------|-----------|---------|-----------|
 | **CerbiStream** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream?style=flat-square) | ![NuGet Downloads](https://img.shields.io/nuget/dt/CerbiStream?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
-| **GovernanceAnalyzer** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![NuGet Downloads](https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
+| **GovernanceAnalyzer** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![NuGet Downloads](https://img.shields.io/badge/downloads-356-blue?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
 
 ---
 
@@ -112,5 +168,5 @@ A centralized AI engine hosted by Cerbi:
 
 ---
 
-Have questions, ideas, or interest in Cerbi for your org?
+Have questions, ideas, or interest in Cerbi for your org?  
 📧 Contact: **forest@wakingforest.dev**
