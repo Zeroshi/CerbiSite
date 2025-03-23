@@ -19,7 +19,7 @@ layout: default
 
 - ✅ **CerbiStream** – A next-gen structured logging library
 - ✅ **GovernanceAnalyzer** – Build-time enforcement of log governance via Roslyn
-- 🟦 **CerbiGov** *(Coming Soon)* – Lightweight UI for designing governance rules
+- 🟦 **CerbiShield** *(Coming Soon)* – Lightweight UI for designing governance rules
 - 🟩 **CerbiIQ** *(Coming Soon)* – Smart routing engine hosted in the client tenant
 - 🧠 **CerbiSense** *(Coming Soon)* – ML-based predictive analytics
 
