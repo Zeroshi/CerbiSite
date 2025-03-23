@@ -19,7 +19,7 @@ layout: default
 
 - ✅ **CerbiStream** – A next-gen structured logging library
 - ✅ **GovernanceAnalyzer** – Build-time enforcement of log governance via Roslyn
-- 🟦 **CerbiShield** *(Coming Soon)* – Lightweight UI for designing governance rules
+- 🟦 **CerbiGov** *(Coming Soon)* – Lightweight UI for designing governance rules
 - 🟩 **CerbiIQ** *(Coming Soon)* – Smart routing engine hosted in the client tenant
 - 🧠 **CerbiSense** *(Coming Soon)* – ML-based predictive analytics
 
@@ -165,6 +165,7 @@ A centralized AI engine hosted by Cerbi:
 
 - 🌐 Azure Marketplace integration
 - 📬 Product Hunt launch + Dev.to announcement draft
+- 📈 Comparison grid vs. Serilog, Fluentd, etc.
 
 ---
 
