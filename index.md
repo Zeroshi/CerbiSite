@@ -91,7 +91,7 @@ A centralized AI engine hosted by Cerbi:
 | Package | NuGet | Downloads | License | Framework |
 |--------|--------|-----------|---------|-----------|
 | **CerbiStream** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream?style=flat-square) | ![NuGet Downloads](https://img.shields.io/nuget/dt/CerbiStream?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
-| **GovernanceAnalyzer** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![NuGet Downloads](https://img.shields.io/badge/Downloads-350%2B-blue?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
+| **GovernanceAnalyzer** | ![NuGet](https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![NuGet Downloads](https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?style=flat-square) | ![MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square) | ![.NET](https://img.shields.io/badge/.NET-8.0-blue?style=flat-square) |
 
 ---
 
