@@ -1,3 +1,4 @@
+---
 title: CerbiSuite – Unified Logging, Governance, and Observability
 description: Enterprise-grade structured logging, encryption support, governance enforcement, and predictive ML insights
 layout: default
