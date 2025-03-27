@@ -88,7 +88,7 @@ CerbiStream includes modern features devs expect — and more:
 
 - ✅ `AddCerbiStream("AzureWebApp")` preset support *(coming soon)*
 - ✅ `WithJsonFormat()` for structured output
-- ✅ `WithFileFallback()` for production resilience
+- ✅ `WithFileFallback()` for production resilience *(coming soon)*
 - ✅ Roslyn analyzer to enforce log shape & metadata
 - ✅ Clean DI setup – no manual sink management
 
@@ -109,3 +109,4 @@ CerbiStream includes modern features devs expect — and more:
 ```bash
 dotnet add package CerbiStream
 dotnet add package CerbiStream.GovernanceAnalyzer # Optional
+```
