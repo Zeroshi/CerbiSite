@@ -1,6 +1,3 @@
-# Rewriting the file again after code state reset
-updated_md = """
----
 title: CerbiSuite – Unified Logging, Governance, and Observability
 description: Enterprise-grade structured logging, encryption support, governance enforcement, and predictive ML insights
 layout: default
