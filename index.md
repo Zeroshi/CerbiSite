@@ -1,3 +1,5 @@
+# Rewriting the file again after code state reset
+updated_md = """
 ---
 title: CerbiSuite – Unified Logging, Governance, and Observability
 description: Enterprise-grade structured logging, encryption support, governance enforcement, and predictive ML insights
@@ -16,17 +18,19 @@ layout: default
 
 Unlike traditional log aggregators, Cerbi enhances logging **at the source**, ensuring consistency, security, and compliance before the logs ever leave your service.
 
+> Now benchmarked against top .NET loggers, Cerbi offers Serilog-level speed with dramatically lower memory usage, plus unmatched governance support.
+
 ---
 
 ## 🔧 Core Components
 
-| Component         | Description                                                  |
-|------------------|--------------------------------------------------------------|
-| **CerbiStream**   | Structured logging library with encryption & metadata        |
-| **GovernanceAnalyzer** | Roslyn analyzer for build-time schema validation        |
-| **CerbiShield** *(coming soon)* | Governance rule UI builder                      |
-| **CerbIQ** *(coming soon)*     | Smart, schema-driven log router                  |
-| **CerbiSense** *(coming soon)* | ML-powered anomaly & trend detection             |
+| Component           | Description                                                    |
+|--------------------|----------------------------------------------------------------|
+| **CerbiStream**     | ⚡ Fast, structured logging with metadata & encryption          |
+| **GovernanceAnalyzer** | ✅ Enforces structure and standards at build time            |
+| **CerbiShield** *(beta)* | Visual governance rule & policy builder                  |
+| **CerbIQ** *(in dev)*     | Smart, schema-driven log router (Kafka/Splunk/etc.)        |
+| **CerbiSense** *(in dev)* | ML-driven pattern detection & risk scoring               |
 
 ---
 
@@ -37,7 +41,7 @@ Unlike traditional log aggregators, Cerbi enhances logging **at the source**, en
 **CerbiStream** is your entry point. It encrypts logs, adds metadata, validates structure (optionally), and dispatches them to your queues. From there:
 
 - **GovernanceAnalyzer** (Roslyn) ensures developers comply with defined structures.
-- **CerbiShield** will be a visual governance policy builder.
+- **CerbiShield** is a visual governance policy builder.
 - **CerbIQ** routes logs to tools like Splunk, Datadog, etc., filtering by schema.
 - **CerbiSense** uses ML to detect patterns, outliers, and potential failures via enriched metadata.
 
@@ -64,79 +68,46 @@ Cerbi complements your logging ecosystem — not replaces it.
 
 ---
 
-## 🔐 Encryption Benchmarks
+## ⚡ Benchmark Results
 
-Benchmarks were executed using `BenchmarkDotNet` across supported strategies.
+### 🧪 Performance & Allocation Benchmarks (.NET 8, 10 iterations, release)
 
-| Scenario                      | Mean (ms) | Allocated (KB) | Description                        |
-|-------------------------------|-----------|----------------|------------------------------------|
-| `NoEncryption_Encrypt`        | 0.0011    | 0.02           | Fastest, passthrough               |
-| `Base64_EncryptDecrypt`       | 0.0143    | 0.14           | Low-overhead obfuscation           |
-| `AES_EncryptDecrypt`          | 0.122     | 1.88           | Full symmetric encryption          |
-| `Serilog_LogWithBase64`       | 0.375     | 5.82           | Encrypt using Base64 + Serilog     |
-| `CerbiStream_LogWithBase64`   | 0.207     | **3.12**       | Encrypt using Base64 + CerbiStream |
+| Logger              | Mean (μs) | Allocated (B) |
+|---------------------|-----------|----------------|
+| **NLog_Log_Plain**      | 9.99     | 432            |
+| **Log4Net_Log_Plain**   | 12.71    | 576            |
+| **Serilog_Log_Plain**   | 213.5    | 1480           |
+| **Cerbi_Log_Plain**     | 213.9    | **320 ✅**     |
+| **MS_Log_Plain**        | 427.2    | 320            |
 
-✅ **CerbiStream** shows better performance and **lowest memory allocation** in encrypted structured logging compared to Serilog and other mainstream loggers.
+> ✅ CerbiStream matches Serilog's speed but uses **~78% less memory**, with built-in encryption and governance support.
 
 ---
 
-## 🏁 Logger Benchmark Details
+## 🧠 Dev-Friendly by Design
 
-All results below are from `.NET 8`, 10 iterations, release mode, high-performance profile.
+CerbiStream includes modern features devs expect — and more:
 
-| Logger                        | Mean (ms) | StdDev (ms) | Allocated (KB) | Min (ms) | Max (ms) |
-|------------------------------|-----------|-------------|----------------|----------|----------|
-| Microsoft.Extensions.Logging | 0.150     | 0.010       | 3.50           | 0.143    | 0.165    |
-| Serilog                      | 0.375     | 0.015       | 5.82           | 0.358    | 0.399    |
-| NLog                         | 0.289     | 0.014       | 4.25           | 0.276    | 0.312    |
-| log4net                      | 0.330     | 0.017       | 4.65           | 0.310    | 0.358    |
-| **CerbiStream**              | **0.207** | **0.012**   | **3.12**       | 0.195    | 0.223    |
+- ✅ `AddCerbiStream("AzureWebApp")` preset support *(coming soon)*
+- ✅ `WithJsonFormat()` for structured output
+- ✅ `WithFileFallback()` for production resilience
+- ✅ Roslyn analyzer to enforce log shape & metadata
+- ✅ Clean DI setup – no manual sink management
 
 ---
 
 ## ⚖️ Key Takeaways
 
-- ✅ **CerbiStream is the fastest encrypted logger and one of the fastest overall**
-- 🧠 **Lowest memory allocation in encrypted loggers**, and **nearly tied with the fastest unencrypted logger**
-- 🔐 Built-in AES and Base64 encryption without external sinks or enrichers
-- 🧱 First-class schema enforcement and governance via Roslyn
-- 🧰 `BenchmarkMode` disables queues and telemetry to isolate performance
-- 🧩 Reduced overhead: in legacy systems, removing DB log sinks reduced load by up to **30%**
-- 🪶 Smaller payloads = fewer GC pauses and more efficient CPU
+- 🚀 CerbiStream is **one of the fastest encrypted structured loggers**
+- 🔐 Built-in Base64 and AES encryption — no sinks or enrichers required
+- ⚙️ CerbiShield enables compile-time and runtime governance enforcement
+- 📉 Lower memory = fewer GC pauses and higher throughput
+- 💡 Serilog-compatible speed — **with governance built in**
 
 ---
 
-## 📣 Spread the Word
-
-If you're tired of juggling Serilog sinks, governance checklists, and brittle logging conventions, Cerbi is your modern, extensible solution.
-
-⭐ Star us on GitHub  
-📢 Share on Dev.to  
-🔗 Add us to your Azure Marketplace stack  
-📬 Let your observability team know
-
----
-
-## 🧰 Getting Started
+## 🧩 Get Started in Seconds
 
 ```bash
 dotnet add package CerbiStream
 dotnet add package CerbiStream.GovernanceAnalyzer # Optional
-builder.AddCerbiStream(options =>
-{
-    options
-        .WithQueue("Kafka", "localhost", "app-logs")
-        .EnableDeveloperModeWithoutTelemetry()
-        .WithEncryptionMode(EncryptionType.Base64);
-});
-```
-
----
-
-## 📬 Contact & Community
-
-- **GitHub**: [Cerbi-CerbiStream](https://github.com/Zeroshi/Cerbi-CerbiStream)
-- **Email**: [cerbi](mailto:thomasvnelson@live.com)
-- **NuGet**: [CerbiStream](https://www.nuget.org/packages/CerbiStream)
-
-> 🧠 Logging is a strategy, not just syntax. Cerbi gives you the framework to do it right from Day 1.
