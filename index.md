@@ -16,7 +16,22 @@ layout: default
 
 Unlike traditional log aggregators, Cerbi enhances logging **at the source**, ensuring consistency, security, and compliance before the logs ever leave your service.
 
-> Now benchmarked against top .NET loggers, Cerbi offers Serilog-level speed with dramatically lower memory usage, plus unmatched governance support.
+> Cerbi is **not here to replace** major log tools — it's designed to **enhance and complement** them. Use CerbiStream to log, then send it anywhere: your queue, your sink, or through CerbIQ for governance-aware routing and optional ML analysis.
+
+> Cerbi offers Serilog-level speed with dramatically lower memory usage, plus unmatched governance support and modular ML-friendly architecture.
+
+>
+> ---
+
+## 🔀 Hybrid-Compatible by Design
+
+Cerbi is built to integrate **with**, not against, your stack. Use only what you need:
+
+- ✅ Use **CerbiStream** as a logger, send logs to your existing sink (Splunk, Datadog, etc.)
+- ✅ Or route logs with **CerbIQ** for schema validation, queue normalization, and ML-ready structuring
+- ✅ Only **CerbIQ** can forward metadata (not NPI by default) to **CerbiSense**, the shared AI insights engine
+
+Cerbi is about precision at the source. **You own the routing, we offer optional intelligence**.
 
 ---
 
@@ -47,9 +62,49 @@ Unlike traditional log aggregators, Cerbi enhances logging **at the source**, en
 
 ## 📐 Cerbi Architecture Overview
 
-![Cerbi Architecture Diagram](https://github.com/Zeroshi/CerbiSite/blob/main/Cerbi-updated.png?raw=true)
+```
++--------------+
+|  Your App    |  (ILogger<T>)
++--------------+
+       |
+       v
++---------------------+
+|   CerbiStream       |  (Structured Log + Metadata)
++---------------------+
+       |
+       v
++---------------------+
+|   Encryption Layer  |
++---------------------+
+       |
+       v
++---------------------+
+|       Queue         |  (Kafka, RabbitMQ, etc.)
++---------------------+
+       |
+       v
++---------------------------+
+|   Your Sink (optional)    |
++---------------------------+
+       |
+       v
++---------------------------+
+|         CerbIQ            | (optional governance-aware router)
++---------------------------+
+                |
+                v (optional metadata only, never full logs or NPI)
+        +-----------------------+
+        |     CerbiSense        |
+        |  (ML & global trends) |
+        +-----------------------+
+```
 
-> 🧱 All components are decoupled. Use only what you need.
+> 🧱 Modular & Decoupled:
+> - Logs are sent to **your queue**.
+> - You can:
+>   - ✅ Route them to your sink
+>   - ✅ Use **CerbIQ** to inspect, normalize, and route
+> - **Only CerbIQ** can forward selected metadata to **CerbiSense**, a shared, anonymized ML dashboard
 
 ---
 
@@ -176,6 +231,10 @@ _serilogEncrypted.LogInformation(Convert.ToBase64String(
 ## 🧭 CerbiSuite by Cerbi – Built for Real-Time, Secure Observability
 
 Cerbi empowers developers with tools that prioritize structure, security, and simplicity — all in your own tenant. Whether you're building APIs, platforms, or ML-powered systems, Cerbi helps ensure your logs are consistent, validated, and ready for anything.
+
+✅ **Use Cerbi as a logger** and keep your current pipeline  
+✅ **Enhance it with CerbIQ** to route, govern, or even learn from your metadata  
+✅ **Opt-in to CerbiSense** if you want collective ML insights on top
 
 - 🌐 [GitHub](https://github.com/Zeroshi/Cerbi-CerbiStream)
 - 📦 [NuGet: CerbiStream](https://www.nuget.org/packages/CerbiStream)
