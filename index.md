@@ -15,7 +15,7 @@ layout: default
 
 ## ✨ Why CerbiStream Exists
 
-> CerbiStream isn't a website—it's a tool built to help applications log information **accurately and consistently**.
+> CerbiStream is a tool built to help applications log information **accurately and consistently**.
 
 Logging is how apps keep track of what's happening behind the scenes. When something goes wrong, logs tell you exactly what happened, so you can quickly fix the issue.
 
