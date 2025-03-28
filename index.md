@@ -15,7 +15,7 @@ layout: default
 
 ## ✨ Why CerbiStream Exists
 
-> CerbiStream is a tool built to help applications log information **accurately and consistently**.
+> CerbiStream isn't a website—it's a tool built to help applications log information **accurately and consistently**.
 
 Logging is how apps keep track of what's happening behind the scenes. When something goes wrong, logs tell you exactly what happened, so you can quickly fix the issue.
 
@@ -57,6 +57,51 @@ I'm also gathering **non-sensitive** data from these logs—no personal info lik
 
 ---
 
+## 🧠 How the Cerbi Ecosystem Flows
+
+Cerbi enables total control from log creation to insight generation. You choose how deep to go:
+
+```
+Your App (ILogger<T>)
+        |
+        v
++------------------+
+|  CerbiStream     |  <- Your structured logger
+|  (adds metadata) |
++------------------+
+        |
+        v
++------------------+
+|  Encryption Layer|
++------------------+
+        |
+        v
++------------------+
+|  Message Queue   |
++------------------+
+     |           |
+     |           +--> Your Sink (Splunk, Datadog, etc.)
+     |
+     +--> CerbIQ (Optional Routing/Governance Layer)
+              |
+              v
+       (optional) CerbiSense
+       (only from CerbIQ, metadata only)
+```
+
+### 🔄 Routing Options
+
+- **CerbiStream → Queue → Your Sink**  
+  Keep your current stack. Cerbi just ensures logs are validated and consistent before reaching your destination.
+
+- **CerbiStream → Queue → CerbIQ → Your Sink**  
+  Add **governance-aware routing**: CerbIQ can normalize, filter, and validate schemas before sending to your sink.
+
+- **CerbiStream → Queue → CerbIQ → CerbiSense (optional)**  
+  If enabled, CerbIQ can forward **non-NPI metadata only** to CerbiSense for **global pattern analysis**, **risk scoring**, and **shared anomaly detection dashboards**.
+
+---
+
 ## 🔍 Feature Matrix (At a Glance)
 
 | Capability            | CerbiStream | Serilog | NLog | log4net |
@@ -82,49 +127,100 @@ I'm also gathering **non-sensitive** data from these logs—no personal info lik
 
 ---
 
-## 📐 Cerbi Architecture Overview
+## 📐 Benchmark Results
 
-```
-+--------------+
-|  Your App    |  (ILogger<T>)
-+--------------+
-       |
-       v
-+---------------------+
-|   CerbiStream       |  (Structured Log + Metadata)
-+---------------------+
-       |
-       v
-+---------------------+
-|   Encryption Layer  |
-+---------------------+
-       |
-       v
-+---------------------+
-|       Queue         |  (Kafka, RabbitMQ, etc.)
-+---------------------+
-       |
-       v
-+---------------------------+
-|  Your Sink or CerbIQ      |  <-- You choose routing
-+---------------------------+
-                  |
-                  v
-         (optional, via CerbIQ only)
-          +-----------------------+
-          |     CerbiSense        |
-          |  (ML & global trends) |
-          +-----------------------+
-```
+### 🧪 Performance & Allocation Benchmarks (.NET 8, 10 iterations, release)
 
-> 🧱 Modular & Decoupled:
->
-> Logs are sent to your queue. You can:
->
-> - ✅ Route them to your sink
-> - ✅ Use CerbIQ to inspect, normalize, and route
-> - ✅ Optionally forward anonymized metadata to CerbiSense for ML analysis
+| Logger              | Mean (μs) | Allocated (B) |
+|---------------------|-----------|----------------|
+| NLog_Log_Plain      | 9.99     | 432            |
+| Log4Net_Log_Plain   | 12.71    | 576            |
+| Serilog_Log_Plain   | 213.5    | 1480           |
+| Cerbi_Log_Plain     | 213.9    | **320 ✅**     |
+| MS_Log_Plain        | 427.2    | 320            |
 
-CerbiSense provides **global trends** and pattern recognition based on shared, non-sensitive metadata — a benefit for any team that opts in.
+> ✅ CerbiStream matches Serilog's speed but uses **~78% less memory**, with built-in encryption and governance support.
 
 ---
+
+### 🔐 Encryption Performance Benchmarks
+
+| Logger                    | Mode      | Mean (μs) | Allocated (B) |
+|---------------------------|-----------|-----------|----------------|
+| CerbiStream               | Plain     | 213.9     | 320            |
+| CerbiStream (Base64)      | Encrypted | **221.3** | **320 ✅**     |
+| Serilog                   | Plain     | 213.5     | 1480           |
+| Serilog + Manual Base64   | Encrypted | 206.2     | 1640 ❌        |
+| NLog                      | Plain     | 9.99      | 432            |
+| Log4Net                   | Plain     | 12.71     | 576            |
+
+---
+
+### 📈 Logs per Second (Estimated Throughput)
+
+| Logger         | Mean (μs) | Logs/sec (est.) |
+|----------------|-----------|------------------|
+| NLog           | 9.99      | 100,100+ ⚡       |
+| Log4Net        | 12.71     | ~78,700          |
+| CerbiStream    | 213.9     | ~4,676           |
+| Serilog        | 213.5     | ~4,686           |
+| MS Logger      | 427.2     | ~2,341           |
+
+---
+
+### 💾 Memory Efficiency – Logs per 1KB Allocated
+
+| Logger       | Allocated (B) | Logs per 1KB |
+|--------------|----------------|---------------|
+| CerbiStream  | 320            | **3.20 ✅**     |
+| NLog         | 432            | 2.37          |
+| Log4Net      | 576            | 1.78          |
+| Serilog      | 1480           | 0.69 ❌        |
+
+---
+
+### 🧮 Logging Cost per Feature Set
+
+| Logger     | Governance | Encryption | JSON Format | Alloc (B) | Time (μs) |
+|------------|------------|------------|-------------|-----------|-----------|
+| Cerbi      | ✅         | ✅         | ✅ *(soon)* | **320**   | **221.3** |
+| Serilog    | ❌         | ❌         | ✅          | 1480      | 213.5     |
+| NLog       | ❌         | ❌         | ⚠️ Partial  | 432       | 9.99      |
+| Log4Net    | ❌         | ❌         | ❌          | 576       | 12.71     |
+
+---
+
+### ♻️ Garbage-Free Logging
+
+CerbiStream emits structured logs with only **320B per log** and no Gen 0/1/2 collections observed during BenchmarkDotNet tests.
+
+✅ **GC-friendly by design** — ideal for APIs, games, IoT, and real-time workloads.
+
+---
+
+## 🙅 What Cerbi Is Not
+
+Let’s set clear expectations:
+
+- ❌ Not a log aggregator like Splunk or Datadog
+- ❌ Not a file-based logger (but file fallback is coming soon!)
+- ❌ Not a rigid pipeline — use only what you need
+
+Cerbi is modular, developer-first, and designed for precision and compliance.
+
+---
+
+## 🧭 CerbiSuite by Cerbi – Built for Real-Time, Secure Observability
+
+Cerbi empowers developers with tools that prioritize structure, security, and simplicity — all in your own tenant. Whether you're building APIs, platforms, or ML-powered systems, Cerbi helps ensure your logs are consistent, validated, and ready for anything.
+
+✅ Use Cerbi as a logger and keep your current pipeline  
+✅ Enhance it with CerbIQ to route, govern, or even learn from your metadata  
+✅ Opt-in to CerbiSense if you want collective ML insights on top
+
+🌐 GitHub  
+📦 NuGet: CerbiStream  
+✉️ Contact: thomasvnelson@live.com  
+
+> Logging is not an afterthought. It’s infrastructure.  
+> With Cerbi, you’re building it right from Day One.
