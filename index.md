@@ -8,6 +8,27 @@ layout: default
 
 > 🔐 Structured Logging · 🧠 Developer-First Observability · 🌐 Cloud-Native & Portable
 
+![Modular](https://img.shields.io/badge/modular--by--design-%E2%9C%94%EF%B8%8F-blue?style=flat-square)
+![Hybrid-Ready](https://img.shields.io/badge/hybrid--compatible-%F0%9F%94%81-green?style=flat-square)
+
+---
+
+## ✨ Why CerbiStream Exists
+
+> CerbiStream isn't a website—it's a tool built to help applications log information **accurately and consistently**.
+
+Logging is how apps keep track of what's happening behind the scenes. When something goes wrong, logs tell you exactly what happened, so you can quickly fix the issue.
+
+Nowadays, many companies rely on **multiple teams or contractors** to build parts of their software, which often leads to **messy or inconsistent logging**.
+
+Cerbi fixes that.
+
+- ✅ Sets clear, enforced rules for what should be logged
+- ✅ Helps teams keep their logs consistent, structured, and secure
+- ✅ Ensures logs are **ready for audit, monitoring, or machine learning**
+
+Cerbi is **modular**, so you can use just the parts you need.
+
 ---
 
 ## 🚀 What is Cerbi?
@@ -31,6 +52,8 @@ Cerbi is built to integrate **with**, not against, your stack. Use only what you
 - ✅ Only **CerbIQ** can forward metadata (not NPI by default) to **CerbiSense**, the shared AI insights engine
 
 Cerbi is about precision at the source. **You own the routing, we offer optional intelligence**.
+
+I'm also gathering **non-sensitive** data from these logs—no personal info like names or addresses, just general metadata—**only with user permission**. This lets us pool data to analyze and spot trends or common issues everyone can benefit from.
 
 ---
 
@@ -82,55 +105,26 @@ Cerbi is about precision at the source. **You own the routing, we offer optional
 +---------------------+
        |
        v
-+-------------------------------+
-|    Your Sink or CerbIQ        |
-+-------------------------------+
-             |           |
-             |           v (optional metadata only)
-             |   +-----------------------+
-             |   |     CerbiSense        |
-             |   |  (ML & global trends) |
-             |   +-----------------------+
-             |
-         (only CerbIQ can send to CerbiSense)
++---------------------------+
+|  Your Sink or CerbIQ      |  <-- You choose routing
++---------------------------+
+                  |
+                  v
+         (optional, via CerbIQ only)
+          +-----------------------+
+          |     CerbiSense        |
+          |  (ML & global trends) |
+          +-----------------------+
 ```
 
 > 🧱 Modular & Decoupled:
-> - Logs are sent to **your queue**.
-> - You can:
->   - ✅ Route them to your own sink directly
->   - ✅ Use **CerbIQ** to inspect, enrich, and route to sink + **optionally** send metadata to **CerbiSense**
+>
+> Logs are sent to your queue. You can:
+>
+> - ✅ Route them to your sink
+> - ✅ Use CerbIQ to inspect, normalize, and route
+> - ✅ Optionally forward anonymized metadata to CerbiSense for ML analysis
+
+CerbiSense provides **global trends** and pattern recognition based on shared, non-sensitive metadata — a benefit for any team that opts in.
 
 ---
-
-## 💡 Why Cerbi?
-
-Cerbi complements your logging ecosystem — not replaces it.
-
-| Feature                         | CerbiStream | Serilog | NLog | log4net | Fluentd | Datadog |
-|--------------------------------|-------------|---------|------|---------|---------|---------|
-| Structured logging             | ✅          | ✅      | ✅   | ✅      | ✅      | ✅      |
-| Governance enforcement         | ✅ (Roslyn) | ❌      | ❌   | ❌      | ❌      | ❌      |
-| Built-in encryption (Base64/AES)| ✅         | ❌*     | ❌   | ❌      | ❌      | ✅      |
-| Plug-and-play config modes     | ✅          | Partial | ❌   | ❌      | ❌      | ❌      |
-| Multi-queue routing (Kafka, etc.) | ✅       | Partial | ✅   | ❌      | ✅      | ❌      |
-| ML-ready metadata              | ✅          | ❌      | ❌   | ❌      | ❌      | ✅      |
-| Developer simplicity           | ✅          | ✅      | ✅   | ⚠️      | ❌      | ✅      |
-| Host in your tenant            | ✅          | ✅      | ✅   | ✅      | ✅      | ❌      |
-
----
-
-## 🧭 CerbiSuite by Cerbi – Built for Real-Time, Secure Observability
-
-Cerbi empowers developers with tools that prioritize structure, security, and simplicity — all in your own tenant. Whether you're building APIs, platforms, or ML-powered systems, Cerbi helps ensure your logs are consistent, validated, and ready for anything.
-
-✅ **Use Cerbi as a logger** and keep your current pipeline  
-✅ **Enhance it with CerbIQ** to route, govern, or even learn from your metadata  
-✅ **Opt-in to CerbiSense** if you want collective ML insights on top
-
-- 🌐 [GitHub](https://github.com/Zeroshi/Cerbi-CerbiStream)
-- 📦 [NuGet: CerbiStream](https://www.nuget.org/packages/CerbiStream)
-- ✉️ Contact: [thomasvnelson@live.com](mailto:thomasvnelson@live.com)
-
-> Logging is not an afterthought. It’s infrastructure.  
-> With Cerbi, you’re building it right from Day One.
