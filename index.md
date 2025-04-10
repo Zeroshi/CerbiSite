@@ -205,7 +205,7 @@ Your App (ILogger<T>)
      +--> CerbIQ (Optional Routing/Governance Layer)
               |
               v
-       (optional) CerbiSense
+       (optional) CerbiSense + Your Sink (Splunk, Datadog, etc.)
        (only from CerbIQ, metadata only)
 ```
 
@@ -215,7 +215,7 @@ Your App (ILogger<T>)
 
 - CerbiStream → Queue → Your Sink  
 - CerbiStream → Queue → CerbIQ → Your Sink  
-- CerbiStream → Queue → CerbIQ → CerbiSense (optional metadata-only ML)
+- CerbiStream → Queue → CerbIQ → CerbiSense (optional metadata-only ML) + Your sink
 
 ---
 
