@@ -25,6 +25,17 @@ Cerbi fixes that:
 ✅ Ensures logs are ready for audit, monitoring, or machine learning  
 ✅ Use only the parts you need (modular)
 
+## 📦 NuGet Packages
+
+- **CerbiStream**  
+  High-performance, governance-enforced structured logger for .NET  
+  [![NuGet](https://img.shields.io/nuget/v/CerbiStream?style=flat-square)](https://www.nuget.org/packages/CerbiStream)
+
+- **CerbiStream.GovernanceAnalyzer**  
+  Static analyzer that enforces structured logging rules at compile time  
+  [![NuGet](https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?style=flat-square)](https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer)
+
+
 ---
 
 ## Table of Contents
