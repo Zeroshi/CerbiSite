@@ -1,4 +1,4 @@
---- title: "CerbiSuite: AI-Driven Logging & Governance"
+title: "CerbiSuite: AI-Driven Logging & Governance"
 description: "Structured logging, governance and ML observability for .NET apps."
 layout: default
 ---------------
