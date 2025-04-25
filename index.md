@@ -1,5 +1,5 @@
---- title: "CerbiSuite – Unified Logging, Governance & Observability"
-description: "Enterprise-grade structured logging, encryption, governance enforcement, and predictive ML insights for .NET applications."
+--- title: "CerbiSuite: AI-Driven Logging & Governance"
+description: "Structured logging, governance and ML observability for .NET apps."
 layout: default
 ---------------
 
