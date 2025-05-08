@@ -56,6 +56,52 @@ This makes Cerbi governance **logger-agnostic**. It is not centered around Cerbi
 * Live violation reporting in the governance dashboard
 * Plugin extensibility for organization-specific rules
 
+---
+
+### ✅ What Works Best for Your Team?
+
+Cerbi was built to meet teams where they are — whether you’re managing legacy services with **Serilog**, or modernizing with **CerbiStream**.
+
+You're absolutely right — Serilog **does** support telemetry routing and enrichment via widely used sinks and enrichers, including:
+
+* `Serilog.Sinks.ApplicationInsights`
+* `Serilog.Sinks.OpenTelemetry`
+* `Serilog.Enrichers.*` for machine name, thread ID, and more
+
+It may not be **built-in** to the governance plugin, but it’s fully **supported** in the Serilog ecosystem — just like encryption and file fallback.
+
+Also, great callout: **CerbiStream** has **built-in rollup and grouping support** (e.g. for multi-app environments reporting to a single governance score), which is important for CerbiShield’s analytics pipeline.
+
+Here’s the corrected and fair comparison:
+
+---
+
+### 🔍 Logger Governance Comparison
+
+Cerbi governance works with both modern and established logging frameworks. Whether you use **CerbiStream** or **Serilog**, enforcement is driven by the same governance profiles and CerbiShield dashboard.
+
+| Capability                            | **CerbiStream** *(Modern Default)* | **Serilog + Governance Plugin** *(Available Now)*  |
+| ------------------------------------- | ---------------------------------- | -------------------------------------------------- |
+| **Build-Time Governance Enforcement** | ✅ Roslyn Analyzer integrated       | ❌ Not supported                                    |
+| **Runtime Governance Enforcement**    | ❌ Not applicable                   | ✅ Via `Cerbi.Serilog.GovernanceAnalyzer`           |
+| **Encryption Support (AES, Base64)**  | ✅ Built-in                         | ❌ Not included                                     |
+| **File Fallback Logging**             | ✅ `WithFileFallback()` available   | ✅ Supported via `Serilog.Sinks.File`               |
+| **Telemetry Routing & Enrichment**    | ✅ Built-in (App Insights, OTel)    | ✅ Supported via Serilog sinks & enrichers          |
+| **ML / CerbIQ Compatibility**         | ✅ Schema-aligned automatically     | ✅ Requires matching metadata (CerbiShield assists) |
+| **Governance Profile Reloading**      | ✅ Supported                        | ✅ Supported                                        |
+| **Custom Rule Plugins**               | ✅ Supported                        | ✅ Via `ICustomGovernancePlugin`                    |
+| **App Rollup / Grouping Support**     | ✅ Built-in                         | ⚠️ External design needed                          |
+
+---
+
+**Already on Serilog?**
+You can adopt governance today using the Cerbi plugin — no need to rip out your existing logger.
+
+**Modernizing your platform?**
+CerbiStream gives you structure, compliance, and full compatibility with future CerbIQ and CerbiSense tools — all enforced at build time for maximum control and performance.
+
+> 🧩 CerbiShield governance works with both options — ensuring consistent enforcement regardless of your logging library.
+
 Organizations can:
 
 * Continue using their current logger of choice
