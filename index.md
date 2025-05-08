@@ -1,6 +1,3 @@
-
-
-
 # CerbiSuite – Unified Logging, Governance & Observability
 
 🔐 **Structured Logging** · 🧠 **Developer‑First Observability** · 🌐 **Cloud‑Native & Portable**
@@ -13,19 +10,19 @@
 
 As applications grow and teams scale—often spanning internal squads, external contractors, and third‑party libraries—logging can become fragmented and inconsistent. That leads to:
 
-- Confusing, unstructured log messages
-- Difficult audits and compliance gaps
-- Missed insights for monitoring or ML workloads
+* Confusing, unstructured log messages
+* Difficult audits and compliance gaps
+* Missed insights for monitoring or ML workloads
 
 **CerbiStream** brings order and governance to this chaos by:
 
-1. **Enforcing Structure at the Source**\
+1. **Enforcing Structure at the Source**
    Developers use a simple, fluent API to define log schemas. CerbiStream validates against that schema *before* emitting logs.
-2. **Providing Modular Capabilities**\
+2. **Providing Modular Capabilities**
    Pick only what you need: encryption, governance, telemetry, benchmarking—no unnecessary bloat.
-3. **Enabling Audit‑Ready Compliance**\
+3. **Enabling Audit‑Ready Compliance**
    Logs can be encrypted, include required fields, and exclude forbidden fields, ensuring HIPAA, GDPR, SOC‑2, and internal policy adherence.
-4. **Feeding ML‑Ready Pipelines**\
+4. **Feeding ML‑Ready Pipelines**
    Consistent metadata formats make logs immediately consumable by analytics or AI/ML services.
 
 ---
@@ -38,268 +35,78 @@ CerbiSuite is a cohesive suite of tools, each addressing a critical aspect of en
 | ---------------------------------- | ---------------- | -------------------------------------------------------------------- |
 | **CerbiStream**                    | GA               | Core .NET logger with structured output, encryption, and governance  |
 | **CerbiStream.GovernanceAnalyzer** | GA               | Static/dynamic schema validator enforcing rules at build and runtime |
-| **CerbIQ**                         | Beta             | Routing, normalization, and fan-out engine for logs                  |
-| **CerbiSense**                     | Alpha            | ML-driven anomaly detection and trend forecasting from metadata      |
-| **CerbiShield**                    | Beta (SaaS Soon) | Governance dashboard UI & enforcement engine; available soon as SaaS |
+| **CerbiShield**                    | Beta (SaaS Soon) | Governance dashboard UI & enforcement engine                         |
+| **CerbIQ**                         | Phase 2 Planned  | Routing, normalization, and fan-out engine for logs                  |
+| **CerbiSense**                     | Phase 2 Planned  | ML-driven anomaly detection and trend forecasting from metadata      |
 
 ---
 
-## 🔍 Deep Dive: CerbiStream
+## 🔌 Plugin Model & Logger Flexibility
 
-### Core Concepts
+CerbiShield and GovernanceAnalyzer support a **plugin-style enforcement model** that integrates with:
 
-- **ILogger**** Integration:** Leverages .NET logging abstractions for zero‑friction adoption.
-- **Fluent Configuration API:** Chain methods to enable modes, encryption, governance, and telemetry.
-- **Minimal Runtime Overhead:** Benchmarks show \~320 bytes allocated per log, with zero Gen0/1/2 GCs during high‑throughput scenarios.
+* **Serilog** *(plugin released 5/8/2025)*
+* **NLog** *(coming soon)*
+* **Microsoft.Extensions.Logging (MEL)** *(coming soon)*
 
-### Preset Modes Explained
+This makes Cerbi governance **logger-agnostic**. It is not centered around CerbiStream—it’s centered around **CerbiShield**, which provides:
 
-| Mode                                 | Description                                              | Use Case                    |
-| ------------------------------------ | -------------------------------------------------------- | --------------------------- |
-| `EnableDevModeMinimal()`             | Only console output—no metadata or telemetry.            | Quick debug, demos          |
-| `EnableDeveloperModeWithTelemetry()` | Add metadata and forward telemetry (e.g., App Insights). | Dev testing with monitoring |
-| `EnableBenchmarkMode()`              | Silence outputs to measure raw performance.              | Performance tuning          |
+* Enforced governance via compile-time and runtime checks
+* Required and forbidden field validation
+* Live violation reporting in the governance dashboard
+* Plugin extensibility for organization-specific rules
 
-### Encryption Deep Dive
+Organizations can:
 
-CerbiStream supports three encryption modes:
+* Continue using their current logger of choice
+* Adopt CerbiShield to define and enforce governance without vendor lock-in
+* Receive violation analytics to surface risks like:
 
-- **None:** Plain JSON logs, minimal CPU impact.
-- **Base64:** Simple encoding, negligible overhead.
-- **AES:** AES‑256 encryption with user‑provided key/IV.
+  * Missing `userId`, `correlationId`, or `timestamp`
+  * Accidentally logging `SSN`, `address`, `email`, or other sensitive fields
 
-```csharp
-options.WithEncryptionMode(EncryptionType.AES)
-       .WithEncryptionKey(myKeyBytes, myIvBytes);
-```
+> "We discovered our app was logging real user addresses and birthdates to production logs only **after** an internal audit. CerbiShield could have prevented that."
 
-AES mode adds \~7% overhead in benchmarks, but secures PII/PHI in transit and at rest.
+This makes Cerbi ideal for:
 
-### Governance Enforcement
+* Large engineering orgs with distributed logging patterns
+* Contracting and multi-team development models
+* Enterprises needing GDPR, HIPAA, or SOC‑2 alignment
+* Post-incident observability and compliance investigations
 
-The GovernanceAnalyzer extends CerbiStream by ingesting JSON rule sets:
+> **Need help preparing for GDPR or HIPAA audits?** CerbiShield includes compliance starter kits and audit-friendly profiles to jumpstart your governance baseline.
 
-- **Required Fields:** e.g. `UserId`, `CorrelationId`, `Timestamp`.
-- **Forbidden Fields:** e.g. `SSN`, `CreditCardNumber`.
-- **Severity Levels:** Build‑stop errors, warnings, or informational logs.
-- **JSON Schema Versions:** Support for backward compatibility via versioned profiles.
+> **Note:** Future components CerbIQ and CerbiSense will require logs to follow the CerbiStream-compatible JSON schema. If you use another logger, you must emit conforming metadata (`originApp`, `accessScope`, etc.).
 
-### Queue‑First Architecture
-
-Logs can be dispatched via:
-
-- **Message Queues:** RabbitMQ, Kafka, Azure Service Bus, AWS SQS.
-- **HTTP(S) Endpoints:** Post logs directly to a secure HTTPS listener.
-- **Blob Storage:** Append logs to blob containers for offline processing.
-
-```csharp
-options.WithQueue("RabbitMQ", "localhost", "logs-queue");
-// or
-options.WithHttpEndpoint("https://myapp.com/logs");
-```
-
-### Telemetry & Observability
-
-Optional integrations enrich logs with correlation data:
-
-- **OpenTelemetry:** Automatic context propagation and export to backends.
-- **Azure Application Insights:** Full‑fidelity traces and metrics.
-- **AWS CloudWatch & X‑Ray**
-- **Datadog APM & Logs**
-
-```csharp
-options.WithTelemetryProvider(TelemetryProvider.AppInsights, "<ikey>");
-```
-
-Logs include service name, environment, machine, and custom tags for powerful querying.
-
----
-
-## 🏗️ Getting Started
-
-### 1. Install NuGet Package
-
-```bash
-dotnet add package CerbiStream
-```
-
-### 2. Configure in Program.cs
-
-```csharp
-var builder = WebApplication.CreateBuilder(args);
-builder.Logging.AddCerbiStream(options =>
-{
-    options
-      .WithQueue("AzureServiceBus", "sb://myservicebus", "logs-queue")
-      .WithEncryptionMode(EncryptionType.AES)
-      .WithGovernanceValidator((profile, log) =>
-      {
-          return log.ContainsKey("UserId") && log.ContainsKey("IPAddress");
-      })
-      .EnableDeveloperModeWithTelemetry();
-});
-
-var app = builder.Build();
-app.Run();
-```
-
-### 3. Define Governance Profiles
-
-Use the CerbiShell CLI or Dashboard UI to generate a JSON rule set:
-
-```json
-{
-  "$schema": "https://cerbi.io/schema/governance.schema.json",
-  "version": "1.0",
-  "required": ["UserId","Timestamp","Level"],
-  "forbidden": ["SSN","CreditCardNumber"],
-  "encryption": "AES",
-  "severity": { "MissingRequired": "Error", "ForbiddenPresent": "Warning" }
-}
-```
-
-Load this at startup:
-
-```csharp
-options.WithGovernanceProfile("governance.rules.json");
-```
+Whether you're using Serilog, NLog, MEL, or CerbiStream directly, CerbiShield provides the **business-critical layer** of control, compliance, and consistency.
 
 ---
 
 ## 📐 Architecture & Flow
 
 ```text
-Your App (ILogger<T>)
-    ↓
-CerbiStream
-    ├──▶ Your Sink (Splunk, Datadog, etc.)
-    └──▶ CerbIQ (Routing & Normalization)
-            ├──▶ Your Sink (Splunk, Datadog, etc.)
-            └──▶ CerbiSense (Analytics)
+Application (Serilog / NLog / MEL / CerbiStream)
+        │
+        ▼
+CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
+        │
+        ├──▶ Logs go to your standard sinks (console, file, Splunk, etc.)
+        │
+        └──▶ (optional) CerbiStream → CerbIQ → CerbiSense (Phase 2)
+                        │        │
+                        ▼        ▼
+                   Governance    ML Analytics
+                   Routing       Scoring & Trends
 ```
 
-1. **Source** logs with injected metadata & schema validation.
-2. **Dispatch** via queue/HTTP/blob to chosen targets.
-3. **Route** optional through CerbIQ for fan‑out and additional governance.
-4. **Analyze** trends, anomalies, and compliance metrics in CerbiSense.
+* CerbiShield ensures your teams **don’t forget** to include required fields or avoid PII.
+* Logs flow through your existing infrastructure if desired.
+* CerbiStream enables structured routing and full CerbIQ/CerbiSense compatibility.
 
 ---
 
-## 🔀 Deployment Patterns
+Want to fully participate in analytics and ML in the future? CerbiStream will offer full-speed governance and metadata routing to power CerbIQ and CerbiSense.
 
-| Pattern             | Flow                                          | Benefits                           |
-| ------------------- | --------------------------------------------- | ---------------------------------- |
-| **Direct**          | CerbiStream → Sink                            | Low latency                        |
-| **Governed**        | CerbiStream → CerbIQ → Sink                   | Centralized governance, retry      |
-| **Analytics**       | CerbiStream → CerbIQ → CerbiSense → Sink      | ML insights & anomaly detection    |
-| **Offline Storage** | CerbiStream → Blob Storage → Batch Processing | Cost‑effective long‑term retention |
+Want governance enforcement today? CerbiShield is ready and integrates cleanly with your current logger.
 
----
-
-## 🔧 Advanced Customization
-
-Use the full fluent API for granular control:
-
-```csharp
-options
-    .EnableDevModeWithTelemetry()
-    .WithQueue("Kafka","broker:9092","log-topic")
-    .WithHttpEndpoint("https://logs.myapp.com/collect")
-    .WithEncryptionMode(EncryptionType.Base64)
-    .WithMetadataInjection(true)
-    .WithGovernanceChecks(true)
-    .WithTelemetryLogging(true);
-```
-
-Add custom enrichers:
-
-```csharp
-options.AddEnricher("Region", () => 
-    new LogProperty("Region", Environment.GetEnvironmentVariable("REGION")));
-```
-
----
-
-## 🔗 Integration & Supported Platforms
-
-- **Message Brokers:** RabbitMQ, Kafka, Azure SB, AWS SQS/Kinesis
-- **HTTP(S) Endpoints:** RESTful ingestion
-- **Blob Stores:** Azure Blobs, AWS S3, GCS
-- **Telemetry Providers:** OpenTelemetry, App Insights, CloudWatch, Datadog
-- **Sinks:** Splunk, Elasticsearch, Log Analytics, Generic REST
-- **Languages:** .NET 6+, .NET Framework 4.7+
-
----
-
-## 📊 Benchmark Results & Analysis
-
-| Logger          | Mean (μs) | Alloc (B) | logs/sec est. | Encryption Overhead | Governance Overhead |
-| --------------- | --------- | --------- | ------------- | ------------------- | ------------------- |
-| **CerbiStream** | 213.9     | 320       | \~4,676       | +7% (AES vs None)   | +5% (rules checks)  |
-| Serilog         | 213.5     | 1480      | \~4,686       | +10% (plugins)      | —                   |
-| NLog            | 9.99      | 432       | \~100,100     | N/A                 | —                   |
-| log4net         | 12.71     | 576       | \~78,700      | N/A                 | —                   |
-
-> **Insight:** CerbiStream matches Serilog’s throughput while slashing memory by 78%, and adds built‑in encryption and governance enforcement.
-
----
-
-## 🛡️ Governance Workflow
-
-CerbiStream’s governance engine—powered by GovernanceAnalyzer—makes compliance a first‑class feature:
-
-```text
-Governance Dashboard UI
- (Create / Edit / Version / Deploy Rule Sets)
-    ↓ JSON Profiles (Starter Kits: HIPAA, GDPR, SOC‑2, Custom)
-GovernanceAnalyzer
- (Build‑time & Runtime Enforcement)
-    • Validate Required & Forbidden Fields
-    • Enforce Encryption Modes (None, Base64, AES)
-    • Trigger Build Failure or Runtime Warnings
-    • Support Live Reload & Callbacks
-    • Emit Audit Logs for Policy Changes
-    ↓ Enforcement
-CerbiStream Logger
- (Structured, Encrypted, Policy‑Compliant Logs)
-    ↓ Downstream
-Ops & Security Dashboards
- • App Insights Rollup & Dashboards
- • Compliance Metrics (pass/fail, violations by service)
- • Drill‑down into failing logs
- • Export Reports (JSON, CSV)
- • Alerting via Email/Slack/SMS
-```
-
-This end‑to‑end workflow turns logging into an active safety net—enforcing policies at the edge rather than relying on downstream audits.
-
----
-
-## 📚 Community & Contribution
-
-CerbiSuite is open source and community‑driven:
-
-- ⭐ Star and fork on GitHub
-- 🐛 Report bugs or request features via Issues
-- 📣 Join discussions in GitHub Discussions
-- 🔧 Submit pull requests following [CONTRIBUTING.md]
-- 🚀 Roadmap and changelog available in repo
-
----
-
-## 📬 Contact & Resources
-
-**Email:** [hello@cerbi.io](mailto\:hello@cerbi.io)
-
-**NuGet:**
-
-- [CerbiStream](https://www.nuget.org/packages/CerbiStream)
-- [CerbiStream.GovernanceAnalyzer](https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer)
-
-**GitHub:**
-
-- [Zeroshi/Cerbi-CerbiStream](https://github.com/Zeroshi/Cerbi-CerbiStream)
-- [Zeroshi/CerbiStream-GovernanceAnalyzer](https://github.com/Zeroshi/CerbiStream-GovernanceAnalyzer)
-
----
-
+Either way, Cerbi gives you insight, enforcement, and structure—on your terms.
