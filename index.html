@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CerbiSuite — Unified Logging, Governance & Observability</title>
+  <meta name="description" content="CerbiSuite brings structure, governance, and observability to enterprise logging with build-time and runtime enforcement, a governance dashboard, and ML-ready metadata." />
+  <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
+  <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/assets/og-image.png" />
+  <meta name="theme-color" content="#0ea5ff" />
+  <link rel="icon" href="/assets/favicon.png" />
+  <style>
+    /* --------- Design Tokens --------- */
+    :root {
+      --bg: #0b0e13;
+      --panel: #0f141c;
+      --panel-2: #111827;
+      --text: #e5e7eb;
+      --muted: #9aa3af;
+      --accent: #0ea5ff; /* electric blue */
+      --accent-2: #60a5fa; /* softer blue */
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --ring: rgba(14,165,255,0.35);
+      --shadow: 0 10px 30px rgba(2, 6, 23, 0.5);
+      --radius: 16px;
+    }
+    [data-theme="light"] {
+      --bg: #0b0e13; /* keep dark default; toggle adds subtle contrast */
+      --panel: #0f141c;
+      --panel-2: #111827;
+      --text: #e5e7eb;
+      --muted: #9aa3af;
+    }
+
+    /* --------- Base Reset --------- */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1000px 600px at 70% -10%, rgba(14,165,255,0.12), transparent 40%),
+                  radial-gradient(800px 500px at -10% 20%, rgba(96,165,250,0.10), transparent 45%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { width: min(1120px, 92vw); margin: 0 auto; }
+
+    /* --------- Components --------- */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: saturate(180%) blur(8px);
+      background: rgba(11,14,19,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .2px; }
+    .brand-badge { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(145deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow); }
+    .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .nav-links a { color: var(--text); opacity: .82; padding: 8px 10px; border-radius: 10px; }
+    .nav-links a:hover { opacity: 1; background: rgba(255,255,255,0.04); text-decoration: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+      color: var(--text); text-decoration: none; transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(14,165,255,0.2); text-decoration: none; border-color: rgba(14,165,255,0.35); }
+    .btn-primary { background: linear-gradient(180deg, rgba(14,165,255,0.18), rgba(14,165,255,0.08)); border-color: rgba(14,165,255,0.45); }
+
+    .hero { padding: 64px 0 24px; text-align: center; }
+    .eyebrow { color: var(--muted); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; font-size: 12px; }
+    h1 { font-size: clamp(28px, 5vw, 46px); margin: 12px 0 10px; line-height: 1.15; }
+    .sub { font-size: clamp(16px, 2.4vw, 20px); color: var(--muted); max-width: 900px; margin: 0 auto 22px; }
+
+    .chip-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 16px; }
+    .chip {
+      font-size: 13px; color: var(--text); opacity: .95; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    .panel { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    .grid-3 { display: grid; gap: 18px; grid-template-columns: repeat(12, 1fr); }
+    .col-12 { grid-column: span 12; }
+    .col-6 { grid-column: span 6; }
+    .col-4 { grid-column: span 4; }
+    @media (max-width: 900px) {
+      .col-6, .col-4 { grid-column: span 12; }
+    }
+
+    .section { padding: 42px 0; }
+    .section h2 { font-size: clamp(22px, 3.4vw, 32px); margin: 0 0 12px; }
+    .lead { color: var(--muted); margin-bottom: 18px; }
+
+    .card {
+      padding: 18px; border-radius: 18px; background: linear-gradient(180deg, rgba(17,24,39,.7), rgba(17,24,39,.5)); border: 1px solid rgba(255,255,255,0.06);
+    }
+    .card h3 { margin: 6px 0 10px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .img-placeholder {
+      display: grid; place-items: center; width: 100%; aspect-ratio: 16/9; border-radius: 16px; border: 1px dashed rgba(255,255,255,0.25);
+      background: repeating-linear-gradient(135deg, rgba(14,165,255,0.06) 0 10px, rgba(14,165,255,0.0) 10px 20px);
+      color: var(--muted); font-weight: 600; letter-spacing: .08em;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: left; vertical-align: top; }
+    thead th { font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    tbody td strong { font-weight: 600; }
+    .k { color: var(--muted); font-size: 13px; }
+
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); }
+
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(14,165,255,0.06); border: 1px solid rgba(14,165,255,0.25); padding: 14px; border-radius: 12px; overflow: auto; font-size: 13px;
+    }
+
+    .footer { padding: 40px 0; color: var(--muted); font-size: 14px; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 32px; }
+
+    .pill { padding: 4px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+    .pill.ok { background: rgba(34,197,94,0.14); color: #4ade80; border: 1px solid rgba(34,197,94,0.35); }
+    .pill.beta { background: rgba(245,158,11,0.14); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); }
+    .pill.planned { background: rgba(96,165,250,0.14); color: #93c5fd; border: 1px solid rgba(96,165,250,0.35); }
+
+    .tag { display: inline-block; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; font-size: 12px; color: var(--muted); }
+
+    .note { background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent); padding: 12px 14px; border-radius: 8px; }
+
+    /* small helpers */
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .space { height: 20px; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <span>CerbiSuite</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#why">Why CerbiStream</a>
+        <a href="#ecosystem">Ecosystem</a>
+        <a href="#governance">Governance</a>
+        <a href="#compare">Compare</a>
+        <a href="#architecture">Architecture</a>
+      </nav>
+      <div class="row">
+        <a class="btn" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-primary" href="#contact">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="chip-row" role="list" aria-label="High level features">
+        <span class="chip">🔐 Structured Logging</span>
+        <span class="chip">🧠 Developer‑First Observability</span>
+        <span class="chip">🌐 Cloud‑Native & Portable</span>
+        <span class="chip">Modular</span>
+        <span class="chip">Hybrid‑Ready</span>
+        <span class="chip">ML‑Friendly</span>
+        <span class="chip">Dev‑First</span>
+      </div>
+      <h1>Unified Logging, Governance & Observability</h1>
+      <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit‑ready compliance, and feeds ML‑ready pipelines—without vendor lock‑in.</p>
+      <div class="row" style="justify-content:center; margin-top:14px;">
+        <a class="btn btn-primary" href="#governance">Explore Governance</a>
+        <a class="btn" href="#ecosystem">See Ecosystem</a>
+      </div>
+    </section>
+
+    <section id="hero-art" class="container section">
+      <div class="panel" style="padding:18px;">
+        <div class="img-placeholder">HERO IMAGE / ILLUSTRATION (replace with your artwork)</div>
+      </div>
+    </section>
+
+    <section id="why" class="container section">
+      <h2>Why CerbiStream Exists</h2>
+      <p class="lead">As applications grow and teams scale across internal squads, contractors, and third‑party libraries, logging becomes fragmented and inconsistent—hurting audits, compliance, and insights.</p>
+
+      <div class="grid-3">
+        <div class="col-4 card">
+          <h3>1. Enforce Structure at the Source</h3>
+          <p>Use a simple, fluent API to define log schemas. CerbiStream validates before emitting logs for consistent output.</p>
+        </div>
+        <div class="col-4 card">
+          <h3>2. Modular by Design</h3>
+          <p>Pick only what you need: encryption, governance, telemetry, benchmarking—no unnecessary bloat.</p>
+        </div>
+        <div class="col-4 card">
+          <h3>3. Audit‑Ready Compliance</h3>
+          <p>Encrypt logs, require fields, and exclude forbidden ones to align with HIPAA, GDPR, SOC‑2, and internal policy.</p>
+        </div>
+      </div>
+
+      <div class="space"></div>
+      <div class="panel" style="padding:16px;">
+        <div class="img-placeholder">SCREENSHOT: CerbiStream / Governance Analyzer (replace)</div>
+      </div>
+    </section>
+
+    <section id="ecosystem" class="container section">
+      <h2>The Cerbi Ecosystem</h2>
+      <p class="lead">A cohesive suite where each component addresses a critical aspect of enterprise logging.</p>
+
+      <div class="panel" style="padding: 8px 12px; overflow-x:auto;">
+        <table aria-label="Cerbi components matrix">
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Status</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CerbiStream</strong></td>
+              <td><span class="pill ok">GA</span></td>
+              <td>Core .NET logger with structured output, encryption, and governance</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiStream.GovernanceAnalyzer</strong></td>
+              <td><span class="pill ok">GA</span></td>
+              <td>Static/dynamic schema validator enforcing rules at build and runtime</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiShield</strong></td>
+              <td><span class="pill beta">Beta (SaaS soon)</span></td>
+              <td>Governance dashboard UI & enforcement engine</td>
+            </tr>
+            <tr>
+              <td><strong>CerbIQ</strong></td>
+              <td><span class="pill planned">Phase 2 Planned</span></td>
+              <td>Routing, normalization, and fan‑out for logs</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiSense</strong></td>
+              <td><span class="pill planned">Phase 2 Planned</span></td>
+              <td>ML‑driven anomaly detection and trend forecasting</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="space"></div>
+      <div class="grid-3">
+        <div class="col-6 panel" style="padding:16px;">
+          <h3 style="margin-top:4px;">Plugin Model & Logger Flexibility</h3>
+          <p>Governance integrates with your preferred logging stack:</p>
+          <ul>
+            <li>Serilog <span class="k">(plugin released 2025‑05‑08)</span></li>
+            <li>NLog <span class="k">(coming soon)</span></li>
+            <li>Microsoft.Extensions.Logging (MEL) <span class="k">(coming soon)</span></li>
+          </ul>
+          <p class="note">Cerbi governance is logger‑agnostic and centered on <strong>CerbiShield</strong>—not a specific logger.</p>
+        </div>
+        <div class="col-6 panel" style="padding:16px;">
+          <div class="img-placeholder">IMAGE: Governance Dashboard preview (replace)</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="governance" class="container section">
+      <h2>Governance That Meets Teams Where They Are</h2>
+      <p class="lead">Use Serilog today with the plugin, or modernize with CerbiStream. Either way, enforcement runs from the same governance profiles in CerbiShield.</p>
+      <div class="grid-3">
+        <div class="col-4 card">
+          <h3>Build‑Time Enforcement</h3>
+          <p>Roslyn analyzer (CerbiStream) catches violations before they ship.</p>
+        </div>
+        <div class="col-4 card">
+          <h3>Runtime Enforcement</h3>
+          <p>Serilog plugin flags violations at runtime without dropping logs.</p>
+        </div>
+        <div class="col-4 card">
+          <h3>Compliance Starter Kits</h3>
+          <p>Kickstart HIPAA/GDPR‑aligned profiles and refine per policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="compare" class="container section">
+      <h2>Logger Governance Comparison</h2>
+      <div class="panel" style="padding: 8px 12px; overflow-x:auto;">
+        <table aria-label="Logger comparison table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>CerbiStream (Modern Default)</th>
+              <th>Serilog + Governance Plugin (Available Now)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Build‑Time Governance Enforcement</td>
+              <td>✅ Roslyn Analyzer integrated</td>
+              <td>❌ Not supported</td>
+            </tr>
+            <tr>
+              <td>Runtime Governance Enforcement</td>
+              <td>❌ Not applicable</td>
+              <td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td>
+            </tr>
+            <tr>
+              <td>Encryption Support (AES, Base64)</td>
+              <td>✅ Built‑in</td>
+              <td>❌ Not included</td>
+            </tr>
+            <tr>
+              <td>File Fallback Logging</td>
+              <td>✅ <span class="kbd">WithFileFallback()</span></td>
+              <td>✅ via <span class="kbd">Serilog.Sinks.File</span></td>
+            </tr>
+            <tr>
+              <td>Telemetry Routing & Enrichment</td>
+              <td>✅ Built‑in (App Insights, OTel)</td>
+              <td>✅ Supported via Serilog sinks & enrichers</td>
+            </tr>
+            <tr>
+              <td>ML / CerbIQ Compatibility</td>
+              <td>✅ Schema‑aligned automatically</td>
+              <td>✅ Requires matching metadata (CerbiShield assists)</td>
+            </tr>
+            <tr>
+              <td>Governance Profile Reloading</td>
+              <td>✅ Supported</td>
+              <td>✅ Supported</td>
+            </tr>
+            <tr>
+              <td>Custom Rule Plugins</td>
+              <td>✅ Supported</td>
+              <td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td>
+            </tr>
+            <tr>
+              <td>App Rollup / Grouping Support</td>
+              <td>✅ Built‑in</td>
+              <td>⚠️ External design needed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="space"></div>
+      <div class="grid-3">
+        <div class="col-6 panel" style="padding:16px;">
+          <h3 style="margin-top:4px;">Who is this for?</h3>
+          <ul>
+            <li>Large engineering orgs with distributed logging patterns</li>
+            <li>Contractor‑heavy or multi‑team development models</li>
+            <li>Enterprises aiming for GDPR, HIPAA, SOC‑2 alignment</li>
+            <li>Post‑incident observability & compliance investigations</li>
+          </ul>
+        </div>
+        <div class="col-6 panel" style="padding:16px;">
+          <blockquote class="note" style="margin:0;">
+            “We discovered our app was logging real user addresses and birthdates to production logs only after an internal audit. CerbiShield could have prevented that.”
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture" class="container section">
+      <h2>Architecture & Flow</h2>
+      <div class="grid-3">
+        <div class="col-6 panel" style="padding:16px;">
+          <pre class="code" aria-label="ASCII architecture diagram"><code>Application (Serilog / NLog / MEL / CerbiStream)
+    │
+    ▼
+CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
+    │
+    ├──▶ Logs go to your standard sinks (console, file, Splunk, etc.)
+    │
+    └──▶ (optional) CerbiStream → CerbIQ → CerbiSense (Phase 2)
+                │        │
+                ▼        ▼
+           Governance    ML Analytics
+           Routing       Scoring & Trends</code></pre>
+        </div>
+        <div class="col-6 panel" style="padding:16px;">
+          <div class="img-placeholder">DIAGRAM / ARCHITECTURE IMAGE (replace)</div>
+          <p class="k" style="margin-top:10px;">Replace with an SVG/PNG of your system diagram for a polished look.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="container section">
+      <h2>Get in Touch</h2>
+      <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
+      <div class="panel" style="padding:16px;">
+        <div class="grid-3">
+          <div class="col-6">
+            <p><strong>Email:</strong> <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
+            <p><strong>GitHub:</strong> <a href="https://github.com/Zeroshi" target="_blank" rel="noopener">@Zeroshi</a></p>
+            <p><strong>NuGet:</strong> (Add package links)</p>
+          </div>
+          <div class="col-6">
+            <div class="img-placeholder">CONTACT / TEAM IMAGE (replace)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container row" style="justify-content:space-between;">
+      <div>© <span id="year"></span> Cerbi, LLC. All rights reserved.</div>
+      <div class="row">
+        <a class="tag" href="#">Privacy</a>
+        <a class="tag" href="#">Terms</a>
+        <a class="tag" href="#">Security</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // (Optional) Theme toggle — easy to wire to a button if desired
+    const setTheme = (t) => {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('cerbi-theme', t);
+    };
+    const saved = localStorage.getItem('cerbi-theme');
+    if (saved) setTheme(saved);
+    // To add a toggle, drop a button somewhere and call setTheme('light'|'dark')
+  </script>
+</body>
+</html>
