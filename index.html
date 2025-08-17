@@ -54,8 +54,6 @@
     .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(8px); background: rgba(11,14,19,0.7); border-bottom: 1px solid rgba(255,255,255,0.06); }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .2px; }
-    .brand-badge { width: 36px; height: 36px; border-radius: 12px; background: conic-gradient(from 120deg, var(--accent), var(--accent-2), #1e293b 70%); box-shadow: var(--shadow); position: relative; overflow: hidden; }
-    .brand-badge::after { content:""; position:absolute; inset:2px; border-radius:10px; background: radial-gradient(120px 80px at 70% 20%, rgba(255,255,255,.25), transparent 40%); mix-blend-mode: screen; }
     .nav-links { display: flex; gap: 16px; flex-wrap: wrap; }
     .nav-links a { color: var(--text); opacity: .82; padding: 8px 10px; border-radius: 10px; }
     .nav-links a:hover { opacity: 1; background: rgba(255,255,255,0.04); text-decoration: none; }
@@ -132,7 +130,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <div class="brand-badge" aria-hidden="true"></div>
+        <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:36px; width:auto; border-radius:8px;" />
         <span>CerbiSuite</span>
       </div>
       <nav class="nav-links" aria-label="Primary">
@@ -177,7 +175,8 @@
               }
               for (var y=0; y<=600; y+=40){
                 var l2 = document.createElementNS('http://www.w3.org/2000/svg','line');
-                l2.setAttribute('x1',0);l2.setAttribute('y1',y);l2.setAttribute('x2',1200);l2.setAttribute('y2',y);g.appendChild(l2);
+                l2.setAttribute('x1',0);l2.setAttribute('y1',y);
+                l2.setAttribute('x2',1200);l2.setAttribute('y2',y);g.appendChild(l2);
               }
             ]]></script>
           </g>
@@ -201,10 +200,9 @@
       </div>
 
       <div class="logo-row" aria-label="Trusted by">
-        <!-- Simple monochrome logo shapes as placeholders -->
-        <svg class="logo" viewBox="0 0 120 24" aria-hidden="true"><rect width="120" height="24" rx="4" ry="4" fill="white" opacity=".12"/></svg>
-        <svg class="logo" viewBox="0 0 120 24" aria-hidden="true"><rect width="120" height="24" rx="4" ry="4" fill="white" opacity=".12"/></svg>
-        <svg class="logo" viewBox="0 0 120 24" aria-hidden="true"><rect width="120" height="24" rx="4" ry="4" fill="white" opacity=".12"/></svg>
+        <img src="/assets/CerbiStream.png" alt="Cerbi logo" class="logo" style="height:50px; width:auto;" />
+        <img src="/assets/CerbiStream.png" alt="CerbiStream logo" class="logo" style="height:50px; width:auto; opacity:.85;" />
+        <img src="/assets/CerbiStream.png" alt="CerbiShield logo" class="logo" style="height:50px; width:auto; opacity:.7;" />
       </div>
     </section>
 
@@ -385,6 +383,13 @@
           <h3>Compliance Starter Kits</h3>
           <p>Kickstart HIPAA/GDPR‑aligned profiles and refine per policy.</p>
         </div>
+      </div>
+
+      <div class="panel" style="padding:16px; margin-top:16px;">
+        <div class="img-frame" role="img" aria-label="CerbiShield dashboard screenshot">
+          <img src="/assets/5f97b70d-1514-42ca-a857-0458b1f5a54e.png" alt="CerbiShield Dashboard" style="width:100%; display:block; border-radius:12px;" />
+        </div>
+        <p class="k" style="margin-top:8px;">Live preview prototype: <a href="https://v0-cerbi-shield-governance-dashboard.vercel.app/" target="_blank" rel="noopener">CerbiShield Dashboard</a></p>
       </div>
     </section>
 
