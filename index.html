@@ -206,6 +206,70 @@
       .spotlight{display:none}
       .hero-bg{transform:none !important}
     }
+
+    /* ===================== Mobile tweaks ===================== */
+    .mobile-only{display:none}
+
+    @media (max-width: 820px){
+      .container{width:min(1100px,94vw)}
+      .nav-inner{gap:10px}
+      .brand img{height:30px}
+      .nav-links{
+        position: absolute;
+        top: 64px; /* below sticky header */
+        right: 12px;
+        left: 12px;
+        display: none;          /* hidden by default */
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 12px;
+        background: var(--panel);
+        border: 1px solid rgba(127,148,179,.25);
+        box-shadow: var(--shadow);
+      }
+      .nav-links.open{display:flex}
+      .mobile-only{display:inline-flex}
+      .nav a{padding:10px 12px}
+
+      .hero{padding:60px 0 20px}
+      .sub{margin-bottom:14px}
+      .chip-row{gap:8px}
+
+      /* Stack all grid columns on mobile */
+      .grid{grid-template-columns: 1fr}
+      .col-6,.col-4,.col-12{grid-column: 1 / -1}
+
+      /* Cards/buttons tap targets */
+      .btn{padding:12px 14px}
+      .card{padding:14px}
+
+      /* Demo panes stack */
+      .demo{grid-template-columns: 1fr; gap:12px}
+      .demo pre{max-height: 220px}
+
+      /* Tables: make them scrollable & readable */
+      table{width:100%; border-collapse: collapse}
+      thead th{position: sticky; top:0; background: var(--panel)}
+      .glass[style*="overflow-x:auto"], .glass:has(table){-webkit-overflow-scrolling: touch}
+
+      /* Footer layout */
+      .footer .container{flex-direction:column; align-items:flex-start; gap:12px}
+    }
+
+    /* Disable heavy hover/tilt on touch */
+    @media (hover: none), (pointer: coarse){
+      .tilt{transform:none !important}
+      .tilt .glare{display:none !important}
+      .spotlight{display:none}
+      .nav a:hover{background: transparent}
+    }
+
+    /* Extra small screens */
+    @media (max-width: 360px){
+      .hero h1{font-size:clamp(26px, 9vw, 40px)}
+      .sub{font-size:clamp(14px, 3.6vw, 18px)}
+    }
   </style>
 </head>
 <body>
@@ -225,7 +289,9 @@
         <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px"/>
         <span>CerbiSuite</span>
       </div>
-      <nav class="nav-links" aria-label="Primary">
+      <!-- Mobile menu button -->
+      <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
+      <nav id="primaryNav" class="nav-links" aria-label="Primary">
         <a href="#why">Why CerbiStream</a>
         <a href="#ecosystem">Ecosystem</a>
         <a href="#governance">Governance</a>
@@ -656,8 +722,17 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
                 <rect width="1200" height="675" fill="#0d1420"/>
                 <rect x="120" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
                 <rect x="360" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
-                <rect x="600" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
-                <rect x="840" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
+                <rect x="600" y="220" width="180" height="180"
+				                <rect x="840" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
+                <g transform="translate(120,440)">
+                  <rect x="0" y="0" width="900" height="120" rx="12" fill="#0f172a" stroke="#1f2937"/>
+                  <text x="24" y="40" fill="#94a3b8" font-family="Inter, ui-sans-serif" font-size="20" font-weight="600">
+                    Enterprise-ready. Your tenant. Your rules.
+                  </text>
+                  <text x="24" y="78" fill="#64748b" font-family="Inter, ui-sans-serif" font-size="16">
+                    RBAC, audit logs, and governance aligned to your policies.
+                  </text>
+                </g>
               </svg>
             </div>
           </div>
@@ -667,214 +742,252 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   </main>
 
   <footer class="footer">
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <div>© <span id="year"></span> Cerbi, LLC. All rights reserved.</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-        <a class="tag" href="#">Privacy</a>
-        <a class="tag" href="#">Terms</a>
-        <a class="tag" href="#">Security</a>
-        <span class="kbd" title="Open Command Palette">⌘K / Ctrl+K</span>
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px"/>
+        <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="tag" href="#why">Why</a>
+        <a class="tag" href="#governance">Governance</a>
+        <a class="tag" href="#packages">NuGet</a>
+        <a class="tag" href="#architecture">Architecture</a>
+        <a class="tag" href="mailto:hello@cerbi.io">Contact</a>
       </div>
     </div>
   </footer>
 
-  <a id="toTop" class="btn" href="#top" aria-label="Back to top">↑</a>
-
-  <!-- Command Palette -->
-  <div class="cmdk-overlay" id="cmdOverlay" aria-hidden="true"></div>
-  <div class="cmdk glass" id="cmdk" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
-    <div class="header"><strong id="cmdTitle">Quick actions</strong><span class="kbd">Esc</span></div>
-    <div style="padding:10px 12px;background:var(--panel)"><input id="cmdInput" type="text" placeholder="Search sections, actions…" aria-label="Search commands"/></div>
-    <div class="list" id="cmdList">
-      <div class="item" data-action="nav" data-target="#why">Go to “Why CerbiStream” <span class="kbd">↵</span></div>
-      <div class="item" data-action="nav" data-target="#ecosystem">Go to “Ecosystem” <span class="kbd">↵</span></div>
-      <div class="item" data-action="nav" data-target="#governance">Go to “Governance” <span class="kbd">↵</span></div>
-      <div class="item" data-action="nav" data-target="#packages">Go to “Packages” <span class="kbd">↵</span></div>
-      <div class="item" data-action="nav" data-target="#compare">Go to “Compare” <span class="kbd">↵</span></div>
-      <div class="item" data-action="nav" data-target="#architecture">Go to “Architecture” <span class="kbd">↵</span></div>
-      <div class="item" data-action="theme" data-target="dark">Switch to Dark Theme <span class="kbd">T</span></div>
-      <div class="item" data-action="theme" data-target="light">Switch to Light Theme <span class="kbd">T</span></div>
-      <div class="item" data-action="top">Back to Top <span class="kbd">Home</span></div>
+  <!-- Command palette (injected content uses these shells) -->
+  <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
+    <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+      <div class="header">
+        <span class="kbd" aria-hidden="true">⌘K</span>
+        <input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" />
+      </div>
+      <div class="list" id="cmdkList"></div>
     </div>
   </div>
 
   <script>
-    // ===================== Year =====================
-    document.getElementById('year').textContent = new Date().getFullYear();
+  // =============== Utilities ===============
+  const $ = (sel, root=document) => root.querySelector(sel);
+  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
 
-    // ===================== Theme =====================
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const themeBtn = document.getElementById('themeBtn');
-    const setTheme = (t)=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('cerbi-theme',t);themeBtn.textContent = (t==='light'?'🌞 Light':'🌙 Dark')};
-    const saved = localStorage.getItem('cerbi-theme') || (prefersDark ? 'dark' : 'light');
-    setTheme(saved);
-    themeBtn.addEventListener('click',()=>{
-      const cur = document.documentElement.getAttribute('data-theme');
-      setTheme(cur === 'light' ? 'dark' : 'light');
+  // Current year
+  $('#year').textContent = new Date().getFullYear();
+
+  // =============== Theme Toggle ===============
+  const themeBtn = $('#themeBtn');
+  const initTheme = localStorage.getItem('theme') || (prefersLight ? 'light' : 'dark');
+  document.documentElement.setAttribute('data-theme', initTheme);
+  themeBtn?.addEventListener('click', () => {
+    const now = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', now);
+    localStorage.setItem('theme', now);
+  });
+
+  // =============== Mobile Nav Toggle ===============
+  const navToggle = $('#navToggle');
+  const primaryNav = $('#primaryNav');
+  navToggle?.addEventListener('click', () => {
+    primaryNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', primaryNav.classList.contains('open'));
+  });
+
+  // =============== Scroll Progress ===============
+  const progress = $('#progress');
+  const setProgress = () => {
+    const max = document.body.scrollHeight - innerHeight;
+    const pct = Math.max(0, Math.min(1, scrollY / (max || 1)));
+    progress.style.width = (pct * 100) + '%';
+  };
+  document.addEventListener('scroll', setProgress, { passive: true });
+  setProgress();
+
+  // =============== Spotlight Cursor ===============
+  document.addEventListener('pointermove', (e) => {
+    document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+    document.documentElement.style.setProperty('--my', e.clientY + 'px');
+  }, { passive: true });
+
+  // =============== Back to Top Button ===============
+  const toTop = document.createElement('button');
+  toTop.id = 'toTop';
+  toTop.className = 'btn';
+  toTop.type = 'button';
+  toTop.title = 'Back to top';
+  toTop.setAttribute('aria-label', 'Back to top');
+  toTop.textContent = '↑';
+  document.body.appendChild(toTop);
+  const toggleToTop = () => toTop.classList.toggle('show', scrollY > 300);
+  document.addEventListener('scroll', toggleToTop, { passive: true });
+  toggleToTop();
+  toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // =============== Reveal-on-Scroll ===============
+  const revealEls = $$('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+  // =============== Tilt + Glare ===============
+  $$('.tilt').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const gx = ((e.clientX - r.left) / r.width) * 100;
+      const gy = ((e.clientY - r.top) / r.height) * 100;
+      card.style.setProperty('--gx', gx + '%');
+      card.style.setProperty('--gy', gy + '%');
     });
+  });
 
-    // ===================== Smooth internal anchor scroll (only if target exists) =====================
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', (e)=>{
-        const id = a.getAttribute('href').slice(1);
-        if(!id) return; // allow # to bubble
-        const el = document.getElementById(id);
-        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  // =============== Command Palette (⌘K / Ctrl+K) ===============
+  const cmdBtn = $('#cmdBtn');
+  const overlay = $('#cmdkOverlay');
+  const cmdk = $('.cmdk', overlay);
+  const input = $('#cmdkInput');
+  const list = $('#cmdkList');
+
+  const commands = [
+    { label: '📦 View Packages', action: () => location.hash = '#packages' },
+    { label: '📊 Download Trends', action: () => location.hash = '#packages' },
+    { label: '🔐 Governance', action: () => location.hash = '#governance' },
+    { label: '🧭 Architecture', action: () => location.hash = '#architecture' },
+    { label: '📣 Contact', action: () => location.hash = '#contact' },
+  ];
+  function openCmd() {
+    overlay.style.display = 'block';
+    cmdk.style.display = 'block';
+    input.value = ''; renderCmd('');
+    setTimeout(() => input.focus(), 0);
+  }
+  function closeCmd() {
+    overlay.style.display = 'none';
+    cmdk.style.display = 'none';
+  }
+  function renderCmd(q) {
+    const ql = q.trim().toLowerCase();
+    list.innerHTML = '';
+    commands
+      .filter(c => !ql || c.label.toLowerCase().includes(ql))
+      .forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.innerHTML = `<span>${c.label}</span><span class="kbd">Enter</span>`;
+        item.tabIndex = 0;
+        item.addEventListener('click', () => { c.action(); closeCmd(); });
+        item.addEventListener('keydown', (e) => { if (e.key === 'Enter') { c.action(); closeCmd(); }});
+        list.appendChild(item);
+      });
+    if (!list.children.length) {
+      const none = document.createElement('div');
+      none.className = 'item';
+      none.textContent = 'No results';
+      list.appendChild(none);
+    }
+  }
+  cmdBtn?.addEventListener('click', openCmd);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeCmd(); });
+  input.addEventListener('input', (e) => renderCmd(e.target.value));
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openCmd(); }
+    if (e.key === 'Escape') closeCmd();
+  });
+
+  // =============== Compare Table Filters ===============
+  const compareTable = $('#compareTable');
+  const filterBtns = $$('.filter');
+  const rows = compareTable ? $$('tbody tr', compareTable) : [];
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tag = btn.dataset.tag;
+      rows.forEach(tr => {
+        if (tag === 'all') { tr.style.display = ''; return; }
+        const tags = tr.dataset.tags || '';
+        tr.style.display = tags.includes(tag) ? '' : 'none';
       });
     });
+  });
 
-    // ===================== Scroll reveal =====================
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-    },{threshold:.12});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-    // ===================== Back to top + progress =====================
-    const toTop = document.getElementById('toTop');
-    const progress = document.getElementById('progress');
-    window.addEventListener('scroll',()=>{
-      if(window.scrollY > 600){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
-      const h = document.documentElement;
-      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
-      progress.style.width = scrolled + '%';
-    });
-
-    // ===================== Spotlight follows cursor =====================
-    window.addEventListener('pointermove', (e)=>{
-      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
-      document.documentElement.style.setProperty('--my', e.clientY + 'px');
-    }, {passive:true});
-
-    // ===================== Parallax hero =====================
-    const heroBg = document.querySelector('.hero-bg');
-    document.addEventListener('pointermove', (e)=>{
-      const x = (e.clientX / window.innerWidth - .5) * 12;
-      const y = (e.clientY / window.innerHeight - .5) * 8;
-      heroBg.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    }, {passive:true});
-
-    // ===================== 3D tilt cards =====================
-    function addTilt(el){
-      let rect;
-      el.addEventListener('pointerenter', ()=>{rect = el.getBoundingClientRect();});
-      el.addEventListener('pointermove', (e)=>{
-        if(!rect) rect = el.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width - .5;
-        const py = (e.clientY - rect.top) / rect.height - .5;
-        const rx = (py * -8).toFixed(2);
-        const ry = (px * 10).toFixed(2);
-        el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
-        const glare = el.querySelector('.glare');
-        if(glare){
-          const gx = (px + .5) * 100; const gy = (py + .5) * 100;
-          glare.style.setProperty('--gx', gx + '%');
-          glare.style.setProperty('--gy', gy + '%');
-        }
-      });
-      el.addEventListener('pointerleave', ()=>{el.style.transform = '';});
-    }
-    document.querySelectorAll('.tilt').forEach(addTilt);
-
-    // ===================== Copy buttons =====================
-    document.querySelectorAll('[data-copy]').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        const target = document.querySelector(btn.getAttribute('data-copy'));
-        if(target){
-          const text = target.innerText || target.textContent;
-          navigator.clipboard.writeText(text).then(()=>{ btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',1200); });
-        }
+  // =============== Copy Button(s) ===============
+  $$('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-copy');
+      const el = document.querySelector(target);
+      const text = el ? el.textContent : '';
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        const old = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => (btn.textContent = old), 1000);
       });
     });
+  });
 
-    // ===================== Command Palette =====================
-    const cmdBtn = document.getElementById('cmdBtn');
-    const cmdk = document.getElementById('cmdk');
-    const cmdOverlay = document.getElementById('cmdOverlay');
-    const cmdInput = document.getElementById('cmdInput');
-    const cmdList = document.getElementById('cmdList');
-    let lastFocus = null;
+  // =============== Interactive Governance Demo ===============
+  const piiSwitch = $('#piiSwitch');
+  const inputJson = $('#inputJson');
+  const evalJson = $('#evalJson');
 
-    function openCmd(){
-      lastFocus = document.activeElement;
-      cmdOverlay.style.display = 'block';
-      cmdk.style.display = 'block';
-      cmdInput.value = '';
-      filterCmd('');
-      setTimeout(()=>cmdInput.focus(), 0);
-    }
-    function closeCmd(){
-      cmdOverlay.style.display = 'none';
-      cmdk.style.display = 'none';
-      if(lastFocus) lastFocus.focus();
-    }
-    function filterCmd(q){
-      const ql = q.trim().toLowerCase();
-      cmdList.querySelectorAll('.item').forEach(item=>{
-        const txt = item.textContent.toLowerCase();
-        item.style.display = txt.includes(ql) ? 'flex' : 'none';
-      });
+  const baseLog = {
+    Timestamp: new Date().toISOString(),
+    Level: "Information",
+    Message: "Checkout complete",
+    Properties: { OrderId: "A-102934", Amount: 129.99, UserId: "u-4821" }
+  };
+
+  const policies = {
+    RequiredFields: ["Timestamp", "Level", "Message", "Properties.OrderId"],
+    ForbiddenFields: ["Properties.SSN", "Properties.CreditCardNumber", "Properties.DOB"]
+  };
+
+  function has(path, obj) {
+    return path.split('.').reduce((o, k) => (o && k in o) ? o[k] : undefined, obj) !== undefined;
+  }
+  function evaluate(log) {
+    const violations = [];
+
+    // Required checks
+    for (const f of policies.RequiredFields) if (!has(f, log)) {
+      violations.push({ field: f, type: "RequiredMissing", severity: "Error" });
     }
 
-    cmdBtn.addEventListener('click', openCmd);
-    cmdOverlay.addEventListener('click', closeCmd);
-    document.addEventListener('keydown', (e)=>{
-      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmd(); }
-      if(e.key==='Escape' && cmdk.style.display==='block') closeCmd();
+    // Forbidden checks
+    for (const f of policies.ForbiddenFields) if (has(f, log)) {
+      violations.push({ field: f, type: "ForbiddenPresent", severity: "Error" });
+    }
+
+    // Simple outcome
+    const outcome = violations.length ? "NonCompliant" : "Compliant";
+    return { outcome, violations };
+  }
+
+  function renderDemo(includePII) {
+    const sample = JSON.parse(JSON.stringify(baseLog));
+    if (includePII) {
+      sample.Properties.CreditCardNumber = "4111 1111 1111 1111";
+      sample.Properties.DOB = "1990-01-01";
+    }
+    inputJson.textContent = JSON.stringify(sample, null, 2);
+    evalJson.textContent = JSON.stringify(evaluate(sample), null, 2);
+  }
+
+  if (piiSwitch && inputJson && evalJson) {
+    renderDemo(false);
+    const setSwitch = (on) => {
+      piiSwitch.classList.toggle('on', on);
+      piiSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
+      renderDemo(on);
+    };
+    piiSwitch.addEventListener('click', () => setSwitch(!piiSwitch.classList.contains('on')));
+    piiSwitch.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }
     });
-    cmdInput.addEventListener('input', (e)=>filterCmd(e.target.value));
-    cmdList.addEventListener('click', (e)=>{
-      const item = e.target.closest('.item'); if(!item) return;
-      const action = item.dataset.action; const target = item.dataset.target;
-      if(action==='nav'){ location.hash = target; closeCmd(); }
-      if(action==='top'){ window.scrollTo({top:0,behavior:'smooth'}); closeCmd(); }
-      if(action==='theme'){ setTheme(target); closeCmd(); }
-    });
-
-    // ===================== Interactive Governance Demo =====================
-    const pii = document.getElementById('piiSwitch');
-    const inputJson = document.getElementById('inputJson');
-    const evalJson = document.getElementById('evalJson');
-    const base = { Timestamp: new Date().toISOString(), Level: 'Information', Message: 'User event', UserId: 'abc-123', Address: '123 Main St' };
-    function render(){
-      const hasPII = pii.classList.contains('on');
-      const log = { ...base };
-      if(!hasPII){ delete log.Address; }
-      inputJson.textContent = JSON.stringify(log, null, 2);
-      // Simple demo rule: ForbiddenFields: ["Address"]
-      const violations = [];
-      if('Address' in log){ violations.push({ rule: 'ForbiddenFields', field: 'Address', severity: 'Error' }); }
-      evalJson.textContent = JSON.stringify({ compliant: violations.length===0, violations }, null, 2);
-    }
-    function togglePII(){
-      pii.classList.toggle('on');
-      const on = pii.classList.contains('on');
-      pii.setAttribute('aria-checked', on ? 'true' : 'false');
-      render();
-    }
-    pii.addEventListener('click', togglePII);
-    pii.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); togglePII(); }
-    });
-    render();
-
-    // ===================== Compare table filters =====================
-    const filterButtons = document.querySelectorAll('.filters .filter');
-    const compareTable = document.getElementById('compareTable');
-    function applyFilter(tag){
-      compareTable.querySelectorAll('tbody tr').forEach(row=>{
-        if(tag==='all'){ row.style.display = ''; return; }
-        const tags = (row.dataset.tags || '').split(/\s+/);
-        row.style.display = tags.includes(tag) ? '' : 'none';
-      });
-    }
-    filterButtons.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        filterButtons.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        applyFilter(btn.dataset.tag);
-      });
-    });
-
+  }
   </script>
 </body>
 </html>
