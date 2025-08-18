@@ -365,9 +365,14 @@
       </div>
     </section>
 
-	  <section class="quickstart">
+<section id="quickstart" class="container section">
   <h2>⚡ Quick Start: Try CerbiStream in 60 Seconds</h2>
-  <pre><code class="language-csharp">
+  <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
+
+  <div class="glass tilt reveal" style="padding:18px;position:relative">
+    <div class="glare"></div>
+    <pre style="margin:0;max-height:420px;overflow:auto">
+<code class="language-csharp">
 // 1. Install from NuGet
 // dotnet add package CerbiStream
 
@@ -378,16 +383,24 @@ var logger = LoggerFactory.Create(builder =>
 {
     builder.AddCerbiStream(options =>
     {
-        options.WithFileFallback();              // resilient logging
+        options.WithFileFallback();                  // resilient logging
         options.UseGovernance("cerbi_governance.json"); // governance profile
     });
 }).CreateLogger<Program>();
 
 // 3. Log safely with governance validation
-logger.LogInformation("User logged in", new { UserId = "12345" });
-  </code></pre>
-  <p><a href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank">View full docs on GitHub →</a></p>
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
+</code></pre>
+    <button class="btn" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
+  </div>
+
+  <p style="margin-top:14px">
+    <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">
+      View full docs on GitHub →
+    </a>
+  </p>
 </section>
+
 
 
     <section id="hero-art" class="container section">
