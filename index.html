@@ -14,6 +14,7 @@
   <style>
     /* ===================== Design Tokens ===================== */
     :root {
+      /* Dark theme (default) */
       --bg: #0b0e13;
       --panel: #0f141c;
       --panel-2: #111827;
@@ -30,21 +31,51 @@
       --glass: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
       --tile-opacity: .08; /* tweak for lighter/darker tiles */
       --tile-size: 26px;   /* global tile size */
+
+      /* motion */
+      --lift: translateY(-4px);
+      --fast: .18s;
+      --easing: cubic-bezier(.2,.7,.2,1);
+
+      /* spotlight */
+      --mx: 50vw; /* pointer X */
+      --my: 50vh; /* pointer Y */
+    }
+
+    /* Light theme overrides */
+    [data-theme="light"]{
+      --bg: #ffffff;
+      --panel: #f7f8fb;
+      --panel-2: #eef1f6;
+      --text: #0b1220;
+      --muted: #51607a;
+      --accent: #0b78d1;
+      --accent-2: #3aa0ff;
+      --ring: rgba(11,120,209,.25);
+      --glass: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.6));
+      --shadow: 0 8px 28px rgba(0,20,60,.1);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:
-      radial-gradient(1200px 700px at 75% -10%, rgba(14,165,255,.12), transparent 45%),
-      radial-gradient(900px 600px at -10% 20%, rgba(96,165,250,.10), transparent 50%),
-      var(--bg); color:var(--text); line-height:1.6}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:
+        radial-gradient(1200px 700px at 75% -10%, rgba(14,165,255,.12), transparent 45%),
+        radial-gradient(900px 600px at -10% 20%, rgba(96,165,250,.10), transparent 50%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      accent-color: var(--accent);
+      scroll-behavior:smooth;
+    }
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     .container{width:min(1200px,92vw);margin:0 auto}
 
     /* ===================== Sitewide subtle tiles ===================== */
-    .tiles{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:1}
-    /* Two-layer grid: dots + faint lines (pure CSS, GPU-friendly) */
+    .tiles{position:fixed;inset:0;pointer-events:none;z-index:-2;opacity:1}
     .tiles::before{content:"";position:absolute;inset:0;opacity:var(--tile-opacity);
       background-image:
         radial-gradient(circle at 1px 1px, rgba(255,255,255,.16) 1px, transparent 1px),
@@ -60,30 +91,42 @@
       mask-image: radial-gradient(60% 50% at 50% 20%, black 30%, transparent 100%);
     }
 
+    /* Spotlight that follows the cursor */
+    .spotlight{position:fixed;inset:0;pointer-events:none;z-index:-1;
+      background: radial-gradient(450px 450px at var(--mx) var(--my), rgba(14,165,255,.18), transparent 60%);
+      transition: background .12s linear;
+    }
+
     /* ===================== Fancy Utilities ===================== */
-    .glass{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));color:var(--text);transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(14,165,255,.25);border-color:rgba(14,165,255,.35)}
+    .glass{background:var(--glass);border:1px solid rgba(127,148,179,.18);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;padding:10px 14px;border-radius:12px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));color:var(--text);transition:transform var(--fast) var(--easing), box-shadow .22s var(--easing), border-color .2s}
+    .btn:hover{transform:var(--lift);box-shadow:0 10px 24px rgba(14,165,255,.25);border-color:var(--ring)}
     .btn-primary{background:linear-gradient(180deg,rgba(14,165,255,.18),rgba(14,165,255,.08));border-color:rgba(14,165,255,.45)}
-    .chip{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)); font-size:13px}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01)); font-size:13px}
     .pill{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em}
     .pill.ok{background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.35)}
     .pill.beta{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.35)}
     .pill.planned{background:rgba(96,165,250,.14);color:#93c5fd;border:1px solid rgba(96,165,250,.35)}
-    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.12)}
+    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;border:1px solid rgba(127,148,179,.35)}
+    .k{color:var(--muted)}
+    .space{height:16px}
 
     /* ===================== Ribbon & Nav ===================== */
-    .ribbon{background:linear-gradient(90deg, rgba(14,165,255,.25), rgba(96,165,250,.15)); border-bottom:1px solid rgba(255,255,255,.06)}
+    .ribbon{background:linear-gradient(90deg, rgba(14,165,255,.25), rgba(96,165,250,.15)); border-bottom:1px solid rgba(127,148,179,.18)}
     .ribbon .container{display:flex;gap:10px;align-items:center;justify-content:center;padding:8px 0;font-size:14px;color:var(--muted)}
 
-    .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:rgba(11,14,19,.78);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(8px);background:rgba(11,14,19,.78);border-bottom:1px solid rgba(127,148,179,.18)}
+    [data-theme="light"] .nav{background:rgba(255,255,255,.75)}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
     .nav-links{display:flex;gap:16px;flex-wrap:wrap}
     .nav-links a{color:var(--text);opacity:.86;padding:8px 10px;border-radius:10px}
     .nav-links a:hover{opacity:1;background:rgba(255,255,255,.05);text-decoration:none}
 
-    .theme-toggle{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1);cursor:pointer}
+    .theme-toggle{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(127,148,179,.25);cursor:pointer}
+
+    /* progress bar */
+    #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0%;z-index:60}
 
     /* ===================== Hero ===================== */
     .hero{padding:78px 0 28px;text-align:center;position:relative;overflow:hidden}
@@ -91,7 +134,7 @@
     .sub{font-size:clamp(16px,2.4vw,20px);color:var(--muted);max-width:900px;margin:0 auto 22px}
     .chip-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
 
-    .hero-bg{position:absolute;inset:-10% -10% auto -10%;height:120%;pointer-events:none;opacity:.55;filter:blur(1px) saturate(120%)}
+    .hero-bg{position:absolute;inset:-10% -10% auto -10%;height:120%;pointer-events:none;opacity:.55;filter:blur(1px) saturate(120%);transform:translateZ(0)}
 
     /* ===================== Layout ===================== */
     .grid{display:grid;gap:18px;grid-template-columns:repeat(12,1fr)}
@@ -104,17 +147,23 @@
     .section h2{font-size:clamp(22px,3.4vw,32px);margin:0 0 12px}
     .lead{color:var(--muted);margin-bottom:18px}
 
-    .card{padding:18px;border-radius:18px;background:linear-gradient(180deg, rgba(17,24,39,.72), rgba(17,24,39,.5));border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden; transition:transform .18s ease, box-shadow .22s ease}
-    .card:hover{transform:translateY(-4px); box-shadow:0 12px 30px rgba(14,165,255,.18)}
-    .img-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:radial-gradient(120% 100% at 100% 0%, rgba(14,165,255,.12), transparent 60%), #0c1118}
+    .card{padding:18px;border-radius:18px;background:linear-gradient(180deg, rgba(17,24,39,.72), rgba(17,24,39,.5));border:1px solid rgba(127,148,179,.18);position:relative;overflow:hidden; transition:transform var(--fast) var(--easing), box-shadow .22s var(--easing)}
+    .card:hover{transform:var(--lift); box-shadow:0 12px 30px rgba(14,165,255,.18)}
+
+    /* 3D tilt */
+    .tilt{transform-style:preserve-3d}
+    .tilt .glare{position:absolute;inset:-2px;border-radius:inherit;background:radial-gradient(400px 200px at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.25), transparent 50%);mix-blend-mode:soft-light;pointer-events:none;opacity:.0;transition:opacity .2s}
+    .tilt:hover .glare{opacity:.35}
+
+    .img-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid rgba(127,148,179,.25);overflow:hidden;background:radial-gradient(120% 100% at 100% 0%, rgba(14,165,255,.12), transparent 60%), #0c1118}
     .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
     /* ===================== Footer & Bits ===================== */
-    .footer{padding:40px 0;color:var(--muted);font-size:14px;border-top:1px solid rgba(255,255,255,.06);margin-top:32px}
-    .tag{display:inline-block;padding:4px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:12px;color:var(--muted)}
+    .footer{padding:40px 0;color:var(--muted);font-size:14px;border-top:1px solid rgba(127,148,179,.18);margin-top:32px}
+    .tag{display:inline-block;padding:4px 10px;border:1px solid rgba(127,148,179,.25);border-radius:999px;font-size:12px;color:var(--muted)}
 
     /* ===================== Micro Interactions ===================== */
-    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease, transform .6s ease}
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--easing), transform .6s var(--easing)}
     .reveal.in{opacity:1;transform:none}
 
     /* floating back-to-top */
@@ -125,14 +174,49 @@
     .sig-art{position:relative;display:grid;place-items:center;padding:16px;background:radial-gradient(80% 120% at 70% -20%, rgba(14,165,255,.12), transparent 60%)}
     .sig-art svg{display:block;width:100%;height:100%}
     .sig-art .floating{position:absolute;inset:auto 6% 6% auto; width:min(220px,28vw); filter:drop-shadow(0 8px 22px rgba(14,165,255,.25)); opacity:.85}
+
+    /* ===================== Command Palette ===================== */
+    .cmdk-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:90}
+    .cmdk{position:fixed;left:50%;top:10%;transform:translateX(-50%);width:min(720px,92vw);border-radius:16px;box-shadow:var(--shadow);display:none;z-index:91}
+    .cmdk .header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(127,148,179,.25);background:var(--panel)}
+    .cmdk input{flex:1;padding:12px 12px;border-radius:10px;border:1px solid rgba(127,148,179,.25);background:rgba(255,255,255,.04);color:var(--text);font-size:15px}
+    .cmdk .list{max-height:50vh;overflow:auto;background:var(--panel-2)}
+    .cmdk .item{padding:12px 14px;border-bottom:1px solid rgba(127,148,179,.15);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+    .cmdk .item:hover{background:rgba(255,255,255,.05)}
+
+    /* ===================== Interactive Governance Demo ===================== */
+    .demo{display:grid;grid-template-columns: 1fr 1fr; gap:16px}
+    .demo .pane{padding:12px;border-radius:12px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
+    .demo pre{margin:0;max-height:260px;overflow:auto}
+    .switch{position:relative;width:52px;height:30px;background:#223046;border-radius:999px;border:1px solid rgba(127,148,179,.35);cursor:pointer}
+    .switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;background:white;border-radius:50%;transition:left .22s var(--easing)}
+    .switch.on{background:#0ea5ff}
+    .switch.on::after{left:25px}
+
+    /* ===================== Compare Filters ===================== */
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .filter{padding:6px 10px;border-radius:999px;border:1px solid rgba(127,148,179,.25);cursor:pointer}
+    .filter.active{background:rgba(14,165,255,.18);border-color:var(--ring)}
+
+    /* Accessibility: reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .btn:hover, .card:hover{transform:none}
+      .tilt{transform:none !important}
+      .tilt .glare{display:none}
+      .spotlight{display:none}
+      .hero-bg{transform:none !important}
+    }
   </style>
 </head>
 <body>
-  <!-- sitewide subtle tiles background -->
+  <div id="top"></div>
+  <div id="progress"></div>
+  <!-- sitewide subtle tiles background + spotlight -->
   <div class="tiles" aria-hidden="true"></div>
+  <div class="spotlight" aria-hidden="true"></div>
 
   <div class="ribbon" role="status">
-    <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon.</div>
+    <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon. <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.</div>
   </div>
 
   <header class="nav">
@@ -151,6 +235,7 @@
       </nav>
       <div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
+        <button id="cmdBtn" class="theme-toggle" aria-label="Open command palette" title="⌘K / Ctrl+K">⌘K</button>
         <a class="btn btn-ghost" href="#contact">Contact</a>
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a>
       </div>
@@ -166,7 +251,6 @@
             <stop offset="0%" stop-color="#0ea5ff" stop-opacity="0.35"/>
             <stop offset="60%" stop-color="#0ea5ff" stop-opacity="0"/>
           </radialGradient>
-          <!-- tile pattern inside hero for extra depth -->
           <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
             <rect width="24" height="24" fill="none"/>
             <rect x="0" y="0" width="24" height="24" fill="none" stroke="#1a2433" stroke-width="1" opacity="0.35"/>
@@ -186,7 +270,6 @@
         <g opacity="0.45">
           <rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/>
         </g>
-        <!-- subtle connecting arcs -->
         <g stroke="#1e2b3d" opacity=".55">
           <path d="M80,520 C460,420 740,560 1120,460" fill="none"/>
           <path d="M80,480 C420,380 780,520 1120,420" fill="none"/>
@@ -217,7 +300,8 @@
     </section>
 
     <section id="hero-art" class="container section">
-      <div class="glass" style="padding:18px" class="reveal">
+      <div class="glass tilt reveal" style="padding:18px">
+        <div class="glare" aria-hidden="true"></div>
         <div class="img-frame sig-art" role="img" aria-label="Cerbi signature artwork: shield + tiles + data flow">
           <!-- Signature artwork: shield crest with node graph over isometric tiles -->
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
@@ -236,7 +320,6 @@
             <!-- iso tiles -->
             <g transform="translate(120,90)" opacity=".9">
               <g fill="#0f172a" stroke="url(#tileStroke)" stroke-width="1">
-                <!-- generate a small grid of diamond tiles -->
                 <g opacity=".9">
                   <polygon points="0,60 60,30 120,60 60,90"/>
                   <polygon points="120,60 180,30 240,60 180,90"/>
@@ -249,7 +332,6 @@
                   <polygon points="240,150 300,120 360,150 300,180"/>
                 </g>
               </g>
-              <!-- flowing lines over tiles -->
               <g opacity=".7" stroke="url(#glow)" fill="none">
                 <path d="M10,170 C140,110 260,210 390,150"/>
                 <path d="M40,130 C170,90 290,170 420,130" opacity=".7"/>
@@ -284,14 +366,12 @@
                 </filter>
               </defs>
               <path d="M0,0 L80,0 C120,0 160,-10 200,-30 C200,40 170,110 100,140 C30,110 0,40 0,0 Z" fill="url(#shieldGrad)" opacity=".85" filter="url(#softGlow)"/>
-              <!-- lock glyph -->
               <g transform="translate(70,40)" fill="#0b1220" opacity=".9">
                 <rect x="0" y="30" width="60" height="44" rx="8"/>
                 <path d="M18,30 v-8 a18,18 0 0 1 36,0 v8 h-10 v-8 a8,8 0 0 0 -16,0 v8z"/>
               </g>
             </g>
 
-            <!-- ambient circles -->
             <circle cx="1040" cy="180" r="120" fill="#0ea5ff" opacity=".08"/>
             <circle cx="1060" cy="220" r="80" fill="#60a5fa" opacity=".08"/>
           </svg>
@@ -320,13 +400,14 @@
       <p class="lead">As applications grow and teams scale across internal squads, contractors, and third‑party libraries, logging becomes fragmented and inconsistent—hurting audits, compliance, and insights.</p>
 
       <div class="grid">
-        <div class="col-4 card reveal"><h3>1. Enforce Structure at the Source</h3><p>Use a simple, fluent API to define log schemas. CerbiStream validates before emitting logs for consistent output.</p></div>
-        <div class="col-4 card reveal"><h3>2. Modular by Design</h3><p>Pick only what you need: encryption, governance, telemetry, benchmarking—no unnecessary bloat.</p></div>
-        <div class="col-4 card reveal"><h3>3. Audit‑Ready Compliance</h3><p>Encrypt logs, require fields, and exclude forbidden ones to align with HIPAA, GDPR, SOC‑2, and internal policy.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>1. Enforce Structure at the Source</h3><p>Use a simple, fluent API to define log schemas. CerbiStream validates before emitting logs for consistent output.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>2. Modular by Design</h3><p>Pick only what you need: encryption, governance, telemetry, benchmarking—no unnecessary bloat.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>3. Audit‑Ready Compliance</h3><p>Encrypt logs, require fields, and exclude forbidden ones to align with HIPAA, GDPR, SOC‑2, and internal policy.</p></div>
       </div>
 
       <div class="space"></div>
-      <div class="glass" style="padding:16px">
+      <div class="glass tilt reveal" style="padding:16px">
+        <div class="glare" aria-hidden="true"></div>
         <div class="img-frame" role="img" aria-label="Governance analyzer preview">
           <!-- Faux dashboard preview (SVG) -->
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
@@ -373,7 +454,8 @@
 
       <div class="space"></div>
       <div class="grid">
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <h3 style="margin-top:4px">Plugin Model & Logger Flexibility</h3>
           <p>Governance integrates with your preferred logging stack:</p>
           <ul>
@@ -383,7 +465,8 @@
           </ul>
           <p class="note" style="background:rgba(255,255,255,.03);border-left:3px solid var(--accent);padding:12px 14px;border-radius:8px">Cerbi governance is logger‑agnostic and centered on <strong>CerbiShield</strong>—not a specific logger.</p>
         </div>
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Governance dashboard preview">
             <img src="/assets/5f97b70d-1514-42ca-a857-0458b1f5a54e.png" alt="CerbiShield Dashboard" style="width:100%;display:block"/>
           </div>
@@ -396,9 +479,30 @@
       <h2>Governance That Meets Teams Where They Are</h2>
       <p class="lead">Use Serilog today with the plugin, or modernize with CerbiStream. Either way, enforcement runs from the same governance profiles in CerbiShield.</p>
       <div class="grid">
-        <div class="col-4 card reveal"><h3>Build‑Time Enforcement</h3><p>Roslyn analyzer (CerbiStream) catches violations before they ship.</p></div>
-        <div class="col-4 card reveal"><h3>Runtime Enforcement</h3><p>Serilog plugin flags violations at runtime without dropping logs.</p></div>
-        <div class="col-4 card reveal"><h3>Compliance Starter Kits</h3><p>Kickstart HIPAA/GDPR‑aligned profiles and refine per policy.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build‑Time Enforcement</h3><p>Roslyn analyzer (CerbiStream) catches violations before they ship.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p>Serilog plugin flags violations at runtime without dropping logs.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p>Kickstart HIPAA/GDPR‑aligned profiles and refine per policy.</p></div>
+      </div>
+
+      <!-- Interactive governance demo -->
+      <div class="glass reveal" style="padding:16px;margin-top:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+          <h3 style="margin:0">Live Rule Check (demo)</h3>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="kbd">PII Field</span>
+            <div id="piiSwitch" class="switch" role="switch" aria-checked="false" tabindex="0" aria-label="Toggle PII field"></div>
+          </div>
+        </div>
+        <div class="demo">
+          <div class="pane">
+            <strong>Input Log</strong>
+            <pre><code id="inputJson" class="kbd" aria-live="polite"></code></pre>
+          </div>
+          <div class="pane">
+            <strong>Evaluation</strong>
+            <pre><code id="evalJson" class="kbd" aria-live="polite"></code></pre>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -464,25 +568,33 @@
 
     <section id="compare" class="container section">
       <h2>Logger Governance Comparison</h2>
+      <div class="filters" role="toolbar" aria-label="Filter comparison">
+        <button class="filter active" data-tag="all">All</button>
+        <button class="filter" data-tag="build">Build‑time</button>
+        <button class="filter" data-tag="runtime">Runtime</button>
+        <button class="filter" data-tag="encryption">Encryption</button>
+        <button class="filter" data-tag="routing">Routing</button>
+      </div>
       <div class="glass" style="padding:8px 12px;overflow-x:auto">
-        <table aria-label="Logger comparison table">
+        <table aria-label="Logger comparison table" id="compareTable">
           <thead><tr><th>Capability</th><th>CerbiStream (Modern Default)</th><th>Serilog + Governance Plugin (Available Now)</th></tr></thead>
           <tbody>
-            <tr><td>Build‑Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
-            <tr><td>Runtime Governance Enforcement</td><td>❌ Not applicable</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
-            <tr><td>Encryption Support (AES, Base64)</td><td>✅ Built‑in</td><td>❌ Not included</td></tr>
-            <tr><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
-            <tr><td>Telemetry Routing & Enrichment</td><td>✅ Built‑in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
-            <tr><td>ML / CerbIQ Compatibility</td><td>✅ Schema‑aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
-            <tr><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
-            <tr><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
-            <tr><td>App Rollup / Grouping Support</td><td>✅ Built‑in</td><td>⚠️ External design needed</td></tr>
+            <tr data-tags="build"><td>Build‑Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
+            <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>❌ Not applicable</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
+            <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built‑in</td><td>❌ Not included</td></tr>
+            <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
+            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built‑in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
+            <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema‑aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
+            <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
+            <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
+            <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built‑in</td><td>⚠️ External design needed</td></tr>
           </tbody>
         </table>
       </div>
       <div class="space"></div>
       <div class="grid">
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <h3 style="margin-top:4px">Who is this for?</h3>
           <ul>
             <li>Large engineering orgs with distributed logging patterns</li>
@@ -491,7 +603,8 @@
             <li>Post‑incident observability & compliance investigations</li>
           </ul>
         </div>
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <blockquote class="note" style="margin:0">“We discovered our app was logging real user addresses and birthdates to production logs only after an internal audit. CerbiShield could have prevented that.”</blockquote>
         </div>
       </div>
@@ -500,7 +613,8 @@
     <section id="architecture" class="container section">
       <h2>Architecture & Flow</h2>
       <div class="grid">
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <pre class="kbd" style="display:block;padding:14px;white-space:pre-wrap;background:rgba(14,165,255,.06);border:1px solid rgba(14,165,255,.25);border-radius:12px"><code>Application (Serilog / NLog / MEL / CerbiStream)
   │
   ▼
@@ -513,8 +627,10 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
               ▼        ▼
          Governance    ML Analytics
          Routing       Scoring & Trends</code></pre>
+          <button class="btn" data-copy="#architecture code">Copy</button>
         </div>
-        <div class="col-6 glass" style="padding:16px">
+        <div class="col-6 glass tilt" style="padding:16px">
+          <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
             <img src="/assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
@@ -526,7 +642,8 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     <section id="contact" class="container section">
       <h2>Get in Touch</h2>
       <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
-      <div class="glass" style="padding:16px">
+      <div class="glass tilt" style="padding:16px">
+        <div class="glare"></div>
         <div class="grid">
           <div class="col-6">
             <p><strong>Email:</strong> <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
@@ -552,47 +669,212 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   <footer class="footer">
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
       <div>© <span id="year"></span> Cerbi, LLC. All rights reserved.</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
         <a class="tag" href="#">Privacy</a>
         <a class="tag" href="#">Terms</a>
         <a class="tag" href="#">Security</a>
+        <span class="kbd" title="Open Command Palette">⌘K / Ctrl+K</span>
       </div>
     </div>
   </footer>
 
   <a id="toTop" class="btn" href="#top" aria-label="Back to top">↑</a>
 
+  <!-- Command Palette -->
+  <div class="cmdk-overlay" id="cmdOverlay" aria-hidden="true"></div>
+  <div class="cmdk glass" id="cmdk" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
+    <div class="header"><strong id="cmdTitle">Quick actions</strong><span class="kbd">Esc</span></div>
+    <div style="padding:10px 12px;background:var(--panel)"><input id="cmdInput" type="text" placeholder="Search sections, actions…" aria-label="Search commands"/></div>
+    <div class="list" id="cmdList">
+      <div class="item" data-action="nav" data-target="#why">Go to “Why CerbiStream” <span class="kbd">↵</span></div>
+      <div class="item" data-action="nav" data-target="#ecosystem">Go to “Ecosystem” <span class="kbd">↵</span></div>
+      <div class="item" data-action="nav" data-target="#governance">Go to “Governance” <span class="kbd">↵</span></div>
+      <div class="item" data-action="nav" data-target="#packages">Go to “Packages” <span class="kbd">↵</span></div>
+      <div class="item" data-action="nav" data-target="#compare">Go to “Compare” <span class="kbd">↵</span></div>
+      <div class="item" data-action="nav" data-target="#architecture">Go to “Architecture” <span class="kbd">↵</span></div>
+      <div class="item" data-action="theme" data-target="dark">Switch to Dark Theme <span class="kbd">T</span></div>
+      <div class="item" data-action="theme" data-target="light">Switch to Light Theme <span class="kbd">T</span></div>
+      <div class="item" data-action="top">Back to Top <span class="kbd">Home</span></div>
+    </div>
+  </div>
+
   <script>
-    // Year
+    // ===================== Year =====================
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Theme toggle
-    const setTheme = (t)=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('cerbi-theme',t)};
-    const saved = localStorage.getItem('cerbi-theme');
-    if(saved) setTheme(saved);
-    document.getElementById('themeBtn').addEventListener('click',()=>{
+    // ===================== Theme =====================
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const themeBtn = document.getElementById('themeBtn');
+    const setTheme = (t)=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('cerbi-theme',t);themeBtn.textContent = (t==='light'?'🌞 Light':'🌙 Dark')};
+    const saved = localStorage.getItem('cerbi-theme') || (prefersDark ? 'dark' : 'light');
+    setTheme(saved);
+    themeBtn.addEventListener('click',()=>{
       const cur = document.documentElement.getAttribute('data-theme');
       setTheme(cur === 'light' ? 'dark' : 'light');
     });
 
-    // Scroll reveal
+    // ===================== Smooth internal anchor scroll (only if target exists) =====================
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const id = a.getAttribute('href').slice(1);
+        if(!id) return; // allow # to bubble
+        const el = document.getElementById(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+      });
+    });
+
+    // ===================== Scroll reveal =====================
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
     },{threshold:.12});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-    // Back to top
+    // ===================== Back to top + progress =====================
     const toTop = document.getElementById('toTop');
+    const progress = document.getElementById('progress');
     window.addEventListener('scroll',()=>{
       if(window.scrollY > 600){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+      progress.style.width = scrolled + '%';
     });
 
-    // Light theme palette (subtle)
-    const style = document.createElement('style');
-    style.textContent = `
-      [data-theme="light"]{ --bg:#0b0e13; --panel:#0f141c; --panel-2:#111827; --text:#e5e7eb; --muted:#9aa3af; }
-    `;
-    document.head.appendChild(style);
+    // ===================== Spotlight follows cursor =====================
+    window.addEventListener('pointermove', (e)=>{
+      document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+      document.documentElement.style.setProperty('--my', e.clientY + 'px');
+    }, {passive:true});
+
+    // ===================== Parallax hero =====================
+    const heroBg = document.querySelector('.hero-bg');
+    document.addEventListener('pointermove', (e)=>{
+      const x = (e.clientX / window.innerWidth - .5) * 12;
+      const y = (e.clientY / window.innerHeight - .5) * 8;
+      heroBg.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }, {passive:true});
+
+    // ===================== 3D tilt cards =====================
+    function addTilt(el){
+      let rect;
+      el.addEventListener('pointerenter', ()=>{rect = el.getBoundingClientRect();});
+      el.addEventListener('pointermove', (e)=>{
+        if(!rect) rect = el.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - .5;
+        const py = (e.clientY - rect.top) / rect.height - .5;
+        const rx = (py * -8).toFixed(2);
+        const ry = (px * 10).toFixed(2);
+        el.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+        const glare = el.querySelector('.glare');
+        if(glare){
+          const gx = (px + .5) * 100; const gy = (py + .5) * 100;
+          glare.style.setProperty('--gx', gx + '%');
+          glare.style.setProperty('--gy', gy + '%');
+        }
+      });
+      el.addEventListener('pointerleave', ()=>{el.style.transform = '';});
+    }
+    document.querySelectorAll('.tilt').forEach(addTilt);
+
+    // ===================== Copy buttons =====================
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const target = document.querySelector(btn.getAttribute('data-copy'));
+        if(target){
+          const text = target.innerText || target.textContent;
+          navigator.clipboard.writeText(text).then(()=>{ btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',1200); });
+        }
+      });
+    });
+
+    // ===================== Command Palette =====================
+    const cmdBtn = document.getElementById('cmdBtn');
+    const cmdk = document.getElementById('cmdk');
+    const cmdOverlay = document.getElementById('cmdOverlay');
+    const cmdInput = document.getElementById('cmdInput');
+    const cmdList = document.getElementById('cmdList');
+    let lastFocus = null;
+
+    function openCmd(){
+      lastFocus = document.activeElement;
+      cmdOverlay.style.display = 'block';
+      cmdk.style.display = 'block';
+      cmdInput.value = '';
+      filterCmd('');
+      setTimeout(()=>cmdInput.focus(), 0);
+    }
+    function closeCmd(){
+      cmdOverlay.style.display = 'none';
+      cmdk.style.display = 'none';
+      if(lastFocus) lastFocus.focus();
+    }
+    function filterCmd(q){
+      const ql = q.trim().toLowerCase();
+      cmdList.querySelectorAll('.item').forEach(item=>{
+        const txt = item.textContent.toLowerCase();
+        item.style.display = txt.includes(ql) ? 'flex' : 'none';
+      });
+    }
+
+    cmdBtn.addEventListener('click', openCmd);
+    cmdOverlay.addEventListener('click', closeCmd);
+    document.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmd(); }
+      if(e.key==='Escape' && cmdk.style.display==='block') closeCmd();
+    });
+    cmdInput.addEventListener('input', (e)=>filterCmd(e.target.value));
+    cmdList.addEventListener('click', (e)=>{
+      const item = e.target.closest('.item'); if(!item) return;
+      const action = item.dataset.action; const target = item.dataset.target;
+      if(action==='nav'){ location.hash = target; closeCmd(); }
+      if(action==='top'){ window.scrollTo({top:0,behavior:'smooth'}); closeCmd(); }
+      if(action==='theme'){ setTheme(target); closeCmd(); }
+    });
+
+    // ===================== Interactive Governance Demo =====================
+    const pii = document.getElementById('piiSwitch');
+    const inputJson = document.getElementById('inputJson');
+    const evalJson = document.getElementById('evalJson');
+    const base = { Timestamp: new Date().toISOString(), Level: 'Information', Message: 'User event', UserId: 'abc-123', Address: '123 Main St' };
+    function render(){
+      const hasPII = pii.classList.contains('on');
+      const log = { ...base };
+      if(!hasPII){ delete log.Address; }
+      inputJson.textContent = JSON.stringify(log, null, 2);
+      // Simple demo rule: ForbiddenFields: ["Address"]
+      const violations = [];
+      if('Address' in log){ violations.push({ rule: 'ForbiddenFields', field: 'Address', severity: 'Error' }); }
+      evalJson.textContent = JSON.stringify({ compliant: violations.length===0, violations }, null, 2);
+    }
+    function togglePII(){
+      pii.classList.toggle('on');
+      const on = pii.classList.contains('on');
+      pii.setAttribute('aria-checked', on ? 'true' : 'false');
+      render();
+    }
+    pii.addEventListener('click', togglePII);
+    pii.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); togglePII(); }
+    });
+    render();
+
+    // ===================== Compare table filters =====================
+    const filterButtons = document.querySelectorAll('.filters .filter');
+    const compareTable = document.getElementById('compareTable');
+    function applyFilter(tag){
+      compareTable.querySelectorAll('tbody tr').forEach(row=>{
+        if(tag==='all'){ row.style.display = ''; return; }
+        const tags = (row.dataset.tags || '').split(/\s+/);
+        row.style.display = tags.includes(tag) ? '' : 'none';
+      });
+    }
+    filterButtons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        filterButtons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter(btn.dataset.tag);
+      });
+    });
+
   </script>
 </body>
 </html>
