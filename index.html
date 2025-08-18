@@ -28,6 +28,8 @@
       --shadow: 0 12px 32px rgba(2,6,23,.45);
       --radius: 16px;
       --glass: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      --tile-opacity: .08; /* tweak for lighter/darker tiles */
+      --tile-size: 26px;   /* global tile size */
     }
 
     *{box-sizing:border-box}
@@ -39,6 +41,24 @@
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     .container{width:min(1200px,92vw);margin:0 auto}
+
+    /* ===================== Sitewide subtle tiles ===================== */
+    .tiles{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:1}
+    /* Two-layer grid: dots + faint lines (pure CSS, GPU-friendly) */
+    .tiles::before{content:"";position:absolute;inset:0;opacity:var(--tile-opacity);
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,.16) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.05), rgba(255,255,255,.05));
+      background-size: var(--tile-size) var(--tile-size), 100% 100%;
+      mix-blend-mode: soft-light;
+    }
+    .tiles::after{content:"";position:absolute;inset:0;opacity:calc(var(--tile-opacity) * .8);
+      background-image:
+        linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: var(--tile-size) var(--tile-size);
+      mask-image: radial-gradient(60% 50% at 50% 20%, black 30%, transparent 100%);
+    }
 
     /* ===================== Fancy Utilities ===================== */
     .glass{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -89,11 +109,6 @@
     .img-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:radial-gradient(120% 100% at 100% 0%, rgba(14,165,255,.12), transparent 60%), #0c1118}
     .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
-    /* ===================== Table ===================== */
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;vertical-align:top}
-    thead th{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
-
     /* ===================== Footer & Bits ===================== */
     .footer{padding:40px 0;color:var(--muted);font-size:14px;border-top:1px solid rgba(255,255,255,.06);margin-top:32px}
     .tag{display:inline-block;padding:4px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:12px;color:var(--muted)}
@@ -105,9 +120,17 @@
     /* floating back-to-top */
     #toTop{position:fixed;right:18px;bottom:18px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
     #toTop.show{opacity:1;pointer-events:auto}
+
+    /* ===================== Signature Artwork ===================== */
+    .sig-art{position:relative;display:grid;place-items:center;padding:16px;background:radial-gradient(80% 120% at 70% -20%, rgba(14,165,255,.12), transparent 60%)}
+    .sig-art svg{display:block;width:100%;height:100%}
+    .sig-art .floating{position:absolute;inset:auto 6% 6% auto; width:min(220px,28vw); filter:drop-shadow(0 8px 22px rgba(14,165,255,.25)); opacity:.85}
   </style>
 </head>
 <body>
+  <!-- sitewide subtle tiles background -->
+  <div class="tiles" aria-hidden="true"></div>
+
   <div class="ribbon" role="status">
     <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon.</div>
   </div>
@@ -143,14 +166,30 @@
             <stop offset="0%" stop-color="#0ea5ff" stop-opacity="0.35"/>
             <stop offset="60%" stop-color="#0ea5ff" stop-opacity="0"/>
           </radialGradient>
+          <!-- tile pattern inside hero for extra depth -->
+          <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="none"/>
+            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#1a2433" stroke-width="1" opacity="0.35"/>
+            <circle cx="1" cy="1" r="1" fill="#99caff" opacity="0.14" />
+          </pattern>
           <linearGradient id="grid" x1="0" x2="1">
             <stop offset="0%" stop-color="#1f2a3a"/>
             <stop offset="100%" stop-color="#0f172a"/>
           </linearGradient>
+          <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0ea5ff"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </linearGradient>
         </defs>
         <rect width="1200" height="600" fill="url(#g1)"/>
-        <g opacity="0.35">
+        <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.35"/>
+        <g opacity="0.45">
           <rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/>
+        </g>
+        <!-- subtle connecting arcs -->
+        <g stroke="#1e2b3d" opacity=".55">
+          <path d="M80,520 C460,420 740,560 1120,460" fill="none"/>
+          <path d="M80,480 C420,380 780,520 1120,420" fill="none"/>
         </g>
       </svg>
 
@@ -179,33 +218,100 @@
 
     <section id="hero-art" class="container section">
       <div class="glass" style="padding:18px" class="reveal">
-        <div class="img-frame" role="img" aria-label="Stylized hero illustration">
-          <!-- Stylish hero illustration (mesh) -->
+        <div class="img-frame sig-art" role="img" aria-label="Cerbi signature artwork: shield + tiles + data flow">
+          <!-- Signature artwork: shield crest with node graph over isometric tiles -->
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
             <defs>
               <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stop-color="#0ea5ff" stop-opacity=".7"/>
                 <stop offset="100%" stop-color="#60a5fa" stop-opacity=".2"/>
               </linearGradient>
+              <linearGradient id="tileStroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f2136"/>
+                <stop offset="100%" stop-color="#0c1729"/>
+              </linearGradient>
             </defs>
             <rect width="1200" height="675" fill="#0c1118"/>
-            <g stroke="url(#glow)" stroke-width="1">
-              <path d="M0,500 C300,450 900,550 1200,480" fill="none"/>
-              <path d="M0,420 C260,360 940,520 1200,430" fill="none"/>
-              <path d="M0,580 C320,520 880,600 1200,550" fill="none"/>
-              <g fill="#0ea5ff">
-                <circle cx="220" cy="460" r="2"/>
-                <circle cx="560" cy="490" r="2"/>
-                <circle cx="920" cy="470" r="2"/>
-                <circle cx="380" cy="540" r="2"/>
-                <circle cx="760" cy="560" r="2"/>
+
+            <!-- iso tiles -->
+            <g transform="translate(120,90)" opacity=".9">
+              <g fill="#0f172a" stroke="url(#tileStroke)" stroke-width="1">
+                <!-- generate a small grid of diamond tiles -->
+                <g opacity=".9">
+                  <polygon points="0,60 60,30 120,60 60,90"/>
+                  <polygon points="120,60 180,30 240,60 180,90"/>
+                  <polygon points="240,60 300,30 360,60 300,90"/>
+                  <polygon points="60,90 120,60 180,90 120,120"/>
+                  <polygon points="180,90 240,60 300,90 240,120"/>
+                  <polygon points="300,90 360,60 420,90 360,120"/>
+                  <polygon points="0,150 60,120 120,150 60,180"/>
+                  <polygon points="120,150 180,120 240,150 180,180"/>
+                  <polygon points="240,150 300,120 360,150 300,180"/>
+                </g>
+              </g>
+              <!-- flowing lines over tiles -->
+              <g opacity=".7" stroke="url(#glow)" fill="none">
+                <path d="M10,170 C140,110 260,210 390,150"/>
+                <path d="M40,130 C170,90 290,170 420,130" opacity=".7"/>
               </g>
             </g>
-            <circle cx="980" cy="220" r="180" fill="#0ea5ff" opacity=".08"/>
-            <circle cx="1020" cy="260" r="120" fill="#60a5fa" opacity=".08"/>
+
+            <!-- node graph linking into shield -->
+            <g stroke="#0ea5ff" stroke-opacity=".35" fill="none">
+              <path d="M720,180 C760,220 820,240 880,220"/>
+              <path d="M680,260 C740,300 840,300 920,260"/>
+            </g>
+            <g fill="#93c5fd" opacity=".85">
+              <circle cx="720" cy="180" r="4"/>
+              <circle cx="760" cy="220" r="3.2"/>
+              <circle cx="820" cy="240" r="3.2"/>
+              <circle cx="880" cy="220" r="4"/>
+              <circle cx="680" cy="260" r="3.2"/>
+              <circle cx="740" cy="300" r="3.2"/>
+              <circle cx="840" cy="300" r="3.2"/>
+              <circle cx="920" cy="260" r="4"/>
+            </g>
+
+            <!-- shield crest -->
+            <g transform="translate(880,340)">
+              <defs>
+                <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="6" result="blur"/>
+                  <feMerge>
+                    <feMergeNode in="blur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <path d="M0,0 L80,0 C120,0 160,-10 200,-30 C200,40 170,110 100,140 C30,110 0,40 0,0 Z" fill="url(#shieldGrad)" opacity=".85" filter="url(#softGlow)"/>
+              <!-- lock glyph -->
+              <g transform="translate(70,40)" fill="#0b1220" opacity=".9">
+                <rect x="0" y="30" width="60" height="44" rx="8"/>
+                <path d="M18,30 v-8 a18,18 0 0 1 36,0 v8 h-10 v-8 a8,8 0 0 0 -16,0 v8z"/>
+              </g>
+            </g>
+
+            <!-- ambient circles -->
+            <circle cx="1040" cy="180" r="120" fill="#0ea5ff" opacity=".08"/>
+            <circle cx="1060" cy="220" r="80" fill="#60a5fa" opacity=".08"/>
+          </svg>
+          <!-- floating badge element -->
+          <svg viewBox="0 0 220 80" class="floating" aria-hidden="true">
+            <defs>
+              <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0ea5ff"/>
+                <stop offset="100%" stop-color="#60a5fa"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="220" height="80" rx="14" fill="rgba(14,165,255,.1)" stroke="rgba(14,165,255,.35)"/>
+            <g transform="translate(16,18)">
+              <circle cx="22" cy="22" r="22" fill="url(#badge)"/>
+              <g transform="translate(10,10)" fill="#0b1220"><rect x="4" y="12" width="16" height="14" rx="3"/><path d="M8,12 v-3 a8,8 0 0 1 8,0 v3z"/></g>
+              <text x="64" y="28" fill="#dbeafe" font-family="Inter,ui-sans-serif" font-size="16" font-weight="700">Governance‑Ready</text>
+            </g>
           </svg>
         </div>
-        <div class="img-cap">Illustrative art — replace with branded artwork when ready.</div>
+        <div class="img-cap">Signature art — shield + tiles + flow. Swap with branded art later if you prefer.</div>
       </div>
     </section>
 
