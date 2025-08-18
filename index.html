@@ -13,38 +13,35 @@
   <link rel="icon" href="/assets/favicon.png" />
   <style>
     /* ===================== Design Tokens ===================== */
-    :root {
-      /* Dark theme (default) */
-      --bg: #0b0e13;
-      --panel: #0f141c;
-      --panel-2: #111827;
-      --text: #e5e7eb;
-      --muted: #9aa3af;
-      --accent: #0ea5ff;
-      --accent-2: #60a5fa;
-      --ok: #22c55e;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --ring: rgba(14,165,255,0.35);
-      --shadow: 0 12px 32px rgba(2,6,23,.45);
-      --radius: 16px;
-      --glass: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      --tile-opacity: .08; /* tweak for lighter/darker tiles */
-      --tile-size: 26px;   /* global tile size */
-
-
 :root {
-  --scroll-phase: 0;
-}
+  /* Dark theme (default) */
+  --bg: #0b0e13;
+  --panel: #0f141c;
+  --panel-2: #111827;
+  --text: #e5e7eb;
+  --muted: #9aa3af;
+  --accent: #0ea5ff;
+  --accent-2: #60a5fa;
+  --ok: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --ring: rgba(14,165,255,0.35);
+  --shadow: 0 12px 32px rgba(2,6,23,.45);
+  --radius: 16px;
+  --glass: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  --tile-opacity: .08;
+  --tile-size: 26px;
 
-body {
-  min-height: 300vh; /* enough scroll room */
-  background: linear-gradient(
-    to bottom,
-    var(--bg-start, #0b0e13) 0%,
-    var(--bg-end, #0a3d40) 100%
-  );
-  transition: background 0.6s ease; /* smooth blend between phases */
+  /* NEW: scroll-driven gradient endpoints */
+  --bg-start: #0b0e13;
+  --bg-end:   #0a3d40;
+
+  /* motion + spotlight */
+  --lift: translateY(-4px);
+  --fast: .18s;
+  --easing: cubic-bezier(.2,.7,.2,1);
+  --mx: 50vw;
+  --my: 50vh;
 }
 
 
@@ -75,18 +72,18 @@ body {
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      background:
-        radial-gradient(1200px 700px at 75% -10%, rgba(14,165,255,.12), transparent 45%),
-        radial-gradient(900px 600px at -10% 20%, rgba(96,165,250,.10), transparent 50%),
-        var(--bg);
-      color:var(--text);
-      line-height:1.6;
-      accent-color: var(--accent);
-      scroll-behavior:smooth;
-    }
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background:
+    radial-gradient(1200px 700px at 75% -10%, rgba(14,165,255,.12), transparent 45%),
+    radial-gradient(900px 600px at -10% 20%, rgba(96,165,250,.10), transparent 50%),
+    linear-gradient(to bottom, var(--bg-start) 0%, var(--bg-end) 100%);
+  color:var(--text);
+  line-height:1.6;
+  accent-color: var(--accent);
+  scroll-behavior:smooth;
+}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     .container{width:min(1200px,92vw);margin:0 auto}
@@ -1234,28 +1231,31 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }
     });
   }
+ <script>
+    const colors = [
+      ["#0b0e13", "#0a3d40"], // Hero → Repos
+      ["#0a3d40", "#1e3a56"], // Repos → Benchmarks
+      ["#1e3a56", "#3a1e56"]  // Benchmarks → Roadmap
+    ];
+    let ticking = false;
+
+    function updateBg() {
+      const docHeight = document.body.scrollHeight - window.innerHeight || 1;
+      const progress = window.scrollY / docHeight;
+      const i = Math.min(Math.floor(progress * colors.length), colors.length - 1);
+      document.documentElement.style.setProperty("--bg-start", colors[i][0]);
+      document.documentElement.style.setProperty("--bg-end", colors[i][1]);
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateBg);
+      }
+    }, { passive: true });
+
+    updateBg(); // set initial colors
   </script>
-	<script>
-  const colors = [
-    ["#0b0e13", "#0a3d40"], // Hero → Repos
-    ["#0a3d40", "#1e3a56"], // Repos → Benchmarks
-    ["#1e3a56", "#3a1e56"]  // Benchmarks → Roadmap
-  ];
-
-  window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.body.scrollHeight - window.innerHeight;
-    const progress = scrollTop / docHeight; // 0 → 1
-
-    const sectionIndex = Math.min(
-      Math.floor(progress * colors.length),
-      colors.length - 1
-    );
-
-    document.documentElement.style.setProperty("--bg-start", colors[sectionIndex][0]);
-    document.documentElement.style.setProperty("--bg-end", colors[sectionIndex][1]);
-  });
-</script>
-
 </body>
 </html>
