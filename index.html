@@ -32,6 +32,23 @@
       --tile-opacity: .08; /* tweak for lighter/darker tiles */
       --tile-size: 26px;   /* global tile size */
 
+
+:root {
+  --scroll-phase: 0;
+}
+
+body {
+  min-height: 300vh; /* enough scroll room */
+  background: linear-gradient(
+    to bottom,
+    var(--bg-start, #0b0e13) 0%,
+    var(--bg-end, #0a3d40) 100%
+  );
+  transition: background 0.6s ease; /* smooth blend between phases */
+}
+
+
+
       /* motion */
       --lift: translateY(-4px);
       --fast: .18s;
@@ -1218,5 +1235,27 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     });
   }
   </script>
+	<script>
+  const colors = [
+    ["#0b0e13", "#0a3d40"], // Hero → Repos
+    ["#0a3d40", "#1e3a56"], // Repos → Benchmarks
+    ["#1e3a56", "#3a1e56"]  // Benchmarks → Roadmap
+  ];
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = scrollTop / docHeight; // 0 → 1
+
+    const sectionIndex = Math.min(
+      Math.floor(progress * colors.length),
+      colors.length - 1
+    );
+
+    document.documentElement.style.setProperty("--bg-start", colors[sectionIndex][0]);
+    document.documentElement.style.setProperty("--bg-end", colors[sectionIndex][1]);
+  });
+</script>
+
 </body>
 </html>
