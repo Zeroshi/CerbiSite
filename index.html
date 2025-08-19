@@ -63,6 +63,7 @@
 body{
   margin:0;
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+	will-change: background; 
   background:
     radial-gradient(1200px 700px at 75% -10%, rgba(14,165,255,.12), transparent 45%),
     radial-gradient(900px 600px at -10% 20%, rgba(96,165,250,.10), transparent 50%),
@@ -1222,29 +1223,76 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
 </script> <!-- end of the big main script -->
 
 <script>
-  const colors = [
-    ["#0b0e13", "#0a3d40"],
-    ["#0a3d40", "#1e3a56"],
-    ["#1e3a56", "#3a1e56"]
+  // Smoothly interpolate the background gradient as you scroll
+
+  const palettes = [
+    { start: "#0b0e13", end: "#0a3d40" },
+    { start: "#0a3d40", end: "#1e3a56" },
+    { start: "#1e3a56", end: "#3a1e56" }
   ];
+
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+  const hexToRgb = (hex) => {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : { r:0,g:0,b:0 };
+  };
+  const rgbToHex = ({r,g,b}) => `#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
+  const lerp = (a,b,t) => a + (b - a) * t;
+  const lerpColor = (c1, c2, t) => ({
+    r: Math.round(lerp(c1.r, c2.r, t)),
+    g: Math.round(lerp(c1.g, c2.g, t)),
+    b: Math.round(lerp(c1.b, c2.b, t))
+  });
+
+  // Optional easing to make it extra smooth
+  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
+  const startRGB = palettes.map(p => hexToRgb(p.start));
+  const endRGB   = palettes.map(p => hexToRgb(p.end));
+
+  // 🔧 NEW: set initial CSS vars ASAP to avoid a flash/block on load
+  (function syncInitialVars() {
+    const first = palettes[0] || { start: "#0b0e13", end: "#0a3d40" };
+    document.documentElement.style.setProperty('--bg-start', first.start);
+    document.documentElement.style.setProperty('--bg-end',   first.end);
+  })();
+
   let ticking = false;
 
   function updateBg() {
-    const docHeight = document.body.scrollHeight - window.innerHeight || 1;
-    const progress = window.scrollY / docHeight;
-    const i = Math.min(Math.floor(progress * colors.length), colors.length - 1);
-    document.documentElement.style.setProperty("--bg-start", colors[i][0]);
-    document.documentElement.style.setProperty("--bg-end", colors[i][1]);
+    const docHeight = Math.max(1, document.body.scrollHeight - window.innerHeight);
+    const p = clamp(window.scrollY / docHeight, 0, 1);
+
+    // Map progress across segments [0..N-1] and interpolate within the current one
+    const segs = Math.max(1, palettes.length - 1);     // 🔧 guard
+    const pos = p * segs;
+    const i = Math.min(segs - 1, Math.floor(pos));     // 🔧 guard index
+    const t = ease(clamp(pos - Math.floor(pos), 0, 1));
+
+    const i2 = Math.min(segs, i + 1);                  // 🔧 guard next index
+
+    const s = lerpColor(startRGB[i], startRGB[i2], t);
+    const e = lerpColor(endRGB[i],   endRGB[i2],   t);
+
+    document.documentElement.style.setProperty('--bg-start', rgbToHex(s));
+    document.documentElement.style.setProperty('--bg-end',   rgbToHex(e));
+
     ticking = false;
   }
 
-  window.addEventListener("scroll", () => {
+  function onScroll() {
     if (!ticking) {
       ticking = true;
       requestAnimationFrame(updateBg);
     }
-  }, { passive: true });
+  }
 
+  // 🔧 Also react to resize so the ratio stays correct after viewport changes
+  window.addEventListener('resize', () => requestAnimationFrame(updateBg), { passive: true });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('load', updateBg, { once: true });
   updateBg();
 </script>
 </body>
