@@ -174,7 +174,18 @@ body {
     .tilt .glare{position:absolute;inset:-2px;border-radius:inherit;background:radial-gradient(400px 200px at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.25), transparent 50%);mix-blend-mode:soft-light;pointer-events:none;opacity:.0;transition:opacity .2s}
     .tilt:hover .glare{opacity:.35}
 
-    .img-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid rgba(127,148,179,.25);overflow:hidden;background:radial-gradient(120% 100% at 100% 0%, rgba(14,165,255,.12), transparent 60%), #0c1118}
+	.img-frame {
+	  position: relative;
+	  width: 100%;
+	  aspect-ratio: 16/9;
+	  border-radius: 16px;
+	  border: 1px solid rgba(127,148,179,.25);
+	  overflow: hidden;
+	  background:
+	    radial-gradient(120% 100% at 100% 0%, rgba(14,165,255,.12), transparent 60%),
+	    rgba(12,17,24,0.55); /* semi-transparent instead of solid */
+	}
+
     .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
     /* ===================== Footer & Bits ===================== */
@@ -438,7 +449,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <stop offset="100%" stop-color="#0c1729"/>
               </linearGradient>
             </defs>
-            <rect width="1200" height="675" fill="#0c1118"/>
+            <rect width="1200" height="675" fill="transparent"/>
 
             <!-- iso tiles -->
             <g transform="translate(120,90)" opacity=".9">
@@ -967,7 +978,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
           <div class="col-6">
             <div class="img-frame" role="img" aria-label="Team photo placeholder">
               <svg viewBox="0 0 1200 675" width="100%" height="100%">
-                <rect width="1200" height="675" fill="#0d1420"/>
+                <rect width="1200" height="675" fill="transparent"/>
                 <rect x="120" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
                 <rect x="360" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
 <rect x="600" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
