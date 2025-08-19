@@ -32,7 +32,7 @@
   --tile-opacity: .08;
   --tile-size: 26px;
 
-  /* NEW: scroll-driven gradient endpoints */
+  /* scroll-driven gradient endpoints */
   --bg-start: #0b0e13;
   --bg-end:   #0a3d40;
 
@@ -43,18 +43,6 @@
   --mx: 50vw;
   --my: 50vh;
 }
-
-
-
-      /* motion */
-      --lift: translateY(-4px);
-      --fast: .18s;
-      --easing: cubic-bezier(.2,.7,.2,1);
-
-      /* spotlight */
-      --mx: 50vw; /* pointer X */
-      --my: 50vh; /* pointer Y */
-    }
 
     /* Light theme overrides */
     [data-theme="light"]{
@@ -965,8 +953,8 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
                 <rect width="1200" height="675" fill="#0d1420"/>
                 <rect x="120" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
                 <rect x="360" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
-                <rect x="600" y="220" width="180" height="180"
-				                <rect x="840" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
+<rect x="600" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
+<rect x="840" y="220" width="180" height="180" rx="14" fill="#101826" stroke="#1f2937"/>
                 <g transform="translate(120,440)">
                   <rect x="0" y="0" width="900" height="120" rx="12" fill="#0f172a" stroke="#1f2937"/>
                   <text x="24" y="40" fill="#94a3b8" font-family="Inter, ui-sans-serif" font-size="20" font-weight="600">
@@ -1230,32 +1218,34 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     piiSwitch.addEventListener('keydown', (e) => {
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }
     });
+   }
+</script> <!-- end of the big main script -->
+
+<script>
+  const colors = [
+    ["#0b0e13", "#0a3d40"],
+    ["#0a3d40", "#1e3a56"],
+    ["#1e3a56", "#3a1e56"]
+  ];
+  let ticking = false;
+
+  function updateBg() {
+    const docHeight = document.body.scrollHeight - window.innerHeight || 1;
+    const progress = window.scrollY / docHeight;
+    const i = Math.min(Math.floor(progress * colors.length), colors.length - 1);
+    document.documentElement.style.setProperty("--bg-start", colors[i][0]);
+    document.documentElement.style.setProperty("--bg-end", colors[i][1]);
+    ticking = false;
   }
- <script>
-    const colors = [
-      ["#0b0e13", "#0a3d40"], // Hero → Repos
-      ["#0a3d40", "#1e3a56"], // Repos → Benchmarks
-      ["#1e3a56", "#3a1e56"]  // Benchmarks → Roadmap
-    ];
-    let ticking = false;
 
-    function updateBg() {
-      const docHeight = document.body.scrollHeight - window.innerHeight || 1;
-      const progress = window.scrollY / docHeight;
-      const i = Math.min(Math.floor(progress * colors.length), colors.length - 1);
-      document.documentElement.style.setProperty("--bg-start", colors[i][0]);
-      document.documentElement.style.setProperty("--bg-end", colors[i][1]);
-      ticking = false;
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateBg);
     }
+  }, { passive: true });
 
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(updateBg);
-      }
-    }, { passive: true });
-
-    updateBg(); // set initial colors
-  </script>
+  updateBg();
+</script>
 </body>
 </html>
