@@ -1,0 +1,70 @@
+/* ===================== Design Tokens ===================== */
+:root{
+  /* Dark theme (default) */
+  --bg:#0b0e13;
+  --panel:#0f141c;
+  --panel-2:#111827;
+  --text:#e5e7eb;
+  --muted:#9aa3af;
+
+  /* 🔥 Cerbi accent — hot orange/red */
+  --accent:#ff4d00;       /* primary */
+  --accent-2:#ff8a00;     /* gradient partner */
+  --ring:rgba(255,77,0,.35);
+
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --shadow:0 12px 32px rgba(2,6,23,.45);
+  --radius:16px;
+  --glass:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  --tile-opacity:.08;
+  --tile-size:26px;
+
+  /* scroll-driven gradient endpoints – warmed slightly */
+  --bg-start:#0b0e13;
+  --bg-end:#141116;
+
+  /* motion + spotlight */
+  --lift:translateY(-4px);
+  --fast:.18s;
+  --easing:cubic-bezier(.2,.7,.2,1);
+  --mx:50vw; --my:50vh;
+}
+
+/* Light theme overrides */
+[data-theme="light"]{
+  --bg:#ffffff;
+  --panel:#f7f8fb;
+  --panel-2:#eef1f6;
+  --text:#0b1220;
+  --muted:#51607a;
+
+  /* 🔥 Light theme accent pair */
+  --accent:#ff5a1a;
+  --accent-2:#ff9a2a;
+  --ring:rgba(255,90,26,.25);
+
+  --glass:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.6));
+  --shadow:0 8px 28px rgba(0,20,60,.1);
+}
+
+/* ===================== Component Styles ===================== */
+.btn:hover{transform:var(--lift);box-shadow:0 10px 24px rgba(255,77,0,.25);border-color:var(--ring)}
+.btn-primary{background:linear-gradient(180deg,rgba(255,77,0,.18),rgba(255,77,0,.08));border-color:rgba(255,77,0,.45)}
+.filter.active{background:rgba(255,77,0,.18);border-color:var(--ring)}
+.card:hover{transform:var(--lift);box-shadow:0 12px 30px rgba(255,77,0,.18)}
+
+/* Hero Section */
+.hero h1{
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-shadow:0 0 18px color-mix(in oklab, var(--accent) 35%, transparent);
+}
+.spotlight{
+  background:radial-gradient(450px 450px at var(--mx) var(--my),
+    color-mix(in oklab,var(--accent) 18%, transparent), transparent 60%);
+}
+.ribbon{background:linear-gradient(90deg,
+  color-mix(in oklab,var(--accent) 25%, transparent),
+  color-mix(in oklab,var(--accent-2) 15%, transparent));}
