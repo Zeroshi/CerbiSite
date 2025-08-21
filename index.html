@@ -4,47 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
+
+  <!-- Meta -->
   <meta name="description" content="CerbiSuite brings structure, governance, and observability to enterprise logging with build-time and runtime enforcement, a governance dashboard, and ML-ready metadata." />
   <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
   <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="/assets/og-image.png" />
-  <meta name="theme-color" content="#ff5a31" />
+  <meta name="theme-color" content="#ff4d00" />
   <link rel="icon" href="/assets/favicon.png" />
 
-  <!-- Cerbi styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/cerbi-theme.css" />
 </head>
 <body>
-  <div id="top"></div>
-  <div id="progress" aria-hidden="true"></div>
-
-  <!-- Sky (behind everything) -->
-  <div class="sky" aria-hidden="true">
-    <canvas id="stars"></canvas>
-    <svg id="constellations" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-      <!-- simple accent constellations (scaled by viewBox) -->
-      <g class="cl" stroke="url(#clStroke)" stroke-width="1.6" fill="none" opacity="0.0">
-        <defs>
-          <linearGradient id="clStroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%"  stop-color="var(--accent)" />
-            <stop offset="100%" stop-color="var(--accent-2)" />
-          </linearGradient>
-        </defs>
-        <!-- constellation A -->
-        <path d="M120,160 L210,120 L280,210 L360,150 L440,220" />
-        <!-- constellation B -->
-        <path d="M720,140 L640,220 L690,300 L770,260 L820,340" />
-        <!-- constellation C -->
-        <path d="M320,760 L380,700 L460,740 L520,680 L600,720" />
-      </g>
-    </svg>
-  </div>
-
-  <!-- Fixed, layered forest silhouettes -->
+  <!-- Sitewide subtle tiles + sky + forest (fixed layers) -->
+  <div class="tiles" aria-hidden="true"></div>
+  <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="forest" aria-hidden="true">
     <svg class="layer l4" viewBox="0 0 1200 220" preserveAspectRatio="none">
-      <rect width="1200" height="220" fill="var(--forest-4-bg)"/>
       <g fill="var(--forest-4)">
         <path d="M0,200 L60,120 L80,160 L100,120 L160,200 Z" />
         <path d="M200,200 L260,120 L280,160 L300,120 L360,200 Z" />
@@ -89,16 +67,11 @@
       </g>
     </svg>
   </div>
-
-  <!-- Decorative tiles + spotlight (still used) -->
-  <div class="tiles" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
   <div class="ribbon" role="status">
-    <div class="container">🌲 Beta: CerbiShield governance dashboard — enterprise trials opening soon.
-      <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.
-    </div>
+    <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon. <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.</div>
   </div>
 
   <!-- Nav -->
@@ -117,7 +90,6 @@
         <a href="#repos">Repos</a>
         <a href="#compare">Compare</a>
         <a href="#architecture">Architecture</a>
-        <a href="#contact">Contact</a>
       </nav>
       <div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
@@ -128,8 +100,12 @@
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Progress bar -->
+  <div id="progress"></div>
+
+  <!-- Main -->
   <main>
+    <!-- HERO -->
     <section class="hero container">
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
@@ -139,24 +115,24 @@
           </radialGradient>
           <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
             <rect width="24" height="24" fill="none"/>
-            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#0d1511" stroke-width="1" opacity="0.38"/>
-            <circle cx="1" cy="1" r="1" fill="#ffd2bf" opacity="0.12" />
+            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#12251d" stroke-width="1" opacity="0.35"/>
+            <circle cx="1" cy="1" r="1" fill="#ffd2bf" opacity="0.14" />
           </pattern>
           <linearGradient id="grid" x1="0" x2="1">
-            <stop offset="0%" stop-color="#132218"/>
-            <stop offset="100%" stop-color="#0b1812"/>
+            <stop offset="0%" stop-color="#18231f"/>
+            <stop offset="100%" stop-color="#0e1613"/>
           </linearGradient>
           <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stop-color="var(--accent)"/>
-            <stop offset="100%" stop-color="var(--accent-2)"/>
+            <stop offset="100%" stop-color="#ff8a00"/>
           </linearGradient>
         </defs>
         <rect width="1200" height="600" fill="url(#g1)"/>
         <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.35"/>
-        <g opacity="0.35">
+        <g opacity="0.45">
           <rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/>
         </g>
-        <g stroke="#132218" opacity=".45">
+        <g stroke="#2b3b34" opacity=".55">
           <path d="M80,520 C460,420 740,560 1120,460" fill="none"/>
           <path d="M80,480 C420,380 780,520 1120,420" fill="none"/>
         </g>
@@ -185,14 +161,14 @@
       </div>
     </section>
 
-    <!-- Quickstart -->
+    <!-- QUICK START -->
     <section id="quickstart" class="container section">
       <h2>⚡ Quick Start: Try CerbiStream in 60 Seconds</h2>
       <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
 
       <div class="glass tilt reveal" style="padding:18px;position:relative">
         <div class="glare"></div>
-<pre style="margin:0;max-height:420px;overflow:auto"><code class="language-csharp">
+        <pre style="margin:0;max-height:420px;overflow:auto"><code class="language-csharp">
 // 1. Install from NuGet
 // dotnet add package CerbiStream
 
@@ -201,16 +177,16 @@ using CerbiStream;
 
 var logger = LoggerFactory.Create(builder =>
 {
-    builder.AddCerbiStream(options =>
-    {
-        options.WithFileFallback();                     // resilient logging
-        options.UseGovernance("cerbi_governance.json"); // governance profile
-    });
+  builder.AddCerbiStream(options =>
+  {
+    options.WithFileFallback();                     // resilient logging
+    options.UseGovernance("cerbi_governance.json"); // governance profile
+  });
 }).CreateLogger&lt;Program&gt;();
 
 // 3. Log safely with governance validation
 logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
-</code></pre>
+        </code></pre>
         <button class="btn" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
       </div>
 
@@ -221,25 +197,30 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </p>
     </section>
 
-    <!-- Signature Art -->
+    <!-- SIGNATURE ART -->
     <section id="hero-art" class="container section">
       <div class="glass tilt reveal" style="padding:18px">
         <div class="glare" aria-hidden="true"></div>
         <div class="img-frame sig-art" role="img" aria-label="Cerbi signature artwork: shield + tiles + data flow">
+          <!-- (Same SVG as your original, colors fit the new palette) -->
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
             <defs>
               <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stop-color="var(--accent)" stop-opacity=".7"/>
-                <stop offset="100%" stop-color="var(--accent-2)" stop-opacity=".2"/>
+                <stop offset="100%" stop-color="#ff8a00" stop-opacity=".2"/>
               </linearGradient>
               <linearGradient id="tileStroke" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#132218"/>
-                <stop offset="100%" stop-color="#0b1812"/>
+                <stop offset="0%" stop-color="#0f2136"/>
+                <stop offset="100%" stop-color="#0c1729"/>
+              </linearGradient>
+              <linearGradient id="shieldGrad2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="var(--accent)"/>
+                <stop offset="100%" stop-color="#ff8a00"/>
               </linearGradient>
             </defs>
             <rect width="1200" height="675" fill="transparent"/>
             <g transform="translate(120,90)" opacity=".9">
-              <g fill="#0c1511" stroke="url(#tileStroke)" stroke-width="1">
+              <g fill="#0f172a" stroke="url(#tileStroke)" stroke-width="1">
                 <g opacity=".9">
                   <polygon points="0,60 60,30 120,60 60,90"/>
                   <polygon points="120,60 180,30 240,60 180,90"/>
@@ -257,12 +238,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <path d="M40,130 C170,90 290,170 420,130" opacity=".7"/>
               </g>
             </g>
-
             <g stroke="var(--accent)" stroke-opacity=".35" fill="none">
               <path d="M720,180 C760,220 820,240 880,220"/>
               <path d="M680,260 C740,300 840,300 920,260"/>
             </g>
-            <g fill="#ffd2bf" opacity=".85">
+            <g fill="#ffd7bf" opacity=".85">
               <circle cx="720" cy="180" r="4"/>
               <circle cx="760" cy="220" r="3.2"/>
               <circle cx="820" cy="240" r="3.2"/>
@@ -272,7 +252,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               <circle cx="840" cy="300" r="3.2"/>
               <circle cx="920" cy="260" r="4"/>
             </g>
-
             <g transform="translate(880,340)">
               <defs>
                 <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -283,23 +262,36 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                   </feMerge>
                 </filter>
               </defs>
-              <path d="M0,0 L80,0 C120,0 160,-10 200,-30 C200,40 170,110 100,140 C30,110 0,40 0,0 Z"
-                    fill="url(#shieldGrad)" opacity=".9" filter="url(#softGlow)"/>
-              <g transform="translate(70,40)" fill="#0b1220" opacity=".92">
+              <path d="M0,0 L80,0 C120,0 160,-10 200,-30 C200,40 170,110 100,140 C30,110 0,40 0,0 Z" fill="url(#shieldGrad2)" opacity=".85" filter="url(#softGlow)"/>
+              <g transform="translate(70,40)" fill="#0b1220" opacity=".9">
                 <rect x="0" y="30" width="60" height="44" rx="8"/>
                 <path d="M18,30 v-8 a18,18 0 0 1 36,0 v8 h-10 v-8 a8,8 0 0 0 -16,0 v8z"/>
               </g>
             </g>
-
             <circle cx="1040" cy="180" r="120" fill="var(--accent)" opacity=".08"/>
-            <circle cx="1060" cy="220" r="80"  fill="var(--accent-2)" opacity=".08"/>
+            <circle cx="1060" cy="220" r="80" fill="#ff8a00" opacity=".08"/>
           </svg>
-          <div class="img-cap">Signature art — shield + tiles + flow. Accent wired to CerbiTheme.</div>
+
+          <svg viewBox="0 0 220 80" class="floating" aria-hidden="true">
+            <defs>
+              <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="var(--accent)"/>
+                <stop offset="100%" stop-color="#ff8a00"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="220" height="80" rx="14" fill="rgba(255,77,0,.1)" stroke="rgba(255,77,0,.35)"/>
+            <g transform="translate(16,18)">
+              <circle cx="22" cy="22" r="22" fill="url(#badge)"/>
+              <g transform="translate(10,10)" fill="#0b1220"><rect x="4" y="12" width="16" height="14" rx="3"/><path d="M8,12 v-3 a8,8 0 0 1 8,0 v3z"/></g>
+              <text x="64" y="28" fill="#ffe9d9" font-family="Inter,ui-sans-serif" font-size="16" font-weight="700">Governance-Ready</text>
+            </g>
+          </svg>
         </div>
+        <div class="img-cap">Signature art — shield + tiles + flow.</div>
       </div>
     </section>
 
-    <!-- Why -->
+    <!-- WHY -->
     <section id="why" class="container section">
       <h2>Why CerbiStream Exists</h2>
       <p class="lead">As applications grow and teams scale across internal squads, contractors, and third-party libraries, logging becomes fragmented and inconsistent—hurting audits, compliance, and insights.</p>
@@ -316,17 +308,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="img-frame" role="img" aria-label="Governance analyzer preview">
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
             <rect width="1200" height="675" fill="transparent"/>
-            <rect x="24"  y="20"  width="1152" height="60"  rx="10" fill="#0d1310" stroke="#132218"/>
-            <rect x="24"  y="100" width="360"  height="520" rx="12" fill="#0a100d" stroke="#132218"/>
-            <rect x="404" y="100" width="772"  height="250" rx="12" fill="#0a100d" stroke="#132218"/>
-            <rect x="404" y="370" width="772"  height="250" rx="12" fill="#0a100d" stroke="#132218"/>
+            <rect x="24" y="20" width="1152" height="60" rx="10" fill="#101826" stroke="#1f2937"/>
+            <rect x="24" y="100" width="360" height="520" rx="12" fill="#0d1420" stroke="#1f2937"/>
+            <rect x="404" y="100" width="772" height="250" rx="12" fill="#0d1420" stroke="#1f2937"/>
+            <rect x="404" y="370" width="772" height="250" rx="12" fill="#0d1420" stroke="#1f2937"/>
             <g transform="translate(424,130)" fill="var(--accent)">
-              <rect x="0"   y="80" width="30" height="60" rx="4"/>
-              <rect x="46"  y="40" width="30" height="100" rx="4" opacity=".85"/>
-              <rect x="92"  y="20" width="30" height="120" rx="4" opacity=".7"/>
-              <rect x="138" y="60" width="30" height="80"  rx="4" opacity=".9"/>
+              <rect x="0" y="80" width="30" height="60" rx="4"/>
+              <rect x="46" y="40" width="30" height="100" rx="4" opacity=".8"/>
+              <rect x="92" y="20" width="30" height="120" rx="4" opacity=".6"/>
+              <rect x="138" y="60" width="30" height="80" rx="4" opacity=".9"/>
             </g>
-            <g transform="translate(44,130)" fill="#ffd2bf" opacity=".85">
+            <g transform="translate(44,130)" fill="#ffd7bf">
               <circle cx="6" cy="6" r="4"/>
               <circle cx="6" cy="36" r="4"/>
               <circle cx="6" cy="66" r="4"/>
@@ -339,7 +331,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- Ecosystem -->
+    <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
       <h2>The Cerbi Ecosystem</h2>
       <p class="lead">A cohesive suite where each component addresses a critical aspect of enterprise logging.</p>
@@ -380,7 +372,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- Governance -->
+    <!-- GOVERNANCE -->
     <section id="governance" class="container section">
       <h2>Governance That Meets Teams Where They Are</h2>
       <p class="lead">Use Serilog today with the plugin, or modernize with CerbiStream. Either way, enforcement runs from the same governance profiles in CerbiShield.</p>
@@ -390,7 +382,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p>Kickstart HIPAA/GDPR-aligned profiles and refine per policy.</p></div>
       </div>
 
-      <!-- Interactive demo -->
+      <!-- Interactive governance demo -->
       <div class="glass reveal" style="padding:16px;margin-top:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
           <h3 style="margin:0">Live Rule Check (demo)</h3>
@@ -412,7 +404,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- Packages -->
+    <!-- PACKAGES -->
     <section id="packages" class="container section">
       <h2>NuGet Packages & Trends</h2>
       <p class="lead">All official Cerbi packages are published on NuGet. Below are quick links, live version/download badges, and a 3-month download trend.</p>
@@ -473,7 +465,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- Repos -->
+    <!-- REPOSITORIES -->
     <section id="repos" class="container section">
       <h2>📦 Cerbi Repositories</h2>
       <p class="lead">Open-source packages with a shared governance core. Pick what you need; stay portable.</p>
@@ -502,7 +494,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
           <details class="glass" style="padding:12px;border-radius:12px">
             <summary><strong>Install & Configure</strong></summary>
-<pre style="margin:8px 0 0;max-height:300px;overflow:auto"><code>
+            <pre style="margin:8px 0 0;max-height:300px;overflow:auto"><code>
 // Install
 dotnet add package CerbiStream
 
@@ -517,7 +509,7 @@ var logger = LoggerFactory.Create(b =>
   });
 }).CreateLogger&lt;Program&gt;();
 logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
-</code></pre>
+            </code></pre>
             <button class="btn" data-copy="#repos code">Copy</button>
           </details>
 
@@ -549,13 +541,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
           <details class="glass" style="padding:12px;border-radius:12px">
             <summary><strong>Install & Use</strong></summary>
-<pre style="margin:8px 0 0;max-height:240px;overflow:auto"><code>
+            <pre style="margin:8px 0 0;max-height:240px;overflow:auto"><code>
 // Install analyzer (per project)
 dotnet add package CerbiStream.GovernanceAnalyzer
 
 // Place cerbi_governance.json at repo or project root.
 // Analyzer will surface diagnostics in IDE/CI automatically.
-</code></pre>
+            </code></pre>
             <button class="btn" data-copy="#repos code">Copy</button>
           </details>
 
@@ -564,7 +556,7 @@ dotnet add package CerbiStream.GovernanceAnalyzer
           </p>
         </article>
 
-        <!-- Serilog -->
+        <!-- Cerbi.Serilog.GovernanceAnalyzer -->
         <article class="col-6 glass tilt reveal" style="padding:16px">
           <div class="glare"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
@@ -586,7 +578,7 @@ dotnet add package CerbiStream.GovernanceAnalyzer
 
           <details class="glass" style="padding:12px;border-radius:12px">
             <summary><strong>Quick Start</strong></summary>
-<pre style="margin:8px 0 0;max-height:260px;overflow:auto"><code>
+            <pre style="margin:8px 0 0;max-height:260px;overflow:auto"><code>
 // Install
 dotnet add package Serilog
 dotnet add package Cerbi.Serilog.GovernanceAnalyzer
@@ -600,7 +592,7 @@ Log.Logger = new LoggerConfiguration()
   .CreateLogger();
 
 Log.Information("Order created {@order}", new { Id = 42, Amount = 99.00 });
-</code></pre>
+            </code></pre>
             <button class="btn" data-copy="#repos code">Copy</button>
           </details>
 
@@ -631,10 +623,10 @@ Log.Information("Order created {@order}", new { Id = 42, Amount = 99.00 });
 
           <details class="glass" style="padding:12px;border-radius:12px">
             <summary><strong>Install</strong></summary>
-<pre style="margin:8px 0 0;max-height:180px;overflow:auto"><code>
+            <pre style="margin:8px 0 0;max-height:180px;overflow:auto"><code>
 dotnet add package Cerbi.Governance.Core
 dotnet add package Cerbi.Governance.Runtime
-</code></pre>
+            </code></pre>
             <button class="btn" data-copy="#repos code">Copy</button>
           </details>
 
@@ -662,7 +654,7 @@ dotnet add package Cerbi.Governance.Runtime
       </div>
     </section>
 
-    <!-- Compare -->
+    <!-- COMPARE -->
     <section id="compare" class="container section">
       <h2>Logger Governance Comparison</h2>
       <div class="filters" role="toolbar" aria-label="Filter comparison">
@@ -675,17 +667,17 @@ dotnet add package Cerbi.Governance.Runtime
       <div class="glass" style="padding:8px 12px;overflow-x:auto">
         <table aria-label="Logger comparison table" id="compareTable">
           <thead><tr><th>Capability</th><th>CerbiStream (Modern Default)</th><th>Serilog + Governance Plugin (Available Now)</th></tr></thead>
-          <tbody>
-            <tr data-tags="build"><td>Build-Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
-            <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>❌ Not applicable</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
-            <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built-in</td><td>❌ Not included</td></tr>
-            <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
-            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built-in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
-            <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema-aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
-            <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
-            <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
-            <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built-in</td><td>⚠️ External design needed</td></tr>
-          </tbody>
+        <tbody>
+          <tr data-tags="build"><td>Build-Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
+          <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>❌ Not applicable</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
+          <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built-in</td><td>❌ Not included</td></tr>
+          <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
+          <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built-in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
+          <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema-aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
+          <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
+          <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
+          <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built-in</td><td>⚠️ External design needed</td></tr>
+        </tbody>
         </table>
       </div>
       <div class="space"></div>
@@ -707,13 +699,13 @@ dotnet add package Cerbi.Governance.Runtime
       </div>
     </section>
 
-    <!-- Architecture -->
+    <!-- ARCHITECTURE -->
     <section id="architecture" class="container section">
       <h2>Architecture & Flow</h2>
       <div class="grid">
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
-<pre class="kbd" style="display:block;padding:14px;white-space:pre-wrap;background:rgba(255,90,49,.06);border:1px solid var(--ring);border-radius:12px"><code>Application (Serilog / NLog / MEL / CerbiStream)
+          <pre class="kbd" style="display:block;padding:14px;white-space:pre-wrap;background:rgba(255,77,0,.06);border:1px solid rgba(255,77,0,.25);border-radius:12px"><code>Application (Serilog / NLog / MEL / CerbiStream)
   │
   ▼
 CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
@@ -730,14 +722,14 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <img src="/assets/architecture-diagram.png" alt="CerbiSuite architecture diagram" style="width:100%;display:block"/>
+            <img src="/assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
-          <div class="img-cap">Architecture overview — governance flows from CerbiShield across all logging integrations.</div>
+          <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="/assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>
     </section>
 
-    <!-- Contact -->
+    <!-- CONTACT -->
     <section id="contact" class="container section">
       <h2>Get in Touch</h2>
       <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
@@ -753,16 +745,16 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
             <div class="img-frame" role="img" aria-label="Team photo placeholder">
               <svg viewBox="0 0 1200 675" width="100%" height="100%">
                 <rect width="1200" height="675" fill="transparent"/>
-                <rect x="120" y="220" width="180" height="180" rx="14" fill="#0d1310" stroke="#132218"/>
-                <rect x="360" y="220" width="180" height="180" rx="14" fill="#0d1310" stroke="#132218"/>
-                <rect x="600" y="220" width="180" height="180" rx="14" fill="#0d1310" stroke="#132218"/>
-                <rect x="840" y="220" width="180" height="180" rx="14" fill="#0d1310" stroke="#132218"/>
+                <rect x="120" y="220" width="180" height="180" rx="14" fill="#0e1613" stroke="#1d2b24"/>
+                <rect x="360" y="220" width="180" height="180" rx="14" fill="#0e1613" stroke="#1d2b24"/>
+                <rect x="600" y="220" width="180" height="180" rx="14" fill="#0e1613" stroke="#1d2b24"/>
+                <rect x="840" y="220" width="180" height="180" rx="14" fill="#0e1613" stroke="#1d2b24"/>
                 <g transform="translate(120,440)">
-                  <rect x="0" y="0" width="900" height="120" rx="12" fill="#0b1310" stroke="#132218"/>
-                  <text x="24" y="40" fill="#a3b9a8" font-family="Inter, ui-sans-serif" font-size="20" font-weight="600">
+                  <rect x="0" y="0" width="900" height="120" rx="12" fill="#0a120f" stroke="#1d2b24"/>
+                  <text x="24" y="40" fill="#a7b7b0" font-family="Inter, ui-sans-serif" font-size="20" font-weight="600">
                     Enterprise-ready. Your tenant. Your rules.
                   </text>
-                  <text x="24" y="78" fill="#6d8476" font-family="Inter, ui-sans-serif" font-size="16">
+                  <text x="24" y="78" fill="#7e9189" font-family="Inter, ui-sans-serif" font-size="16">
                     RBAC, audit logs, and governance aligned to your policies.
                   </text>
                 </g>
@@ -791,9 +783,9 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     </div>
   </footer>
 
-  <!-- Command palette shell -->
+  <!-- Command palette shells -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
-    <div class="cmdk glass" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header">
         <span class="kbd" aria-hidden="true">⌘K</span>
         <input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" />
@@ -802,7 +794,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     </div>
   </div>
 
-  <!-- Cerbi scripts -->
-  <script defer src="scripts/cerbi.js"></script>
+  <!-- Scripts -->
+  <script src="/scripts/cerbi-sky.js" defer></script>
 </body>
 </html>
