@@ -1,5 +1,4 @@
 /* ===================== Cerbi Forest Theme (Deep Greens + Hot Orange) ===================== */
-
 :root{
   --bg:#0a120f; --panel:#0d1511; --panel-2:#0f1c17;
   --text:#e5e7eb; --muted:#98a6a0;
@@ -45,7 +44,7 @@
   --forest-1:rgba(7,92,60,.36);
 }
 
-/* ===================== Background ===================== */
+/* ===================== Background layers ===================== */
 *{box-sizing:border-box}
 html,body{height:100%}
 html{
@@ -88,7 +87,26 @@ body{
 /* Star canvas */
 .sky{position:fixed;inset:0;z-index:-4;display:block}
 
-/* Forest (fixed) with blend shim to avoid “block” seam */
+/* NEW: Background illustration layer (fixed) */
+.bg-illustration{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:10vh;
+  width:min(1100px, 88vw);
+  max-height:70vh;
+  object-fit:contain;
+  z-index:-2;               /* sits above forest (-3) and below spotlight (-2 same stack but later in DOM) */
+  pointer-events:none;
+  opacity:.88;
+  filter: drop-shadow(0 10px 26px rgba(255,77,0,.12));
+  image-rendering: -webkit-optimize-contrast;
+}
+@media (max-width: 820px){
+  .bg-illustration{ width:92vw; bottom:12vh; opacity:.78; }
+}
+
+/* Forest (fixed) with blend shim */
 .forest{position:fixed;left:0;right:0;bottom:0;height:30vh;pointer-events:none;z-index:-3;isolation:isolate}
 .forest::before{content:"";position:absolute;left:0;right:0;bottom:-1px;height:120%;
   background: linear-gradient(to top, var(--bg-end) 0%, transparent 65%); z-index:-1}
@@ -163,11 +181,6 @@ a:hover{text-decoration:underline}
   rgba(12,17,24,0.55)}
 .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
-/* Signature artwork helpers */
-.sig-art{position:relative;display:grid;place-items:center;padding:16px;background:radial-gradient(80% 120% at 70% -20%, rgba(255,77,0,.12), transparent 60%)}
-.sig-art svg{display:block;width:100%;height:100%}
-.sig-art .floating{position:absolute;inset:auto 6% 6% auto; width:min(220px,28vw); filter:drop-shadow(0 8px 22px rgba(255,77,0,.25)); opacity:.9}
-
 /* Footer */
 .footer{padding:40px 0;color:var(--muted);font-size:14px;border-top:1px solid rgba(127,148,179,.18);margin-top:32px}
 .tag{display:inline-block;padding:4px 10px;border:1px solid rgba(127,148,179,.25);border-radius:999px;font-size:12px;color:var(--muted)}
@@ -186,20 +199,6 @@ a:hover{text-decoration:underline}
 .cmdk .list{max-height:50vh;overflow:auto;background:var(--panel-2)}
 .cmdk .item{padding:12px 14px;border-bottom:1px solid rgba(127,148,179,.15);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .cmdk .item:hover{background:rgba(255,255,255,.05)}
-
-/* Governance demo */
-.demo{display:grid;grid-template-columns: 1fr 1fr; gap:16px}
-.demo .pane{padding:12px;border-radius:12px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
-.demo pre{margin:0;max-height:260px;overflow:auto}
-.switch{position:relative;width:52px;height:30px;background:#223046;border-radius:999px;border:1px solid rgba(127,148,179,.35);cursor:pointer}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;background:white;border-radius:50%;transition:left .22s var(--easing)}
-.switch.on{background:var(--accent)}
-.switch.on::after{left:25px}
-
-/* Compare filters */
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.filter{padding:6px 10px;border-radius:999px;border:1px solid rgba(127,148,179,.25);cursor:pointer}
-.filter.active{background:rgba(255,77,0,.18);border-color:var(--ring)}
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce){
@@ -236,22 +235,11 @@ a:hover{text-decoration:underline}
   .btn{padding:12px 14px}
   .card{padding:14px}
 
-  .demo{grid-template-columns: 1fr; gap:12px}
-  .demo pre{max-height: 220px}
-
   table{width:100%; border-collapse: collapse}
   thead th{position: sticky; top:0; background: var(--panel)}
   .glass[style*="overflow-x:auto"], .glass:has(table){-webkit-overflow-scrolling: touch}
 
   .footer .container{flex-direction:column; align-items:flex-start; gap:12px}
-}
-
-/* Touch devices */
-@media (hover: none), (pointer: coarse){
-  .tilt{transform:none !important}
-  .tilt .glare{display:none !important}
-  .spotlight{display:none}
-  .nav a:hover{background: transparent}
 }
 
 /* XS */
