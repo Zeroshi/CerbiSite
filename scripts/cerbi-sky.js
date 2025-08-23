@@ -1,9 +1,4 @@
-/* Cerbi “Sky + Forest” runtime
-   - Scroll-driven gradient (deep green dusk → night)
-   - Fixed starfield with subtle twinkle + tiny constellations
-   - iPhone/Safari friendly (caps DPR, passive listeners, fixed-attachment fallback)
-   - Also wires up theme toggle, mobile nav, progress bar, copy buttons, command palette, compare filters
-*/
+/* Cerbi Forest JS — stars, gradient scroll, interactions */
 (() => {
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -47,14 +42,10 @@
   setProgress();
 
   // Reveal-on-scroll
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
-    }, { threshold: 0.12 });
-    $$('.reveal').forEach(el => io.observe(el));
-  } else {
-    $$('.reveal').forEach(el => el.classList.add('in'));
-  }
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
+  }, { threshold: 0.12 }) : null;
+  $$('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
 
   // Tilt + glare
   $$('.tilt').forEach(card => {
@@ -113,32 +104,56 @@
     if(e.key==='Escape') closeCmd();
   });
 
-  // Compare filters (if present)
+  // Compare filters
   const compareTable = $('#compareTable');
-  if (compareTable){
-    const filterBtns = $$('.filter');
-    const rows = Array.from(compareTable.querySelectorAll('tbody tr'));
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tag = btn.dataset.tag;
-        rows.forEach(tr => {
-          if (tag === 'all') { tr.style.display = ''; return; }
-          const tags = tr.dataset.tags || '';
-          tr.style.display = tags.includes(tag) ? '' : 'none';
-        });
+  const filterBtns = $$('.filter');
+  const rows = compareTable ? $$('tbody tr', compareTable) : [];
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tag = btn.dataset.tag;
+      rows.forEach(tr => {
+        if (tag === 'all') { tr.style.display = ''; return; }
+        const tags = tr.dataset.tags || '';
+        tr.style.display = tags.includes(tag) ? '' : 'none';
       });
     });
-  }
+  });
 
-  // Back-to-top helper (optional)
-  const toTop = document.createElement('button');
-  toTop.id='toTop'; toTop.className='btn'; toTop.type='button'; toTop.title='Back to top';
-  toTop.setAttribute('aria-label','Back to top'); toTop.textContent='↑'; document.body.appendChild(toTop);
-  const toggleToTop = () => toTop.classList.toggle('show', scrollY>300);
-  document.addEventListener('scroll', toggleToTop, { passive:true }); toggleToTop();
-  toTop.addEventListener('click', ()=>scrollTo({ top:0, behavior:'smooth' }));
+  // Governance demo logic
+  const piiSwitch = $('#piiSwitch');
+  const inputJson = $('#inputJson');
+  const evalJson = $('#evalJson');
+  const baseLog = {
+    Timestamp: new Date().toISOString(),
+    Level: "Information",
+    Message: "Checkout complete",
+    Properties: { OrderId: "A-102934", Amount: 129.99, UserId: "u-4821" }
+  };
+  const policies = {
+    RequiredFields: ["Timestamp", "Level", "Message", "Properties.OrderId"],
+    ForbiddenFields: ["Properties.SSN", "Properties.CreditCardNumber", "Properties.DOB"]
+  };
+  function has(path, obj){ return path.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj) !== undefined; }
+  function evaluate(log){
+    const violations = [];
+    for(const f of policies.RequiredFields) if(!has(f, log)) violations.push({ field:f, type:"RequiredMissing", severity:"Error" });
+    for(const f of policies.ForbiddenFields) if(has(f, log)) violations.push({ field:f, type:"ForbiddenPresent", severity:"Error" });
+    return { outcome: violations.length ? "NonCompliant" : "Compliant", violations };
+  }
+  function renderDemo(includePII){
+    const sample = JSON.parse(JSON.stringify(baseLog));
+    if(includePII){ sample.Properties.CreditCardNumber = "4111 1111 1111 1111"; sample.Properties.DOB = "1990-01-01"; }
+    if (inputJson) inputJson.textContent = JSON.stringify(sample, null, 2);
+    if (evalJson)  evalJson.textContent  = JSON.stringify(evaluate(sample), null, 2);
+  }
+  if (piiSwitch && inputJson && evalJson) {
+    renderDemo(false);
+    const setSwitch = (on) => { piiSwitch.classList.toggle('on', on); piiSwitch.setAttribute('aria-checked', on ? 'true' : 'false'); renderDemo(on); };
+    piiSwitch.addEventListener('click', () => setSwitch(!piiSwitch.classList.contains('on')));
+    piiSwitch.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }});
+  }
 
   // ================== Scroll‑driven background palette ==================
   const palettes = [
@@ -163,7 +178,7 @@
 
   const startRGB = palettes.map(p => hexToRgb(p.start));
   const endRGB   = palettes.map(p => hexToRgb(p.end));
-  (() => { const first = palettes[0]; document.documentElement.style.setProperty('--bg-start', first.start); document.documentElement.style.setProperty('--bg-end', first.end); })();
+  (() => { const first = palettes[0]; html.style.setProperty('--bg-start', first.start); html.style.setProperty('--bg-end', first.end); })();
 
   let ticking = false;
   function updateBg(){
@@ -174,18 +189,18 @@
     const i = Math.min(segs - 1, Math.floor(pos));
     const t = ease(Math.min(1, Math.max(0, pos - Math.floor(pos))));
     const i2 = Math.min(segs, i + 1);
-    const s = (i2 >= startRGB.length) ? startRGB[i] : {
+    const s = i2 >= startRGB.length ? startRGB[i] : {
       r: Math.round(startRGB[i].r + (startRGB[i2].r - startRGB[i].r) * t),
       g: Math.round(startRGB[i].g + (startRGB[i2].g - startRGB[i].g) * t),
       b: Math.round(startRGB[i].b + (startRGB[i2].b - startRGB[i].b) * t)
     };
-    const e = (i2 >= endRGB.length) ? endRGB[i] : {
+    const e = i2 >= endRGB.length ? endRGB[i] : {
       r: Math.round(endRGB[i].r + (endRGB[i2].r - endRGB[i].r) * t),
       g: Math.round(endRGB[i].g + (endRGB[i2].g - endRGB[i].g) * t),
       b: Math.round(endRGB[i].b + (endRGB[i2].b - endRGB[i].b) * t)
     };
-    document.documentElement.style.setProperty('--bg-start', rgbToHex(s));
-    document.documentElement.style.setProperty('--bg-end',   rgbToHex(e));
+    html.style.setProperty('--bg-start', rgbToHex(s));
+    html.style.setProperty('--bg-end',   rgbToHex(e));
     ticking = false;
   }
   function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(updateBg); } }
@@ -198,60 +213,49 @@
   const canvas = $('#sky');
   if (canvas) {
     const ctx = canvas.getContext('2d');
-    let W = 0, H = 0, DPR = 1;
+    let W=0, H=0, DPR=1;
     const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let stars = [], lines = [];
+    let stars=[], lines=[];
     const STAR_COUNT_BASE = 180;
 
     function resize(){
       DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
       W = Math.floor(innerWidth * DPR); H = Math.floor(innerHeight * DPR);
-      canvas.width = W; canvas.height = H;
-      canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+      canvas.width=W; canvas.height=H; canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px';
       makeStars();
     }
     function rnd(min,max){ return Math.random()*(max-min)+min; }
     function makeStars(){
       const count = Math.floor(STAR_COUNT_BASE * (innerWidth*innerHeight) / (1280*720));
-      stars = new Array(count).fill(0).map(() => ({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        r: rnd(0.5,1.6)*DPR,
-        a: rnd(0.35,0.85),
-        tw: rnd(0.001,0.004),
-        p: Math.random()*Math.PI*2
-      }));
-      const CL = Math.max(1, Math.floor(count/180)); lines=[];
+      stars = new Array(count).fill(0).map(()=>({ x:Math.random()*W, y:Math.random()*H, r:rnd(0.5,1.6)*DPR, a:rnd(0.35,0.85), tw:rnd(0.001,0.004), p:Math.random()*Math.PI*2 }));
+      const CL=Math.max(1, Math.floor(count/180)); lines=[];
       for(let c=0;c<CL;c++){ const start=Math.floor(Math.random()*(count-5)); const len=3+Math.floor(Math.random()*3); const idxs=[]; for(let i=0;i<len;i++) idxs.push(start+i); lines.push(idxs); }
     }
-
     function draw(t){
       ctx.clearRect(0,0,W,H);
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
+      ctx.save(); ctx.globalCompositeOperation='screen';
       for(const s of stars){
         const tw = prefersReduced ? 0 : (Math.sin(s.p + t*0.001*s.tw)*0.25);
         const a = Math.max(0, Math.min(1, s.a + tw));
-        ctx.globalAlpha = a;
+        ctx.globalAlpha=a;
         ctx.beginPath();
         ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(255,244,230,0.9)';
+        ctx.fillStyle='#ffffff';
         ctx.fill();
       }
       ctx.restore();
       ctx.save(); ctx.globalAlpha=0.08; ctx.strokeStyle='#ffe0c2'; ctx.lineWidth=Math.max(0.5,1*DPR);
       for(const group of lines){
         ctx.beginPath();
-        const s0 = stars[group[0]]; if(!s0) continue;
+        const s0=stars[group[0]]; if(!s0) continue;
         ctx.moveTo(s0.x,s0.y);
         for(let i=1;i<group.length;i++){ const sn=stars[group[i]]; if(!sn) continue; ctx.lineTo(sn.x,sn.y); }
         ctx.stroke();
       }
       ctx.restore();
     }
-
-    let rafId = 0, last = performance.now();
-    function loop(now){ last = now; draw(now); rafId = requestAnimationFrame(loop); }
+    let rafId=0;
+    function loop(now){ draw(now); rafId=requestAnimationFrame(loop); }
     document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cancelAnimationFrame(rafId); else rafId=requestAnimationFrame(loop); });
     window.addEventListener('resize', ()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,120); }, { passive:true });
     resize(); rafId=requestAnimationFrame(loop);
