@@ -1,361 +1,252 @@
-/* Cerbi “Sky” runtime (no-trees edition)
-   - Smooth scroll-driven background (no abrupt change)
-   - Fixed starfield w/ twinkle + real constellations (Big Dipper, Cassiopeia, Orion, Cygnus, Scorpius)
-   - Optional PNG layer between stars and content (#bgImage tries /background.png then /assets/background.png)
-   - Theme toggle, mobile nav, progress bar, reveal, tilt, copy buttons, command palette, compare filters, governance demo
+/* Cerbi Sky — twinkling stars + occasional shooting stars (no constellations)
+   - Slow, per-star sine twinkle
+   - Random shooting stars with short tails
+   - DPR capped for perf; pauses on background tabs
+   - Respects prefers-reduced-motion
 */
 
 (() => {
-  const $  = (s, r=document) => r.querySelector(s);
-  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
-  const html = document.documentElement;
+  const canvas = document.getElementById('sky');
+  if (!canvas) return;
 
-  /* ---------------- Year ---------------- */
-  const y = $('#year');
-  if (y) y.textContent = new Date().getFullYear();
+  const ctx = canvas.getContext('2d');
 
-  /* ---------------- Theme ---------------- */
-  const themeBtn = $('#themeBtn');
-  const prefersLight = matchMedia('(prefers-color-scheme: light)').matches;
-  const initTheme = localStorage.getItem('theme') || (prefersLight ? 'light' : 'dark');
-  html.setAttribute('data-theme', initTheme);
-  themeBtn?.addEventListener('click', () => {
-    const now = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', now);
-    localStorage.setItem('theme', now);
-  });
+  // ====== Tunables ==========================================================
+  const MAX_DPR = 2;                 // cap device pixel ratio for perf
+  const BASE_DENSITY = 1 / 6500;     // stars per screen pixel (lower = fewer)
+  const STAR_SIZE_MIN = 0.7;         // device-space px (before DPR applied)
+  const STAR_SIZE_MAX = 1.8;
+  const TWINKLE_SPEED_MIN = 0.03;    // cycles per second
+  const TWINKLE_SPEED_MAX = 0.10;
+  const SHOOTING_STAR_EVERY = [6,14]; // seconds (min,max) between spawns
+  const SHOOT_SPEED_PX = [900, 1500]; // px/sec head speed (in CSS px)
+  const SHOOT_LEN_PX = [120, 220];    // trail length (in CSS px)
+  const SHOOT_ANGLE_DEG = [18, 32];   // shallow angle for "meteor" vibe
+  const SHOOT_ALPHA = 0.85;
+  const SKY_TINT = [0, 0, 0, 0.06];   // subtle vertical tint overlay (rgba)
 
-  /* ---------------- Mobile nav ---------------- */
-  const navToggle = $('#navToggle');
-  const primaryNav = $('#primaryNav');
-  navToggle?.addEventListener('click', () => {
-    primaryNav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', primaryNav.classList.contains('open') ? 'true' : 'false');
-  });
+  // Reduced motion adjustments
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TWINKLE_AMPL_MIN = REDUCED ? 0.05 : 0.18;
+  const TWINKLE_AMPL_MAX = REDUCED ? 0.10 : 0.30;
+  const ENABLE_SHOOTING = !REDUCED;
 
-  /* ---------------- Cursor spotlight ---------------- */
-  const spotlight = $('.spotlight');
-  document.addEventListener('pointermove', (e) => {
-    spotlight?.style.setProperty('--mx', e.clientX + 'px');
-    spotlight?.style.setProperty('--my', e.clientY + 'px');
-  }, { passive: true });
+  // ====== State =============================================================
+  let dpr = Math.max(1, Math.min(MAX_DPR, window.devicePixelRatio || 1));
+  let Wcss = 0, Hcss = 0;   // CSS pixel size
+  let W = 0, H = 0;         // canvas pixel size
+  let stars = [];
+  let meteors = [];
+  let rafId = 0;
+  let lastTs = performance.now();
+  let nextMeteorAt = scheduleNextMeteor();
 
-  /* ---------------- Progress bar ---------------- */
-  const progress = $('#progress');
-  function setProgress() {
-    const max = document.body.scrollHeight - innerHeight;
-    const pct = Math.max(0, Math.min(1, scrollY / (max || 1)));
-    if (progress) progress.style.width = (pct * 100) + '%';
-  }
-  document.addEventListener('scroll', setProgress, { passive: true });
-  setProgress();
+  // ====== Helpers ===========================================================
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const randInt = (a, b) => Math.floor(rand(a, b + 1));
+  const toRad = (deg) => deg * Math.PI / 180;
 
-  /* ---------------- Reveal-on-scroll ---------------- */
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
-    }, { threshold: 0.12 });
-    $$('.reveal').forEach(el => io.observe(el));
-  } else {
-    $$('.reveal').forEach(el => el.classList.add('in'));
+  function scheduleNextMeteor() {
+    const s = rand(SHOOTING_STAR_EVERY[0], SHOOTING_STAR_EVERY[1]) * 1000;
+    return performance.now() + s;
   }
 
-  /* ---------------- Tilt + glare ---------------- */
-  $$('.tilt').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      const gx = ((e.clientX - r.left) / r.width) * 100;
-      const gy = ((e.clientY - r.top) / r.height) * 100;
-      card.style.setProperty('--gx', gx + '%');
-      card.style.setProperty('--gy', gy + '%');
-    }, { passive: true });
-  });
-
-  /* ---------------- Copy buttons ---------------- */
-  $$('[data-copy]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-copy');
-      const el = target ? document.querySelector(target) : null;
-      const text = el ? el.textContent : '';
-      if (!text) return;
-      navigator.clipboard.writeText(text).then(() => {
-        const old = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => (btn.textContent = old), 1000);
-      });
-    });
-  });
-
-  /* ---------------- Command palette ---------------- */
-  const cmdBtn = $('#cmdBtn');
-  const overlay = $('#cmdkOverlay');
-  const cmdk = $('.cmdk', overlay || undefined);
-  const input = $('#cmdkInput');
-  const list = $('#cmdkList');
-  const commands = [
-    { label: '📦 View Packages', action: () => location.hash = '#packages' },
-    { label: '🔐 Governance', action: () => location.hash = '#governance' },
-    { label: '🧭 Architecture', action: () => location.hash = '#architecture' },
-    { label: '📣 Contact', action: () => location.hash = '#contact' },
-  ];
-  function renderCmd(q){
-    const ql = (q||'').trim().toLowerCase();
-    if (!list) return;
-    list.innerHTML = '';
-    commands.filter(c => !ql || c.label.toLowerCase().includes(ql)).forEach(c => {
-      const item = document.createElement('div'); item.className='item';
-      item.innerHTML = `<span>${c.label}</span><span class="kbd">Enter</span>`; item.tabIndex=0;
-      item.addEventListener('click', ()=>{ c.action(); closeCmd(); });
-      item.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ c.action(); closeCmd(); }});
-      list.appendChild(item);
-    });
-    if(!list.children.length){
-      const none = document.createElement('div'); none.className='item'; none.textContent='No results';
-      list.appendChild(none);
-    }
-  }
-  function openCmd(){ if(!overlay || !cmdk || !input) return; overlay.style.display='block'; cmdk.style.display='block'; input.value=''; renderCmd(''); setTimeout(()=>input.focus(),0); }
-  function closeCmd(){ if(!overlay || !cmdk) return; overlay.style.display='none'; cmdk.style.display='none'; }
-  cmdBtn?.addEventListener('click', openCmd);
-  overlay?.addEventListener('click', (e)=>{ if(e.target===overlay) closeCmd(); });
-  input?.addEventListener('input', (e)=> renderCmd(e.target.value));
-  document.addEventListener('keydown', (e)=>{
-    if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmd(); }
-    if(e.key==='Escape') closeCmd();
-  });
-
-  /* ---------------- Compare filters ---------------- */
-  const compareTable = $('#compareTable');
-  if (compareTable){
-    const filterBtns = $$('.filter');
-    const rows = $$('tbody tr', compareTable);
-    filterBtns.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        filterBtns.forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        const tag = btn.dataset.tag || 'all';
-        rows.forEach(tr=>{
-          if(tag==='all'){ tr.style.display=''; return; }
-          const tags = tr.dataset.tags || '';
-          tr.style.display = tags.includes(tag) ? '' : 'none';
-        });
-      });
-    });
+  function sizeCanvas() {
+    dpr = Math.max(1, Math.min(MAX_DPR, window.devicePixelRatio || 1));
+    Wcss = window.innerWidth;
+    Hcss = window.innerHeight;
+    W = Math.floor(Wcss * dpr);
+    H = Math.floor(Hcss * dpr);
+    canvas.width = W;
+    canvas.height = H;
+    canvas.style.width = Wcss + 'px';
+    canvas.style.height = Hcss + 'px';
+    makeStars();
   }
 
-  /* ---------------- Governance demo ---------------- */
-  const piiSwitch = $('#piiSwitch');
-  const inputJson = $('#inputJson');
-  const evalJson = $('#evalJson');
-  const baseLog = { Timestamp:new Date().toISOString(), Level:"Information", Message:"Checkout complete", Properties:{ OrderId:"A-102934", Amount:129.99, UserId:"u-4821" } };
-  const policies = { RequiredFields:["Timestamp","Level","Message","Properties.OrderId"], ForbiddenFields:["Properties.SSN","Properties.CreditCardNumber","Properties.DOB"] };
-  const hasPath = (path,obj)=> path.split('.').reduce((o,k)=> (o&&k in o)?o[k]:undefined, obj)!==undefined;
-  const evaluate = (log)=>{ const violations=[]; for(const f of policies.RequiredFields) if(!hasPath(f,log)) violations.push({field:f,type:"RequiredMissing",severity:"Error"}); for(const f of policies.ForbiddenFields) if(hasPath(f,log)) violations.push({field:f,type:"ForbiddenPresent",severity:"Error"}); return { outcome:violations.length?"NonCompliant":"Compliant", violations }; };
-  const renderDemo = (includePII)=>{ const sample=JSON.parse(JSON.stringify(baseLog)); if(includePII){ sample.Properties.CreditCardNumber="4111 1111 1111 1111"; sample.Properties.DOB="1990-01-01"; } if(inputJson) inputJson.textContent=JSON.stringify(sample,null,2); if(evalJson) evalJson.textContent=JSON.stringify(evaluate(sample),null,2); };
-  if (piiSwitch && inputJson && evalJson){
-    const setSwitch = (on)=>{ piiSwitch.classList.toggle('on', on); piiSwitch.setAttribute('aria-checked', on?'true':'false'); renderDemo(on); };
-    renderDemo(false);
-    piiSwitch.addEventListener('click', ()=>setSwitch(!piiSwitch.classList.contains('on')));
-    piiSwitch.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }});
-  }
-
-  /* ---------------- Scroll-driven background palette ---------------- */
-  const palettes = [
-    { start: "#09120f", end: "#0e1b15" },
-    { start: "#0a1a14", end: "#0b2a21" },
-    { start: "#0b2a21", end: "#0c2333" },
-    { start: "#0c2333", end: "#140f1a" }
-  ];
-  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-  const hexToRgb = (hex) => {
-    const m = /^#?([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})$/i.exec(hex);
-    return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : { r:0,g:0,b:0 };
-  };
-  const rgbToHex = ({r,g,b}) => `#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
-  const lerp = (a,b,t) => a + (b - a) * t;
-  const lerpColor = (c1, c2, t) => ({ r: Math.round(lerp(c1.r, c2.r, t)), g: Math.round(lerp(c1.g, c2.g, t)), b: Math.round(lerp(c1.b, c2.b, t)) });
-  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
-
-  const startRGB = palettes.map(p => hexToRgb(p.start));
-  const endRGB   = palettes.map(p => hexToRgb(p.end));
-  (function initBgVars(){ const first = palettes[0]; html.style.setProperty('--bg-start', first.start); html.style.setProperty('--bg-end', first.end); })();
-
-  let ticking = false;
-  function updateBg(){
-    const docHeight = Math.max(1, document.body.scrollHeight - window.innerHeight);
-    const p = clamp(window.scrollY / docHeight, 0, 1);
-    const segs = Math.max(1, palettes.length - 1);
-    const pos = p * segs;
-    const i = Math.min(segs - 1, Math.floor(pos));
-    const t = ease(clamp(pos - i, 0, 1));
-    const i2 = Math.min(segs, i + 1);
-    const s = lerpColor(startRGB[i], startRGB[i2], t);
-    const e = lerpColor(endRGB[i],   endRGB[i2],   t);
-    html.style.setProperty('--bg-start', rgbToHex(s));
-    html.style.setProperty('--bg-end',   rgbToHex(e));
-    ticking = false;
-  }
-  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(updateBg); } }
-  addEventListener('scroll', onScroll, { passive:true });
-  addEventListener('resize', () => requestAnimationFrame(updateBg), { passive:true });
-  addEventListener('load', updateBg, { once:true });
-  updateBg();
-
-  /* ---------------- Optional Background PNG Loader ---------------- */
-  (function loadBgPNG(){
-    const bg = $('#bgImage');
-    if (!bg) return;
-    const tryUrls = ['/background.png', '/assets/background.png'];
-    let idx = 0;
-    const tryNext = () => {
-      if (idx >= tryUrls.length) return; // fall back to glow (CSS)
-      const url = tryUrls[idx++] + `?v=${Date.now()}`; // bust cache once
-      const img = new Image();
-      img.onload = () => {
-        if (img.naturalWidth > 40) {
-          html.style.setProperty('--bg-img', `url("${url.replace(/"/g, '\\"')}")`);
-          bg.classList.add('show');
-        }
+  function makeStars() {
+    const target = clamp(Math.round(Wcss * Hcss * BASE_DENSITY), 120, 420);
+    stars = new Array(target).fill(0).map(() => {
+      const rCss = rand(STAR_SIZE_MIN, STAR_SIZE_MAX);
+      return {
+        // positions in device pixels for tight drawing
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: rCss * dpr * rand(0.8, 1.2),
+        // alpha = base + amp * sin(phase + t*omega)
+        base: rand(0.35, 0.70),
+        amp: rand(TWINKLE_AMPL_MIN, TWINKLE_AMPL_MAX),
+        w: rand(TWINKLE_SPEED_MIN, TWINKLE_SPEED_MAX) * 2 * Math.PI, // rad/s
+        phase: Math.random() * Math.PI * 2
       };
-      img.onerror = tryNext;
-      img.src = url;
-    };
-    tryNext();
-  })();
+    });
+  }
 
-  /* ---------------- Stars & Constellations ---------------- */
-  const canvas = $('#sky');
-  if (canvas) {
-    const ctx = canvas.getContext('2d', { alpha: true });
-    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function spawnMeteor() {
+    // Choose a spawn edge & direction that goes generally down-right
+    // We'll spawn near top-left or left edge for a pleasing diagonal.
+    const edge = Math.random() < 0.65 ? 'top' : 'left';
+    const angle = toRad(rand(SHOOT_ANGLE_DEG[0], SHOOT_ANGLE_DEG[1])); // from horizontal
+    const speedCss = rand(SHOOT_SPEED_PX[0], SHOOT_SPEED_PX[1]); // px/sec (CSS px)
+    const speed = speedCss * dpr;
+    const lenCss = rand(SHOOT_LEN_PX[0], SHOOT_LEN_PX[1]);
+    const len = lenCss * dpr;
 
-    let dpr = Math.max(1, Math.min(2, devicePixelRatio || 1));
-    let W = 0, H = 0;
-    let stars = [];
-    let constellations = [];
-
-    function resize(){
-      dpr = Math.max(1, Math.min(2, devicePixelRatio || 1));
-      W = Math.floor(innerWidth * dpr);
-      H = Math.floor(innerHeight * dpr);
-      canvas.width = W;
-      canvas.height = H;
-      canvas.style.width = innerWidth + 'px';
-      canvas.style.height = innerHeight + 'px';
-      buildField();
+    let x, y, vx, vy;
+    if (edge === 'top') {
+      x = rand(-0.10 * W, 0.35 * W); // slightly off-screen to left → left third
+      y = rand(-0.08 * H, 0.12 * H);
+      vx = Math.cos(angle) * speed;
+      vy = Math.sin(angle) * speed;
+    } else {
+      x = rand(-0.08 * W, 0.05 * W);
+      y = rand(0.05 * H, 0.35 * H);
+      vx = Math.cos(angle) * speed;
+      vy = Math.sin(angle) * speed;
     }
 
-    function rnd(min,max){ return Math.random()*(max-min)+min; }
+    meteors.push({
+      x, y, vx, vy, len,
+      life: 0,
+      ttl: rand(0.7, 1.2),   // seconds visible
+      width: Math.max(1.1 * dpr, 1.6 * dpr),
+      alpha: SHOOT_ALPHA
+    });
+  }
 
-    function buildField(){
-      // Star count scales with area; cap for perf
-      const base = 200;
-      const scale = (innerWidth*innerHeight) / (1280*720);
-      const count = Math.min(500, Math.max(140, Math.floor(base * scale)));
+  function drawTint() {
+    if (!SKY_TINT) return;
+    const [r, g, b, a] = SKY_TINT;
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, `rgba(${r},${g},${b},${a})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
 
-      stars = new Array(count).fill(0).map(() => ({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        r: rnd(0.6,1.9) * dpr,
-        a: rnd(0.45,0.95),
-        tw: rnd(0.0008,0.0030),
-        p: Math.random()*Math.PI*2
-      }));
+  function drawStars(tSec) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    for (const s of stars) {
+      const alpha = clamp(s.base + s.amp * Math.sin(s.phase + s.w * tSec), 0, 1);
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 245, 235, 0.95)';
+      ctx.fill();
 
-      constellations = makeConstellations();
-    }
-
-    function norm(pt){ return { x: pt.x * W, y: pt.y * H }; }
-
-    // Approximate shapes in normalized screen space (not astronomically exact, but recognizable)
-    function makeConstellations(){
-      const sets = [
-        // Big Dipper (Ursa Major)
-        [{x:.08,y:.18},{x:.12,y:.16},{x:.17,y:.18},{x:.22,y:.22},{x:.30,y:.20},{x:.36,y:.16},{x:.42,y:.18}],
-        // Cassiopeia (W shape)
-        [{x:.55,y:.12},{x:.58,y:.16},{x:.62,y:.12},{x:.66,y:.16},{x:.70,y:.12}],
-        // Orion (belt + shoulders)
-        [{x:.72,y:.26},{x:.76,y:.28},{x:.80,y:.30},{x:.76,y:.22},{x:.72,y:.26},{x:.78,y:.20}],
-        // Cygnus (Northern Cross)
-        [{x:.48,y:.10},{x:.50,y:.20},{x:.52,y:.30},{x:.44,y:.22},{x:.56,y:.18}],
-        // Scorpius (tail curve)
-        [{x:.18,y:.30},{x:.22,y:.34},{x:.26,y:.38},{x:.30,y:.36},{x:.33,y:.41}]
-      ];
-      return sets.map(arr => arr.map(norm));
-    }
-
-    function draw(now){
-      // clear
-      ctx.clearRect(0,0,W,H);
-
-      // faint vertical gradient to lift stars off bg
-      const g = ctx.createLinearGradient(0,0,0,H);
-      g.addColorStop(0, 'rgba(0,0,0,0.10)');
-      g.addColorStop(1, 'rgba(0,0,0,0.00)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0,0,W,H);
-
-      // stars
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      for (const s of stars){
-        const tw = prefersReduced ? 0 : (Math.sin(now*s.tw + s.p) * 0.25);
-        const a = Math.max(0, Math.min(1, s.a + tw));
-        ctx.globalAlpha = a;
+      // subtle glow (very cheap)
+      if (!REDUCED) {
+        ctx.globalAlpha = alpha * 0.25;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(255,244,230,0.95)';
+        ctx.arc(s.x, s.y, s.r * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 240, 220, 0.6)';
         ctx.fill();
       }
-      ctx.restore();
-
-      // constellation lines + brighter nodes
-      ctx.save();
-      ctx.globalAlpha = 0.20;
-      ctx.strokeStyle = '#ffe0c2';
-      ctx.lineWidth = Math.max(0.6, 1 * dpr);
-      ctx.shadowColor = 'rgba(255,200,160,0.35)';
-      ctx.shadowBlur = 6 * dpr;
-      for (const group of constellations){
-        if (!group.length) continue;
-        ctx.beginPath();
-        ctx.moveTo(group[0].x, group[0].y);
-        for (let i=1;i<group.length;i++){
-          const p = group[i];
-          ctx.lineTo(p.x, p.y);
-        }
-        ctx.stroke();
-
-        // bright star nodes
-        for (const p of group){
-          ctx.beginPath();
-          ctx.globalAlpha = 0.9;
-          ctx.arc(p.x, p.y, 1.6 * dpr, 0, Math.PI*2);
-          ctx.fillStyle = '#fff2dd';
-          ctx.fill();
-        }
-      }
-      ctx.restore();
     }
-
-    let raf = 0;
-    let last = performance.now();
-    function loop(now){
-      const dt = now - last; // unused but kept for potential future use
-      last = now;
-      draw(now * 0.001);
-      raf = requestAnimationFrame(loop);
-    }
-
-    function onVis(){
-      if (document.hidden) { cancelAnimationFrame(raf); }
-      else { last = performance.now(); raf = requestAnimationFrame(loop); }
-    }
-
-    addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 120); }, { passive:true });
-    document.addEventListener('visibilitychange', onVis);
-
-    resize();
-    raf = requestAnimationFrame(loop);
+    ctx.restore();
   }
+
+  function drawMeteors(dt) {
+    if (!ENABLE_SHOOTING) return;
+
+    // spawn?
+    const now = performance.now();
+    if (now >= nextMeteorAt) {
+      spawnMeteor();
+      nextMeteorAt = scheduleNextMeteor();
+    }
+
+    // update & render
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    for (let i = meteors.length - 1; i >= 0; i--) {
+      const m = meteors[i];
+      m.life += dt;
+
+      // progress 0..1, fade-in then fade-out
+      const p = m.life / m.ttl;
+      if (p >= 1) { meteors.splice(i, 1); continue; }
+
+      // move
+      const move = dt * (m.vx ** 2 + m.vy ** 2) ** 0.5; // not used but can be
+      m.x += m.vx * dt;
+      m.y += m.vy * dt;
+
+      // tail points (from head back along velocity)
+      const nx = m.vx / (Math.hypot(m.vx, m.vy) || 1);
+      const ny = m.vy / (Math.hypot(m.vx, m.vy) || 1);
+      const headX = m.x, headY = m.y;
+      const tailX = headX - nx * m.len;
+      const tailY = headY - ny * m.len;
+
+      // alpha envelope: quick-in, smooth-out
+      const a = m.alpha * (p < 0.2 ? p / 0.2 : 1 - (p - 0.2) / 0.8);
+      ctx.globalAlpha = clamp(a, 0, 1);
+
+      // line width
+      ctx.lineWidth = m.width;
+
+      // gradient along the trail (bright head → transparent tail)
+      const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      grad.addColorStop(0.35, 'rgba(255, 245, 230, 0.25)');
+      grad.addColorStop(0.75, 'rgba(255, 250, 240, 0.9)');
+      grad.addColorStop(1.0, 'rgba(255, 255, 255, 1.0)');
+      ctx.strokeStyle = grad;
+
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(headX, headY);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function draw(ts) {
+    const dt = (ts - lastTs) / 1000; // seconds
+    lastTs = ts;
+
+    // clear
+    ctx.clearRect(0, 0, W, H);
+
+    // very subtle vertical tint to add depth
+    drawTint();
+
+    // time base for twinkle
+    const tSec = ts / 1000;
+
+    // stars & shooting stars
+    drawStars(tSec);
+    drawMeteors(dt);
+
+    rafId = requestAnimationFrame(draw);
+  }
+
+  // ====== Lifecycle =========================================================
+  sizeCanvas();
+  lastTs = performance.now();
+  rafId = requestAnimationFrame(draw);
+
+  // pause when hidden to save battery
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(rafId);
+    } else {
+      lastTs = performance.now();
+      rafId = requestAnimationFrame(draw);
+    }
+  });
+
+  // resize (debounced)
+  let rto;
+  window.addEventListener('resize', () => {
+    clearTimeout(rto);
+    rto = setTimeout(() => {
+      sizeCanvas();
+      // reschedule meteor soon after resize to avoid immediate spawn pops
+      if (ENABLE_SHOOTING) nextMeteorAt = scheduleNextMeteor();
+    }, 120);
+  }, { passive: true });
 })();
