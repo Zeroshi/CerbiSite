@@ -16,69 +16,53 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="/styles/cerbi-theme.css" />
+
+  <!-- Background PNG: responsive preloads (you provide these files in /assets) -->
+  <!-- Recommended exports:
+       - /assets/background.png        (default, ~1920x1080 or 1920x1200)
+       - /assets/background@2x.png     (~3840x2160)
+       - /assets/background@3x.png     (~5760x3240)
+       Optional width-specific:
+       - /assets/background-1280.png, /assets/background-1920.png, /assets/background-2560.png, /assets/background-3840.png
+  -->
+  <link rel="preload" as="image" href="/assets/background.png"
+        imagesrcset="/assets/background-1280.png 1280w,
+                     /assets/background-1920.png 1920w,
+                     /assets/background-2560.png 2560w,
+                     /assets/background-3840.png 3840w"
+        imagesizes="(max-width:640px) 640px,
+                    (max-width:1024px) 1024px,
+                    (max-width:1440px) 1440px,
+                    1920px">
+
+  <!-- Inline override so background uses /assets/background.png + 2x/3x if available -->
+  <style>
+    /* Force the fixed PNG layer to use your assets path by default */
+    #bgImage { --bg-img: url('/assets/background.png'); --bg-img-2x: url('/assets/background@2x.png'); --bg-img-3x: url('/assets/background@3x.png'); }
+    /* If image-set is supported, pick the best resolution automatically */
+    @supports (background-image: image-set(url('/assets/background.png') 1x)) {
+      .bg-image::before {
+        background-image: image-set(
+          var(--bg-img) 1x,
+          var(--bg-img-2x, var(--bg-img)) 2x,
+          var(--bg-img-3x, var(--bg-img-2x, var(--bg-img))) 3x
+        ) !important;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Sitewide subtle tiles + sky + background illustration + forest (fixed layers) -->
+  <!-- Sitewide subtle tiles + sky (fixed layers) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
 
-  <!-- INSERTED: Fixed background PNG (between stars and forest, below UI/models) -->
-  <img
-    class="bg-illustration"
-    src="/background.png"
-    alt="Background illustration"
-    aria-hidden="true"
-    decoding="async"
-    fetchpriority="low"
-    onerror="if(!this.dataset.fallback){ this.dataset.fallback=1; this.src='https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/background.png'; }"
-  />
+  <!-- Fixed background PNG layer BETWEEN gradient/stars and content -->
+  <!-- It’s visible immediately; JS will still verify & keep it smooth -->
+  <div id="bgImage" class="bg-image show" aria-hidden="true"></div>
 
-  <div class="forest" aria-hidden="true">
-    <svg class="layer l4" viewBox="0 0 1200 220" preserveAspectRatio="none">
-      <g fill="var(--forest-4)">
-        <path d="M0,200 L60,120 L80,160 L100,120 L160,200 Z" />
-        <path d="M200,200 L260,120 L280,160 L300,120 L360,200 Z" />
-        <path d="M400,200 L460,120 L490,170 L520,120 L580,200 Z" />
-        <path d="M620,200 L680,120 L710,170 L740,120 L800,200 Z" />
-        <path d="M840,200 L900,120 L930,170 L960,120 L1020,200 Z" />
-        <path d="M1040,200 L1100,120 L1130,170 L1160,120 L1200,200 Z" />
-      </g>
-    </svg>
-    <svg class="layer l3" viewBox="0 0 1200 220" preserveAspectRatio="none">
-      <g fill="var(--forest-3)">
-        <path d="M0,210 L50,120 L70,160 L90,120 L140,210 Z" />
-        <path d="M170,210 L230,120 L255,170 L280,120 L340,210 Z" />
-        <path d="M360,210 L420,120 L445,165 L470,120 L530,210 Z" />
-        <path d="M560,210 L620,120 L645,165 L670,120 L730,210 Z" />
-        <path d="M760,210 L820,120 L845,165 L870,120 L930,210 Z" />
-        <path d="M960,210 L1020,120 L1045,165 L1070,120 L1130,210 Z" />
-      </g>
-    </svg>
-    <svg class="layer l2" viewBox="0 0 1200 220" preserveAspectRatio="none">
-      <g fill="var(--forest-2)">
-        <path d="M0,220 L40,140 L60,170 L80,140 L120,220 Z" />
-        <path d="M150,220 L190,140 L210,170 L230,140 L270,220 Z" />
-        <path d="M300,220 L340,140 L360,170 L380,140 L420,220 Z" />
-        <path d="M450,220 L490,140 L510,170 L530,140 L570,220 Z" />
-        <path d="M600,220 L640,140 L660,170 L680,140 L720,220 Z" />
-        <path d="M750,220 L790,140 L810,170 L830,140 L870,220 Z" />
-        <path d="M900,220 L940,140 L960,170 L980,140 L1020,220 Z" />
-        <path d="M1050,220 L1090,140 L1110,170 L1130,140 L1170,220 Z" />
-      </g>
-    </svg>
-    <svg class="layer l1" viewBox="0 0 1200 220" preserveAspectRatio="none">
-      <g fill="var(--forest-1)">
-        <path d="M0,220 L30,150 L50,185 L70,150 L110,220 Z" />
-        <path d="M140,220 L170,150 L190,185 L210,150 L250,220 Z" />
-        <path d="M280,220 L310,150 L330,185 L350,150 L390,220 Z" />
-        <path d="M420,220 L450,150 L470,185 L490,150 L530,220 Z" />
-        <path d="M560,220 L590,150 L610,185 L630,150 L670,220 Z" />
-        <path d="M700,220 L730,150 L750,185 L770,150 L810,220 Z" />
-        <path d="M840,220 L870,150 L890,185 L910,150 L950,220 Z" />
-        <path d="M980,220 L1010,150 L1030,185 L1050,150 L1090,220 Z" />
-      </g>
-    </svg>
-  </div>
+  <!-- Removed the SVG tree block as requested -->
+  <!-- <div class="forest" aria-hidden="true"> … </div> -->
+
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
