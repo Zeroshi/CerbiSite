@@ -1,7 +1,9 @@
-// Cerbi “Sky + Forest” runtime
-// - Scroll-driven background gradient
-// - Fixed starfield (twinkle + faint constellations)
-// - Spotlight, reveal-on-scroll, tilt glare, command palette, compare filters, back-to-top
+/* Cerbi “Sky + Forest” runtime
+   - Scroll-driven gradient (deep green dusk → night)
+   - Fixed starfield with subtle twinkle + tiny constellations
+   - iPhone/Safari friendly (caps DPR, passive listeners, fixed-attachment fallback)
+   - Also wires up theme toggle, mobile nav, progress bar, copy buttons, command palette, compare filters
+*/
 (() => {
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -16,8 +18,7 @@
   html.setAttribute('data-theme', localStorage.getItem('theme') || (prefersLight ? 'light' : 'dark'));
   themeBtn?.addEventListener('click', () => {
     const now = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    html.setAttribute('data-theme', now);
-    localStorage.setItem('theme', now);
+    html.setAttribute('data-theme', now); localStorage.setItem('theme', now);
   });
 
   // Mobile nav
@@ -112,17 +113,18 @@
     if(e.key==='Escape') closeCmd();
   });
 
-  // Compare filters
+  // Compare filters (if present)
   const compareTable = $('#compareTable');
   if (compareTable){
     const filterBtns = $$('.filter');
-    const rows = $$('tbody tr', compareTable);
-    filterBtns.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        filterBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+    const rows = Array.from(compareTable.querySelectorAll('tbody tr'));
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         const tag = btn.dataset.tag;
-        rows.forEach(tr=>{
-          if(tag==='all'){ tr.style.display=''; return; }
+        rows.forEach(tr => {
+          if (tag === 'all') { tr.style.display = ''; return; }
           const tags = tr.dataset.tags || '';
           tr.style.display = tags.includes(tag) ? '' : 'none';
         });
@@ -130,7 +132,7 @@
     });
   }
 
-  // Back-to-top
+  // Back-to-top helper (optional)
   const toTop = document.createElement('button');
   toTop.id='toTop'; toTop.className='btn'; toTop.type='button'; toTop.title='Back to top';
   toTop.setAttribute('aria-label','Back to top'); toTop.textContent='↑'; document.body.appendChild(toTop);
@@ -138,128 +140,120 @@
   document.addEventListener('scroll', toggleToTop, { passive:true }); toggleToTop();
   toTop.addEventListener('click', ()=>scrollTo({ top:0, behavior:'smooth' }));
 
-  // Governance demo logic
-  const piiSwitch = $('#piiSwitch');
-  const inputJson = $('#inputJson');
-  const evalJson = $('#evalJson');
-  const baseLog = {
-    Timestamp: new Date().toISOString(),
-    Level: "Information",
-    Message: "Checkout complete",
-    Properties: { OrderId: "A-102934", Amount: 129.99, UserId: "u-4821" }
-  };
-  const policies = {
-    RequiredFields: ["Timestamp", "Level", "Message", "Properties.OrderId"],
-    ForbiddenFields: ["Properties.SSN", "Properties.CreditCardNumber", "Properties.DOB"]
-  };
-  const has = (path, obj) => path.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj) !== undefined;
-  const evaluate = (log) => {
-    const violations = [];
-    for(const f of policies.RequiredFields) if(!has(f, log)) violations.push({ field:f, type:"RequiredMissing", severity:"Error" });
-    for(const f of policies.ForbiddenFields) if(has(f, log)) violations.push({ field:f, type:"ForbiddenPresent", severity:"Error" });
-    return { outcome: violations.length ? "NonCompliant" : "Compliant", violations };
-  };
-  const renderDemo = (includePII) => {
-    const sample = JSON.parse(JSON.stringify(baseLog));
-    if(includePII){ sample.Properties.CreditCardNumber = "4111 1111 1111 1111"; sample.Properties.DOB = "1990-01-01"; }
-    if (inputJson) inputJson.textContent = JSON.stringify(sample, null, 2);
-    if (evalJson) evalJson.textContent = JSON.stringify(evaluate(sample), null, 2);
-  };
-  if (piiSwitch && inputJson && evalJson){
-    const setSwitch = (on) => {
-      piiSwitch.classList.toggle('on', on);
-      piiSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
-      renderDemo(on);
-    };
-    renderDemo(false);
-    piiSwitch.addEventListener('click', ()=> setSwitch(!piiSwitch.classList.contains('on')));
-    piiSwitch.addEventListener('keydown', (e)=>{ if (e.key===' '||e.key==='Enter'){ e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }});
-  }
-
-  // Scroll-driven background palette
+  // ================== Scroll‑driven background palette ==================
   const palettes = [
     { start: "#09120f", end: "#0e1b15" },
     { start: "#0a1a14", end: "#0b2a21" },
     { start: "#0b2a21", end: "#0c2333" },
     { start: "#0c2333", end: "#140f1a" }
   ];
-  const clamp = (v,min,max)=>Math.min(max,Math.max(min,v));
-  const hexToRgb = (h)=>{ const m=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h); return m?{r:parseInt(m[1],16),g:parseInt(m[2],16),b:parseInt(m[3],16)}:{r:0,g:0,b:0}; };
-  const rgbToHex = ({r,g,b})=>`#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
-  const lerp=(a,b,t)=>a+(b-a)*t;
-  const lerpColor=(c1,c2,t)=>({r:Math.round(lerp(c1.r,c2.r,t)),g:Math.round(lerp(c1.g,c2.g,t)),b:Math.round(lerp(c1.b,c2.b,t))});
-  const ease=t=> t<0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
-  const startRGB = palettes.map(p=>hexToRgb(p.start));
-  const endRGB   = palettes.map(p=>hexToRgb(p.end));
-  (function initVars(){ const first=palettes[0]; html.style.setProperty('--bg-start', first.start); html.style.setProperty('--bg-end', first.end); })();
-  let ticking=false;
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const hexToRgb = (hex) => {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return m ? { r: parseInt(m[1],16), g: parseInt(m[2],16), b: parseInt(m[3],16) } : { r:0,g:0,b:0 };
+  };
+  const rgbToHex = ({r,g,b}) => `#${[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}`;
+  const lerp = (a,b,t) => a + (b - a) * t;
+  const lerpColor = (c1, c2, t) => ({
+    r: Math.round(lerp(c1.r, c2.r, t)),
+    g: Math.round(lerp(c1.g, c2.g, t)),
+    b: Math.round(lerp(c1.b, c2.b, t))
+  });
+  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2;
+
+  const startRGB = palettes.map(p => hexToRgb(p.start));
+  const endRGB   = palettes.map(p => hexToRgb(p.end));
+  (() => { const first = palettes[0]; document.documentElement.style.setProperty('--bg-start', first.start); document.documentElement.style.setProperty('--bg-end', first.end); })();
+
+  let ticking = false;
   function updateBg(){
     const docHeight = Math.max(1, document.body.scrollHeight - window.innerHeight);
     const p = clamp(window.scrollY / docHeight, 0, 1);
-    const segs=Math.max(1, palettes.length-1); const pos=p*segs; const i=Math.min(segs-1, Math.floor(pos)); const t=ease(clamp(pos-i,0,1)); const i2=Math.min(segs, i+1);
-    const s=lerpColor(startRGB[i], startRGB[i2], t); const e=lerpColor(endRGB[i], endRGB[i2], t);
-    html.style.setProperty('--bg-start', rgbToHex(s));
-    html.style.setProperty('--bg-end',   rgbToHex(e));
-    ticking=false;
+    const segs = Math.max(1, palettes.length - 1);
+    const pos = p * segs;
+    const i = Math.min(segs - 1, Math.floor(pos));
+    const t = ease(Math.min(1, Math.max(0, pos - Math.floor(pos))));
+    const i2 = Math.min(segs, i + 1);
+    const s = (i2 >= startRGB.length) ? startRGB[i] : {
+      r: Math.round(startRGB[i].r + (startRGB[i2].r - startRGB[i].r) * t),
+      g: Math.round(startRGB[i].g + (startRGB[i2].g - startRGB[i].g) * t),
+      b: Math.round(startRGB[i].b + (startRGB[i2].b - startRGB[i].b) * t)
+    };
+    const e = (i2 >= endRGB.length) ? endRGB[i] : {
+      r: Math.round(endRGB[i].r + (endRGB[i2].r - endRGB[i].r) * t),
+      g: Math.round(endRGB[i].g + (endRGB[i2].g - endRGB[i].g) * t),
+      b: Math.round(endRGB[i].b + (endRGB[i2].b - endRGB[i].b) * t)
+    };
+    document.documentElement.style.setProperty('--bg-start', rgbToHex(s));
+    document.documentElement.style.setProperty('--bg-end',   rgbToHex(e));
+    ticking = false;
   }
   function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(updateBg); } }
-  addEventListener('scroll', onScroll, { passive:true });
-  addEventListener('resize', ()=>requestAnimationFrame(updateBg), { passive:true });
-  addEventListener('load', updateBg, { once:true });
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', () => requestAnimationFrame(updateBg), { passive:true });
+  window.addEventListener('load', updateBg, { once:true });
   updateBg();
 
-  // Starfield (#sky)
-  const canvas = $('#sky'); if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let dpr = Math.max(1, Math.min(2, devicePixelRatio||1));
-  let W=0, H=0;
-  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STAR_COUNT_BASE = 180;
-  let stars=[], lines=[];
-  function resize(){
-    dpr = Math.max(1, Math.min(2, devicePixelRatio||1));
-    W = Math.floor(innerWidth * dpr); H = Math.floor(innerHeight * dpr);
-    canvas.width=W; canvas.height=H; canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px';
-    makeStars();
-  }
-  function rnd(min,max){ return Math.random()*(max-min)+min; }
-  function makeStars(){
-    const count = Math.floor(STAR_COUNT_BASE * (innerWidth*innerHeight) / (1280*720));
-    stars = new Array(count).fill(0).map(()=>({ x:Math.random()*W, y:Math.random()*H, r:rnd(0.5,1.6)*dpr, a:rnd(0.35,0.85), tw:rnd(0.001,0.004), p:Math.random()*Math.PI*2 }));
-    const CL=Math.max(1, Math.floor(count/180)); lines=[];
-    for(let c=0;c<CL;c++){ const start=Math.floor(Math.random()*(count-5)); const len=3+Math.floor(Math.random()*3); const idxs=[]; for(let i=0;i<len;i++) idxs.push(start+i); lines.push(idxs); }
-  }
-  function draw(now){
-    ctx.clearRect(0,0,W,H);
-    // faint vertical gradient overlay
-    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'rgba(0,0,0,0.12)'); g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  // ================== Starfield ==================
+  const canvas = $('#sky');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, DPR = 1;
+    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let stars = [], lines = [];
+    const STAR_COUNT_BASE = 180;
 
-    ctx.save(); ctx.globalCompositeOperation='screen';
-    for(const s of stars){
-      const tw = prefersReduced ? 0 : (Math.sin(s.p + now*s.tw)*0.25);
-      const a=Math.max(0, Math.min(1, s.a + tw));
-      ctx.globalAlpha=a;
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(255,244,230,0.9)';
-      ctx.fill();
+    function resize(){
+      DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      W = Math.floor(innerWidth * DPR); H = Math.floor(innerHeight * DPR);
+      canvas.width = W; canvas.height = H;
+      canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px';
+      makeStars();
     }
-    ctx.restore();
+    function rnd(min,max){ return Math.random()*(max-min)+min; }
+    function makeStars(){
+      const count = Math.floor(STAR_COUNT_BASE * (innerWidth*innerHeight) / (1280*720));
+      stars = new Array(count).fill(0).map(() => ({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        r: rnd(0.5,1.6)*DPR,
+        a: rnd(0.35,0.85),
+        tw: rnd(0.001,0.004),
+        p: Math.random()*Math.PI*2
+      }));
+      const CL = Math.max(1, Math.floor(count/180)); lines=[];
+      for(let c=0;c<CL;c++){ const start=Math.floor(Math.random()*(count-5)); const len=3+Math.floor(Math.random()*3); const idxs=[]; for(let i=0;i<len;i++) idxs.push(start+i); lines.push(idxs); }
+    }
 
-    // faint constellations
-    ctx.save(); ctx.globalAlpha=0.08; ctx.strokeStyle='#ffe0c2'; ctx.lineWidth=Math.max(0.5,1*dpr);
-    for(const group of lines){
-      ctx.beginPath();
-      const s0=stars[group[0]]; if(!s0) continue; ctx.moveTo(s0.x,s0.y);
-      for(let i=1;i<group.length;i++){ const sN=stars[group[i]]; if(!sN) continue; ctx.lineTo(sN.x,sN.y); }
-      ctx.stroke();
+    function draw(t){
+      ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for(const s of stars){
+        const tw = prefersReduced ? 0 : (Math.sin(s.p + t*0.001*s.tw)*0.25);
+        const a = Math.max(0, Math.min(1, s.a + tw));
+        ctx.globalAlpha = a;
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle = 'rgba(255,244,230,0.9)';
+        ctx.fill();
+      }
+      ctx.restore();
+      ctx.save(); ctx.globalAlpha=0.08; ctx.strokeStyle='#ffe0c2'; ctx.lineWidth=Math.max(0.5,1*DPR);
+      for(const group of lines){
+        ctx.beginPath();
+        const s0 = stars[group[0]]; if(!s0) continue;
+        ctx.moveTo(s0.x,s0.y);
+        for(let i=1;i<group.length;i++){ const sn=stars[group[i]]; if(!sn) continue; ctx.lineTo(sn.x,sn.y); }
+        ctx.stroke();
+      }
+      ctx.restore();
     }
-    ctx.restore();
+
+    let rafId = 0, last = performance.now();
+    function loop(now){ last = now; draw(now); rafId = requestAnimationFrame(loop); }
+    document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cancelAnimationFrame(rafId); else rafId=requestAnimationFrame(loop); });
+    window.addEventListener('resize', ()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,120); }, { passive:true });
+    resize(); rafId=requestAnimationFrame(loop);
   }
-  let rafId=0;
-  function loop(now){ draw(now*0.001); rafId=requestAnimationFrame(loop); }
-  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cancelAnimationFrame(rafId); else rafId=requestAnimationFrame(loop); });
-  addEventListener('resize', ()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,120); }, { passive:true });
-  resize(); rafId=requestAnimationFrame(loop);
 })();
