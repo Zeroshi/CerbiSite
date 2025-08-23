@@ -14,55 +14,38 @@
   <meta name="theme-color" content="#ff4d00" />
   <link rel="icon" href="/assets/favicon.png" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="/styles/cerbi-theme.css" />
-
-  <!-- Background PNG: responsive preloads (you provide these files in /assets) -->
-  <!-- Recommended exports:
-       - /assets/background.png        (default, ~1920x1080 or 1920x1200)
-       - /assets/background@2x.png     (~3840x2160)
-       - /assets/background@3x.png     (~5760x3240)
-       Optional width-specific:
-       - /assets/background-1280.png, /assets/background-1920.png, /assets/background-2560.png, /assets/background-3840.png
-  -->
-  <link rel="preload" as="image" href="/assets/background.png"
+  <!-- Preload background variants so first paint is crisp -->
+  <link rel="preload" as="image"
+        href="/assets/background.png"
         imagesrcset="/assets/background-1280.png 1280w,
                      /assets/background-1920.png 1920w,
                      /assets/background-2560.png 2560w,
                      /assets/background-3840.png 3840w"
-        imagesizes="(max-width:640px) 640px,
-                    (max-width:1024px) 1024px,
-                    (max-width:1440px) 1440px,
-                    1920px">
+        imagesizes="100vw">
 
-  <!-- Inline override so background uses /assets/background.png + 2x/3x if available -->
-  <style>
-    /* Force the fixed PNG layer to use your assets path by default */
-    #bgImage { --bg-img: url('/assets/background.png'); --bg-img-2x: url('/assets/background@2x.png'); --bg-img-3x: url('/assets/background@3x.png'); }
-    /* If image-set is supported, pick the best resolution automatically */
-    @supports (background-image: image-set(url('/assets/background.png') 1x)) {
-      .bg-image::before {
-        background-image: image-set(
-          var(--bg-img) 1x,
-          var(--bg-img-2x, var(--bg-img)) 2x,
-          var(--bg-img-3x, var(--bg-img-2x, var(--bg-img))) 3x
-        ) !important;
-      }
-    }
-  </style>
+  <!-- Styles -->
+  <link rel="stylesheet" href="/styles/cerbi-theme.css" />
 </head>
 <body>
   <!-- Sitewide subtle tiles + sky (fixed layers) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
 
-  <!-- Fixed background PNG layer BETWEEN gradient/stars and content -->
-  <!-- It’s visible immediately; JS will still verify & keep it smooth -->
-  <div id="bgImage" class="bg-image show" aria-hidden="true"></div>
+  <!-- Fixed BACKGROUND ART (between stars/gradient and content) -->
+  <!-- Provide these files in /assets: background-1280.png, -1920.png, -2560.png, -3840.png -->
+  <img
+    class="bg-art"
+    src="/assets/background.png"
+    srcset="/assets/background-1280.png 1280w,
+            /assets/background-1920.png 1920w,
+            /assets/background-2560.png 2560w,
+            /assets/background-3840.png 3840w"
+    sizes="100vw"
+    alt=""
+    aria-hidden="true"
+  />
 
-  <!-- Removed the SVG tree block as requested -->
-  <!-- <div class="forest" aria-hidden="true"> … </div> -->
-
+  <!-- Spotlight (cursor glow) -->
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
