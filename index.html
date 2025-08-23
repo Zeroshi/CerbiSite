@@ -18,16 +18,21 @@
   <link rel="stylesheet" href="/styles/cerbi-theme.css" />
 </head>
 <body>
-  <!-- Fixed background stack (furthest back first) -->
+  <!-- Sitewide subtle tiles + sky + background illustration + forest (fixed layers) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
 
-  <!-- NEW: fixed backdrop PNG between stars/gradient and content -->
-  <div class="backdrop" aria-hidden="true">
-    <img src="/assets/background.png" alt="" loading="eager" decoding="async" />
-  </div>
+  <!-- INSERTED: Fixed background PNG (between stars and forest, below UI/models) -->
+  <img
+    class="bg-illustration"
+    src="/background.png"
+    alt="Background illustration"
+    aria-hidden="true"
+    decoding="async"
+    fetchpriority="low"
+    onerror="if(!this.dataset.fallback){ this.dataset.fallback=1; this.src='https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/background.png'; }"
+  />
 
-  <!-- Forest stays above backdrop; spotlight above forest -->
   <div class="forest" aria-hidden="true">
     <svg class="layer l4" viewBox="0 0 1200 220" preserveAspectRatio="none">
       <g fill="var(--forest-4)">
@@ -78,10 +83,7 @@
 
   <!-- Ribbon -->
   <div class="ribbon" role="status">
-    <div class="container">
-      🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon.
-      <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.
-    </div>
+    <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon. <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.</div>
   </div>
 
   <!-- Nav -->
