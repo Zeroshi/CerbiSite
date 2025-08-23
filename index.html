@@ -18,9 +18,16 @@
   <link rel="stylesheet" href="/styles/cerbi-theme.css" />
 </head>
 <body>
-  <!-- Sitewide subtle tiles + sky + forest (fixed layers) -->
+  <!-- Fixed background stack (furthest back first) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
+
+  <!-- NEW: fixed backdrop PNG between stars/gradient and content -->
+  <div class="backdrop" aria-hidden="true">
+    <img src="/assets/background.png" alt="" loading="eager" decoding="async" />
+  </div>
+
+  <!-- Forest stays above backdrop; spotlight above forest -->
   <div class="forest" aria-hidden="true">
     <svg class="layer l4" viewBox="0 0 1200 220" preserveAspectRatio="none">
       <g fill="var(--forest-4)">
@@ -71,7 +78,10 @@
 
   <!-- Ribbon -->
   <div class="ribbon" role="status">
-    <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon. <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.</div>
+    <div class="container">
+      🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon.
+      <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.
+    </div>
   </div>
 
   <!-- Nav -->
