@@ -1,9 +1,7 @@
-/* Cerbi “Sky + Forest” runtime
-   - Scroll-driven gradient (deep green dusk → night)
-   - Fixed starfield with subtle twinkle + tiny constellations
-   - iPhone/Safari friendly (caps DPR, passive listeners, fixed-attachment fallback)
-   - Also wires up theme toggle, mobile nav, progress bar, copy buttons, command palette, and the governance demo
-*/
+// Cerbi “Sky + Forest” runtime
+// - Scroll-driven background gradient
+// - Fixed starfield (twinkle + faint constellations)
+// - Spotlight, reveal-on-scroll, tilt glare, command palette, compare filters, back-to-top
 (() => {
   const $ = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -13,23 +11,31 @@
 
   // Theme
   const prefersLight = matchMedia('(prefers-color-scheme: light)').matches;
+  const html = document.documentElement;
   const themeBtn = $('#themeBtn');
-  const initTheme = localStorage.getItem('theme') || (prefersLight ? 'light' : 'dark');
-  document.documentElement.setAttribute('data-theme', initTheme);
+  html.setAttribute('data-theme', localStorage.getItem('theme') || (prefersLight ? 'light' : 'dark'));
   themeBtn?.addEventListener('click', () => {
-    const now = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', now);
+    const now = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', now);
     localStorage.setItem('theme', now);
   });
 
   // Mobile nav
-  const navToggle = $('#navToggle'), primaryNav = $('#primaryNav');
+  const navToggle = $('#navToggle');
+  const nav = $('#primaryNav');
   navToggle?.addEventListener('click', () => {
-    primaryNav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', primaryNav.classList.contains('open'));
+    nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', nav.classList.contains('open'));
   });
 
-  // Progress
+  // Spotlight follows cursor
+  const spotlight = $('.spotlight');
+  document.addEventListener('pointermove', (e) => {
+    spotlight?.style.setProperty('--mx', e.clientX + 'px');
+    spotlight?.style.setProperty('--my', e.clientY + 'px');
+  }, { passive: true });
+
+  // Progress bar
   const progress = $('#progress');
   const setProgress = () => {
     const max = document.body.scrollHeight - innerHeight;
@@ -39,29 +45,22 @@
   document.addEventListener('scroll', setProgress, { passive: true });
   setProgress();
 
-  // Spotlight cursor
-  document.addEventListener('pointermove', (e) => {
-    document.documentElement.style.setProperty('--mx', e.clientX + 'px');
-    document.documentElement.style.setProperty('--my', e.clientY + 'px');
-  }, { passive: true });
-
   // Reveal-on-scroll
-  const revealEls = $$('.reveal');
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
     }, { threshold: 0.12 });
-    revealEls.forEach(el => io.observe(el));
-  } else { revealEls.forEach(el => el.classList.add('in')); }
+    $$('.reveal').forEach(el => io.observe(el));
+  } else {
+    $$('.reveal').forEach(el => el.classList.add('in'));
+  }
 
   // Tilt + glare
   $$('.tilt').forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const r = card.getBoundingClientRect();
-      const gx = ((e.clientX - r.left) / r.width) * 100;
-      const gy = ((e.clientY - r.top) / r.height) * 100;
-      card.style.setProperty('--gx', gx + '%');
-      card.style.setProperty('--gy', gy + '%');
+      card.style.setProperty('--gx', ((e.clientX - r.left) / r.width) * 100 + '%');
+      card.style.setProperty('--gy', ((e.clientY - r.top) / r.height) * 100 + '%');
     }, { passive: true });
   });
 
@@ -81,33 +80,37 @@
   });
 
   // Command palette
-  const cmdBtn = $('#cmdBtn'), overlay = $('#cmdkOverlay'), cmdk = $('.cmdk', overlay),
-        input = $('#cmdkInput'), list = $('#cmdkList');
+  const cmdBtn = $('#cmdBtn');
+  const overlay = $('#cmdkOverlay');
+  const cmdk = $('.cmdk', overlay);
+  const input = $('#cmdkInput');
+  const list = $('#cmdkList');
   const commands = [
     { label: '📦 View Packages', action: () => location.hash = '#packages' },
-    { label: '📊 Download Trends', action: () => location.hash = '#packages' },
     { label: '🔐 Governance', action: () => location.hash = '#governance' },
     { label: '🧭 Architecture', action: () => location.hash = '#architecture' },
     { label: '📣 Contact', action: () => location.hash = '#contact' },
   ];
-  function openCmd(){ overlay.style.display='block'; cmdk.style.display='block'; input.value=''; render(''); setTimeout(()=>input.focus(),0); }
+  function openCmd(){ overlay.style.display='block'; cmdk.style.display='block'; input.value=''; renderCmd(''); setTimeout(()=>input.focus(),0); }
   function closeCmd(){ overlay.style.display='none'; cmdk.style.display='none'; }
-  function render(q){
+  function renderCmd(q){
     const ql = q.trim().toLowerCase(); list.innerHTML='';
-    commands.filter(c => !ql || c.label.toLowerCase().includes(ql)).forEach(c=>{
+    commands.filter(c => !ql || c.label.toLowerCase().includes(ql)).forEach(c => {
       const item = document.createElement('div'); item.className='item';
-      item.innerHTML=`<span>${c.label}</span><span class="kbd">Enter</span>`;
-      item.tabIndex=0;
+      item.innerHTML = `<span>${c.label}</span><span class="kbd">Enter</span>`; item.tabIndex=0;
       item.addEventListener('click', ()=>{ c.action(); closeCmd(); });
-      item.addEventListener('keydown', e=>{ if(e.key==='Enter'){ c.action(); closeCmd(); }});
+      item.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ c.action(); closeCmd(); }});
       list.appendChild(item);
     });
-    if(!list.children.length){ const none=document.createElement('div'); none.className='item'; none.textContent='No results'; list.appendChild(none); }
+    if(!list.children.length){ const none = document.createElement('div'); none.className='item'; none.textContent='No results'; list.appendChild(none); }
   }
   cmdBtn?.addEventListener('click', openCmd);
   overlay?.addEventListener('click', (e)=>{ if(e.target===overlay) closeCmd(); });
-  input?.addEventListener('input', (e)=>render(e.target.value));
-  document.addEventListener('keydown', (e)=>{ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); openCmd(); } if(e.key==='Escape') closeCmd(); });
+  input?.addEventListener('input', (e)=> renderCmd(e.target.value));
+  document.addEventListener('keydown', (e)=>{
+    if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmd(); }
+    if(e.key==='Escape') closeCmd();
+  });
 
   // Compare filters
   const compareTable = $('#compareTable');
@@ -135,21 +138,45 @@
   document.addEventListener('scroll', toggleToTop, { passive:true }); toggleToTop();
   toTop.addEventListener('click', ()=>scrollTo({ top:0, behavior:'smooth' }));
 
-  // Governance demo
-  const piiSwitch = $('#piiSwitch'), inputJson = $('#inputJson'), evalJson = $('#evalJson');
-  const baseLog = { Timestamp:new Date().toISOString(), Level:"Information", Message:"Checkout complete", Properties:{ OrderId:"A-102934", Amount:129.99, UserId:"u-4821" } };
-  const policies = { RequiredFields:["Timestamp","Level","Message","Properties.OrderId"], ForbiddenFields:["Properties.SSN","Properties.CreditCardNumber","Properties.DOB"] };
-  const has = (path,obj)=> path.split('.').reduce((o,k)=> (o&&k in o)?o[k]:undefined, obj)!==undefined;
-  const evaluate = (log)=>{ const violations=[]; for(const f of policies.RequiredFields) if(!has(f,log)) violations.push({field:f,type:"RequiredMissing",severity:"Error"}); for(const f of policies.ForbiddenFields) if(has(f,log)) violations.push({field:f,type:"ForbiddenPresent",severity:"Error"}); return { outcome:violations.length?"NonCompliant":"Compliant", violations }; };
-  const renderDemo = (inc)=>{ const sample=JSON.parse(JSON.stringify(baseLog)); if(inc){ sample.Properties.CreditCardNumber = "4111 1111 1111 1111"; sample.Properties.DOB = "1990-01-01"; } inputJson&&(inputJson.textContent=JSON.stringify(sample,null,2)); evalJson&&(evalJson.textContent=JSON.stringify(evaluate(sample),null,2)); };
+  // Governance demo logic
+  const piiSwitch = $('#piiSwitch');
+  const inputJson = $('#inputJson');
+  const evalJson = $('#evalJson');
+  const baseLog = {
+    Timestamp: new Date().toISOString(),
+    Level: "Information",
+    Message: "Checkout complete",
+    Properties: { OrderId: "A-102934", Amount: 129.99, UserId: "u-4821" }
+  };
+  const policies = {
+    RequiredFields: ["Timestamp", "Level", "Message", "Properties.OrderId"],
+    ForbiddenFields: ["Properties.SSN", "Properties.CreditCardNumber", "Properties.DOB"]
+  };
+  const has = (path, obj) => path.split('.').reduce((o,k)=> (o && k in o) ? o[k] : undefined, obj) !== undefined;
+  const evaluate = (log) => {
+    const violations = [];
+    for(const f of policies.RequiredFields) if(!has(f, log)) violations.push({ field:f, type:"RequiredMissing", severity:"Error" });
+    for(const f of policies.ForbiddenFields) if(has(f, log)) violations.push({ field:f, type:"ForbiddenPresent", severity:"Error" });
+    return { outcome: violations.length ? "NonCompliant" : "Compliant", violations };
+  };
+  const renderDemo = (includePII) => {
+    const sample = JSON.parse(JSON.stringify(baseLog));
+    if(includePII){ sample.Properties.CreditCardNumber = "4111 1111 1111 1111"; sample.Properties.DOB = "1990-01-01"; }
+    if (inputJson) inputJson.textContent = JSON.stringify(sample, null, 2);
+    if (evalJson) evalJson.textContent = JSON.stringify(evaluate(sample), null, 2);
+  };
   if (piiSwitch && inputJson && evalJson){
-    const setSwitch = (on)=>{ piiSwitch.classList.toggle('on', on); piiSwitch.setAttribute('aria-checked', on?'true':'false'); renderDemo(on); };
+    const setSwitch = (on) => {
+      piiSwitch.classList.toggle('on', on);
+      piiSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
+      renderDemo(on);
+    };
     renderDemo(false);
-    piiSwitch.addEventListener('click', ()=>setSwitch(!piiSwitch.classList.contains('on')));
-    piiSwitch.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }});
+    piiSwitch.addEventListener('click', ()=> setSwitch(!piiSwitch.classList.contains('on')));
+    piiSwitch.addEventListener('keydown', (e)=>{ if (e.key===' '||e.key==='Enter'){ e.preventDefault(); setSwitch(!piiSwitch.classList.contains('on')); }});
   }
 
-  // Scroll gradient
+  // Scroll-driven background palette
   const palettes = [
     { start: "#09120f", end: "#0e1b15" },
     { start: "#0a1a14", end: "#0b2a21" },
@@ -164,15 +191,15 @@
   const ease=t=> t<0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
   const startRGB = palettes.map(p=>hexToRgb(p.start));
   const endRGB   = palettes.map(p=>hexToRgb(p.end));
-  (function initVars(){ const first=palettes[0]; document.documentElement.style.setProperty('--bg-start', first.start); document.documentElement.style.setProperty('--bg-end', first.end); })();
+  (function initVars(){ const first=palettes[0]; html.style.setProperty('--bg-start', first.start); html.style.setProperty('--bg-end', first.end); })();
   let ticking=false;
   function updateBg(){
     const docHeight = Math.max(1, document.body.scrollHeight - window.innerHeight);
     const p = clamp(window.scrollY / docHeight, 0, 1);
     const segs=Math.max(1, palettes.length-1); const pos=p*segs; const i=Math.min(segs-1, Math.floor(pos)); const t=ease(clamp(pos-i,0,1)); const i2=Math.min(segs, i+1);
     const s=lerpColor(startRGB[i], startRGB[i2], t); const e=lerpColor(endRGB[i], endRGB[i2], t);
-    document.documentElement.style.setProperty('--bg-start', rgbToHex(s));
-    document.documentElement.style.setProperty('--bg-end',   rgbToHex(e));
+    html.style.setProperty('--bg-start', rgbToHex(s));
+    html.style.setProperty('--bg-end',   rgbToHex(e));
     ticking=false;
   }
   function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(updateBg); } }
@@ -181,8 +208,8 @@
   addEventListener('load', updateBg, { once:true });
   updateBg();
 
-  // Starfield
-  const canvas = $('#sky'); if(!canvas) return;
+  // Starfield (#sky)
+  const canvas = $('#sky'); if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let dpr = Math.max(1, Math.min(2, devicePixelRatio||1));
   let W=0, H=0;
@@ -202,18 +229,36 @@
     const CL=Math.max(1, Math.floor(count/180)); lines=[];
     for(let c=0;c<CL;c++){ const start=Math.floor(Math.random()*(count-5)); const len=3+Math.floor(Math.random()*3); const idxs=[]; for(let i=0;i<len;i++) idxs.push(start+i); lines.push(idxs); }
   }
-  function draw(t){
+  function draw(now){
     ctx.clearRect(0,0,W,H);
-    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'rgba(0,0,0,0.12)'); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    // faint vertical gradient overlay
+    const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'rgba(0,0,0,0.12)'); g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
     ctx.save(); ctx.globalCompositeOperation='screen';
-    for(const s of stars){ const tw = prefersReduced ? 0 : (Math.sin(s.p + t*s.tw)*0.25); const a=Math.max(0, Math.min(1, s.a + tw)); ctx.globalAlpha=a; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle='rgba(255,244,230,0.9)'; ctx.fill(); }
+    for(const s of stars){
+      const tw = prefersReduced ? 0 : (Math.sin(s.p + now*s.tw)*0.25);
+      const a=Math.max(0, Math.min(1, s.a + tw));
+      ctx.globalAlpha=a;
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,244,230,0.9)';
+      ctx.fill();
+    }
     ctx.restore();
+
+    // faint constellations
     ctx.save(); ctx.globalAlpha=0.08; ctx.strokeStyle='#ffe0c2'; ctx.lineWidth=Math.max(0.5,1*dpr);
-    for(const group of lines){ ctx.beginPath(); const s0=stars[group[0]]; if(!s0) continue; ctx.moveTo(s0.x,s0.y); for(let i=1;i<group.length;i++){ const sN=stars[group[i]]; if(!sN) continue; ctx.lineTo(sN.x,sN.y); } ctx.stroke(); }
+    for(const group of lines){
+      ctx.beginPath();
+      const s0=stars[group[0]]; if(!s0) continue; ctx.moveTo(s0.x,s0.y);
+      for(let i=1;i<group.length;i++){ const sN=stars[group[i]]; if(!sN) continue; ctx.lineTo(sN.x,sN.y); }
+      ctx.stroke();
+    }
     ctx.restore();
   }
-  let rafId=0; let last=performance.now();
-  function loop(now){ const dt=now-last; last=now; draw(now*0.001); rafId=requestAnimationFrame(loop); }
+  let rafId=0;
+  function loop(now){ draw(now*0.001); rafId=requestAnimationFrame(loop); }
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cancelAnimationFrame(rafId); else rafId=requestAnimationFrame(loop); });
   addEventListener('resize', ()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,120); }, { passive:true });
   resize(); rafId=requestAnimationFrame(loop);
