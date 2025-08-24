@@ -10,42 +10,21 @@
   <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
   <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/assets/og-image.png" />
+  <meta property="og:image" content="assets/og-image.png" />
   <meta name="theme-color" content="#ff4d00" />
-  <link rel="icon" href="/assets/favicon.png" />
-
-  <!-- Preload background variants so first paint is crisp -->
-  <link rel="preload" as="image"
-        href="/assets/background.png"
-        imagesrcset="/assets/background-1280.png 1280w,
-                     /assets/background-1920.png 1920w,
-                     /assets/background-2560.png 2560w,
-                     /assets/background-3840.png 3840w"
-        imagesizes="100vw">
+  <link rel="icon" href="assets/favicon.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/styles/cerbi-theme.css" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css" />
+
+  <!-- Safety: prevent black overlay flash if CSS fails -->
+  <style>.cmdk-overlay{display:none!important}</style>
 </head>
 <body>
-  <!-- Sitewide subtle tiles + sky (fixed layers) -->
+  <!-- Fixed background stack -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
-
-  <!-- Fixed BACKGROUND ART (between stars/gradient and content) -->
-  <!-- Provide these files in /assets: background-1280.png, -1920.png, -2560.png, -3840.png -->
-  <img
-    class="bg-art"
-    src="/assets/background.png"
-    srcset="/assets/background-1280.png 1280w,
-            /assets/background-1920.png 1920w,
-            /assets/background-2560.png 2560w,
-            /assets/background-3840.png 3840w"
-    sizes="100vw"
-    alt=""
-    aria-hidden="true"
-  />
-
-  <!-- Spotlight (cursor glow) -->
+  <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
@@ -57,7 +36,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px"/>
+        <img src="assets/CerbiStream.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px"/>
         <span>CerbiSuite</span>
       </div>
       <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
@@ -134,9 +113,9 @@
       </div>
 
       <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;padding-top:10px">
-        <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.95"/>
-        <img src="/assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.8"/>
-        <img src="/assets/CerbiStream.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.65"/>
+        <img src="assets/CerbiStream.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.95"/>
+        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.8"/>
+        <img src="assets/CerbiStream.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.65"/>
       </div>
     </section>
 
@@ -181,7 +160,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="glass tilt reveal" style="padding:18px">
         <div class="glare" aria-hidden="true"></div>
         <div class="img-frame sig-art" role="img" aria-label="Cerbi signature artwork: shield + tiles + data flow">
-          <!-- (Same SVG as your original, colors fit the new palette) -->
+          <!-- Full signature SVG preserved -->
           <svg viewBox="0 0 1200 675" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
             <defs>
               <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
@@ -235,10 +214,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               <defs>
                 <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="6" result="blur"/>
-                  <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                 </filter>
               </defs>
               <path d="M0,0 L80,0 C120,0 160,-10 200,-30 C200,40 170,110 100,140 C30,110 0,40 0,0 Z" fill="url(#shieldGrad2)" opacity=".85" filter="url(#softGlow)"/>
@@ -344,7 +320,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Governance dashboard preview">
-            <img src="/assets/5f97b70d-1514-42ca-a857-0458b1f5a54e.png" alt="CerbiShield Dashboard" style="width:100%;display:block"/>
+            <img src="assets/5f97b70d-1514-42ca-a857-0458b1f5a54e.png" alt="CerbiShield Dashboard" style="width:100%;display:block"/>
           </div>
           <p class="k" style="margin-top:8px">Live preview prototype: <a href="https://v0-cerbi-shield-governance-dashboard.vercel.app/" target="_blank" rel="noopener">CerbiShield Dashboard</a></p>
         </div>
@@ -701,9 +677,9 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <img src="/assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
+            <img src="assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
-          <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="/assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
+          <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>
     </section>
@@ -749,7 +725,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   <footer class="footer">
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="/assets/CerbiStream.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px"/>
+        <img src="assets/CerbiStream.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px"/>
         <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -762,7 +738,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     </div>
   </footer>
 
-  <!-- Command palette shells -->
+  <!-- Command palette (hidden by default; opened via JS) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header">
@@ -774,6 +750,6 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   </div>
 
   <!-- Scripts -->
-  <script src="/scripts/cerbi-sky.js" defer></script>
+  <script src="scripts/cerbi-sky.js" defer></script>
 </body>
 </html>
