@@ -11,8 +11,18 @@
   <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og-image.png" />
+
+  <!-- THEME & FAVICONS -->
   <meta name="theme-color" content="#ff4d00" />
-  <link rel="icon" href="assets/favicon.png" />
+  <!-- Place these files in /assets/ (names matter) -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#ff4d00">
+  <meta name="msapplication-TileColor" content="#0d1117">
+  <meta name="msapplication-config" content="assets/browserconfig.xml">
 
   <!-- Styles -->
   <link rel="stylesheet" href="styles/cerbi-theme.css" />
@@ -445,8 +455,8 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
             <p><strong>NuGet:</strong> <a href="https://www.nuget.org/packages?q=cerbi&includeComputedFrameworks=true&prerel=true" target="_blank" rel="noopener">Browse all Cerbi packages</a></p>
           </div>
 
-          <!-- ===== REPLACED: placeholder with enterprise tiles =====
-               Drop these files in the repo (transparent PNG, 640×640 each):
+          <!-- ===== ENTERPRISE TILES (images you supply) =====
+               Transparent PNG, 640×640 each:
 
                assets/enterprise/rbac-640.png
                assets/enterprise/audit-logs-640.png
@@ -515,5 +525,13 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
 
   <!-- Scripts -->
   <script src="scripts/cerbi-sky.js" defer></script>
+  <script>
+    // tiny helpers: current year + mobile menu
+    (function(){
+      var y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
+      var t=document.getElementById('navToggle'), n=document.getElementById('primaryNav');
+      if(t && n){ t.addEventListener('click', ()=> n.classList.toggle('open'));}
+    })();
+  </script>
 </body>
 </html>
