@@ -19,7 +19,7 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=aurora-blue-03" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=aurora-blue-04" />
 
   <!-- Safety: prevent palette flash if CSS fails -->
   <style>.cmdk-overlay{display:none!important}</style>
@@ -41,7 +41,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))"/>
         <span>CerbiSuite</span>
       </div>
       <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
@@ -73,12 +73,12 @@
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="70%" cy="10%" r="60%">
-            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.22"/>
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.20"/>
             <stop offset="60%" stop-color="var(--accent)" stop-opacity="0"/>
           </radialGradient>
           <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
             <rect width="24" height="24" fill="none"/>
-            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#163258" stroke-width="1" opacity="0.28"/>
+            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#163258" stroke-width="1" opacity="0.26"/>
             <circle cx="1" cy="1" r="1" fill="#b5d0ff" opacity="0.14" />
           </pattern>
           <linearGradient id="grid" x1="0" x2="1">
@@ -87,13 +87,9 @@
           </linearGradient>
         </defs>
         <rect width="1200" height="600" fill="url(#g1)"/>
-        <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.28"/>
-        <g opacity="0.30">
+        <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.26"/>
+        <g opacity="0.28">
           <rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/>
-        </g>
-        <g stroke="#1c2e55" opacity=".38">
-          <path d="M80,520 C460,420 740,560 1120,460" fill="none"/>
-          <path d="M80,480 C420,380 780,520 1120,420" fill="none"/>
         </g>
       </svg>
 
@@ -114,9 +110,9 @@
       </div>
 
       <div class="logo-row" aria-label="Logos" style="display:flex;gap:18px;justify-content:center;align-items:center;padding-top:10px;flex-wrap:wrap">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))"/>
-        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85"/>
-        <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.45))"/>
+        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.88"/>
+        <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.76"/>
       </div>
     </section>
 
@@ -162,23 +158,25 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
 
       <div class="space"></div>
+      <!-- Real screenshot gallery with labels & hover zoom -->
       <div class="glass tilt reveal" style="padding:16px">
         <div class="glare" aria-hidden="true"></div>
         <div class="img-frame" role="group" aria-label="CerbiShield dashboard screenshots">
           <div class="dash-gallery">
-            <picture class="dash-shot" aria-label="CerbiShield Overview dashboard">
-              <source srcset="assets/screenshots/cerbishield-hero-3200x1800.jpg 2x, assets/screenshots/cerbishield-hero-1600x900.jpg 1x">
+            <a class="dash-shot" aria-label="CerbiShield Overview dashboard" href="assets/screenshots/cerbishield-hero-1600x900.jpg" target="_blank" rel="noopener">
+              <span class="shot-label">Overview — Deployments, Apps Using Governance, Rules</span>
               <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield Governance — Overview" width="1600" height="900" loading="lazy"/>
-            </picture>
-            <picture class="dash-shot" aria-label="Profiles">
+            </a>
+            <a class="dash-shot" aria-label="Profiles" href="assets/screenshots/cerbishield-profiles-1200x900.jpg" target="_blank" rel="noopener">
+              <span class="shot-label">Profiles — versioned governance with live status</span>
               <img src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="Profiles — governance profiles and versions" width="1200" height="900" loading="lazy"/>
-            </picture>
-            <picture class="dash-shot" aria-label="Violations">
+            </a>
+            <a class="dash-shot" aria-label="Violations" href="assets/screenshots/cerbishield-violations-2400x1800.jpg" target="_blank" rel="noopener">
+              <span class="shot-label">Violations — required/forbidden fields & severity</span>
               <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="Violations — required/forbidden fields" width="1200" height="900" loading="lazy"/>
-            </picture>
+            </a>
           </div>
         </div>
-        <div class="img-cap">Replace the placeholders above with real CerbiShield screenshots (names/sizes as shown).</div>
       </div>
     </section>
 
@@ -216,7 +214,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Governance dashboard preview">
-            <img src="assets/cerbishield-ecosystem-1600x900.jpg" alt="CerbiShield Dashboard" style="width:100%;display:block"/>
+            <img src="assets/5f97b70d-1514-42ca-a857-0458b1f5a54e.png" alt="CerbiShield Dashboard" style="width:100%;display:block"/>
           </div>
           <p class="k" style="margin-top:8px">Live preview prototype: <a href="https://v0-cerbi-shield-governance-dashboard.vercel.app/" target="_blank" rel="noopener">CerbiShield Dashboard</a></p>
         </div>
@@ -263,55 +261,54 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="glass reveal" style="padding:8px 12px;overflow-x:auto">
         <table aria-label="NuGet packages table">
           <thead>
-          <tr><th style="min-width:220px">Package</th><th>Version</th><th>Downloads</th><th>Description</th></tr>
+            <tr><th style="min-width:220px">Package</th><th>Version</th><th>Downloads</th><th>Description</th></tr>
           </thead>
           <tbody>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener"><strong>CerbiStream</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/></td>
-            <td>Structured, secure logging for modern .NET apps.</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>CerbiStream.GovernanceAnalyzer</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/></td>
-            <td>Roslyn analyzer for build-time governance enforcement.</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/></td>
-            <td>Governance analyzer tailored for Serilog projects.</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener"><strong>Cerbi.MEL.Governance</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/></td>
-            <td>Runtime governance for Microsoft.Extensions.Logging.</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Core</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/></td>
-            <td>Shared governance models and validation contracts.</td>
-          </tr>
-          <tr>
-            <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Runtime</strong></a></td>
-            <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/></td>
-            <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/></td>
-            <td>Real-time governance engine for structured loggers.</td>
-          </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener"><strong>CerbiStream</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/></td>
+              <td>Structured, secure logging for modern .NET apps.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>CerbiStream.GovernanceAnalyzer</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/></td>
+              <td>Roslyn analyzer for build-time governance enforcement.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/></td>
+              <td>Governance analyzer tailored for Serilog projects.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener"><strong>Cerbi.MEL.Governance</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/></td>
+              <td>Runtime governance for Microsoft.Extensions.Logging.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Core</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/></td>
+              <td>Shared governance models and validation contracts.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Runtime</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/></td>
+              <td>Real-time governance engine for structured loggers.</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- REPOSITORIES (unchanged content kept short for brevity) -->
+    <!-- REPOSITORIES (your existing cards can stay here) -->
     <section id="repos" class="container section">
       <h2>📦 Cerbi Repositories</h2>
       <p class="lead">Open-source packages with a shared governance core. Pick what you need; stay portable.</p>
-      <!-- keep your repo cards here, unchanged -->
     </section>
 
     <!-- COMPARE -->
@@ -365,10 +362,8 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <!-- Put this image at: assets/architecture-1600x900.png -->
             <img src="assets/architecture-1600x900.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
-          <!-- Put PDF at: assets/CerbiSuite Architecture.pdf -->
           <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>
@@ -383,10 +378,8 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
         <div class="glare"></div>
         <div class="grid">
           <div class="col-6">
-            <!-- Larger, even tiles -->
             <div class="img-frame" role="group" aria-label="Enterprise readiness">
               <div class="cred-grid">
-                <!-- Store at assets/enterprise/*.png (transparent) -->
                 <figure class="cred">
                   <img src="assets/enterprise/rbac-640.png" alt="RBAC"/>
                   <figcaption>RBAC</figcaption>
@@ -408,7 +401,6 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
           </div>
 
           <div class="col-6">
-            <!-- Contact form (mailto fallback, no backend required) -->
             <form id="contactForm" class="contact glass" autocomplete="on" novalidate>
               <label>
                 <span>Name</span>
@@ -442,7 +434,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   <footer class="footer">
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 10px rgba(255,77,0,.45))"/>
         <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -468,6 +460,6 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   </div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=aurora-blue-03" defer></script>
+  <script src="scripts/cerbi-sky.js?v=aurora-blue-04" defer></script>
 </body>
 </html>
