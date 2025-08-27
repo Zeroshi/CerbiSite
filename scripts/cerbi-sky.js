@@ -34,24 +34,24 @@ qs('#navToggle')?.addEventListener('click', () => {
   qs('#navToggle').setAttribute('aria-expanded', String(open));
 });
 
-/* ===== Command palette (simple) ===== */
+/* ===== Command palette ===== */
 (() => {
   const overlay = qs('#cmdkOverlay');
-  const input = qs('#cmdkInput');
-  const list = qs('#cmdkList');
+  const input   = qs('#cmdkInput');
+  const list    = qs('#cmdkList');
   const items = [
-    {label:'Why', href:'#why'},{label:'Ecosystem', href:'#ecosystem'},{label:'Governance', href:'#governance'},
-    {label:'Packages', href:'#packages'},{label:'Repositories', href:'#repos'},{label:'Compare', href:'#compare'},
-    {label:'Architecture', href:'#architecture'},{label:'Contact', href:'#contact'},
+    {label:'Why', href:'#why'},{label:'Ecosystem',href:'#ecosystem'},{label:'Governance',href:'#governance'},
+    {label:'Packages',href:'#packages'},{label:'Repositories',href:'#repos'},{label:'Compare',href:'#compare'},
+    {label:'Architecture',href:'#architecture'},{label:'Contact',href:'#contact'},
   ];
   list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
   list.addEventListener('click', e=>{
-    const item = e.target.closest('.item'); if(!item) return;
-    location.hash = item.lastChild.textContent.trim();
+    const it = e.target.closest('.item'); if(!it) return;
+    location.hash = it.lastChild.textContent.trim();
     overlay.classList.remove('open');
   });
   const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); };
-  const close = ()=>overlay.classList.remove('open');
+  const close= ()=> overlay.classList.remove('open');
   qs('#cmdBtn')?.addEventListener('click', open);
   window.addEventListener('keydown', e=>{
     if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k') { e.preventDefault(); open(); }
@@ -78,7 +78,7 @@ const obs = new IntersectionObserver((entries)=>{
 },{threshold:.12});
 qsa('.reveal').forEach(el=>obs.observe(el));
 
-/* ===== Spotlight follow ===== */
+/* ===== Spotlight follow (soft blue, disabled in light by CSS) ===== */
 document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--mx', e.clientX+'px');
   document.documentElement.style.setProperty('--my', e.clientY+'px');
@@ -129,24 +129,34 @@ document.addEventListener('pointermove', e=>{
   qsa('.filter').forEach(b=>b.addEventListener('click', ()=>set(b.dataset.tag)));
 })();
 
-/* ===== Contact form ===== */
-/* Default: mailto (no backend). To use Formspree/Netlify, set FORM_ENDPOINT to your URL. */
+/* ===== Contact form (background send) =====
+   GitHub Pages has no server, so use a hosted endpoint.
+   1) Create a Formspree form, get the endpoint (looks like https://formspree.io/f/xxxxx)
+   2) Paste it into FORM_ENDPOINT below. Done.
+   Falls back to mailto: if not set.
+*/
 (() => {
   const form = qs('#contactForm'); if(!form) return;
   const status = qs('#contactStatus');
-  const FORM_ENDPOINT = ''; // e.g., "https://formspree.io/f/xxxxxx"
+  const FORM_ENDPOINT = ""; // <-- put your Formspree / Getform / Cloudflare Worker URL here
 
   form.addEventListener('submit', async (e)=>{
     e.preventDefault();
+    status.textContent = 'Sending…';
     const data = Object.fromEntries(new FormData(form).entries());
+
     if (FORM_ENDPOINT){
       try{
-        const res = await fetch(FORM_ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-        if (!res.ok) throw 0;
+        const res = await fetch(FORM_ENDPOINT, {
+          method:'POST',
+          headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error('Bad response');
         status.textContent = 'Thanks! We’ll get back to you shortly.';
         form.reset();
-      }catch{
-        status.textContent = 'Hmm, something went wrong. Email us at hello@cerbi.io.';
+      }catch(err){
+        status.textContent = 'Could not send via endpoint. You can email us directly at hello@cerbi.io.';
       }
     }else{
       const body = encodeURIComponent(
@@ -158,7 +168,7 @@ document.addEventListener('pointermove', e=>{
   });
 })();
 
-/* ===== Starfield + shooting stars (angled) ===== */
+/* ===== Starfield + shooting stars (angled downward) ===== */
 (() => {
   const canvas = qs('#sky'); if(!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -176,12 +186,13 @@ document.addEventListener('pointermove', e=>{
   }
 
   const spawnMeteor = () => {
-    const angle = (-24 * Math.PI/180); // -24° down-right
-    const speed = rand(9,14);
-    const len = rand(140,220);
+    // Down-right slope between -35° and -65°
+    const deg = -1 * rand(35, 65);
+    const angle = deg * Math.PI/180;
+    const speed = rand(10,16);
     const x = rand(-w*0.2, w*0.8);
-    const y = rand(-h*0.1, h*0.3);
-    meteors.push({x,y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, len, life: 1});
+    const y = rand(-h*0.15, h*0.25);
+    meteors.push({x,y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1});
   };
 
   let last = 0;
@@ -189,7 +200,7 @@ document.addEventListener('pointermove', e=>{
     const dt = (t-last)||16; last = t;
     ctx.clearRect(0,0,w,h);
 
-    // stars
+    // stars twinkle
     ctx.save();
     for(const s of stars){
       s.a += s.tw;
@@ -205,18 +216,48 @@ document.addEventListener('pointermove', e=>{
       const m = meteors[i];
       m.x += m.vx; m.y += m.vy; m.life -= dt*0.0009;
       if (m.life<=0 || m.x> w+300 || m.y> h+300) { meteors.splice(i,1); continue; }
-      const tx = m.x - m.vx*8, ty = m.y - m.vy*8;
-      const grad = ctx.createLinearGradient(m.x, m.y, tx, ty);
-      grad.addColorStop(0, 'rgba(255,255,255,.85)');
+      const tailX = m.x - m.vx*10, tailY = m.y - m.vy*10;
+      const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+      grad.addColorStop(0, 'rgba(255,255,255,.9)');
       grad.addColorStop(1, 'rgba(78,163,255,0)');
-      ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tx, ty); ctx.stroke();
+      ctx.strokeStyle = grad; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tailX, tailY); ctx.stroke();
     }
     requestAnimationFrame(tick);
   };
   tick();
 })();
 
-/* ===== Tilt glare follow ===== */
+/* ===== Random bottom background loader =====
+   Put files in /assets/background/background1.png, background2.png, ...
+   This scans 1..50, uses the ones that exist, then picks one at random.
+*/
+(() => {
+  const holder = qs('#bgBottom'); if(!holder) return;
+  const MAX_TRY = 50;
+  const base = 'assets/background/background';
+  const candidates = [];
+  let checked = 0;
+
+  for (let i=1;i<=MAX_TRY;i++){
+    const img = new Image();
+    img.onload = () => { candidates.push(`${base}${i}.png`); finalize(); };
+    img.onerror = () => finalize();
+    img.src = `${base}${i}.png`;
+  }
+  function finalize(){
+    checked++;
+    if (checked < MAX_TRY) return;
+    if (candidates.length){
+      const pick = candidates[Math.floor(Math.random()*candidates.length)];
+      holder.style.backgroundImage = `url("${pick}")`;
+    } else {
+      holder.style.display = 'none';
+    }
+  }
+})();
+
+/* Tilt glare aim */
 qsa('.tilt').forEach(card=>{
   card.addEventListener('pointermove', e=>{
     const r = card.getBoundingClientRect();
