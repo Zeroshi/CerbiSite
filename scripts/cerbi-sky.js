@@ -1,4 +1,4 @@
-/* ====== Tiny helpers ====== */
+/* ====== Utilities ====== */
 const qs = (sel, el=document)=>el.querySelector(sel);
 const qsa = (sel, el=document)=>[...el.querySelectorAll(sel)];
 const setTheme = t => {
@@ -86,24 +86,17 @@ document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--my', e.clientY+'px');
 }, {passive:true});
 
-/* ====== Random bottom background ======
-   Put files in assets/background/background1.png, background2.png, ...
-   This loader tries up to 50 and picks the largest existing index randomly.
-*/
+/* ====== Random bottom background (background1.png, background2.png, ...) ====== */
 (function loadRandomBottomBackground(){
   const maxTry = 50;
   const base = 'assets/background/background';
-  const candidates = [];
-  for(let i=1;i<=maxTry;i++) candidates.push(`${base}${i}.png`);
-  // Shuffle and test each quickly
-  const shuffled = candidates.sort(()=>Math.random()-0.5);
+  const el = qs('#bgBottom'); if (!el) return;
   const img = new Image();
-  const el = qs('#bgBottom');
-  if (!el) return;
-  let idx = 0;
+  const order = Array.from({length:maxTry}, (_,i)=>i+1).sort(()=>Math.random()-0.5);
+  let k = 0;
   const tryNext = () => {
-    if (idx >= shuffled.length) { el.style.display='none'; return; }
-    img.src = shuffled[idx++];
+    if (k >= order.length) { el.style.display='none'; return; }
+    img.src = `${base}${order[k++]}.png`;
   };
   img.onload = () => { el.style.backgroundImage = `url("${img.src}")`; };
   img.onerror = tryNext;
@@ -136,7 +129,6 @@ document.addEventListener('pointermove', e=>{
   const shots = [];
   function spawnShot(){
     if (shots.length >= SHOT_MAX) return;
-    // start from top-left-ish, travel down-right
     const x = -50 + Math.random()*150;
     const y = -40 + Math.random()*80;
     const speed = 6 + Math.random()*4;
@@ -156,10 +148,9 @@ document.addEventListener('pointermove', e=>{
     const dt = Math.min(50, t - lastT || 16); lastT = t;
     acc += dt;
 
-    // background fade
     ctx.clearRect(0,0,w,h);
 
-    // stars
+    // static stars (twinkle)
     ctx.fillStyle = '#d9e6ff';
     for(const s of stars){
       s.tw += s.s*dt*0.002;
@@ -169,16 +160,12 @@ document.addEventListener('pointermove', e=>{
     }
     ctx.globalAlpha = 1;
 
-    // spawn shooting star occasionally
     if (acc > 1200 + Math.random()*1200){ acc = 0; spawnShot(); }
 
-    // shots
     for (let i=shots.length-1;i>=0;i--){
       const s = shots[i];
       s.x += s.vx; s.y += s.vy; s.life += 1;
 
-      // trail
-      const len = 120;
       const tx = s.x - s.vx*3, ty = s.y - s.vy*3;
       const grad = ctx.createLinearGradient(s.x, s.y, tx, ty);
       grad.addColorStop(0, 'rgba(197,219,255,.95)');
@@ -248,29 +235,25 @@ document.addEventListener('pointermove', e=>{
   apply('all');
 })();
 
-/* ====== Enterprise tiles hover fallback if no :has() support ====== */
+/* ====== Enterprise tiles hover fallback if :has() unsupported ====== */
 (() => {
   const supportsHas = CSS && CSS.supports && CSS.supports('selector(:has(*))');
   if (supportsHas) return;
-  const container = document.querySelector('.cred-grid');
+  const container = document.querySelector('.cred-grid:not(.cred-tight)');
   if (!container) return;
   const cards = [...container.querySelectorAll('.cred')];
 
   const clear = () => cards.forEach(c => c.classList.remove('is-hover'));
-  container.addEventListener('mouseleave', () => {
-    container.classList.remove('hovering'); clear();
-  });
+  container.addEventListener('mouseleave', () => { container.classList.remove('hovering'); clear(); });
   container.addEventListener('mouseenter', () => container.classList.add('hovering'));
-  cards.forEach(c => c.addEventListener('mouseenter', () => {
-    clear(); c.classList.add('is-hover');
-  }));
+  cards.forEach(c => c.addEventListener('mouseenter', () => { clear(); c.classList.add('is-hover'); }));
 })();
 
-/* ====== Contact form (Formspree background submit) ====== */
+/* ====== Contact form (Formspree) ====== */
 (() => {
   const form = qs('#contactForm'); if(!form) return;
   const status = qs('#formStatus');
-  const endpoint = form.getAttribute('data-endpoint'); // set to your Formspree endpoint
+  const endpoint = form.getAttribute('data-endpoint');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     status.textContent = 'Sending…';
@@ -287,6 +270,47 @@ document.addEventListener('pointermove', e=>{
       status.textContent = 'Network issue—please try again or email us directly.';
     }
   });
+})();
+
+/* ====== Dashboard auto-rotate (expands to ~80%) ====== */
+(() => {
+  const gallery = qs('#dashGallery'); if(!gallery) return;
+  const shots = qsa('.dash-shot', gallery);
+  const dotsWrap = qs('#dashDots');
+  let i = 0, timer = null;
+
+  const setActive = (idx) => {
+    i = (idx + shots.length) % shots.length;
+    shots.forEach((s,k)=>s.classList.toggle('active', k===i));
+    if (dotsWrap){
+      const dots = qsa('button', dotsWrap);
+      dots.forEach((d,k)=>d.classList.toggle('active', k===i));
+    }
+  };
+
+  // dots
+  if (dotsWrap){
+    shots.forEach((_,k)=>{
+      const b = document.createElement('button');
+      b.setAttribute('aria-label', `Show slide ${k+1}`);
+      b.addEventListener('click', ()=>{ setActive(k); restart(); });
+      dotsWrap.appendChild(b);
+    });
+  }
+
+  const next = ()=> setActive(i+1);
+  const start = ()=> timer = setInterval(next, 4500);
+  const stop = ()=> timer && clearInterval(timer);
+  const restart = ()=>{ stop(); start(); };
+
+  // pause on hover
+  gallery.addEventListener('mouseenter', stop);
+  gallery.addEventListener('mouseleave', start);
+
+  // click to focus a shot
+  shots.forEach((s,k)=> s.addEventListener('click', ()=>{ setActive(k); restart(); }));
+
+  setActive(0); start();
 })();
 
 /* ====== Year ====== */
