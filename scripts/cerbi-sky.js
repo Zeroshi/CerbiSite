@@ -78,7 +78,7 @@ const obs = new IntersectionObserver((entries)=>{
 },{threshold:.12});
 qsa('.reveal').forEach(el=>obs.observe(el));
 
-/* ===== Spotlight follow (soft blue, disabled in light by CSS) ===== */
+/* ===== Spotlight follow ===== */
 document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--mx', e.clientX+'px');
   document.documentElement.style.setProperty('--my', e.clientY+'px');
@@ -129,16 +129,11 @@ document.addEventListener('pointermove', e=>{
   qsa('.filter').forEach(b=>b.addEventListener('click', ()=>set(b.dataset.tag)));
 })();
 
-/* ===== Contact form (background send) =====
-   GitHub Pages has no server, so use a hosted endpoint.
-   1) Create a Formspree form, get the endpoint (looks like https://formspree.io/f/xxxxx)
-   2) Paste it into FORM_ENDPOINT below. Done.
-   Falls back to mailto: if not set.
-*/
+/* ===== Contact form background send ===== */
 (() => {
   const form = qs('#contactForm'); if(!form) return;
   const status = qs('#contactStatus');
-  const FORM_ENDPOINT = ""; // <-- put your Formspree / Getform / Cloudflare Worker URL here
+  const FORM_ENDPOINT = ""; // put your Formspree/Getform/Worker URL here
 
   form.addEventListener('submit', async (e)=>{
     e.preventDefault();
@@ -149,7 +144,7 @@ document.addEventListener('pointermove', e=>{
       try{
         const res = await fetch(FORM_ENDPOINT, {
           method:'POST',
-          headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
           body: JSON.stringify(data)
         });
         if (!res.ok) throw new Error('Bad response');
@@ -168,7 +163,7 @@ document.addEventListener('pointermove', e=>{
   });
 })();
 
-/* ===== Starfield + shooting stars (angled downward) ===== */
+/* ===== Starfield + meteors: force DOWN-RIGHT angle ===== */
 (() => {
   const canvas = qs('#sky'); if(!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -179,20 +174,20 @@ document.addEventListener('pointermove', e=>{
   const stars = [];
   const meteors = [];
   const STAR_COUNT = Math.min(800, Math.floor(w*h/3000));
-  const rand = (a,b)=>a + Math.random()*(b-a);
+  const R = (a,b)=>a + Math.random()*(b-a);
 
   for(let i=0;i<STAR_COUNT;i++){
     stars.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2+0.2, a: Math.random()*0.6+0.4, tw: Math.random()*0.02+0.005 });
   }
 
   const spawnMeteor = () => {
-    // Down-right slope between -35° and -65°
-    const deg = -1 * rand(35, 65);
-    const angle = deg * Math.PI/180;
-    const speed = rand(10,16);
-    const x = rand(-w*0.2, w*0.8);
-    const y = rand(-h*0.15, h*0.25);
-    meteors.push({x,y, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1});
+    // Down-right: 35–65 degrees measured from +X axis → vx>0, vy>0
+    const deg = R(35, 65);
+    const ang = deg * Math.PI/180;
+    const speed = R(10,16);
+    const x = R(-w*0.2, w*0.8);
+    const y = R(-h*0.15, h*0.25);
+    meteors.push({x,y, vx: Math.cos(ang)*speed, vy: Math.sin(ang)*speed, life: 1});
   };
 
   let last = 0;
@@ -228,33 +223,43 @@ document.addEventListener('pointermove', e=>{
   tick();
 })();
 
-/* ===== Random bottom background loader =====
+/* ===== Random bottom background loader (instant show, with fallbacks) =====
    Put files in /assets/background/background1.png, background2.png, ...
-   This scans 1..50, uses the ones that exist, then picks one at random.
+   We set the FIRST one that loads (no waiting for all 50).
 */
 (() => {
   const holder = qs('#bgBottom'); if(!holder) return;
-  const MAX_TRY = 50;
+  const MAX = 50;
   const base = 'assets/background/background';
-  const candidates = [];
-  let checked = 0;
+  let shown = false;
 
-  for (let i=1;i<=MAX_TRY;i++){
+  function use(src){
+    if (shown) return;
+    shown = true;
+    holder.style.backgroundImage = `url("${src}")`;
+    holder.style.display = 'block';
+  }
+
+  // Primary sweep: as soon as one loads, we use it.
+  for (let i=1;i<=MAX;i++){
     const img = new Image();
-    img.onload = () => { candidates.push(`${base}${i}.png`); finalize(); };
-    img.onerror = () => finalize();
-    img.src = `${base}${i}.png`;
+    img.decoding = 'async';
+    img.onload  = () => use(`${base}${i}.png`);
+    img.src     = `${base}${i}.png`;
   }
-  function finalize(){
-    checked++;
-    if (checked < MAX_TRY) return;
-    if (candidates.length){
-      const pick = candidates[Math.floor(Math.random()*candidates.length)];
-      holder.style.backgroundImage = `url("${pick}")`;
-    } else {
-      holder.style.display = 'none';
-    }
-  }
+
+  // Fallback after 1200ms: try legacy names if nothing loaded.
+  setTimeout(()=>{
+    if (shown) return;
+    const legacy = ['assets/background.png','assets/background/background.png'];
+    let idx = 0;
+    const tryNext = () => {
+      if (idx>=legacy.length) { holder.style.display='none'; return; }
+      const p = legacy[idx++]; const im = new Image();
+      im.onload = ()=>use(p); im.onerror = tryNext; im.src = p;
+    };
+    tryNext();
+  }, 1200);
 })();
 
 /* Tilt glare aim */
