@@ -377,77 +377,67 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="container section">
-      <h2>Get in Touch</h2>
-      <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
+  <!-- CONTACT -->
+<section id="contact" class="container section">
+  <h2>Get in Touch</h2>
+  <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
 
-      <div class="glass tilt" style="padding:16px">
-        <div class="glare"></div>
-        <div class="grid">
-          <!-- FULL-BLEED ENTERPRISE TILES -->
-          <div class="col-6">
-            <div class="img-frame" role="group" aria-label="Enterprise readiness">
-              <div class="cred-grid cred-tight">
-                <figure class="cred">
-                  <img src="assets/enterprise/rbac-640.png" alt="RBAC">
-                  <figcaption>RBAC</figcaption>
-                </figure>
-                <figure class="cred">
-                  <img src="assets/enterprise/audit-logs-640.png" alt="Audit logs">
-                  <figcaption>Audit logs</figcaption>
-                </figure>
-                <figure class="cred">
-                  <img src="assets/enterprise/governance-640.png" alt="Governance">
-                  <figcaption>Governance</figcaption>
-                </figure>
-                <figure class="cred">
-                  <img src="assets/enterprise/encryption-640.png" alt="Encryption">
-                  <figcaption>Encryption</figcaption>
-                </figure>
-              </div>
-              <div class="img-cap">
-                <strong>Enterprise-ready. Your tenant. Your rules.</strong><br/>
-                <span class="k">RBAC, audit logs, encryption, and governance aligned to your policies.</span>
-              </div>
-            </div>
+  <div class="glass tilt" style="padding:16px">
+    <div class="glare"></div>
+    <div class="grid">
+      <!-- FULL-BLEED ENTERPRISE TILES -->
+      <div class="col-6">
+        <div class="img-frame" role="group" aria-label="Enterprise readiness">
+          <div class="cred-grid cred-tight">
+            <figure class="cred">
+              <img src="assets/enterprise/rbac-640.png" alt="RBAC">
+              <figcaption>RBAC</figcaption>
+            </figure>
+            <figure class="cred">
+              <img src="assets/enterprise/audit-logs-640.png" alt="Audit logs">
+              <figcaption>Audit logs</figcaption>
+            </figure>
+            <figure class="cred">
+              <img src="assets/enterprise/governance-640.png" alt="Governance">
+              <figcaption>Governance</figcaption>
+            </figure>
+            <figure class="cred">
+              <img src="assets/enterprise/encryption-640.png" alt="Encryption">
+              <figcaption>Encryption</figcaption>
+            </figure>
           </div>
-
-          <!-- Contact form -->
-          <div class="col-6">
-            <form id="contactForm" class="contact glass" data-endpoint="https://formspree.io/f/YOUR_FORMSPREE_ID">
-              <div class="row2">
-                <label>
-                  <span>Name</span>
-                  <input type="text" name="name" placeholder="Your name" required />
-                </label>
-                <label>
-                  <span>Email</span>
-                  <input type="email" name="email" placeholder="you@company.com" required />
-                </label>
-              </div>
-              <label>
-                <span>Message</span>
-                <textarea name="message" rows="6" placeholder="How can we help?" required></textarea>
-              </label>
-              <div class="row2">
-                <label>
-                  <span>Company</span>
-                  <input type="text" name="company" placeholder="(optional)" />
-                </label>
-                <label>
-                  <span>Subject</span>
-                  <input type="text" name="subject" placeholder="(optional)" />
-                </label>
-              </div>
-              <button class="btn btn-primary" type="submit">Send</button>
-              <span id="formStatus" class="k" aria-live="polite"></span>
-            </form>
-            <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
+          <div class="img-cap">
+            <strong>Enterprise-ready. Your tenant. Your rules.</strong><br/>
+            <span class="k">RBAC, audit logs, encryption, and governance aligned to your policies.</span>
           </div>
         </div>
       </div>
-    </section>
+
+      <!-- Jotform (background submit via iframe) -->
+      <div class="col-6">
+        <div class="jotform-embed glass" role="form" aria-label="Contact form">
+          <!-- Option A: Jotform's recommended script embed -->
+          <script type="text/javascript"
+                  src="https://form.jotform.com/jsform/252385904589067"
+                  title="Cerbi Contact"></script>
+
+          <!-- Option B: (alternative) direct iframe embed
+          <iframe
+            title="Cerbi Contact"
+            src="https://form.jotform.com/252385904589067"
+            frameborder="0"
+            scrolling="yes"
+            allowtransparency="true"
+            loading="lazy">
+          </iframe> -->
+        </div>
+        <p class="k" style="margin-top:10px">
+          Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
   </main>
 
   <!-- Footer -->
