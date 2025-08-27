@@ -14,7 +14,6 @@
   --glass:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
   --tile-opacity:.07; --tile-size:26px;
 
-  /* Scroll-driven gradient (updated via JS if desired) */
   --bg-start:#081226; --bg-end:#0b1730;
 
   --lift:translateY(-4px);
@@ -23,7 +22,7 @@
   --mx:50vw; --my:50vh;
 }
 
-/* Light theme contrast/readability */
+/* Light theme: make headers readable */
 [data-theme="light"]{
   --bg:#f8fbff; --panel:#ffffff; --panel-2:#f1f5ff;
   --text:#0b1630; --muted:#43536f;
@@ -75,14 +74,14 @@ body{
 /* Star canvas */
 .sky{position:fixed;inset:0;z-index:-5;display:block}
 
-/* Random bottom artwork (your PNGs) */
+/* Random bottom artwork */
 .bg-bottom{
   position:fixed; left:0; right:0; bottom:0; height:48vh; z-index:-4;
   background: center bottom / contain no-repeat;
   opacity:.85; pointer-events:none;
 }
 
-/* Cursor spotlight — subtle blue glow (not orange) */
+/* Cursor spotlight — subtle blue glow */
 .spotlight{position:fixed;inset:0;pointer-events:none;z-index:-3;
   background: radial-gradient(520px 420px at var(--mx) var(--my), rgba(90,134,255,.15), transparent 60%);
   transition: background .12s linear;
@@ -154,17 +153,38 @@ a:hover{text-decoration:underline}
   rgba(12,17,24,0.55)}
 .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
-/* ===== Screenshot gallery layout ===== */
-.dash-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;width:100%;height:100%;padding:10px}
-.dash-shot{display:block;width:100%;height:100%;border-radius:14px;border:1px solid rgba(127,148,179,.22);background:rgba(255,255,255,.02);overflow:hidden}
-.dash-shot img{width:100%;height:100%;object-fit:cover;display:block}
-@media (max-width:900px){.dash-gallery{grid-template-columns:1fr}}
-
-/* ===== Enterprise tiles (hover expand) ===== */
-.cred-grid{
-  display:flex; gap:18px; align-items:stretch; justify-content:center;
-  padding:18px; perspective:1000px;
+/* ===== Dashboard gallery: expand to ~80% on hover/active ===== */
+.dash-frame{aspect-ratio:auto}
+.dash-gallery{display:flex;gap:12px;width:100%;height:min(56vh,520px);min-height:260px}
+.dash-shot{
+  position:relative;flex:1 1 0;border-radius:14px;border:1px solid rgba(127,148,179,.22);
+  background:rgba(255,255,255,.02);overflow:hidden;transition:flex .55s var(--easing), transform .55s var(--easing), filter .55s var(--easing);
 }
+.dash-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.dash-gallery:has(.dash-shot:hover) .dash-shot{flex:1;filter:saturate(.9) brightness(.95);opacity:.9}
+.dash-gallery .dash-shot:hover{flex:8;transform:translateY(-4px);filter:none;opacity:1}
+.dash-shot.active{flex:8}
+.dash-dots{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:8px;z-index:2}
+.dash-dots button{width:9px;height:9px;border-radius:50%;border:1px solid rgba(127,148,179,.6);background:rgba(255,255,255,.2);cursor:pointer}
+.dash-dots button.active{background:var(--accent);border-color:rgba(255,77,0,.8)}
+
+/* ===== Enterprise tiles — FULL BLEED, no padding / gaps ===== */
+.cred-grid{display:flex; gap:18px; align-items:stretch; justify-content:center; padding:18px;}
+/* Tight mode = fill the whole rectangle with zero padding/gap */
+.cred-tight{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;height:100%}
+.cred-tight .cred{
+  border-radius:0; padding:0; margin:0; position:relative;
+  background:transparent; border:0; box-shadow:none;
+}
+.cred-tight .cred + .cred{border-left:1px solid rgba(127,148,179,.25)}
+.cred-tight .cred img{width:100%;height:100%;object-fit:cover;display:block}
+.cred-tight .cred figcaption{
+  position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:10px;
+  background:rgba(8,14,30,.55);color:#fff;font-weight:700;letter-spacing:.02em;
+  border:1px solid rgba(127,148,179,.35)
+}
+
+/* Old hover-expand styling (kept for non-tight grids) */
 .cred{
   flex:1 1 0;
   display:flex; flex-direction:column; align-items:center; text-align:center;
@@ -172,34 +192,17 @@ a:hover{text-decoration:underline}
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
   border:1px solid rgba(127,148,179,.18);
   transition:flex .35s var(--easing), transform .35s var(--easing), filter .35s var(--easing), box-shadow .35s var(--easing);
-  will-change:flex, transform;
 }
-.cred img{
-  width:100%; aspect-ratio: 3 / 4; object-fit:cover; border-radius:12px;
-  box-shadow:0 8px 24px rgba(0,0,0,.25);
-  transition:transform .35s var(--easing), filter .35s var(--easing);
-}
-.cred figcaption{ margin-top:12px; font-size:14px; color:var(--muted) }
+.cred img{width:100%; aspect-ratio: 3 / 4; object-fit:cover; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.cred figcaption{margin-top:12px;font-size:14px;color:var(--muted)}
 .cred-grid:has(.cred:hover) .cred{ flex:.70 1 0; filter:saturate(.85) brightness(.96) }
-.cred-grid .cred:hover{
-  flex:2.2 1 0; transform:translateY(-8px) rotateY(1deg);
-  filter:saturate(1.05) brightness(1.04);
-  box-shadow:0 16px 40px rgba(0,0,0,.35), 0 0 0 1px rgba(127,148,179,.28) inset;
-}
-.cred-grid .cred:hover img{ transform:scale(1.05) }
-
-/* JS fallback classes for old browsers */
-.cred-grid.hovering .cred{ flex:.70 1 0; filter:saturate(.85) brightness(.96) }
-.cred-grid.hovering .cred.is-hover{ flex:2.2 1 0; transform:translateY(-8px); filter:saturate(1.05) brightness(1.04) }
+.cred-grid .cred:hover{ flex:2.2 1 0; transform:translateY(-8px) rotateY(1deg); filter:saturate(1.05) brightness(1.04) }
 
 /* ===== Contact form ===== */
 .contact{display:block;padding:16px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(127,148,179,.25)}
 .contact label{display:block;margin-bottom:12px}
 .contact label span{display:block;font-weight:600;margin-bottom:6px;color:var(--muted)}
-.contact input,.contact textarea{
-  width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(127,148,179,.25);
-  background:rgba(255,255,255,.04);color:var(--text);font-size:15px;outline:none;
-}
+.contact input,.contact textarea{width:100%;padding:12px 12px;border-radius:10px;border:1px solid rgba(127,148,179,.25);background:rgba(255,255,255,.04);color:var(--text);font-size:15px;outline:none}
 .contact input:focus,.contact textarea:focus{border-color:var(--ring); box-shadow:0 0 0 3px rgba(74,118,255,.22)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:900px){.row2{grid-template-columns:1fr}}
@@ -212,8 +215,6 @@ a:hover{text-decoration:underline}
 /* Micro interactions */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--easing), transform .6s var(--easing)}
 .reveal.in{opacity:1;transform:none}
-#toTop{position:fixed;right:18px;bottom:18px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
-#toTop.show{opacity:1;pointer-events:auto}
 
 /* Command palette */
 .cmdk-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:90}
