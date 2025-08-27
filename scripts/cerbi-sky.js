@@ -91,6 +91,53 @@ document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--my', e.clientY+'px');
 }, {passive:true});
 
+/* ===== Starfield (canvas) ===== */
+(() => {
+  const canvas = qs('#sky');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+  let stars = [];
+  const STAR_DENSITY = 0.12; // per 1000px^2
+
+  function resize() {
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    const w = window.innerWidth, h = window.innerHeight;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.min(900, Math.floor((w*h)/1000 * STAR_DENSITY));
+    stars = Array.from({length: count}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.2 + 0.3,
+      a: Math.random()*0.6 + 0.2,
+      tw: (Math.random()*0.8 + 0.2) * (Math.random()<0.5?-1:1)
+    }));
+  }
+
+  function draw() {
+    const w = canvas.width/dpr, h = canvas.height/dpr;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#ffffff';
+    for (const s of stars){
+      s.a += s.tw*0.015;
+      if (s.a>1){ s.a=1; s.tw*=-1; } else if (s.a<0.15){ s.a=0.15; s.tw*=-1; }
+      ctx.globalAlpha = s.a;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize(); requestAnimationFrame(draw);
+})();
+
 /* ===== Governance live demo (toy) ===== */
 (() => {
   const sw = qs('#piiSwitch');
@@ -145,7 +192,7 @@ document.addEventListener('pointermove', e=>{
   });
 })();
 
-/* ===== Contact form (mailto fallback, no backend required) ===== */
+/* ===== Contact form (mailto fallback) ===== */
 (() => {
   const form = qs('#contactForm');
   const status = qs('#formStatus');
@@ -178,15 +225,18 @@ document.addEventListener('pointermove', e=>{
   if (y) y.textContent = new Date().getFullYear().toString();
 })();
 
-/* ===== Comets every so often ===== */
+/* ===== Comets every so often (top-left → bottom-right descent) ===== */
 (() => {
   const layer = qs('#comets');
   if (!layer) return;
   const mk = ()=>{
     const s = document.createElement('span');
     s.className = 'comet';
-    s.style.setProperty('--x', (-200 + Math.random()*200) + 'px');
-    s.style.setProperty('--y', (Math.random()*window.innerHeight) + 'px');
+    // start near the top-left quadrant
+    const startX = -200 + Math.random()* (window.innerWidth*0.2);
+    const startY = -120 + Math.random()* (window.innerHeight*0.3);
+    s.style.setProperty('--x', startX + 'px');
+    s.style.setProperty('--y', startY + 'px');
     layer.appendChild(s);
     setTimeout(()=>s.remove(), 3000);
   };
