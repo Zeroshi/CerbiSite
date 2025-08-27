@@ -1,6 +1,6 @@
-/* ===== Utilities ===== */
-const qs = (s, el=document) => el.querySelector(s);
-const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+/* ====== Tiny helpers ====== */
+const qs = (sel, el=document)=>el.querySelector(sel);
+const qsa = (sel, el=document)=>[...el.querySelectorAll(sel)];
 const setTheme = t => {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('cerbi-theme', t);
@@ -8,7 +8,7 @@ const setTheme = t => {
   if (meta) meta.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224');
 };
 
-/* ===== Sticky progress ===== */
+/* ====== Sticky progress ====== */
 const progressBar = qs('#progress');
 const onScroll = () => {
   const h = document.documentElement;
@@ -17,7 +17,7 @@ const onScroll = () => {
 };
 window.addEventListener('scroll', onScroll, {passive:true});
 
-/* ===== Theme toggle (persist) ===== */
+/* ====== Theme toggle (persisted) ====== */
 (() => {
   const saved = localStorage.getItem('cerbi-theme');
   if (saved) setTheme(saved);
@@ -27,31 +27,33 @@ window.addEventListener('scroll', onScroll, {passive:true});
   });
 })();
 
-/* ===== Mobile nav ===== */
+/* ====== Mobile nav ====== */
 qs('#navToggle')?.addEventListener('click', () => {
   const nav = qs('#primaryNav');
   const open = nav.classList.toggle('open');
   qs('#navToggle').setAttribute('aria-expanded', String(open));
 });
 
-/* ===== Command palette ===== */
+/* ====== Command palette ====== */
 (() => {
   const overlay = qs('#cmdkOverlay');
-  const input   = qs('#cmdkInput');
-  const list    = qs('#cmdkList');
+  const input = qs('#cmdkInput');
+  const list = qs('#cmdkList');
   const items = [
-    {label:'Why', href:'#why'},{label:'Ecosystem',href:'#ecosystem'},{label:'Governance',href:'#governance'},
-    {label:'Packages',href:'#packages'},{label:'Repositories',href:'#repos'},{label:'Compare',href:'#compare'},
-    {label:'Architecture',href:'#architecture'},{label:'Contact',href:'#contact'},
+    {label:'Why', href:'#why'}, {label:'Ecosystem', href:'#ecosystem'},
+    {label:'Governance', href:'#governance'}, {label:'Packages', href:'#packages'},
+    {label:'Repositories', href:'#repos'}, {label:'Compare', href:'#compare'},
+    {label:'Architecture', href:'#architecture'}, {label:'Contact', href:'#contact'},
   ];
+  if (!overlay) return;
   list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
   list.addEventListener('click', e=>{
-    const it = e.target.closest('.item'); if(!it) return;
-    location.hash = it.lastChild.textContent.trim();
+    const item = e.target.closest('.item'); if(!item) return;
+    location.hash = item.lastChild.textContent.trim();
     overlay.classList.remove('open');
   });
   const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); };
-  const close= ()=> overlay.classList.remove('open');
+  const close = ()=>overlay.classList.remove('open');
   qs('#cmdBtn')?.addEventListener('click', open);
   window.addEventListener('keydown', e=>{
     if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k') { e.preventDefault(); open(); }
@@ -60,7 +62,7 @@ qs('#navToggle')?.addEventListener('click', () => {
   overlay.addEventListener('click', e=>{ if(e.target===overlay) close(); });
 })();
 
-/* ===== Copy buttons ===== */
+/* ====== Copy buttons ====== */
 qsa('[data-copy]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const el = qs(btn.getAttribute('data-copy'));
@@ -72,24 +74,136 @@ qsa('[data-copy]').forEach(btn=>{
   });
 });
 
-/* ===== Reveal on scroll ===== */
+/* ====== Reveal on scroll ====== */
 const obs = new IntersectionObserver((entries)=>{
   entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
 },{threshold:.12});
 qsa('.reveal').forEach(el=>obs.observe(el));
 
-/* ===== Spotlight follow ===== */
+/* ====== Spotlight follow ====== */
 document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--mx', e.clientX+'px');
   document.documentElement.style.setProperty('--my', e.clientY+'px');
 }, {passive:true});
 
-/* ===== Governance demo (toy) ===== */
+/* ====== Random bottom background ======
+   Put files in assets/background/background1.png, background2.png, ...
+   This loader tries up to 50 and picks the largest existing index randomly.
+*/
+(function loadRandomBottomBackground(){
+  const maxTry = 50;
+  const base = 'assets/background/background';
+  const candidates = [];
+  for(let i=1;i<=maxTry;i++) candidates.push(`${base}${i}.png`);
+  // Shuffle and test each quickly
+  const shuffled = candidates.sort(()=>Math.random()-0.5);
+  const img = new Image();
+  const el = qs('#bgBottom');
+  if (!el) return;
+  let idx = 0;
+  const tryNext = () => {
+    if (idx >= shuffled.length) { el.style.display='none'; return; }
+    img.src = shuffled[idx++];
+  };
+  img.onload = () => { el.style.backgroundImage = `url("${img.src}")`; };
+  img.onerror = tryNext;
+  tryNext();
+})();
+
+/* ====== Starfield with angled shooting stars (down-right) ====== */
+(function starfield(){
+  const canvas = qs('#sky'); if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
+
+  const DPR = Math.min(2, devicePixelRatio || 1);
+  canvas.width = w * DPR; canvas.height = h * DPR; ctx.scale(DPR, DPR);
+
+  const stars = [];
+  const SHOT_MAX = 3;
+  function makeStar(){
+    return {
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.2 + .2,
+      tw: Math.random()*1,
+      s: Math.random() * .3 + .05
+    };
+  }
+  for(let i=0;i<220;i++) stars.push(makeStar());
+
+  const shots = [];
+  function spawnShot(){
+    if (shots.length >= SHOT_MAX) return;
+    // start from top-left-ish, travel down-right
+    const x = -50 + Math.random()*150;
+    const y = -40 + Math.random()*80;
+    const speed = 6 + Math.random()*4;
+    const angle = Math.PI/10; // ~18deg downward
+    shots.push({
+      x, y,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed*2,  // more downward component
+      life: 0,
+      maxLife: 120 + Math.random()*60
+    });
+  }
+
+  let lastT = 0, acc = 0;
+  function tick(t){
+    requestAnimationFrame(tick);
+    const dt = Math.min(50, t - lastT || 16); lastT = t;
+    acc += dt;
+
+    // background fade
+    ctx.clearRect(0,0,w,h);
+
+    // stars
+    ctx.fillStyle = '#d9e6ff';
+    for(const s of stars){
+      s.tw += s.s*dt*0.002;
+      const a = 0.5 + Math.sin(s.tw)*0.5;
+      ctx.globalAlpha = 0.2 + a*0.6;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // spawn shooting star occasionally
+    if (acc > 1200 + Math.random()*1200){ acc = 0; spawnShot(); }
+
+    // shots
+    for (let i=shots.length-1;i>=0;i--){
+      const s = shots[i];
+      s.x += s.vx; s.y += s.vy; s.life += 1;
+
+      // trail
+      const len = 120;
+      const tx = s.x - s.vx*3, ty = s.y - s.vy*3;
+      const grad = ctx.createLinearGradient(s.x, s.y, tx, ty);
+      grad.addColorStop(0, 'rgba(197,219,255,.95)');
+      grad.addColorStop(1, 'rgba(197,219,255,0)');
+      ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(s.x, s.y); ctx.lineTo(tx, ty); ctx.stroke();
+
+      if (s.x > w+60 || s.y > h+60 || s.life > s.maxLife) shots.splice(i,1);
+    }
+  }
+  requestAnimationFrame(tick);
+
+  window.addEventListener('resize', ()=>{
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+    canvas.width = w * DPR; canvas.height = h * DPR; ctx.scale(DPR, DPR);
+  }, {passive:true});
+})();
+
+/* ====== Governance live demo (toy) ====== */
 (() => {
   const sw = qs('#piiSwitch');
   const input = qs('#inputJson');
   const evalEl = qs('#evalJson');
-  if (!sw || !input || !evalEl) return;
+  if(!sw || !input || !evalEl) return;
 
   const make = on => ({
     timestamp: new Date().toISOString(),
@@ -103,173 +217,77 @@ document.addEventListener('pointermove', e=>{
     if (obj.user?.email) violations.push({ field:"user.email", type:"PII", rule:"Forbidden" });
     return { ok: violations.length===0, violations };
   };
-  const update = (on) => {
-    const log = make(on);
-    input.textContent = render(log);
-    evalEl.textContent = render(evaluate(log));
-  };
-  update(false);
 
-  const toggle = () => { sw.classList.toggle('on'); sw.setAttribute('aria-checked', sw.classList.contains('on')); update(sw.classList.contains('on')); };
+  let on = false;
+  function refresh(){
+    const obj = make(on);
+    input.textContent = render(obj);
+    evalEl.textContent = render(evaluate(obj));
+    sw.classList.toggle('on', on);
+    sw.setAttribute('aria-checked', String(on));
+  }
+  refresh();
+  const toggle = ()=>{ on = !on; refresh(); };
   sw.addEventListener('click', toggle);
   sw.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); }});
 })();
 
-/* ===== Compare filters ===== */
+/* ====== Compare table filters ====== */
 (() => {
   const table = qs('#compareTable'); if(!table) return;
-  const rows = [...table.tBodies[0].rows];
-  const set = tag => {
+  const rows = qsa('tbody tr', table);
+  const buttons = qsa('.filter');
+  function apply(tag){
+    buttons.forEach(b=>b.classList.toggle('active', b.dataset.tag===tag));
     rows.forEach(r=>{
-      if (tag==='all') r.style.display='';
-      else r.style.display = r.dataset.tags?.includes(tag) ? '' : 'none';
+      const tags = (r.getAttribute('data-tags')||'').split(/\s+/);
+      r.style.display = (tag==='all'||tags.includes(tag)) ? '' : 'none';
     });
-    qsa('.filter').forEach(b=>b.classList.toggle('active', b.dataset.tag===tag));
-  };
-  qsa('.filter').forEach(b=>b.addEventListener('click', ()=>set(b.dataset.tag)));
+  }
+  buttons.forEach(b=>b.addEventListener('click', ()=>apply(b.dataset.tag)));
+  apply('all');
 })();
 
-/* ===== Contact form background send ===== */
+/* ====== Enterprise tiles hover fallback if no :has() support ====== */
+(() => {
+  const supportsHas = CSS && CSS.supports && CSS.supports('selector(:has(*))');
+  if (supportsHas) return;
+  const container = document.querySelector('.cred-grid');
+  if (!container) return;
+  const cards = [...container.querySelectorAll('.cred')];
+
+  const clear = () => cards.forEach(c => c.classList.remove('is-hover'));
+  container.addEventListener('mouseleave', () => {
+    container.classList.remove('hovering'); clear();
+  });
+  container.addEventListener('mouseenter', () => container.classList.add('hovering'));
+  cards.forEach(c => c.addEventListener('mouseenter', () => {
+    clear(); c.classList.add('is-hover');
+  }));
+})();
+
+/* ====== Contact form (Formspree background submit) ====== */
 (() => {
   const form = qs('#contactForm'); if(!form) return;
-  const status = qs('#contactStatus');
-  const FORM_ENDPOINT = ""; // put your Formspree/Getform/Worker URL here
-
-  form.addEventListener('submit', async (e)=>{
+  const status = qs('#formStatus');
+  const endpoint = form.getAttribute('data-endpoint'); // set to your Formspree endpoint
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     status.textContent = 'Sending…';
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    if (FORM_ENDPOINT){
-      try{
-        const res = await fetch(FORM_ENDPOINT, {
-          method:'POST',
-          headers:{'Content-Type':'application/json','Accept':'application/json'},
-          body: JSON.stringify(data)
-        });
-        if (!res.ok) throw new Error('Bad response');
-        status.textContent = 'Thanks! We’ll get back to you shortly.';
+    const data = new FormData(form);
+    try{
+      const res = await fetch(endpoint, { method:'POST', body:data, headers:{ 'Accept':'application/json' }});
+      if (res.ok){
+        status.textContent = 'Thanks! We’ll be in touch shortly.';
         form.reset();
-      }catch(err){
-        status.textContent = 'Could not send via endpoint. You can email us directly at hello@cerbi.io.';
+      } else {
+        status.textContent = 'Hmm, something went wrong. Email hello@cerbi.io instead?';
       }
-    }else{
-      const body = encodeURIComponent(
-        `Name: ${data.name}\nEmail: ${data.email}\nCompany: ${data.company||''}\nDemo: ${data.demo?'Yes':'No'}\n\n${data.message}`
-      );
-      window.location.href = `mailto:hello@cerbi.io?subject=Cerbi inquiry — ${encodeURIComponent(data.name)}&body=${body}`;
-      status.textContent = 'Opening your email client…';
+    }catch(err){
+      status.textContent = 'Network issue—please try again or email us directly.';
     }
   });
 })();
 
-/* ===== Starfield + meteors: force DOWN-RIGHT angle ===== */
-(() => {
-  const canvas = qs('#sky'); if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w = canvas.width = window.innerWidth;
-  let h = canvas.height = window.innerHeight;
-  window.addEventListener('resize', ()=>{ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
-
-  const stars = [];
-  const meteors = [];
-  const STAR_COUNT = Math.min(800, Math.floor(w*h/3000));
-  const R = (a,b)=>a + Math.random()*(b-a);
-
-  for(let i=0;i<STAR_COUNT;i++){
-    stars.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.2+0.2, a: Math.random()*0.6+0.4, tw: Math.random()*0.02+0.005 });
-  }
-
-  const spawnMeteor = () => {
-    // Down-right: 35–65 degrees measured from +X axis → vx>0, vy>0
-    const deg = R(35, 65);
-    const ang = deg * Math.PI/180;
-    const speed = R(10,16);
-    const x = R(-w*0.2, w*0.8);
-    const y = R(-h*0.15, h*0.25);
-    meteors.push({x,y, vx: Math.cos(ang)*speed, vy: Math.sin(ang)*speed, life: 1});
-  };
-
-  let last = 0;
-  const tick = (t=0) => {
-    const dt = (t-last)||16; last = t;
-    ctx.clearRect(0,0,w,h);
-
-    // stars twinkle
-    ctx.save();
-    for(const s of stars){
-      s.a += s.tw;
-      ctx.globalAlpha = 0.5 + 0.5*Math.sin(s.a);
-      ctx.fillStyle = '#dfe9ff';
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.restore();
-
-    // meteors
-    if (Math.random() < 0.012 && meteors.length < 3) spawnMeteor();
-    for (let i=meteors.length-1;i>=0;i--){
-      const m = meteors[i];
-      m.x += m.vx; m.y += m.vy; m.life -= dt*0.0009;
-      if (m.life<=0 || m.x> w+300 || m.y> h+300) { meteors.splice(i,1); continue; }
-      const tailX = m.x - m.vx*10, tailY = m.y - m.vy*10;
-      const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
-      grad.addColorStop(0, 'rgba(255,255,255,.9)');
-      grad.addColorStop(1, 'rgba(78,163,255,0)');
-      ctx.strokeStyle = grad; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tailX, tailY); ctx.stroke();
-    }
-    requestAnimationFrame(tick);
-  };
-  tick();
-})();
-
-/* ===== Random bottom background loader (instant show, with fallbacks) =====
-   Put files in /assets/background/background1.png, background2.png, ...
-   We set the FIRST one that loads (no waiting for all 50).
-*/
-(() => {
-  const holder = qs('#bgBottom'); if(!holder) return;
-  const MAX = 50;
-  const base = 'assets/background/background';
-  let shown = false;
-
-  function use(src){
-    if (shown) return;
-    shown = true;
-    holder.style.backgroundImage = `url("${src}")`;
-    holder.style.display = 'block';
-  }
-
-  // Primary sweep: as soon as one loads, we use it.
-  for (let i=1;i<=MAX;i++){
-    const img = new Image();
-    img.decoding = 'async';
-    img.onload  = () => use(`${base}${i}.png`);
-    img.src     = `${base}${i}.png`;
-  }
-
-  // Fallback after 1200ms: try legacy names if nothing loaded.
-  setTimeout(()=>{
-    if (shown) return;
-    const legacy = ['assets/background.png','assets/background/background.png'];
-    let idx = 0;
-    const tryNext = () => {
-      if (idx>=legacy.length) { holder.style.display='none'; return; }
-      const p = legacy[idx++]; const im = new Image();
-      im.onload = ()=>use(p); im.onerror = tryNext; im.src = p;
-    };
-    tryNext();
-  }, 1200);
-})();
-
-/* Tilt glare aim */
-qsa('.tilt').forEach(card=>{
-  card.addEventListener('pointermove', e=>{
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--gx', ((e.clientX - r.left)/r.width*100).toFixed(2)+'%');
-    card.style.setProperty('--gy', ((e.clientY - r.top)/r.height*100).toFixed(2)+'%');
-  });
-});
-
-/* Year */
-qs('#year')?.appendChild(document.createTextNode(new Date().getFullYear()));
+/* ====== Year ====== */
+(() => { const y = qs('#year'); if (y) y.textContent = new Date().getFullYear(); })();
