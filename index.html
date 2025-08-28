@@ -19,20 +19,17 @@
   <link rel="apple-touch-icon" href="assets/CerbiLogoEmblem.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=blue-rotator-10" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=blue-rotator-11" />
 
   <!-- Safety: prevent overlay flash if CSS fails -->
   <style>.cmdk-overlay{display:none!important}</style>
 </head>
 <body>
-  <!-- Fixed background stack (all behind content) -->
+  <!-- Fixed background stack -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
-  <!-- random, fixed bottom scene background (loaded by JS) -->
   <div class="scene-bg" aria-hidden="true"></div>
-  <!-- very subtle color veil -->
   <div class="veil" aria-hidden="true"></div>
-  <!-- soft blue spotlight -->
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
@@ -172,21 +169,13 @@
 
       <div class="space"></div>
 
-      <!-- Enterprise tiles: no padding, edge-to-edge, expand-on-hover -->
+      <!-- Enterprise tiles: edge-to-edge, expand-on-hover -->
       <div class="glass reveal" style="padding:0">
         <div class="enterprise-quads" role="list">
-          <a class="quad" role="listitem" style="--img:url('assets/enterprise/rbac-640.png')">
-            <span>RBAC</span>
-          </a>
-          <a class="quad" role="listitem" style="--img:url('assets/enterprise/audit-logs-640.png')">
-            <span>Audit logs</span>
-          </a>
-          <a class="quad" role="listitem" style="--img:url('assets/enterprise/governance-640.png')">
-            <span>Governance</span>
-          </a>
-          <a class="quad" role="listitem" style="--img:url('assets/enterprise/encryption-640.png')">
-            <span>Encryption</span>
-          </a>
+          <a class="quad" role="listitem" style="--img:url('assets/enterprise/rbac-640.png')"><span>RBAC</span></a>
+          <a class="quad" role="listitem" style="--img:url('assets/enterprise/audit-logs-640.png')"><span>Audit logs</span></a>
+          <a class="quad" role="listitem" style="--img:url('assets/enterprise/governance-640.png')"><span>Governance</span></a>
+          <a class="quad" role="listitem" style="--img:url('assets/enterprise/encryption-640.png')"><span>Encryption</span></a>
         </div>
         <div class="quad-foot">
           <strong>Enterprise-ready. Your tenant. Your rules.</strong>
@@ -334,7 +323,6 @@ We are not another log viewer. We help you put better, governance-compliant data
       <p class="lead">Want pricing, enterprise trials, or a live walkthrough? Send us a note—responses are quick.</p>
       <div class="glass tilt" style="padding:0">
         <div class="glare"></div>
-        <!-- JotForm (background submit handled by JotForm) -->
         <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:min(80vh,900px);border:0;display:block" loading="lazy"></iframe>
       </div>
     </section>
@@ -369,6 +357,6 @@ We are not another log viewer. We help you put better, governance-compliant data
   </div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=blue-rotator-10" defer></script>
+  <script src="scripts/cerbi-sky.js?v=blue-rotator-11" defer></script>
 </body>
 </html>
