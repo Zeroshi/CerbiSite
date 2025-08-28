@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- Meta -->
+  <!-- Social -->
   <meta name="description" content="CerbiSuite brings structure, governance, and observability to enterprise logging with build-time and runtime enforcement, a governance dashboard, and ML-ready metadata." />
   <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
   <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
@@ -13,74 +13,30 @@
   <meta property="og:image" content="assets/og-image.png" />
   <meta name="theme-color" content="#0a1224" />
 
-  <!-- Favicons -->
+  <!-- Favicons (logo pops slightly brighter than accents) -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <link rel="manifest" href="assets/site.webmanifest" />
 
-  <!-- Theme -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=aurora-blue-05" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=aurora-blue-03" />
 
-  <!-- Safe, module-scoped overrides -->
-  <style>
-    :root{ --accent:#ff4d00; --accent-2:#ff8a00; --ring:rgba(255,77,0,.32) }
-    [data-theme="light"] .hero h1,[data-theme="light"] h2{color:#0b1220}
-    [data-theme="light"] .sub{color:#3e4a5f}
-    .spotlight{background:radial-gradient(420px 420px at var(--mx) var(--my), rgba(80,140,255,.10), transparent 60%)}
-
-    /* Random bottom illustration layer (fixed) */
-    .bg-ill{position:fixed; inset:auto 0 0 0; height:min(46vh,760px); background:center bottom/cover no-repeat; z-index:-1; opacity:.95; pointer-events:none; filter:drop-shadow(0 10px 40px rgba(0,0,0,.35))}
-
-    /* Dashboard showcase — uniform sizing & grow-on-hover */
-    .dash-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-    .dash-card{
-      position:relative; border-radius:16px; overflow:hidden;
-      border:1px solid rgba(127,148,179,.20);
-      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
-      aspect-ratio:16/9; min-height:240px;  /* keeps all cards same size */
-      transition:transform .35s var(--easing), box-shadow .35s var(--easing);
-      display:block
-    }
-    .dash-card img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.01);transition:transform .35s, opacity .25s}
-    .dash-showcase:hover .dash-card{transform:scale(.96);opacity:.9}
-    .dash-card:hover{transform:scale(1.06);opacity:1;box-shadow:0 22px 42px rgba(50,133,255,.25)}
-    .dash-card:hover img{transform:scale(1.06)}
-    @media (max-width:900px){ .dash-showcase{grid-template-columns:1fr} }
-
-    /* Enterprise tiles — edge-to-edge strip */
-    .enterprise-strip{padding:0;border-radius:16px}
-    .enterprise-rail{
-      display:grid; grid-template-columns:repeat(4,1fr); gap:0; overflow:hidden;
-      border-radius:14px; border:1px solid rgba(127,148,179,.22);
-      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));
-    }
-    .tile{position:relative; min-height:240px; border-right:1px solid rgba(127,148,179,.18); overflow:hidden; transition:transform .35s var(--easing), filter .35s var(--easing)}
-    .tile:last-child{border-right:none}
-    .tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
-    .tile .label{position:absolute; left:12px; bottom:12px; padding:10px 14px; border-radius:999px; background:rgba(10,18,36,.55); color:#e5e7eb; font-weight:700; border:1px solid rgba(127,148,179,.25); backdrop-filter:saturate(140%) blur(6px)}
-    .enterprise-rail:hover .tile{transform:scale(.96); filter:grayscale(.2)}
-    .enterprise-rail .tile:hover{transform:scale(1.08); filter:none}
-
-    /* Comparison filters */
-    .filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-    .filter{padding:6px 10px;border-radius:999px;border:1px solid rgba(127,148,179,.25);cursor:pointer}
-    .filter.active{background:rgba(50,133,255,.16);border-color:rgba(50,133,255,.45)}
-    #compareTable code{padding:2px 6px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(127,148,179,.28)}
-    [data-theme="light"] table td,[data-theme="light"] table th{color:#0b1220}
-
-    /* Perf chart wrapper */
-    .chart-wrap{position:relative; width:100%; aspect-ratio:16/9; min-height:300px}
-    .chart-legend{display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 0}
-    .legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:6px}
-  </style>
+  <!-- Safety: prevent overlay flash if CSS fails -->
+  <style>.cmdk-overlay{display:none!important}</style>
 </head>
 <body>
-  <!-- Fixed background stack -->
+  <!-- Fixed background stack (all behind content) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
-  <div class="bg-ill" id="bgIll" aria-hidden="true"></div>
+
+  <!-- Random fixed-bottom illustration (above sky, below content) -->
+  <div id="bg-fixed" class="bg-fixed" aria-hidden="true"></div>
+
+  <!-- Nebula veil (soft) -->
   <div class="veil" aria-hidden="true"></div>
+
+  <!-- Spotlight -->
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
@@ -88,11 +44,11 @@
     <div class="container">🚀 Beta: CerbiShield governance dashboard — enterprise trials opening soon. <span class="kbd" aria-hidden="true">⌘K</span> or <span class="kbd">Ctrl+K</span> for command palette.</div>
   </div>
 
-  <!-- Nav -->
+  <!-- Nav (sticky; won’t disappear on scroll) -->
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 12px rgba(255,77,0,.28))"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" class="brand-logo"/>
         <span>CerbiSuite</span>
       </div>
       <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
@@ -100,14 +56,16 @@
         <a href="#why">Why CerbiStream</a>
         <a href="#ecosystem">Ecosystem</a>
         <a href="#governance">Governance</a>
+        <a href="#packages">Packages</a>
+        <a href="#repos">Repos</a>
         <a href="#compare">Compare</a>
-        <a href="#benchmarks">Benchmarks</a>
         <a href="#architecture">Architecture</a>
         <a href="#contact">Contact</a>
       </nav>
-      <div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="row">
         <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
         <button id="cmdBtn" class="theme-toggle" aria-label="Open command palette" title="⌘K / Ctrl+K">⌘K</button>
+        <a class="btn btn-ghost" href="#contact">Contact</a>
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a>
       </div>
     </div>
@@ -123,13 +81,13 @@
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="70%" cy="10%" r="60%">
-            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.32"/>
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
             <stop offset="60%" stop-color="var(--accent)" stop-opacity="0"/>
           </radialGradient>
           <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
             <rect width="24" height="24" fill="none"/>
             <rect x="0" y="0" width="24" height="24" fill="none" stroke="#163258" stroke-width="1" opacity="0.32"/>
-            <circle cx="1" cy="1" r="1" fill="#b5d0ff" opacity="0.16"/>
+            <circle cx="1" cy="1" r="1" fill="#b5d0ff" opacity="0.16" />
           </pattern>
           <linearGradient id="grid" x1="0" x2="1">
             <stop offset="0%" stop-color="#13223e"/>
@@ -149,80 +107,100 @@
 
       <div class="chip-row" role="list" aria-label="High level features">
         <span class="chip">Structured Logging</span>
-        <span class="chip">Build-time + Runtime Governance</span>
-        <span class="chip">Logger-Agnostic</span>
-        <span class="chip">Encryption</span>
-        <span class="chip">ML-Ready Metadata</span>
-        <span class="chip">Audit-Friendly</span>
+        <span class="chip">Developer-First Observability</span>
+        <span class="chip">Cloud-Native & Portable</span>
+        <span class="chip">Modular</span>
+        <span class="chip">Hybrid-Ready</span>
+        <span class="chip">ML-Friendly</span>
+        <span class="chip">Dev-First</span>
       </div>
       <h1>Unified Logging, Governance & Observability</h1>
-      <p class="sub">CerbiSuite shapes logs before they ever hit your tools—unlocking cleaner dashboards, faster audits, and ML-ready data without vendor lock-in.</p>
-      <div class="row" style="display:flex;gap:10px;justify-content:center;margin-top:14px">
+      <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
+      <div class="row row-center">
         <a class="btn btn-primary" href="#governance">Explore Governance</a>
         <a class="btn" href="#ecosystem">See Ecosystem</a>
       </div>
+
+      <div class="logo-row" aria-label="Trusted by">
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" class="logo-pop"/>
+        <img src="assets/CerbiStream.png" alt="CerbiStream logo" class="logo-dim"/>
+        <img src="assets/CerbiShield.png" alt="CerbiShield logo" class="logo-dim-2"/>
+      </div>
     </section>
 
-    <!-- WHY (expanded, sales-forward) -->
+    <!-- QUICK START -->
+    <section id="quickstart" class="container section">
+      <h2>⚡ Quick Start: Try CerbiStream in 60 Seconds</h2>
+      <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
+
+      <div class="glass tilt reveal pad-rel">
+        <div class="glare"></div>
+        <pre class="code-scroll"><code class="language-csharp">
+// 1. Install from NuGet
+// dotnet add package CerbiStream
+
+// 2. Configure in Program.cs
+using CerbiStream;
+
+var logger = LoggerFactory.Create(builder =>
+{
+  builder.AddCerbiStream(options =>
+  {
+    options.WithFileFallback();                     // resilient logging
+    options.UseGovernance("cerbi_governance.json"); // governance profile
+  });
+}).CreateLogger&lt;Program&gt;();
+
+// 3. Log safely with governance validation
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
+        </code></pre>
+        <button class="btn copy-btn" data-copy="#quickstart code">Copy</button>
+      </div>
+
+      <p class="mt-14">
+        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">
+          View full docs on GitHub →
+        </a>
+      </p>
+    </section>
+
+    <!-- WHY -->
     <section id="why" class="container section">
       <h2>Why CerbiStream Exists</h2>
-      <p class="lead"><strong>Your logs are already a compliance surface.</strong> As teams ship faster and contractors rotate, “best-effort” logging becomes inconsistent, noisy, and risky. CerbiSuite guarantees **structure** and **policy** at the point of logging, so everything downstream—Splunk, ELK, Datadog, OpenSearch, Snowflake—works better.</p>
+      <p class="lead">
+        Logs are the bloodstream of your platform. When every team logs differently, audits stall, incidents take longer, and ML signals get noisy.
+        Cerbi makes logging predictable and enforceable—without forcing you to abandon your stack.
+      </p>
 
       <div class="grid">
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Out-of-the-box order</h3><p>Define your schema once. Cerbi enforces it at build-time and runtime. Every team ships logs that fit.</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Security as default</h3><p>Required/forbidden fields, redaction, and field-level encryption. Stop PII drift before it lands in prod.</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Future-proof data</h3><p>Uniform metadata makes routing, cost control, and ML dead simple. Phase-2 adds normalization + scoring.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>1. Enforce Structure at the Source</h3><p>Use a simple, fluent API to define log schemas. CerbiStream validates before emitting logs for consistent output across teams and services.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>2. Modular by Design</h3><p>Pick only what you need: encryption, governance, telemetry, benchmarking—no unnecessary bloat. Works with Serilog/NLog/MEL via adapters.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>3. Audit-Ready Compliance</h3><p>Encrypt logs, require fields, exclude forbidden ones, and tag violations to align with HIPAA, GDPR, SOC-2, and internal policies.</p></div>
       </div>
+    </section>
 
-      <div class="space"></div>
+    <!-- DASHBOARD SHOWCASE -->
+    <section class="container section">
+      <h2>CerbiShield in Action</h2>
+      <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
 
-      <div class="grid">
-        <details class="col-4 glass" style="padding:14px" open>
-          <summary><strong>For Engineering Leaders</strong></summary>
-          <ul>
-            <li>One policy, many teams: governance profiles versioned and reusable.</li>
-            <li>Less toil: fewer dashboards “that don’t match” because fields always match.</li>
-            <li>Portable: keep your logger or switch later—rules travel with you.</li>
-          </ul>
-        </details>
-        <details class="col-4 glass" style="padding:14px">
-          <summary><strong>For Security & Compliance</strong></summary>
-          <ul>
-            <li>Prevent, don’t detect: block forbidden fields and enforce required ones.</li>
-            <li>Reports for auditors: coverage, violations, change history.</li>
-            <li>Encryption at the field level; relaxed mode for incident response.</li>
-          </ul>
-        </details>
-        <details class="col-4 glass" style="padding:14px">
-          <summary><strong>For Observability Teams</strong></summary>
-          <ul>
-            <li>Cleaner ingestion: normalized keys, known types.</li>
-            <li>Lower cost: drop noise upstream, not downstream.</li>
-            <li>ML-ready: consistent context for anomaly and trend models.</li>
-          </ul>
-        </details>
-      </div>
-
-      <div class="space"></div>
-
-      <!-- Interactive dashboard showcase -->
-      <div class="glass tilt reveal" style="padding:16px">
+      <div class="glass tilt reveal">
         <div class="glare" aria-hidden="true"></div>
-        <div class="img-frame" role="group" aria-label="CerbiShield dashboard screenshots">
+        <div class="img-frame dash-frame" role="group" aria-label="CerbiShield dashboard screenshots">
           <div class="dash-showcase" id="dashShowcase">
             <a class="dash-card" href="#governance" aria-label="Overview">
               <img src="assets/screenshots/cerbishield-hero-1600x900.jpg"
                    srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
-                   alt="CerbiShield — Overview">
+                   alt="CerbiShield — Overview" loading="lazy">
             </a>
             <a class="dash-card" href="#ecosystem" aria-label="Profiles">
               <img src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
                    srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
-                   alt="CerbiShield — Governance Profiles">
+                   alt="CerbiShield — Governance Profiles" loading="lazy">
             </a>
             <a class="dash-card" href="#governance" aria-label="Violations">
               <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-                   alt="CerbiShield — Violations and Rules">
+                   alt="CerbiShield — Violations and Rules" loading="lazy">
             </a>
           </div>
         </div>
@@ -233,51 +211,152 @@
     <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
       <h2>The Cerbi Ecosystem</h2>
-      <p class="lead"><strong>Phase&nbsp;1 (CerbiSuite):</strong> governance from source to sink. <strong>Phase&nbsp;2 (CerbiIQ & CerbiSense):</strong> routing, normalization, and ML-driven insights. We’re not competing with your log platforms—we make them better by sending them **clean, governed data**.</p>
+      <p class="lead">We don’t replace your log stack—we make it safer, cleaner, and ML-ready. CerbiStream (Phase 1) is the modern logging core; CerbiShield provides governance; Phase 2 adds routing (CerbIQ) and ML insights (CerbiSense).</p>
 
-      <div class="glass" style="padding:8px 12px;overflow-x:auto">
+      <div class="glass table-scroll reveal">
         <table aria-label="Cerbi components matrix">
           <thead><tr><th>Component</th><th>Status</th><th>Purpose</th></tr></thead>
           <tbody>
-            <tr><td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td><td>Core .NET logger with structured output, field-level encryption, and governance. Build-time analyzer + runtime validator guarantee correct shape and safe content before emission.</td></tr>
-            <tr><td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td><td>Roslyn analyzer that validates required/forbidden fields, types, and enums in IDE/CI to shift left. Profiles versioned, diff-able, and shareable across teams.</td></tr>
-            <tr><td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td><td>Governance dashboard & APIs: profile store, rule testing, live validation, violation reports (PDF/JSON), RBAC, audit history, and deployment tooling.</td></tr>
-            <tr><td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Routing + normalization service that fans logs to multiple backends (Splunk, OpenSearch, Data Lake) with consistent metadata and cost controls.</td></tr>
-            <tr><td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>ML/Rules hybrid for anomaly detection, policy regression alerts, and privacy drift detection—powered by structured, governed logs.</td></tr>
+            <tr><td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td><td>Core .NET logger with enforced schemas, encryption, resilient file fallback, telemetry adapters, and zero-friction ML metadata.</td></tr>
+            <tr><td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td><td>Build-time validation via Roslyn: required/forbidden fields, enums, types; CI-friendly diagnostics with profile-version awareness.</td></tr>
+            <tr><td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td><td>Governance dashboard & enforcement: profile store, RBAC, rule history/rollbacks, deployment to plugins and agents.</td></tr>
+            <tr><td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Routing/normalization/fan-out with policy-aware stream shaping, per-tenant rate-limiting, and privacy-preserving transformations.</td></tr>
+            <tr><td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>ML-driven anomaly detection/trend forecasting on governed, consistently-labeled data; risk scores and drift alerts.</td></tr>
           </tbody>
         </table>
       </div>
 
-      <div class="space"></div>
-      <!-- Enterprise tiles -->
-      <div class="glass enterprise-strip">
-        <div class="enterprise-rail">
-          <figure class="tile">
-            <img src="assets/enterprise/rbac-640.png" alt="RBAC"><figcaption class="label">RBAC</figcaption>
-          </figure>
-          <figure class="tile">
-            <img src="assets/enterprise/audit-logs-640.png" alt="Audit logs"><figcaption class="label">Audit logs</figcaption>
-          </figure>
-          <figure class="tile">
-            <img src="assets/enterprise/governance-640.png" alt="Governance"><figcaption class="label">Governance</figcaption>
-          </figure>
-          <figure class="tile">
-            <img src="assets/enterprise/encryption-640.png" alt="Encryption"><figcaption class="label">Encryption</figcaption>
-          </figure>
+      <!-- Enterprise readiness strip (edge-to-edge, zero gaps) -->
+      <div class="glass reveal enterprise-wrap">
+        <div class="enterprise-strip" role="group" aria-label="Enterprise readiness">
+          <figure class="tile"><img src="assets/enterprise/rbac-640.png" alt="RBAC"><figcaption>RBAC</figcaption></figure>
+          <figure class="tile"><img src="assets/enterprise/audit-logs-640.png" alt="Audit logs"><figcaption>Audit logs</figcaption></figure>
+          <figure class="tile"><img src="assets/enterprise/governance-640.png" alt="Governance"><figcaption>Governance</figcaption></figure>
+          <figure class="tile"><img src="assets/enterprise/encryption-640.png" alt="Encryption"><figcaption>Encryption</figcaption></figure>
         </div>
-        <div class="img-cap"><strong>Enterprise-ready.</strong> Your tenant, your rules. RBAC, audit logs, encryption, and governance aligned to policy.</div>
+        <div class="img-cap">
+          <strong>Enterprise-ready. Your tenant. Your rules.</strong><br/>
+          <span class="k">RBAC, audit logs, encryption, and governance aligned to your policies.</span>
+        </div>
       </div>
     </section>
 
     <!-- GOVERNANCE -->
     <section id="governance" class="container section">
       <h2>Governance That Meets Teams Where They Are</h2>
-      <p class="lead">Use CerbiStream for a modern default, or keep your logger and add governance via plugins. Same rules. Same results.</p>
+      <p class="lead">Keep Serilog today using our runtime plugin, or modernize with CerbiStream. Either way, enforcement flows from the same CerbiShield profiles.</p>
+
       <div class="grid">
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p>IDE/CI diagnostics prevent schema drift early: missing/forbidden fields, bad enum values, unsafe types.</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p>Validate at emission, redact/encrypt sensitive values, attach violation metadata—without dropping logs.</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Reports & Audits</h3><p>Coverage, violations, and profile diffs—exportable as PDF/JSON for auditors and leadership.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p>Roslyn analyzer prevents schema drift and PII mistakes before they ship. Treat logging like code, not tribal knowledge.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p>Serilog plugin validates at runtime (no dropped logs) and emits violation metadata for audits and dashboards.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p>HIPAA/GDPR-aligned templates you can harden for your org. Versioned, reviewable, auditable.</p></div>
       </div>
+
+      <!-- Performance overview (inline SVG graph) -->
+      <div class="glass reveal pad-16">
+        <h3 style="margin:4px 0 12px">Performance Overview</h3>
+        <p class="k">Baseline single-threaded throughput vs. structured logging + runtime governance. Numbers from local benchmarks on a 12-core workstation (indicative only).</p>
+        <div class="chart-wrap" role="img" aria-label="Performance bar chart">
+          <svg viewBox="0 0 520 220" class="chart">
+            <defs>
+              <linearGradient id="barBlue" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#6fb4ff"/>
+                <stop offset="100%" stop-color="#2b5ccf"/>
+              </linearGradient>
+              <linearGradient id="barGreen" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#7ef3c9"/>
+                <stop offset="100%" stop-color="#20b486"/>
+              </linearGradient>
+              <linearGradient id="barOrange" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ffb48a"/>
+                <stop offset="100%" stop-color="#ff4d00"/>
+              </linearGradient>
+            </defs>
+            <!-- axes -->
+            <line x1="70" y1="20" x2="70" y2="190" stroke="rgba(255,255,255,.35)"/>
+            <line x1="70" y1="190" x2="490" y2="190" stroke="rgba(255,255,255,.35)"/>
+            <!-- bars -->
+            <g>
+              <rect x="110" y="70" width="80" height="120" fill="url(#barBlue)" rx="8"/>
+              <rect x="230" y="95" width="80" height="95" fill="url(#barGreen)" rx="8"/>
+              <rect x="350" y="115" width="80" height="75" fill="url(#barOrange)" rx="8"/>
+            </g>
+            <!-- labels -->
+            <text x="150" y="205" text-anchor="middle" class="t">Baseline</text>
+            <text x="270" y="205" text-anchor="middle" class="t">Structured</text>
+            <text x="390" y="205" text-anchor="middle" class="t">+ Governance</text>
+            <text x="70" y="60" class="t" text-anchor="end">↑ events/sec</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section id="packages" class="container section">
+      <h2>NuGet Packages & Trends</h2>
+      <p class="lead">All official Cerbi packages are published on NuGet. Below are quick links, live version/download badges, and a 3-month download trend.</p>
+
+      <div class="glass table-scroll reveal">
+        <table aria-label="NuGet packages table">
+          <thead>
+            <tr><th style="min-width:220px">Package</th><th>Version</th><th>Downloads</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener"><strong>CerbiStream</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/></td>
+              <td>Structured, secure logging for modern .NET apps.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>CerbiStream.GovernanceAnalyzer</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/></td>
+              <td>Roslyn analyzer for build-time governance enforcement.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/></td>
+              <td>Runtime governance for Serilog—flags violations without dropping logs.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener"><strong>Cerbi.MEL.Governance</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/></td>
+              <td>Runtime governance for Microsoft.Extensions.Logging.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Core</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/></td>
+              <td>Shared governance contracts and models.</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Runtime</strong></a></td>
+              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/></td>
+              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/></td>
+              <td>Real-time governance engine used by plugins and adapters.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="space"></div>
+      <div class="glass reveal pad-16">
+        <h3 style="margin:4px 0 12px">Download Trends (last 3 months)</h3>
+        <div class="img-frame" style="aspect-ratio:16/10">
+          <iframe src="https://nugettrends.com/packages?ids=CerbiStream&ids=CerbiStream.GovernanceAnalyzer&ids=Cerbi.Serilog.GovernanceAnalyzer&ids=Cerbi.MEL.Governance&ids=Cerbi.Governance.Core&ids=Cerbi.Governance.Runtime&months=3" title="NuGet download trends" style="width:100%;height:100%;border:0" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </div>
+        <p class="k mt-10">See all packages on <a href="https://www.nuget.org/packages?q=cerbi&includeComputedFrameworks=true&prerel=true" target="_blank" rel="noopener">NuGet.org</a>.</p>
+      </div>
+    </section>
+
+    <!-- REPOS -->
+    <section id="repos" class="container section">
+      <h2>📦 Cerbi Repositories</h2>
+      <p class="lead">Open-source packages with a shared governance core. Pick what you need; stay portable. We’re not competing with your log destination (Splunk, DataDog, Elastic, etc.)—we’re making what you send **better**.</p>
+      <!-- keep your existing repo cards as-is or add more here -->
     </section>
 
     <!-- COMPARE -->
@@ -290,51 +369,21 @@
         <button class="filter" data-tag="encryption">Encryption</button>
         <button class="filter" data-tag="routing">Routing</button>
       </div>
-
-      <div class="glass" style="padding:8px 12px;overflow-x:auto">
+      <div class="glass table-scroll">
         <table aria-label="Logger comparison table" id="compareTable">
           <thead><tr><th>Capability</th><th>CerbiStream (Modern Default)</th><th>Serilog + Governance Plugin (Available Now)</th></tr></thead>
           <tbody>
             <tr data-tags="build"><td>Build-Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
-            <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>✅ Via <code>Cerbi.Governance.Runtime</code></td><td>✅ Via <code>Cerbi.Serilog.GovernanceAnalyzer</code></td></tr>
+            <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>✅ Via <span class="kbd">Cerbi.Governance.Runtime</span></td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
             <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built-in</td><td>❌ Not included</td></tr>
-            <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <code>WithFileFallback()</code></td><td>✅ via <code>Serilog.Sinks.File</code></td></tr>
-            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built-in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks/enrichers</td></tr>
+            <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
+            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built-in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
             <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema-aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
             <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
-            <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <code>ICustomGovernancePlugin</code></td></tr>
+            <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
             <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built-in</td><td>⚠️ External design needed</td></tr>
           </tbody>
         </table>
-      </div>
-    </section>
-
-    <!-- BENCHMARKS + CHART -->
-    <section id="benchmarks" class="container section">
-      <h2>Performance & Overhead</h2>
-      <p class="lead">Governance adds structure with **minimal overhead**. Below is a representative bar chart on .NET 8 (Release, x64). Replace the values with your CI runs as needed.</p>
-
-      <div class="glass" style="padding:16px">
-        <div class="chart-wrap"><canvas id="perfChart" aria-label="Performance overview chart"></canvas></div>
-        <div class="chart-legend">
-          <span><i class="legend-dot" style="background:#6ea8fe"></i> Median (µs)</span>
-          <span><i class="legend-dot" style="background:#ffd26a"></i> p95 (µs)</span>
-        </div>
-
-        <div class="space"></div>
-
-        <div style="overflow-x:auto">
-          <table aria-label="Benchmark table">
-            <thead><tr><th>Scenario</th><th>Median</th><th>p95</th><th>Notes</th></tr></thead>
-            <tbody>
-              <tr><td>Plain log (no governance)</td><td>0.9 µs</td><td>1.3 µs</td><td>Console sink only</td></tr>
-              <tr><td>Log + runtime governance (no violations)</td><td>1.6 µs</td><td>2.3 µs</td><td>Field/type checks; encryption disabled</td></tr>
-              <tr><td>Log + governance + AES encrypt 1 field</td><td>3.2 µs</td><td>4.8 µs</td><td>AES-GCM, 32-byte payload</td></tr>
-              <tr><td>Violation present (forbidden field)</td><td>2.0 µs</td><td>3.1 µs</td><td>Emits violation tag; log not dropped</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="k">Methodology: .NET 8, Release, warmup 1s, measure 5s, x64; GC server off; CPU pinning disabled. Re-measure in your environment.</p>
       </div>
     </section>
 
@@ -342,9 +391,9 @@
     <section id="architecture" class="container section">
       <h2>Architecture & Flow</h2>
       <div class="grid">
-        <div class="col-6 glass tilt" style="padding:16px">
+        <div class="col-6 glass tilt pad-16">
           <div class="glare"></div>
-          <pre class="kbd" style="display:block;padding:14px;white-space:pre-wrap;background:rgba(50,133,255,.08);border:1px solid rgba(50,133,255,.25);border-radius:12px"><code>Application (Serilog / NLog / MEL / CerbiStream)
+          <pre class="kbd arch-pre"><code>Application (Serilog / NLog / MEL / CerbiStream)
   │
   ▼
 CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
@@ -356,16 +405,14 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
               ▼        ▼
          Governance    ML Analytics
          Routing       Scoring & Trends</code></pre>
+          <button class="btn copy-btn" data-copy="#architecture code">Copy</button>
         </div>
-        <div class="col-6 glass tilt" style="padding:16px">
+        <div class="col-6 glass tilt pad-16">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <picture>
-              <source srcset="assets/architecture@2x.png 2x, assets/architecture.png 1x">
-              <img src="assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
-            </picture>
+            <img src="assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
-          <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
+          <p class="k mt-10">Full architecture (PDF): <a href="assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>
     </section>
@@ -373,31 +420,41 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
     <!-- CONTACT -->
     <section id="contact" class="container section">
       <h2>Get in Touch</h2>
-      <p class="lead">Enterprise questions or partnership? Send a note—no page reloads.</p>
-      <div class="glass" style="padding:0;overflow:hidden">
-        <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%; height:680px; border:0" loading="lazy" referrerpolicy="no-referrer"></iframe>
+      <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out—we’ll respond quickly.</p>
+
+      <div class="glass tilt pad-16">
+        <div class="glare"></div>
+        <!-- JotForm embed -->
+        <div class="img-frame" style="aspect-ratio: 16/12">
+          <iframe
+            title="Contact Cerbi"
+            src="https://form.jotform.com/252385904589067"
+            loading="lazy"
+            style="width:100%;height:100%;border:0;border-radius:12px; overflow:hidden;"></iframe>
+        </div>
+        <p class="k mt-10">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))"/>
+    <div class="container footer-row">
+      <div class="footer-brand">
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" class="brand-logo-sm"/>
         <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="footer-tags">
         <a class="tag" href="#why">Why</a>
         <a class="tag" href="#governance">Governance</a>
-        <a class="tag" href="#benchmarks">Benchmarks</a>
+        <a class="tag" href="#packages">NuGet</a>
         <a class="tag" href="#architecture">Architecture</a>
         <a class="tag" href="#contact">Contact</a>
       </div>
     </div>
   </footer>
 
-  <!-- Command palette -->
+  <!-- Command palette (hidden by default; opened via JS) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header">
@@ -409,160 +466,6 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   </div>
 
   <!-- Scripts -->
-  <script>
-    /* ===== Utilities ===== */
-    const qs=(s,e=document)=>e.querySelector(s), qsa=(s,e=document)=>[...e.querySelectorAll(s)];
-    const setTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('cerbi-theme',t);const meta=qs('meta[name="theme-color"]'); if(meta) meta.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224')};
-
-    /* ===== Sticky progress ===== */
-    const progressBar=qs('#progress'); const onScroll=()=>{const h=document.documentElement; const scrolled=(h.scrollTop)/(h.scrollHeight-h.clientHeight); progressBar.style.width=(scrolled*100).toFixed(2)+'%'}; window.addEventListener('scroll',onScroll,{passive:true});
-
-    /* ===== Theme toggle (persisted) ===== */
-    (()=>{const saved=localStorage.getItem('cerbi-theme'); if(saved) setTheme(saved);
-      qs('#themeBtn')?.addEventListener('click',()=>{const cur=document.documentElement.getAttribute('data-theme')||'dark'; setTheme(cur==='dark'?'light':'dark')});
-    })();
-
-    /* ===== Mobile nav ===== */
-    qs('#navToggle')?.addEventListener('click',()=>{const nav=qs('#primaryNav');const open=nav.classList.toggle('open');qs('#navToggle').setAttribute('aria-expanded',String(open))});
-
-    /* ===== Command palette ===== */
-    (()=>{const overlay=qs('#cmdkOverlay'), input=qs('#cmdkInput'), list=qs('#cmdkList');
-      const items=[{label:'Why',href:'#why'},{label:'Ecosystem',href:'#ecosystem'},{label:'Governance',href:'#governance'},{label:'Compare',href:'#compare'},{label:'Benchmarks',href:'#benchmarks'},{label:'Architecture',href:'#architecture'},{label:'Contact',href:'#contact'}];
-      list.innerHTML=items.map(i=>`<div class="item" role="button" tabindex="0"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
-      list.addEventListener('click',e=>{const it=e.target.closest('.item'); if(!it) return; location.hash=it.lastChild.textContent.trim(); overlay.classList.remove('open')});
-      const open=()=>{overlay.classList.add('open'); input.value=''; input.focus()}, close=()=>overlay.classList.remove('open');
-      qs('#cmdBtn')?.addEventListener('click',open);
-      window.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();open()} if(e.key==='Escape') close()});
-      overlay.addEventListener('click',e=>{if(e.target===overlay) close()});
-    })();
-
-    /* ===== Reveal on scroll ===== */
-    const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting) e.target.classList.add('in')})},{threshold:.12}); qsa('.reveal').forEach(el=>obs.observe(el));
-
-    /* ===== Spotlight follow ===== */
-    document.addEventListener('pointermove',e=>{
-      document.documentElement.style.setProperty('--mx', e.clientX+'px');
-      document.documentElement.style.setProperty('--my', e.clientY+'px');
-    }, {passive:true});
-
-    /* ===== Random bottom background (assets/background/background{1..50}.png) ===== */
-    (()=>{
-      const n=Math.floor(Math.random()*50)+1;
-      const url=`assets/background/background${n}.png`;
-      const img=new Image();
-      img.onload=()=>{qs('#bgIll').style.backgroundImage=`url('${url}')`};
-      img.src=url;
-    })();
-
-    /* ===== Angled shooting-stars canvas ===== */
-    (()=>{
-      const c=qs('#sky'); const dpr=window.devicePixelRatio||1; const ctx=c.getContext('2d');
-      function resize(){c.width=innerWidth*dpr; c.height=innerHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0)}
-      resize(); addEventListener('resize',resize);
-      const stars=[...Array(160)].map(()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.2+0.3}));
-      const meteors=[...Array(4)].map(()=>({x:Math.random()*innerWidth,y:-Math.random()*innerHeight,spd:2+Math.random()*1.5,len:120+Math.random()*120}));
-      function frame(){
-        ctx.clearRect(0,0,innerWidth,innerHeight);
-        ctx.fillStyle='rgba(255,255,255,.85)';
-        stars.forEach(st=>{ctx.globalAlpha=st.s/1.6; ctx.fillRect(st.x,st.y,1,1); st.x-=0.02; if(st.x<0) st.x=innerWidth});
-        // meteors, angled down-right
-        meteors.forEach(m=>{
-          ctx.globalAlpha=.20; ctx.strokeStyle='rgba(170,200,255,.75)'; ctx.lineWidth=1.5;
-          ctx.beginPath(); ctx.moveTo(m.x,m.y); ctx.lineTo(m.x+m.len*0.94,m.y+m.len*0.34); ctx.stroke();
-          m.x+=m.spd*1.2; m.y+=m.spd*0.42;
-          if(m.x>innerWidth+200||m.y>innerHeight+120){m.x=-Math.random()*200; m.y=-Math.random()*innerHeight}
-        });
-        requestAnimationFrame(frame);
-      }
-      frame();
-    })();
-
-    /* ===== Dashboard auto-rotate (pause on hover) ===== */
-    (()=>{
-      const cont=qs('#dashShowcase'); if(!cont) return;
-      let i=0, t; const cards=qsa('.dash-card', cont);
-      const step=()=>{cards.forEach((c,idx)=>c.style.zIndex = idx===i?3:1); i=(i+1)%cards.length};
-      const start=()=>t=setInterval(step, 4200), stop=()=>clearInterval(t);
-      cont.addEventListener('mouseenter',stop); cont.addEventListener('mouseleave',start);
-      start();
-    })();
-
-    /* ===== Comparison filters ===== */
-    qsa('.filter').forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        qsa('.filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        const tag=btn.dataset.tag; const rows=qsa('#compareTable tbody tr');
-        rows.forEach(r=>{
-          if(tag==='all'){r.style.display=''}
-          else{const t=(r.getAttribute('data-tags')||'').split(' '); r.style.display=t.includes(tag)?'':'none'}
-        });
-      });
-    });
-
-    /* ===== Performance Chart (Canvas) ===== */
-    (()=>{
-      const el=qs('#perfChart'); if(!el) return;
-      const ctx=el.getContext('2d'); const dpr=window.devicePixelRatio||1;
-      function size(){const rect=el.parentElement.getBoundingClientRect(); el.width=rect.width*dpr; el.height=rect.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0)}
-      size(); addEventListener('resize', size);
-
-      // Data (µs)
-      const labels=['Plain','Gov (no viol.)','Gov + AES','Violation'];
-      const med=[0.9,1.6,3.2,2.0];
-      const p95=[1.3,2.3,4.8,3.1];
-
-      function draw(){
-        const w=el.width/dpr, h=el.height/dpr, pad=38;
-        ctx.clearRect(0,0,w,h);
-        // axes
-        ctx.strokeStyle='rgba(180,200,230,.35)'; ctx.lineWidth=1;
-        ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, h-pad); ctx.lineTo(w-pad, h-pad); ctx.stroke();
-
-        const max=Math.max(...p95)*1.25; // headroom
-        const bw= (w - pad*2) / (labels.length*2.6); // two bars per label with spacing
-        const gap=bw*0.6;
-
-        // grid lines
-        ctx.fillStyle='rgba(220,230,255,.6)'; ctx.font='12px Inter,system-ui,Arial';
-        const steps=5;
-        for(let i=0;i<=steps;i++){
-          const y=h-pad - (i/steps)*(h-pad*2*0.9);
-          ctx.strokeStyle='rgba(180,200,230,.18)'; ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke();
-          const val=(i/steps*max).toFixed(1);
-          ctx.fillText(val, 6, y+4);
-        }
-
-        function yScale(v){ return h-pad - (v/max)*(h-pad*2*0.9) }
-
-        // draw bars
-        let x=pad+10;
-        for(let i=0;i<labels.length;i++){
-          // median
-          ctx.fillStyle='#6ea8fe';
-          const mH=h-pad - yScale(med[i]);
-          ctx.fillRect(x, yScale(med[i]), bw, mH);
-
-          // p95
-          ctx.fillStyle='#ffd26a';
-          const pH=h-pad - yScale(p95[i]);
-          ctx.fillRect(x+bw+gap*0.5, yScale(p95[i]), bw, pH);
-
-          // label
-          ctx.fillStyle='rgba(220,230,255,.85)';
-          ctx.textAlign='center';
-          ctx.fillText(labels[i], x+bw*1.5+gap*0.25, h-pad+16);
-          x += (bw*2 + gap*1.5);
-        }
-
-        // title
-        ctx.textAlign='left'; ctx.fillStyle='rgba(220,230,255,.92)'; ctx.font='14px Inter,system-ui,Arial';
-        ctx.fillText('Latency (µs) — lower is better', pad, pad-10);
-      }
-      draw();
-    })();
-
-    /* Year */
-    qs('#year').textContent=new Date().getFullYear();
-  </script>
+  <script src="scripts/cerbi-sky.js?v=aurora-blue-03" defer></script>
 </body>
 </html>
