@@ -515,67 +515,193 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- PACKAGES -->
-    <section id="packages" class="container section">
-      <div class="eyebrow">NuGet</div>
-      <h2>Packages & Trends</h2>
-      <p class="lead">All official Cerbi packages are published on NuGet. Below are quick links, live version/download badges, and a 3-month download trend.</p>
+<!-- ======================= PACKAGES ======================= -->
+<section id="packages" class="container section">
+  <h2>NuGet Packages & How They Fit</h2>
+  <p class="lead">
+    Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.
+  </p>
 
-      <div class="glass reveal" style="padding:8px 12px;overflow-x:auto">
-        <table aria-label="NuGet packages table" class="table">
-          <thead>
-            <tr><th style="min-width:220px">Package</th><th>Version</th><th>Downloads</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener"><strong>CerbiStream</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/></td>
-              <td>Structured, secure logging for modern .NET apps.</td>
-            </tr>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>CerbiStream.GovernanceAnalyzer</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/></td>
-              <td>Roslyn analyzer for build-time governance enforcement plus runtime hooks.</td>
-            </tr>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener"><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/></td>
-              <td>Runtime governance enforcement for <strong>Serilog</strong>: flags violations without dropping logs.</td>
-            </tr>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener"><strong>Cerbi.MEL.Governance</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/></td>
-              <td>Runtime governance for Microsoft.Extensions.Logging.</td>
-            </tr>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Core</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/></td>
-              <td>Shared governance models and validation contracts.</td>
-            </tr>
-            <tr>
-              <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener"><strong>Cerbi.Governance.Runtime</strong></a></td>
-              <td><img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/></td>
-              <td><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/></td>
-              <td>Real-time governance engine for structured loggers.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- High-level graph -->
+  <div class="glass reveal" style="padding:16px">
+    <h3 style="margin:4px 0 10px">How packages relate</h3>
+    <pre class="kbd" style="white-space:pre-wrap;margin:0">
+Apps (Serilog / MEL / NLog / CerbiStream)
+  ├─▶ Build-time:  CerbiStream.GovernanceAnalyzer  ·  Cerbi.Serilog.GovernanceAnalyzer
+  ├─▶ Runtime:     Cerbi.MEL.Governance  →  Cerbi.Governance.Runtime  →  Cerbi.Governance.Core
+  └─▶ Native logger: CerbiStream (structured, encrypted, governance-ready)
+    </pre>
+  </div>
 
-      <div class="space"></div>
-      <div class="glass reveal" style="padding:16px">
-        <h3 style="margin:4px 0 12px">Download Trends (last 3 months)</h3>
-        <div class="img-frame" style="aspect-ratio:16/10">
-          <iframe src="https://nugettrends.com/packages?ids=CerbiStream&ids=CerbiStream.GovernanceAnalyzer&ids=Cerbi.Serilog.GovernanceAnalyzer&ids=Cerbi.MEL.Governance&ids=Cerbi.Governance.Core&ids=Cerbi.Governance.Runtime&months=3" title="NuGet download trends" style="width:100%;height:100%;border:0" loading="lazy" referrerpolicy="no-referrer"></iframe>
-        </div>
-        <p class="k" style="margin-top:10px">See all packages on <a href="https://www.nuget.org/packages?q=cerbi&includeComputedFrameworks=true&prerel=true" target="_blank" rel="noopener">NuGet.org</a>.</p>
+  <div class="space"></div>
+
+  <!-- Package cards -->
+  <div class="grid">
+
+    <!-- CerbiStream -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">CerbiStream</h3>
+      <p class="k" style="margin:0 0 10px">Structured, secure logger with governance-ready metadata.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
       </div>
-    </section>
+      <ul>
+        <li><strong>What it is:</strong> modern .NET logger that emits consistent JSON with app/env/tenant/correlation.</li>
+        <li><strong>Security:</strong> optional AES/Base64 encryption + redaction helpers.</li>
+        <li><strong>Reliability:</strong> <span class="kbd">WithFileFallback()</span> keeps signal during outages.</li>
+        <li><strong>Governance-ready:</strong> first-class tags, categories, and stable field shapes.</li>
+      </ul>
+      <details class="glass" style="padding:12px;border-radius:12px">
+        <summary><strong>Install & sample</strong></summary>
+        <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream</code></pre>
+        <pre style="margin:8px 0 0;max-height:240px;overflow:auto"><code class="language-csharp">using CerbiStream;
+
+var logger = LoggerFactory.Create(b =>
+{
+  b.AddCerbiStream(o => {
+    o.WithFileFallback();
+    o.UseGovernance("cerbi_governance.json");
+  });
+}).CreateLogger&lt;Program&gt;();
+
+logger.LogInformation("Order created {@order}", new { Id = 42, Amount = 99.00M });</code></pre>
+      </details>
+    </article>
+
+    <!-- Cerbi.MEL.Governance -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">Cerbi.MEL.Governance</h3>
+      <p class="k" style="margin:0 0 10px">Runtime governance for Microsoft.Extensions.Logging (MEL).</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
+      </div>
+      <ul>
+        <li><strong>Validates at runtime:</strong> required/forbidden fields, enums, types.</li>
+        <li><strong>Safer prod:</strong> redacts/flags violations (doesn’t drop events).</li>
+        <li><strong>Connects to Shield:</strong> reads versioned profiles; supports live reload.</li>
+      </ul>
+      <details class="glass" style="padding:12px;border-radius:12px">
+        <summary><strong>Install & wire-up</strong></summary>
+        <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.MEL.Governance</code></pre>
+        <pre style="margin:8px 0 0;max-height:220px;overflow:auto"><code class="language-csharp">builder.Logging.AddCerbiGovernance(o =>
+{
+  o.ProfilePath = "cerbi_governance.json";
+  o.FileFallback = true;
+});</code></pre>
+      </details>
+    </article>
+
+    <!-- CerbiStream.GovernanceAnalyzer -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">CerbiStream.GovernanceAnalyzer</h3>
+      <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance at build-time for CerbiStream apps.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
+      </div>
+      <ul>
+        <li><strong>Catches violations early:</strong> IDE & CI diagnostics with precise messages.</li>
+        <li><strong>Policy-aware:</strong> reads CerbiShield profiles and versions.</li>
+        <li><strong>Great for large teams:</strong> shift-left enforcement reduces prod churn.</li>
+      </ul>
+      <details class="glass" style="padding:12px;border-radius:12px">
+        <summary><strong>Install</strong></summary>
+        <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream.GovernanceAnalyzer</code></pre>
+      </details>
+    </article>
+
+    <!-- Cerbi.Serilog.GovernanceAnalyzer -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">Cerbi.Serilog.GovernanceAnalyzer</h3>
+      <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance rules for Serilog projects.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
+      </div>
+      <ul>
+        <li><strong>Applies Cerbi policy</strong> to Serilog usage during build.</li>
+        <li><strong>Keeps field names/types stable</strong> across releases.</li>
+        <li><strong>Pairs well with</strong> CerbiShield profile reviews & approvals.</li>
+      </ul>
+      <details class="glass" style="padding:12px;border-radius:12px">
+        <summary><strong>Install</strong></summary>
+        <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
+      </details>
+    </article>
+
+    <!-- Cerbi.Governance.Runtime -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
+      <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
+      </div>
+      <ul>
+        <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
+        <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
+        <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
+      </ul>
+    </article>
+
+    <!-- Cerbi.Governance.Core -->
+    <article class="col-6 glass tilt reveal" style="padding:16px">
+      <div class="glare"></div>
+      <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
+      <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+        <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener">
+          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
+        </a>
+        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
+        <span class="pill ok">.NET 8.0+</span>
+      </div>
+      <ul>
+        <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
+        <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
+        <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
+      </ul>
+    </article>
+
+  </div>
+
+  <div class="space"></div>
+
+  <!-- Quick copy: all installs -->
+  <div class="glass reveal" style="padding:16px">
+    <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
+    <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
+dotnet add package CerbiStream.GovernanceAnalyzer
+dotnet add package Cerbi.MEL.Governance
+dotnet add package Cerbi.Governance.Core
+dotnet add package Cerbi.Governance.Runtime
+dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
+    <button class="btn" data-copy="#pkgInstall">Copy</button>
+  </div>
+</section>
+
 
     <!-- REPOSITORIES -->
     <section id="repos" class="container section">
