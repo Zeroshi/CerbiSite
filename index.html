@@ -893,41 +893,104 @@ dotnet add package Cerbi.Governance.Runtime
       </div>
     </section>
 
-    <!-- COMPARE -->
-    <section id="compare" class="container section">
-      <div class="eyebrow">What you get</div>
-      <h2>Logger Governance Comparison</h2>
-      <div class="filters" role="toolbar" aria-label="Filter comparison">
-        <button class="filter active" data-tag="all">All</button>
-        <button class="filter" data-tag="build">Build-time</button>
-        <button class="filter" data-tag="runtime">Runtime</button>
-        <button class="filter" data-tag="encryption">Encryption</button>
-        <button class="filter" data-tag="routing">Routing</button>
-      </div>
-      <div class="glass" style="padding:8px 12px;overflow-x:auto">
-        <table aria-label="Logger comparison table" id="compareTable" class="table">
-          <thead><tr><th>Capability</th><th>CerbiStream (Modern Default)</th><th>Serilog + Governance Plugin (Available Now)</th></tr></thead>
-          <tbody>
-            <tr data-tags="build"><td>Build-Time Governance Enforcement</td><td>✅ Roslyn Analyzer integrated</td><td>❌ Not supported</td></tr>
-            <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>✅ Built-in runtime validators</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
-            <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built-in</td><td>❌ Not included</td></tr>
-            <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
-            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built-in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
-            <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema-aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
-            <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
-            <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
-            <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built-in</td><td>⚠️ External design needed</td></tr>
-          </tbody>
-        </table>
-      </div>
+<!-- ===================== COMPARE ===================== -->
+<section id="compare" class="container section">
+  <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHAT YOU GET</p>
+  <h2>Logger Governance Comparison</h2>
 
-      <!-- Performance chart -->
-      <div class="glass reveal" style="padding:16px;margin-top:18px">
-        <h3 style="margin:0 0 10px">Performance Overview</h3>
-        <p class="muted" style="margin-top:0">Relative throughput and latency across typical configurations. Encryption and strict governance add modest overhead—but provide outsized value through safer, more actionable logs.</p>
-        <div style="height:320px"><canvas id="perfChart" aria-label="CerbiStream performance chart"></canvas></div>
-      </div>
-    </section>
+  <!-- Filter chips (same tags your JS uses) -->
+  <div class="filters" role="toolbar" aria-label="Filter comparison">
+    <button class="filter active" data-tag="all">All</button>
+    <button class="filter" data-tag="build">Build-time</button>
+    <button class="filter" data-tag="runtime">Runtime</button>
+    <button class="filter" data-tag="encryption">Encryption</button>
+    <button class="filter" data-tag="routing">Routing</button>
+  </div>
+
+  <div class="glass" style="padding:8px 12px;overflow-x:auto">
+    <table aria-label="Logger comparison table" id="compareTable">
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th>CerbiStream (Modern Default)</th>
+          <th>MEL + Governance (Available Now)</th>
+          <th>Serilog + Governance Analyzer (Build-time)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-tags="build">
+          <td>Build-Time Governance Enforcement</td>
+          <td>✅ Roslyn Analyzer integrated <span class="kbd">CerbiStream.GovernanceAnalyzer</span></td>
+          <td>❌ Not applicable (runtime package)</td>
+          <td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td>
+        </tr>
+
+        <tr data-tags="runtime">
+          <td>Runtime Governance Enforcement</td>
+          <td>✅ Built-in runtime validators</td>
+          <td>✅ Via <span class="kbd">Cerbi.MEL.Governance</span></td>
+          <td>⚠️ Build-time only (no runtime validator)</td>
+        </tr>
+
+        <tr data-tags="encryption">
+          <td>Encryption Support (AES, Base64)</td>
+          <td>✅ Built-in</td>
+          <td>❌ Not included (use app/transport)</td>
+          <td>❌ Not included</td>
+        </tr>
+
+        <tr data-tags="routing">
+          <td>File Fallback Logging</td>
+          <td>✅ <span class="kbd">WithFileFallback()</span></td>
+          <td>✅ Supported via your MEL providers/sinks</td>
+          <td>✅ Via <span class="kbd">Serilog.Sinks.File</span></td>
+        </tr>
+
+        <tr data-tags="routing">
+          <td>Telemetry Routing &amp; Enrichment</td>
+          <td>✅ Built-in (App Insights, OTel)</td>
+          <td>✅ Supported via MEL providers &amp; enrichers</td>
+          <td>✅ Supported via Serilog sinks &amp; enrichers</td>
+        </tr>
+
+        <tr data-tags="routing">
+          <td>ML / CerbIQ Compatibility</td>
+          <td>✅ Schema-aligned automatically</td>
+          <td>✅ Requires matching metadata (CerbiShield assists)</td>
+          <td>✅ Requires matching metadata (CerbiShield assists)</td>
+        </tr>
+
+        <tr data-tags="build runtime">
+          <td>Governance Profile Reloading</td>
+          <td>✅ Supported</td>
+          <td>✅ Supported</td>
+          <td>✅ Supported</td>
+        </tr>
+
+        <tr data-tags="build runtime">
+          <td>Custom Rule Plugins</td>
+          <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
+          <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
+          <td>⚠️ Analyzer-only (runtime plugins not applicable)</td>
+        </tr>
+
+        <tr data-tags="routing">
+          <td>App Rollup / Grouping Support</td>
+          <td>✅ Built-in</td>
+          <td>⚠️ External design needed</td>
+          <td>⚠️ External design needed</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="k" style="margin-top:10px">
+    <strong>Notes:</strong> CerbiStream ships with both <em>build-time</em> and <em>runtime</em> safeguards. If your apps use Microsoft.Extensions.Logging, add
+    <span class="kbd">Cerbi.MEL.Governance</span> for runtime validation today. Serilog projects are covered at build-time via
+    <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span>; runtime validation there is on the roadmap.
+  </p>
+</section>
+
 
     <!-- ARCHITECTURE -->
     <section id="architecture" class="container section">
