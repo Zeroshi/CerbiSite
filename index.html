@@ -171,6 +171,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
     <!-- WHY -->
 <section id="why" class="container section">
+  
   <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
   <h2>Why CerbiStream Exists</h2>
   <p class="lead">
@@ -270,6 +271,143 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </article>
   </div>
 </section>
+
+    <!-- ============ Positioning: Where Cerbi Fits ============ -->
+<section id="positioning" class="container section">
+  <h2>Where Cerbi Fits (and what we don’t do)</h2>
+
+  <article class="glass reveal" style="padding:16px">
+    <p style="margin:0 0 8px">
+      <strong>Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks.</strong> We sit <em>before</em> them—as the contract and enforcement layer that makes your logs <strong>clean, governed, and consistent</strong> before they touch any index, bucket, queue, or dashboard.
+    </p>
+    <p class="k" style="margin:0">
+      The result: <strong>lower cost</strong> (less noise, fewer duplicates), <strong>fewer broken dashboards</strong> (stable field names and types), and <strong>audit-ready telemetry</strong> (PII-aware policy, redaction, and versioned governance).
+    </p>
+  </article>
+
+  <div class="space"></div>
+
+  <div class="grid">
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">What Cerbi <em>is</em></h3>
+      <ul>
+        <li><strong>Contract + policy for logs</strong> (schemas, required/forbidden fields, types, enums, tags, PII policy).</li>
+        <li><strong>Build-time enforcement</strong> (Roslyn analyzer) that catches violations in IDE/CI.</li>
+        <li><strong>Runtime enforcement</strong> that validates, redacts, and <em>flags</em> violations—without dropping the event.</li>
+        <li><strong>Governance hub</strong> (CerbiShield) with RBAC, versioning, rollbacks, and audit history.</li>
+        <li><strong>Vendor-neutral</strong>: forward to Splunk/ELK/Datadog/OTel/file/cloud—no lock-in.</li>
+      </ul>
+    </article>
+
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">What Cerbi is <em>not</em></h3>
+      <ul>
+        <li>Not a log store, search UI, APM, or SIEM.</li>
+        <li>Not a sink/SaaS that forces migration.</li>
+        <li>Not a filter that drops logs—we <em>preserve</em> signal with redaction + violation metadata.</li>
+        <li>Not tied to a single framework—works with Serilog today; MEL/NLog next; native with CerbiStream.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="space"></div>
+
+  <div class="grid">
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">How it integrates (before your sinks)</h3>
+      <ol>
+        <li><strong>Profiles in CerbiShield:</strong> Define schemas/rules; approve with RBAC & versioning.</li>
+        <li><strong>Build-time validation:</strong> IDE/CI diagnostics prevent bad patterns from shipping.</li>
+        <li><strong>Runtime validation:</strong> Redact/flag violations and attach violation metadata.</li>
+        <li><strong>Forward as usual:</strong> Cleaned events go to Splunk/ELK/Datadog/OTel/file/etc.</li>
+      </ol>
+      <pre class="kbd" style="margin:10px 0 0;white-space:pre-wrap"><code>App → Cerbi (policy + metadata) → your sinks (Splunk/ELK/Datadog/OTel/file/cloud)</code></pre>
+    </article>
+
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Why your existing tools get better</h3>
+      <ul>
+        <li><strong>Cleaner data → lower cost:</strong> fewer duplicates + less schema drift reduce ingestion and index churn.</li>
+        <li><strong>Stable fields → durable dashboards:</strong> names/types stop drifting, so alerts and charts don’t silently break.</li>
+        <li><strong>Governed PII → easier audits:</strong> redaction/forbidden policy with versioned evidence.</li>
+        <li><strong>Consistent metadata → faster triage:</strong> correlation IDs; app/env/tenant tagging across services.</li>
+      </ul>
+    </article>
+  </div>
+
+  <div class="space"></div>
+
+  <div class="grid">
+    <article class="col-12 glass reveal" style="padding:16px">
+      <h3 style="margin-top:0">Concrete example</h3>
+      <div class="grid">
+        <div class="col-6">
+          <strong class="k">Before Cerbi (same “user” field, 4 shapes)</strong>
+          <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{"userId": 7}
+{"user_id": "7"}
+{"user": {"id": 7, "email": "jane@ex.com"}}
+{"uid": "007"}</code></pre>
+        </div>
+        <div class="col-6">
+          <strong class="k">With Cerbi (profile enforced)</strong>
+          <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{
+  "timestamp":"2025-08-27T14:33:12.120Z",
+  "level":"Information",
+  "action":"UserLoggedIn",
+  "user":{"id":"7"},
+  "app":"identity-api",
+  "env":"prod",
+  "traceId":"a1b2c3",
+  "tags":["auth","success"]
+}</code></pre>
+          <p class="k" style="margin:8px 0 0">If an email appears, runtime redacts and sets <span class="kbd">violations:[{"field":"user.email","rule":"Forbidden","action":"Redacted"}]</span>. The event still ships—signal preserved, policy enforced.</p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="space"></div>
+
+  <div class="grid">
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Who benefits</h3>
+      <ul>
+        <li><strong>Engineers:</strong> clear, fixable diagnostics; fewer on-call surprises.</li>
+        <li><strong>SRE/O11y:</strong> stable dashboards + alerts across releases.</li>
+        <li><strong>Security/Privacy:</strong> policy proof, RBAC, audit history.</li>
+        <li><strong>Data/ML:</strong> consistent features for modeling and LLMs.</li>
+        <li><strong>Finance:</strong> lower ingestion/storage + less waste.</li>
+      </ul>
+    </article>
+
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Migration path</h3>
+      <ul>
+        <li><strong>Keep your logger:</strong> Serilog plugin today; MEL/NLog adapters next.</li>
+        <li><strong>Adopt gradually:</strong> start with one profile (e.g., auth), expand per domain.</li>
+        <li><strong>Relax-mode first:</strong> flag/redact while teams fix; then tighten to block at build-time.</li>
+      </ul>
+    </article>
+
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Why this isn’t optional</h3>
+      <p>Privacy laws and breach rules increasingly treat logs as evidence and regulated data. Without structure and policy <em>at the source</em>, teams either slow down or accept risk. Cerbi lets you keep velocity <em>and</em> raise the bar on compliance.</p>
+    </article>
+  </div>
+
+  <div class="space"></div>
+
+  <details class="glass reveal" style="padding:14px;border-radius:14px">
+    <summary><strong>FAQ</strong> — “Are you competing with our logging vendor?”</summary>
+    <ul style="margin-top:10px">
+      <li><strong>No.</strong> We don’t store or search logs; we make your logs <em>worth more</em> wherever they go.</li>
+      <li><strong>Costs usually drop</strong> after adding Cerbi: fewer duplicate fields and less schema drift reduce ingestion and index churn.</li>
+      <li><strong>Dashboards last longer:</strong> teams stop fixing charts every sprint due to field changes.</li>
+      <li><strong>Audit stories simplify:</strong> redaction + versioned policy = evidence you can hand to Risk/Legal.</li>
+    </ul>
+  </details>
+</section>
+
 
     <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
