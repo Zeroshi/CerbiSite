@@ -170,55 +170,106 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </section>
 
     <!-- WHY -->
-    <section id="why" class="container section">
-      <div class="eyebrow">The problem</div>
-      <h2>Why CerbiStream Exists</h2>
-      <p class="lead">As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, <em>reliable</em> data products.</p>
+<section id="why" class="container section">
+  <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
+  <h2>Why CerbiStream Exists</h2>
+  <p class="lead">
+    As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.
+  </p>
 
-      <div class="grid">
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>1. Enforce Structure at the Source</h3>
-          <p class="muted">A simple, fluent API defines log schemas. The Roslyn analyzer catches violations during development and CI. Runtime validators ensure what gets emitted matches your policy—consistently.</p>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>2. Governance by Design</h3>
-          <p class="muted">Required/forbidden fields, redaction, tagging, data classification, and custom plugins. Ship profiles from CerbiShield, version them, and use relax-mode to avoid operational fallout.</p>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>3. Vendor-Neutral & Cost-Friendly</h3>
-          <p class="muted">We don’t replace Splunk/ELK/Datadog—we help them. Cleaner logs reduce storage, speed investigation, and unlock ML. Cerbi is a force multiplier for your existing stack.</p>
-        </article>
-      </div>
+  <div class="grid" style="margin-top:16px">
+    <!-- Problem symptoms -->
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">What goes wrong without guardrails</h3>
+      <ul>
+        <li><strong>Same idea, many names:</strong> <span class="kbd">userId</span>, <span class="kbd">user_id</span>, <span class="kbd">uid</span>, <span class="kbd">customerId</span>.</li>
+        <li><strong>Shape drift:</strong> GUIDs turn into ints; strings turn into blobs.</li>
+        <li><strong>PII leakage:</strong> emails/addresses sneak into prod logs.</li>
+        <li><strong>Missing metadata:</strong> timestamp, level, env, app, trace IDs aren’t consistent.</li>
+        <li><strong>Fragile dashboards:</strong> small field changes break alerts and reports.</li>
+        <li><strong>Cost bloat:</strong> noisy, duplicative fields can’t be rolled up or pruned.</li>
+      </ul>
+    </article>
 
-      <div class="space"></div>
+    <!-- Approach -->
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Cerbi’s approach: logs as governed data products</h3>
+      <ul>
+        <li><strong>Contract (schema + rules):</strong> required/forbidden fields, types, enums, PII policy.</li>
+        <li><strong>Build-time enforcement:</strong> Roslyn analyzer catches violations before they ship.</li>
+        <li><strong>Runtime enforcement:</strong> validation, redaction, and <em>relax-mode</em> flagging in prod.</li>
+        <li><strong>Ownership & versioning:</strong> profiles live in CerbiShield with history, RBAC, rollbacks.</li>
+        <li><strong>Analytics-ready metadata:</strong> app, env, tenant, correlation, tags, and categories.</li>
+      </ul>
+    </article>
 
-      <!-- Screenshot gallery -->
-      <div class="glass tilt reveal" style="padding:16px">
-        <div class="glare" aria-hidden="true"></div>
-        <div class="img-frame" role="group" aria-label="CerbiShield dashboard screenshots">
-          <div class="dash-gallery">
-            <picture class="dash-shot" aria-label="CerbiShield Overview dashboard">
-              <source srcset="assets/screenshots/cerbishield-hero-3200x1800.jpg 2x,
-                              assets/screenshots/cerbishield-hero-1600x900.jpg 1x">
-              <img src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-                   alt="CerbiShield Governance — Overview"
-                   width="1600" height="900" loading="lazy"/>
-            </picture>
-            <picture class="dash-shot" aria-label="Profiles">
-              <img src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-                   alt="Profiles — governance profiles and versions"
-                   width="1200" height="900" loading="lazy"/>
-            </picture>
-            <picture class="dash-shot" aria-label="Violations">
-              <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-                   alt="Violations — required/forbidden fields"
-                   width="1200" height="900" loading="lazy"/>
-            </picture>
-          </div>
-        </div>
-        <div class="img-cap">Bring your own stack. Cerbi adds policy, structure, and accountability.</div>
-      </div>
-    </section>
+    <!-- Audience value -->
+    <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">What changes for your teams</h3>
+      <ul>
+        <li><strong>Developers:</strong> clear, fixable IDE/CI diagnostics when logging violates policy.</li>
+        <li><strong>Runtime:</strong> keep the event, redact/flag violations; don’t lose critical signals.</li>
+        <li><strong>Security/Compliance:</strong> versioned policies, RBAC, audit history in CerbiShield.</li>
+        <li><strong>Observability/SRE:</strong> stable fields → durable dashboards and alerts.</li>
+        <li><strong>Data/ML:</strong> consistent, PII-safe features suitable for modeling and LLMs.</li>
+      </ul>
+    </article>
+  </div>
+
+  <!-- Before/After example -->
+  <div class="space"></div>
+  <div class="grid">
+    <div class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Before (inconsistent + risky)</h3>
+      <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+  "user_id": "7",
+  "email": "jane@ex.com",
+  "when": "2025-08-27",
+  "sev": "info"
+}</code></pre>
+    </div>
+    <div class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">After (governed profile)</h3>
+      <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+  "timestamp": "2025-08-27T14:33:12.120Z",
+  "level": "Information",
+  "user": { "id": "7" },
+  "action": "UserLoggedIn",
+  "app": "identity-api",
+  "env": "prod",
+  "traceId": "a1b2c3",
+  "tags": ["auth", "success"]
+}</code></pre>
+    </div>
+  </div>
+
+  <!-- Positioning -->
+  <div class="space"></div>
+  <article class="glass reveal" style="padding:16px">
+    <h3 style="margin-top:0">Not another logging tool</h3>
+    <p class="k">
+      Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks. We improve what you send to them:
+      cleaner data (lower cost), stable fields (fewer broken dashboards), and governed, PII-aware logs (easier audits).
+    </p>
+  </article>
+
+  <!-- Why now + outcomes -->
+  <div class="grid" style="margin-top:16px">
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Why this matters now</h3>
+      <p>Regulatory pressure is rising (privacy, breach disclosure, residency). Logs are security-relevant evidence. The only scalable path to velocity + compliance is structure and policy at the source.</p>
+    </article>
+    <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <h3 style="margin-top:4px">Outcomes you can expect</h3>
+      <ul>
+        <li>Faster investigations via consistent correlation and fields</li>
+        <li>Lower ingestion and storage costs from normalized data</li>
+        <li>Audit-ready posture with versioned policy and redaction</li>
+        <li>ML-ready telemetry: clean, labeled features for modeling</li>
+      </ul>
+    </article>
+  </div>
+</section>
 
     <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
