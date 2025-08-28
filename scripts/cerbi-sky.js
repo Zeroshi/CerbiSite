@@ -91,11 +91,10 @@ document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--my', e.clientY+'px');
 }, {passive:true});
 
-/* ===== Random bottom background loader (background1.png, background2.png, …) ===== */
+/* ===== Random bottom background loader ===== */
 (function loadSceneBackground(){
   const holder = qs('.scene-bg'); if(!holder) return;
-  // pick a number 1..20; fallback to /assets/background/background.png if present
-  const maxN = 20;
+  const maxN = 50; // you said you'll add background1.png … background50.png (or fewer)
   const n = Math.max(1, Math.floor(1 + Math.random()*maxN));
   const candidates = [
     `assets/background/background${n}.png`,
@@ -113,7 +112,7 @@ document.addEventListener('pointermove', e=>{
   tryNext(0);
 })();
 
-/* ===== Starfield + angled meteors ===== */
+/* ===== Starfield + angled meteors (downward) ===== */
 (function starfield(){
   const canvas = qs('#sky'); if(!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
@@ -122,7 +121,7 @@ document.addEventListener('pointermove', e=>{
 
   const stars = [];
   const meteors = [];
-  const STAR_COUNT = Math.min(200, Math.floor(w*h/9000));
+  const STAR_COUNT = Math.min(220, Math.floor(w*h/9000));
 
   function addStar(){
     stars.push({
@@ -136,8 +135,8 @@ document.addEventListener('pointermove', e=>{
   for(let i=0;i<STAR_COUNT;i++) addStar();
 
   function spawnMeteor(){
-    // enter from top-left-ish, angled downward (≈ 15–20°)
-    const angle = (Math.PI/180) * (15 + Math.random()*8);
+    // 15–22 degrees downward
+    const angle = (Math.PI/180) * (15 + Math.random()*7);
     const speed = 6 + Math.random()*4;
     meteors.push({
       x: Math.random()*(-w*0.2), y: Math.random()*(-h*0.3),
@@ -169,7 +168,6 @@ document.addEventListener('pointermove', e=>{
       const m = meteors[i];
       m.x += m.vx; m.y += m.vy; m.life++;
 
-      // trail
       const trail = 90;
       const grad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx*trail, m.y - m.vy*trail);
       grad.addColorStop(0, 'rgba(175,200,255,.85)');
@@ -209,43 +207,57 @@ document.addEventListener('pointermove', e=>{
   start();
 })();
 
-/* ===== Performance chart (vanilla canvas) ===== */
+/* ===== Performance chart (vanilla canvas; fixed) ===== */
 (function perf(){
   const c = qs('#perfChart'); if(!c) return;
   const ctx = c.getContext('2d');
 
-  // sample data: [CerbiStream, Serilog+Plugin, Plain Serilog]
+  // sample data (writes/sec; higher is better)
   const labels = ['10k','20k','30k','40k','50k','60k'];
-  const cerbi =   [110k(1), 20500, 29500, 38000, 45500, 52000].map((v,i)=>15000+i*7500); // placeholder ramp
+  const cerbi    = [16000, 30000, 42000, 52000, 60000, 66000];
   const seriplug = [13000, 24500, 34000, 42000, 49000, 54500];
-  const plain =   [14000, 25500, 35000, 43500, 51000, 56000];
+  const plain    = [14000, 25500, 35000, 43500, 51000, 56000];
 
-  // draw axes
-  const P = 40; const W = c.width - P*2; const H = c.height - P*2;
+  const all = [...cerbi, ...seriplug, ...plain];
+  const min = Math.min(...all) * 0.9;
+  const max = Math.max(...all) * 1.05;
+
+  const P = 44; const W = c.width - P*2; const H = c.height - P*2;
   ctx.clearRect(0,0,c.width,c.height);
-  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1;
+
+  // grid
+  ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1;
   ctx.strokeRect(P,P,W,H);
   ctx.font = '12px Inter'; ctx.fillStyle='rgba(255,255,255,.6)';
+  for(let t=0;t<=5;t++){
+    const y = P + (t/5)*H;
+    ctx.beginPath(); ctx.moveTo(P,y); ctx.lineTo(P+W,y); ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.stroke();
+    const v = Math.round(max - (t/5)*(max-min));
+    ctx.fillText(v.toLocaleString(), 6, y+4);
+  }
+
+  function yScale(v){ return P + (1 - (v-min)/(max-min)) * H; }
+  function xScale(i,n){ return P + (i/(n-1)) * W; }
 
   function plot(series, color) {
     ctx.beginPath();
     series.forEach((v, i) => {
-      const x = P + (i/(series.length-1))*W;
-      const y = P + (1 - (v - 12000)/(60000 - 12000)) * H;
+      const x = xScale(i, series.length);
+      const y = yScale(v);
       if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     });
     ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
   }
-  plot(plain, 'rgba(180,200,255,.8)');
-  plot(seriplug, 'rgba(110,170,255,.9)');
-  plot(cerbi, 'rgba(255,120,40,1)'); // logo-leaning accent
+  plot(plain,   'rgba(180,200,255,.8)');
+  plot(seriplug,'rgba(110,170,255,.9)');
+  plot(cerbi,   'rgba(255,120,40,1)');
 
   // legend
   const Lx = P+10, Ly = P+10;
   const legends = [
     ['CerbiStream (with validation)', 'rgba(255,120,40,1)'],
-    ['Serilog + Governance Plugin', 'rgba(110,170,255,.9)'],
-    ['Serilog (plain)', 'rgba(180,200,255,.8)'],
+    ['Serilog + Governance Plugin',   'rgba(110,170,255,.9)'],
+    ['Serilog (plain)',               'rgba(180,200,255,.8)'],
   ];
   legends.forEach((l,idx)=>{
     ctx.fillStyle = l[1]; ctx.fillRect(Lx, Ly+idx*18, 10, 10);
