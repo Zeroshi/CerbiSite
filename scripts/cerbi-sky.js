@@ -34,18 +34,21 @@ qs('#navToggle')?.addEventListener('click', () => {
   qs('#navToggle').setAttribute('aria-expanded', String(open));
 });
 
-/* ====== Command palette ====== */
+/* ====== Command palette (demo) ====== */
 (() => {
   const overlay = qs('#cmdkOverlay');
   const input = qs('#cmdkInput');
   const list = qs('#cmdkList');
   const items = [
-    {label:'Why', href:'#why'}, {label:'Ecosystem', href:'#ecosystem'},
-    {label:'Governance', href:'#governance'}, {label:'Packages', href:'#packages'},
-    {label:'Repositories', href:'#repos'}, {label:'Compare', href:'#compare'},
-    {label:'Architecture', href:'#architecture'}, {label:'Contact', href:'#contact'},
+    {label:'Why', href:'#why'},
+    {label:'Ecosystem', href:'#ecosystem'},
+    {label:'Governance', href:'#governance'},
+    {label:'Packages', href:'#packages'},
+    {label:'Repositories', href:'#repos'},
+    {label:'Compare', href:'#compare'},
+    {label:'Architecture', href:'#architecture'},
+    {label:'Contact', href:'#contact'},
   ];
-  if (!overlay) return;
   list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
   list.addEventListener('click', e=>{
     const item = e.target.closest('.item'); if(!item) return;
@@ -63,7 +66,7 @@ qs('#navToggle')?.addEventListener('click', () => {
 })();
 
 /* ====== Copy buttons ====== */
-qsa('[data-copy]').forEach(btn=>{
+qsa('.copy-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     const el = qs(btn.getAttribute('data-copy'));
     if (!el) return;
@@ -86,232 +89,140 @@ document.addEventListener('pointermove', e=>{
   document.documentElement.style.setProperty('--my', e.clientY+'px');
 }, {passive:true});
 
-/* ====== Random bottom background (background1.png, background2.png, ...) ====== */
-(function loadRandomBottomBackground(){
-  const maxTry = 50;
-  const base = 'assets/background/background';
-  const el = qs('#bgBottom'); if (!el) return;
-  const img = new Image();
-  const order = Array.from({length:maxTry}, (_,i)=>i+1).sort(()=>Math.random()-0.5);
-  let k = 0;
-  const tryNext = () => {
-    if (k >= order.length) { el.style.display='none'; return; }
-    img.src = `${base}${order[k++]}.png`;
-  };
-  img.onload = () => { el.style.backgroundImage = `url("${img.src}")`; };
-  img.onerror = tryNext;
-  tryNext();
+/* ====== Compare filters ====== */
+qsa('.filter').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    qsa('.filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tag = btn.dataset.tag;
+    const rows = qsa('#compareTable tbody tr');
+    rows.forEach(r=>{
+      if (tag==='all') { r.style.display=''; return; }
+      const tags = (r.dataset.tags||'').split(' ');
+      r.style.display = tags.includes(tag) ? '' : 'none';
+    });
+  });
+});
+
+/* ====== Footer year ====== */
+const y = new Date().getFullYear();
+const yEl = qs('#year'); if (yEl) yEl.textContent = y;
+
+/* ====== Random fixed-bottom background (assets/background/background{1..50}.png) ====== */
+(function(){
+  const target = qs('#bg-fixed'); if(!target) return;
+  // Try up to 50, pick a random first, if not found try a few others
+  const max = 50;
+  const order = Array.from({length:max}, (_,i)=>i+1)
+    .map(n=>({n, r: Math.random()}))
+    .sort((a,b)=>a.r-b.r)
+    .map(x=>x.n);
+  let applied = false;
+  function trySet(i){
+    const img = new Image();
+    img.onload = () => { if (applied) return; target.style.backgroundImage = `url(assets/background/background${i}.png)`; applied = true; };
+    img.onerror = ()=>{};
+    img.src = `assets/background/background${i}.png`;
+  }
+  // test the first 6 randoms to keep perf snappy
+  order.slice(0,6).forEach(trySet);
 })();
 
-/* ====== Starfield with angled shooting stars (down-right) ====== */
-(function starfield(){
-  const canvas = qs('#sky'); if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w = canvas.width = innerWidth;
-  let h = canvas.height = innerHeight;
+/* ====== Star field + angled meteors ====== */
+(() => {
+  const c = qs('#sky'); if(!c) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const ctx = c.getContext('2d');
 
-  const DPR = Math.min(2, devicePixelRatio || 1);
-  canvas.width = w * DPR; canvas.height = h * DPR; ctx.scale(DPR, DPR);
+  let W, H, stars=[], meteors=[];
+  const STAR_CT = 180;
+  const METEOR_CT = 6; // a few at a time
+  const ANGLE = Math.PI * (68/180); // ~68° down-right
 
-  const stars = [];
-  const SHOT_MAX = 3;
-  function makeStar(){
+  function resize(){
+    W = c.width = Math.floor(window.innerWidth * dpr);
+    H = c.height = Math.floor(window.innerHeight * dpr);
+    c.style.width = '100%'; c.style.height = '100%';
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  function seed(){
+    stars = Array.from({length: STAR_CT}, ()=>({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: Math.random()*1.8 + 0.2,
+      a: Math.random()*0.6 + 0.2,
+      tw: Math.random()*0.02 + 0.005
+    }));
+    meteors = Array.from({length:METEOR_CT}, ()=>newMeteor());
+  }
+  function newMeteor(){
+    // start slightly above/left so they streak down-right
+    const speed = Math.random()*1.2 + 0.6;
+    const len = Math.random()*140*dpr + 80*dpr;
+    const off = Math.random()*W*0.6;
     return {
-      x: Math.random()*w,
-      y: Math.random()*h,
-      r: Math.random()*1.2 + .2,
-      tw: Math.random()*1,
-      s: Math.random() * .3 + .05
+      x: -100*dpr + off,
+      y: -60*dpr + Math.random()*H*0.25,
+      vx: Math.cos(ANGLE)*speed*3.2*dpr,
+      vy: Math.sin(ANGLE)*speed*3.2*dpr,
+      len, life: 1
     };
   }
-  for(let i=0;i<220;i++) stars.push(makeStar());
 
-  const shots = [];
-  function spawnShot(){
-    if (shots.length >= SHOT_MAX) return;
-    const x = -50 + Math.random()*150;
-    const y = -40 + Math.random()*80;
-    const speed = 6 + Math.random()*4;
-    const angle = Math.PI/10; // ~18deg downward
-    shots.push({
-      x, y,
-      vx: Math.cos(angle)*speed,
-      vy: Math.sin(angle)*speed*2,  // more downward component
-      life: 0,
-      maxLife: 120 + Math.random()*60
+  function step(){
+    ctx.clearRect(0,0,W,H);
+
+    // stars
+    stars.forEach(s=>{
+      s.a += s.tw;
+      const alpha = 0.3 + Math.sin(s.a)*0.3;
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
     });
-  }
 
-  let lastT = 0, acc = 0;
-  function tick(t){
-    requestAnimationFrame(tick);
-    const dt = Math.min(50, t - lastT || 16); lastT = t;
-    acc += dt;
-
-    ctx.clearRect(0,0,w,h);
-
-    // static stars (twinkle)
-    ctx.fillStyle = '#d9e6ff';
-    for(const s of stars){
-      s.tw += s.s*dt*0.002;
-      const a = 0.5 + Math.sin(s.tw)*0.5;
-      ctx.globalAlpha = 0.2 + a*0.6;
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    if (acc > 1200 + Math.random()*1200){ acc = 0; spawnShot(); }
-
-    for (let i=shots.length-1;i>=0;i--){
-      const s = shots[i];
-      s.x += s.vx; s.y += s.vy; s.life += 1;
-
-      const tx = s.x - s.vx*3, ty = s.y - s.vy*3;
-      const grad = ctx.createLinearGradient(s.x, s.y, tx, ty);
-      grad.addColorStop(0, 'rgba(197,219,255,.95)');
-      grad.addColorStop(1, 'rgba(197,219,255,0)');
-      ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.beginPath();
-      ctx.moveTo(s.x, s.y); ctx.lineTo(tx, ty); ctx.stroke();
-
-      if (s.x > w+60 || s.y > h+60 || s.life > s.maxLife) shots.splice(i,1);
-    }
-  }
-  requestAnimationFrame(tick);
-
-  window.addEventListener('resize', ()=>{
-    w = canvas.width = innerWidth;
-    h = canvas.height = innerHeight;
-    canvas.width = w * DPR; canvas.height = h * DPR; ctx.scale(DPR, DPR);
-  }, {passive:true});
-})();
-
-/* ====== Governance live demo (toy) ====== */
-(() => {
-  const sw = qs('#piiSwitch');
-  const input = qs('#inputJson');
-  const evalEl = qs('#evalJson');
-  if(!sw || !input || !evalEl) return;
-
-  const make = on => ({
-    timestamp: new Date().toISOString(),
-    level: "Information",
-    user: { id: "12345", email: on ? "jane@example.com" : undefined },
-    action: "UserLoggedIn"
-  });
-  const render = obj => JSON.stringify(obj, null, 2);
-  const evaluate = obj => {
-    const violations = [];
-    if (obj.user?.email) violations.push({ field:"user.email", type:"PII", rule:"Forbidden" });
-    return { ok: violations.length===0, violations };
-  };
-
-  let on = false;
-  function refresh(){
-    const obj = make(on);
-    input.textContent = render(obj);
-    evalEl.textContent = render(evaluate(obj));
-    sw.classList.toggle('on', on);
-    sw.setAttribute('aria-checked', String(on));
-  }
-  refresh();
-  const toggle = ()=>{ on = !on; refresh(); };
-  sw.addEventListener('click', toggle);
-  sw.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); }});
-})();
-
-/* ====== Compare table filters ====== */
-(() => {
-  const table = qs('#compareTable'); if(!table) return;
-  const rows = qsa('tbody tr', table);
-  const buttons = qsa('.filter');
-  function apply(tag){
-    buttons.forEach(b=>b.classList.toggle('active', b.dataset.tag===tag));
-    rows.forEach(r=>{
-      const tags = (r.getAttribute('data-tags')||'').split(/\s+/);
-      r.style.display = (tag==='all'||tags.includes(tag)) ? '' : 'none';
-    });
-  }
-  buttons.forEach(b=>b.addEventListener('click', ()=>apply(b.dataset.tag)));
-  apply('all');
-})();
-
-/* ====== Enterprise tiles hover fallback if :has() unsupported ====== */
-(() => {
-  const supportsHas = CSS && CSS.supports && CSS.supports('selector(:has(*))');
-  if (supportsHas) return;
-  const container = document.querySelector('.cred-grid:not(.cred-tight)');
-  if (!container) return;
-  const cards = [...container.querySelectorAll('.cred')];
-
-  const clear = () => cards.forEach(c => c.classList.remove('is-hover'));
-  container.addEventListener('mouseleave', () => { container.classList.remove('hovering'); clear(); });
-  container.addEventListener('mouseenter', () => container.classList.add('hovering'));
-  cards.forEach(c => c.addEventListener('mouseenter', () => { clear(); c.classList.add('is-hover'); }));
-})();
-
-/* ====== Contact form (Formspree) ====== */
-(() => {
-  const form = qs('#contactForm'); if(!form) return;
-  const status = qs('#formStatus');
-  const endpoint = form.getAttribute('data-endpoint');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    status.textContent = 'Sending…';
-    const data = new FormData(form);
-    try{
-      const res = await fetch(endpoint, { method:'POST', body:data, headers:{ 'Accept':'application/json' }});
-      if (res.ok){
-        status.textContent = 'Thanks! We’ll be in touch shortly.';
-        form.reset();
-      } else {
-        status.textContent = 'Hmm, something went wrong. Email hello@cerbi.io instead?';
+    // meteors
+    meteors.forEach(m=>{
+      m.x += m.vx; m.y += m.vy; m.life -= 0.003;
+      const tx = m.x - Math.cos(ANGLE)*m.len;
+      const ty = m.y - Math.sin(ANGLE)*m.len;
+      const g = ctx.createLinearGradient(m.x, m.y, tx, ty);
+      g.addColorStop(0, 'rgba(160,200,255,.9)');
+      g.addColorStop(1, 'rgba(160,200,255,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = 2*dpr;
+      ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tx, ty); ctx.stroke();
+      if (m.x > W+120*dpr || m.y > H+80*dpr || m.life<=0) {
+        Object.assign(m, newMeteor());
       }
-    }catch(err){
-      status.textContent = 'Network issue—please try again or email us directly.';
-    }
-  });
-})();
-
-/* ====== Dashboard auto-rotate (expands to ~80%) ====== */
-(() => {
-  const gallery = qs('#dashGallery'); if(!gallery) return;
-  const shots = qsa('.dash-shot', gallery);
-  const dotsWrap = qs('#dashDots');
-  let i = 0, timer = null;
-
-  const setActive = (idx) => {
-    i = (idx + shots.length) % shots.length;
-    shots.forEach((s,k)=>s.classList.toggle('active', k===i));
-    if (dotsWrap){
-      const dots = qsa('button', dotsWrap);
-      dots.forEach((d,k)=>d.classList.toggle('active', k===i));
-    }
-  };
-
-  // dots
-  if (dotsWrap){
-    shots.forEach((_,k)=>{
-      const b = document.createElement('button');
-      b.setAttribute('aria-label', `Show slide ${k+1}`);
-      b.addEventListener('click', ()=>{ setActive(k); restart(); });
-      dotsWrap.appendChild(b);
     });
+
+    requestAnimationFrame(step);
   }
 
-  const next = ()=> setActive(i+1);
-  const start = ()=> timer = setInterval(next, 4500);
-  const stop = ()=> timer && clearInterval(timer);
-  const restart = ()=>{ stop(); start(); };
-
-  // pause on hover
-  gallery.addEventListener('mouseenter', stop);
-  gallery.addEventListener('mouseleave', start);
-
-  // click to focus a shot
-  shots.forEach((s,k)=> s.addEventListener('click', ()=>{ setActive(k); restart(); }));
-
-  setActive(0); start();
+  seed(); step();
 })();
 
-/* ====== Year ====== */
-(() => { const y = qs('#year'); if (y) y.textContent = new Date().getFullYear(); })();
+/* ====== Tilt glare tracking ====== */
+qsa('.tilt').forEach(el=>{
+  el.addEventListener('pointermove', e=>{
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--gx', ((e.clientX-r.left)/r.width*100)+'%');
+    el.style.setProperty('--gy', ((e.clientY-r.top)/r.height*100)+'%');
+  }, {passive:true});
+});
+
+/* ====== Make enterprise tiles keyboard-focus scalable ====== */
+qsa('.enterprise-strip .tile').forEach(tile=>{
+  tile.tabIndex = 0;
+  tile.addEventListener('focus', ()=> tile.classList.add('focus'));
+  tile.addEventListener('blur', ()=> tile.classList.remove('focus'));
+});
+
+/* ====== Initialize command list content ====== */
+(() => {
+  const overlay = qs('#cmdkOverlay'); if(!overlay) return;
+  const list = qs('#cmdkList');
+  if (list && !list.children.length) list.innerHTML = '<div class="item"><span>Jump to</span><span>#why</span></div>';
+})();
