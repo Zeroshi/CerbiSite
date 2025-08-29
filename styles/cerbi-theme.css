@@ -380,3 +380,78 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .dash-shot:hover{transform:translateY(-2px); box-shadow:0 14px 40px rgba(10,20,40,.25)}
 .dash-shot img{width:100%;height:100%;object-fit:cover;display:block}
 @media (max-width:900px){.dash-gallery{grid-template-columns:1fr}}
+
+/* ---------- Light theme fixes & polish ---------- */
+[data-theme="light"] {
+  --bg: #f7fafc;
+  --surface: #ffffff;
+  --text: #101828;
+  --muted: #475467;
+  --line: rgba(16, 24, 40, 0.10);
+  --glass-bg: rgba(255, 255, 255, 0.86);
+  --glass-border: rgba(16, 24, 40, 0.08);
+  --chip-bg: #eef2f7;
+  --chip-text: #182230;
+  --kbd-bg: #eef2f7;
+  --kbd-text: #101828;
+  --pill-bg: #eef2f7;
+  --pill-text: #182230;
+  --shadow-sm: 0 8px 30px rgba(2, 10, 24, 0.06);
+  /* keep your brand orange */
+  --accent: #ff4d00;
+}
+
+/* Cards / glass gain opacity & lose the “smoky” dark look */
+[data-theme="light"] .glass,
+[data-theme="light"] .card {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  color: var(--text);
+}
+
+/* Small text and lead copy */
+[data-theme="light"] .k { color: var(--muted); }
+[data-theme="light"] .lead,
+[data-theme="light"] .sub { color: #344054; }
+
+/* Chips / pills / kbd tags */
+[data-theme="light"] .chip { background: var(--chip-bg); color: var(--chip-text); }
+[data-theme="light"] .pill { background: var(--pill-bg); color: var(--pill-text); }
+[data-theme="light"] .kbd  { background: var(--kbd-bg);  color: var(--kbd-text);  border-color: var(--glass-border); }
+
+/* Hero: dial back the background grid/tiles and remove heavy text-glows */
+[data-theme="light"] .hero .hero-bg { opacity: .72; }       /* lighter grid overall */
+[data-theme="light"] .hero h1 { text-shadow: none; color: var(--text); }
+[data-theme="light"] .hero h1 .accent { color: var(--accent); text-shadow: none; }
+
+/* The translucent page veil used in dark needs to be *much* lighter in light */
+[data-theme="light"] .veil { opacity: .15; }
+
+/* Dots/slider controls remain visible on a light surface */
+[data-theme="light"] .dash-slider .dots button { background: rgba(16,24,40,.25); }
+[data-theme="light"] .dash-slider .dots button.active { background: var(--accent); }
+
+/* Command palette (⌘K) */
+[data-theme="light"] .cmdk {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 18px 60px rgba(2, 10, 24, 0.12);
+}
+[data-theme="light"] .cmdk .header input { color: var(--text); }
+[data-theme="light"] .cmdk .list a { color: var(--text); }
+[data-theme="light"] .cmdk .list a:hover { background: #f2f4f7; }
+
+/* Buttons keep brand contrast on light surfaces */
+[data-theme="light"] .btn-primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+[data-theme="light"] .btn-ghost { color: var(--text); border-color: var(--glass-border); }
+
+/* Reduce starfield/tiles intensity in light so content remains the star */
+[data-theme="light"] .tiles { opacity: .12; }
+[data-theme="light"] .sky   { opacity: .10; }
+
