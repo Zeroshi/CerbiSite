@@ -313,3 +313,70 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   .hero h1{font-size:clamp(28px, 9vw, 40px)}
   .sub{font-size:clamp(14px, 3.6vw, 18px)}
 }
+
+/* === Accent keywords inside headings === */
+.hot{
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(255,77,0,.25);
+}
+[data-theme="light"] .hot{
+  color: var(--accent);
+  text-shadow: none;
+}
+
+/* === Full-bleed pop-art section === */
+.full-bleed{
+  padding: 0;
+}
+.full-bleed .container{ width:min(1200px,92vw); } /* keep container sizing for overlay text */
+
+.popart{
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw); /* escape container to full width */
+  min-height: clamp(360px, 54vh, 720px);
+  background: radial-gradient(120% 80% at 70% 0%, rgba(255,77,0,.12), transparent 60%), rgba(8,12,20,.6);
+  overflow: hidden;
+  border-top: 1px solid rgba(127,148,179,.18);
+  border-bottom: 1px solid rgba(127,148,179,.18);
+}
+
+.popart-stage{
+  position:absolute; inset:0;
+}
+.popart-slide{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+  opacity:0; transition: opacity .8s ease;
+  filter: contrast(1.05) saturate(1.05);
+}
+.popart-slide.active{ opacity:1; }
+
+.popart-overlay{
+  position: relative;
+  z-index: 1;
+  padding: clamp(18px, 4vw, 36px) 0;
+}
+.popart-title{
+  font-size: clamp(24px, 4.6vw, 40px);
+  margin: 6px 0 10px;
+}
+
+/* Light theme readability */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3{
+  color:#0b1220;
+}
+[data-theme="light"] .hero h1{
+  -webkit-text-fill-color: initial;
+  color:#0b1220;
+  text-shadow:none;
+}
+
+/* Dashboard gallery remains as-is; optional: give a little hover pop */
+.dash-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;width:100%;height:100%;padding:10px}
+.dash-shot{display:block;width:100%;height:100%;border-radius:14px;border:1px solid rgba(127,148,179,.22);background:rgba(255,255,255,.02);overflow:hidden;transition:transform .25s ease, box-shadow .25s ease}
+.dash-shot:hover{transform:translateY(-2px); box-shadow:0 14px 40px rgba(10,20,40,.25)}
+.dash-shot img{width:100%;height:100%;object-fit:cover;display:block}
+@media (max-width:900px){.dash-gallery{grid-template-columns:1fr}}
