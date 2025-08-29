@@ -24,6 +24,60 @@
   --mx:50vw; --my:50vh;
 }
 
+/* Signature Art rotator */
+.sig-rotator{
+  position:relative; width:100%; aspect-ratio:16/9;
+  border-radius:16px; overflow:hidden;
+  border:1px solid rgba(127,148,179,.22);
+  background:radial-gradient(100% 120% at 50% 0%, rgba(50,133,255,.06), rgba(12,22,38,.6));
+  box-shadow: var(--shadow);
+}
+.sig-rotator img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; opacity:0; transition:opacity .85s var(--easing);
+  filter: contrast(1.08) saturate(1.08);
+  will-change: opacity, transform;
+}
+.sig-rotator img.show{
+  opacity:1;
+  /* motion is set inline per slide via JS; this is the fallback */
+  animation: sigZoom 6s ease-in-out both;
+}
+
+/* hover to pause the motion (keeps crossfade active) */
+.sig-rotator:hover img.show{
+  animation-play-state: paused;
+}
+
+/* Default soft zoom (fallback) */
+@keyframes sigZoom{
+  0%   { transform: scale(1.06) translate3d(0,0,0) }
+  100% { transform: scale(1.00) translate3d(0,-1.5%,0) }
+}
+
+/* Extra motion variants (JS picks one randomly) */
+@keyframes sigPanLeft  {
+  0% { transform: scale(1.06) translateX(1.5%) }
+  100%{ transform: scale(1.00) translateX(-1.5%) }
+}
+@keyframes sigPanRight {
+  0% { transform: scale(1.06) translateX(-1.5%) }
+  100%{ transform: scale(1.00) translateX( 1.5%) }
+}
+@keyframes sigTiltIn   {
+  0% { transform: scale(1.05) rotate(-.35deg) translateY(0.6%) }
+  100%{ transform: scale(1.00) rotate( .35deg) translateY(-0.6%) }
+}
+@keyframes sigDriftUp  {
+  0% { transform: scale(1.05) translateY(1.8%) }
+  100%{ transform: scale(1.00) translateY(-1.8%) }
+}
+@keyframes sigDriftDown{
+  0% { transform: scale(1.05) translateY(-1.2%) }
+  100%{ transform: scale(1.00) translateY( 1.2%) }
+}
+
+
 [data-theme="light"]{
   --bg:#ffffff; --panel:#ffffff; --panel-2:#f6f8fc;
   --text:#162238; --text-strong:#0b1530; --muted:#4b5875;
