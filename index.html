@@ -20,6 +20,15 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full" />
 
+  <!-- Accent highlights + full-bleed art (kept tiny & self-contained) -->
+  <style>
+    .hl,.accent{color:var(--accent); text-shadow:0 0 14px rgba(255,77,0,.28);}
+    /* Make pop-art section full-bleed and tall for impact */
+    .full-bleed{width:100vw;margin-left:50%;transform:translateX(-50%);}
+    #sigRotator{height:min(62vh,680px);} /* bigger stage */
+    @media (max-width:900px){ #sigRotator{height:48vh;} }
+  </style>
+
   <!-- Chart.js for the perf chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 </head>
@@ -107,59 +116,60 @@
         <span class="chip">Hybrid-Ready</span>
         <span class="chip">ML-Friendly</span>
       </div>
-      <h1>Unified Logging, Governance & Observability</h1>
+      <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
+
       <!-- Sales pitch: why this matters now -->
-<div class="glass reveal" style="padding:16px;margin:14px auto;max-width:980px">
-  <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHY TEAMS PICK CERBI</p>
-  <p style="margin:0 0 8px">
-    Logs aren’t just exhaust anymore—they’re your compliance record, forensic trail, and ML fuel.
-    Cerbi turns messy, app-by-app logging into governed, trustworthy <em>data products</em> that cut cost and risk while
-    making every downstream tool (Splunk, ELK, Datadog, Snowflake) work better.
-  </p>
+      <div class="glass reveal" style="padding:16px;margin:14px auto;max-width:980px">
+        <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHY TEAMS PICK CERBI</p>
+        <p style="margin:0 0 8px">
+          Logs aren’t just exhaust anymore—they’re your compliance record, forensic trail, and ML fuel.
+          Cerbi turns messy, app-by-app logging into governed, trustworthy <em>data products</em> that cut cost and risk while
+          making every downstream tool (Splunk, ELK, Datadog, Snowflake) work better.
+        </p>
 
-  <div class="grid" style="margin-top:8px">
-    <article class="col-4 card tilt"><div class="glare"></div>
-      <h3 style="margin:6px 0 6px">Lower Ingestion Cost</h3>
-      <p class="k" style="margin:0">
-        De-duplicate, enforce schemas, and add roll-up metadata so you ingest less noise and query less junk.
-      </p>
-      <ul style="margin:8px 0 0 18px">
-        <li>Stable fields → smaller indexes</li>
-        <li>Rollups & tags → faster queries</li>
-      </ul>
-    </article>
+        <div class="grid" style="margin-top:8px">
+          <article class="col-4 card tilt"><div class="glare"></div>
+            <h3 style="margin:6px 0 6px">Lower Ingestion Cost</h3>
+            <p class="k" style="margin:0">
+              De-duplicate, enforce schemas, and add roll-up metadata so you ingest less noise and query less junk.
+            </p>
+            <ul style="margin:8px 0 0 18px">
+              <li>Stable fields → smaller indexes</li>
+              <li>Rollups & tags → faster queries</li>
+            </ul>
+          </article>
 
-    <article class="col-4 card tilt"><div class="glare"></div>
-      <h3 style="margin:6px 0 6px">Compliance Without Friction</h3>
-      <p class="k" style="margin:0">
-        PII rules at build-time and runtime. Violate a rule? We redact and flag—don’t drop the signal.
-      </p>
-      <ul style="margin:8px 0 0 18px">
-        <li>Versioned policies in CerbiShield</li>
-        <li>Audit history & RBAC out of the box</li>
-      </ul>
-    </article>
+          <article class="col-4 card tilt"><div class="glare"></div>
+            <h3 style="margin:6px 0 6px">Compliance Without Friction</h3>
+            <p class="k" style="margin:0">
+              PII rules at build-time and runtime. Violate a rule? We redact and flag—don’t drop the signal.
+            </p>
+            <ul style="margin:8px 0 0 18px">
+              <li>Versioned policies in CerbiShield</li>
+              <li>Audit history & RBAC out of the box</li>
+            </ul>
+          </article>
 
-    <article class="col-4 card tilt"><div class="glare"></div>
-      <h3 style="margin:6px 0 6px">Make Every Tool Better</h3>
-      <p class="k" style="margin:0">
-        We’re not a sink. We improve what you send to your sinks: cleaner data, stable shapes, richer context.
-      </p>
-      <ul style="margin:8px 0 0 18px">
-        <li>Fewer broken dashboards</li>
-        <li>ML-ready metadata for LLMs & models</li>
-      </ul>
-    </article>
-  </div>
+          <article class="col-4 card tilt"><div class="glare"></div>
+            <h3 style="margin:6px 0 6px">Make Every Tool Better</h3>
+            <p class="k" style="margin:0">
+              We’re not a sink. We improve what you send to your sinks: cleaner data, stable shapes, richer context.
+            </p>
+            <ul style="margin:8px 0 0 18px">
+              <li>Fewer broken dashboards</li>
+              <li>ML-ready metadata for LLMs & models</li>
+            </ul>
+          </article>
+        </div>
 
-  <div class="chip-row" style="margin-top:12px">
-    <span class="chip">Vendor-neutral</span>
-    <span class="chip">PII-aware by design</span>
-    <span class="chip">Build-time + Runtime</span>
-    <span class="chip">Governance you control</span>
-  </div>
-</div>
+        <div class="chip-row" style="margin-top:12px">
+          <span class="chip">Vendor-neutral</span>
+          <span class="chip">PII-aware by design</span>
+          <span class="chip">Build-time + Runtime</span>
+          <span class="chip">Governance you control</span>
+        </div>
+      </div>
 
       <div class="row" style="display:flex;gap:10px;justify-content:center;margin-top:14px">
         <a class="btn btn-primary" href="#governance">Explore Governance</a>
@@ -173,10 +183,24 @@
       </div>
     </section>
 
+    <!-- SIGNATURE ART — moved directly under hero, made full-bleed for impact -->
+    <section id="hero-art" class="section full-bleed">
+      <div class="glass tilt reveal" style="padding:18px">
+        <div class="glare" aria-hidden="true"></div>
+
+        <!-- Rotating pop-art panel -->
+        <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
+
+        <div class="img-cap">
+          <code>Cerbi</code>.
+        </div>
+      </div>
+    </section>
+
     <!-- QUICK START -->
     <section id="quickstart" class="container section">
       <div class="eyebrow">Get started</div>
-      <h2>⚡ Quick Start: Try CerbiStream in 60 Seconds</h2>
+      <h2>⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
       <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
 
       <div class="glass tilt reveal" style="padding:18px;position:relative">
@@ -210,83 +234,68 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </p>
     </section>
 
-<!-- SIGNATURE ART -->
-<section id="hero-art" class="container section">
-  <div class="glass tilt reveal" style="padding:18px">
-    <div class="glare" aria-hidden="true"></div>
-
-    <!-- Rotating pop-art panel -->
-    <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
-
-    <div class="img-cap">
-      <code>Cerbi</code>.
-    </div>
-  </div>
-</section>
-
     <!-- WHY -->
-<section id="why" class="container section">
-  
-  <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
-  <h2>Why CerbiStream Exists</h2>
-  <p class="lead">
-    As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.
-  </p>
+    <section id="why" class="container section">
+      <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
+      <h2>Why <span class="hl">CerbiStream</span> Exists</h2>
+      <p class="lead">
+        As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.
+      </p>
 
-  <div class="grid" style="margin-top:16px">
-    <!-- Problem symptoms -->
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">What goes wrong without guardrails</h3>
-      <ul>
-        <li><strong>Same idea, many names:</strong> <span class="kbd">userId</span>, <span class="kbd">user_id</span>, <span class="kbd">uid</span>, <span class="kbd">customerId</span>.</li>
-        <li><strong>Shape drift:</strong> GUIDs turn into ints; strings turn into blobs.</li>
-        <li><strong>PII leakage:</strong> emails/addresses sneak into prod logs.</li>
-        <li><strong>Missing metadata:</strong> timestamp, level, env, app, trace IDs aren’t consistent.</li>
-        <li><strong>Fragile dashboards:</strong> small field changes break alerts and reports.</li>
-        <li><strong>Cost bloat:</strong> noisy, duplicative fields can’t be rolled up or pruned.</li>
-      </ul>
-    </article>
+      <div class="grid" style="margin-top:16px">
+        <!-- Problem symptoms -->
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">What goes wrong without guardrails</h3>
+          <ul>
+            <li><strong>Same idea, many names:</strong> <span class="kbd">userId</span>, <span class="kbd">user_id</span>, <span class="kbd">uid</span>, <span class="kbd">customerId</span>.</li>
+            <li><strong>Shape drift:</strong> GUIDs turn into ints; strings turn into blobs.</li>
+            <li><strong>PII leakage:</strong> emails/addresses sneak into prod logs.</li>
+            <li><strong>Missing metadata:</strong> timestamp, level, env, app, trace IDs aren’t consistent.</li>
+            <li><strong>Fragile dashboards:</strong> small field changes break alerts and reports.</li>
+            <li><strong>Cost bloat:</strong> noisy, duplicative fields can’t be rolled up or pruned.</li>
+          </ul>
+        </article>
 
-    <!-- Approach -->
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Cerbi’s approach: logs as governed data products</h3>
-      <ul>
-        <li><strong>Contract (schema + rules):</strong> required/forbidden fields, types, enums, PII policy.</li>
-        <li><strong>Build-time enforcement:</strong> Roslyn analyzer catches violations before they ship.</li>
-        <li><strong>Runtime enforcement:</strong> validation, redaction, and <em>relax-mode</em> flagging in prod.</li>
-        <li><strong>Ownership & versioning:</strong> profiles live in CerbiShield with history, RBAC, rollbacks.</li>
-        <li><strong>Analytics-ready metadata:</strong> app, env, tenant, correlation, tags, and categories.</li>
-      </ul>
-    </article>
+        <!-- Approach -->
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Cerbi’s approach: logs as governed data products</h3>
+          <ul>
+            <li><strong>Contract (schema + rules):</strong> required/forbidden fields, types, enums, PII policy.</li>
+            <li><strong>Build-time enforcement:</strong> Roslyn analyzer catches violations before they ship.</li>
+            <li><strong>Runtime enforcement:</strong> validation, redaction, and <em>relax-mode</em> flagging in prod.</li>
+            <li><strong>Ownership & versioning:</strong> profiles live in CerbiShield with history, RBAC, rollbacks.</li>
+            <li><strong>Analytics-ready metadata:</strong> app, env, tenant, correlation, tags, and categories.</li>
+          </ul>
+        </article>
 
-    <!-- Audience value -->
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">What changes for your teams</h3>
-      <ul>
-        <li><strong>Developers:</strong> clear, fixable IDE/CI diagnostics when logging violates policy.</li>
-        <li><strong>Runtime:</strong> keep the event, redact/flag violations; don’t lose critical signals.</li>
-        <li><strong>Security/Compliance:</strong> versioned policies, RBAC, audit history in CerbiShield.</li>
-        <li><strong>Observability/SRE:</strong> stable fields → durable dashboards and alerts.</li>
-        <li><strong>Data/ML:</strong> consistent, PII-safe features suitable for modeling and LLMs.</li>
-      </ul>
-    </article>
-  </div>
+        <!-- Audience value -->
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">What changes for your teams</h3>
+          <ul>
+            <li><strong>Developers:</strong> clear, fixable IDE/CI diagnostics when logging violates policy.</li>
+            <li><strong>Runtime:</strong> keep the event, redact/flag violations; don’t lose critical signals.</li>
+            <li><strong>Security/Compliance:</strong> versioned policies, RBAC, audit history in CerbiShield.</li>
+            <li><strong>Observability/SRE:</strong> stable fields → durable dashboards and alerts.</li>
+            <li><strong>Data/ML:</strong> consistent, PII-safe features suitable for modeling and LLMs.</li>
+          </ul>
+        </article>
+      </div>
 
-  <!-- Before/After example -->
-  <div class="space"></div>
-  <div class="grid">
-    <div class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Before (inconsistent + risky)</h3>
-      <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+      <!-- Before/After example -->
+      <div class="space"></div>
+      <div class="grid">
+        <div class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Before (inconsistent + risky)</h3>
+          <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
   "user_id": "7",
   "email": "jane@ex.com",
   "when": "2025-08-27",
   "sev": "info"
 }</code></pre>
-    </div>
-    <div class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">After (governed profile)</h3>
-      <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+        </div>
+        <div class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">After (governed profile)</h3>
+          <pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
   "timestamp": "2025-08-27T14:33:12.120Z",
   "level": "Information",
   "user": { "id": "7" },
@@ -296,116 +305,116 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   "traceId": "a1b2c3",
   "tags": ["auth", "success"]
 }</code></pre>
-    </div>
-  </div>
+        </div>
+      </div>
 
-  <!-- Positioning -->
-  <div class="space"></div>
-  <article class="glass reveal" style="padding:16px">
-    <h3 style="margin-top:0">Not another logging tool</h3>
-    <p class="k">
-      Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks. We improve what you send to them:
-      cleaner data (lower cost), stable fields (fewer broken dashboards), and governed, PII-aware logs (easier audits).
-    </p>
-  </article>
+      <!-- Positioning -->
+      <div class="space"></div>
+      <article class="glass reveal" style="padding:16px">
+        <h3 style="margin-top:0">Not another logging tool</h3>
+        <p class="k">
+          Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks. We improve what you send to them:
+          cleaner data (lower cost), stable fields (fewer broken dashboards), and governed, PII-aware logs (easier audits).
+        </p>
+      </article>
 
-  <!-- Why now + outcomes -->
-  <div class="grid" style="margin-top:16px">
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Why this matters now</h3>
-      <p>Regulatory pressure is rising (privacy, breach disclosure, residency). Logs are security-relevant evidence. The only scalable path to velocity + compliance is structure and policy at the source.</p>
-    </article>
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Outcomes you can expect</h3>
-      <ul>
-        <li>Faster investigations via consistent correlation and fields</li>
-        <li>Lower ingestion and storage costs from normalized data</li>
-        <li>Audit-ready posture with versioned policy and redaction</li>
-        <li>ML-ready telemetry: clean, labeled features for modeling</li>
-      </ul>
-    </article>
-  </div>
-</section>
+      <!-- Why now + outcomes -->
+      <div class="grid" style="margin-top:16px">
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Why this matters now</h3>
+          <p>Regulatory pressure is rising (privacy, breach disclosure, residency). Logs are security-relevant evidence. The only scalable path to velocity + compliance is structure and policy at the source.</p>
+        </article>
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Outcomes you can expect</h3>
+          <ul>
+            <li>Faster investigations via consistent correlation and fields</li>
+            <li>Lower ingestion and storage costs from normalized data</li>
+            <li>Audit-ready posture with versioned policy and redaction</li>
+            <li>ML-ready telemetry: clean, labeled features for modeling</li>
+          </ul>
+        </article>
+      </div>
+    </section>
 
     <!-- ============ Positioning: Where Cerbi Fits ============ -->
-<section id="positioning" class="container section">
-  <h2>Where Cerbi Fits (and what we don’t do)</h2>
+    <section id="positioning" class="container section">
+      <h2>Where <span class="hl">Cerbi</span> Fits (and what we don’t do)</h2>
 
-  <article class="glass reveal" style="padding:16px">
-    <p style="margin:0 0 8px">
-      <strong>Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks.</strong> We sit <em>before</em> them—as the contract and enforcement layer that makes your logs <strong>clean, governed, and consistent</strong> before they touch any index, bucket, queue, or dashboard.
-    </p>
-    <p class="k" style="margin:0">
-      The result: <strong>lower cost</strong> (less noise, fewer duplicates), <strong>fewer broken dashboards</strong> (stable field names and types), and <strong>audit-ready telemetry</strong> (PII-aware policy, redaction, and versioned governance).
-    </p>
-  </article>
+      <article class="glass reveal" style="padding:16px">
+        <p style="margin:0 0 8px">
+          <strong>Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks.</strong> We sit <em>before</em> them—as the contract and enforcement layer that makes your logs <strong>clean, governed, and consistent</strong> before they touch any index, bucket, queue, or dashboard.
+        </p>
+        <p class="k" style="margin:0">
+          The result: <strong>lower cost</strong> (less noise, fewer duplicates), <strong>fewer broken dashboards</strong> (stable field names and types), and <strong>audit-ready telemetry</strong> (PII-aware policy, redaction, and versioned governance).
+        </p>
+      </article>
 
-  <div class="space"></div>
+      <div class="space"></div>
 
-  <div class="grid">
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">What Cerbi <em>is</em></h3>
-      <ul>
-        <li><strong>Contract + policy for logs</strong> (schemas, required/forbidden fields, types, enums, tags, PII policy).</li>
-        <li><strong>Build-time enforcement</strong> (Roslyn analyzer) that catches violations in IDE/CI.</li>
-        <li><strong>Runtime enforcement</strong> that validates, redacts, and <em>flags</em> violations—without dropping the event.</li>
-        <li><strong>Governance hub</strong> (CerbiShield) with RBAC, versioning, rollbacks, and audit history.</li>
-        <li><strong>Vendor-neutral</strong>: forward to Splunk/ELK/Datadog/OTel/file/cloud—no lock-in.</li>
-      </ul>
-    </article>
-
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">What Cerbi is <em>not</em></h3>
-      <ul>
-        <li>Not a log store, search UI, APM, or SIEM.</li>
-        <li>Not a sink/SaaS that forces migration.</li>
-        <li>Not a filter that drops logs—we <em>preserve</em> signal with redaction + violation metadata.</li>
-        <li>Not tied to a single framework—works with Serilog today; MEL/NLog next; native with CerbiStream.</li>
-      </ul>
-    </article>
-  </div>
-
-  <div class="space"></div>
-
-  <div class="grid">
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">How it integrates (before your sinks)</h3>
-      <ol>
-        <li><strong>Profiles in CerbiShield:</strong> Define schemas/rules; approve with RBAC & versioning.</li>
-        <li><strong>Build-time validation:</strong> IDE/CI diagnostics prevent bad patterns from shipping.</li>
-        <li><strong>Runtime validation:</strong> Redact/flag violations and attach violation metadata.</li>
-        <li><strong>Forward as usual:</strong> Cleaned events go to Splunk/ELK/Datadog/OTel/file/etc.</li>
-      </ol>
-      <pre class="kbd" style="margin:10px 0 0;white-space:pre-wrap"><code>App → Cerbi (policy + metadata) → your sinks (Splunk/ELK/Datadog/OTel/file/cloud)</code></pre>
-    </article>
-
-    <article class="col-6 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Why your existing tools get better</h3>
-      <ul>
-        <li><strong>Cleaner data → lower cost:</strong> fewer duplicates + less schema drift reduce ingestion and index churn.</li>
-        <li><strong>Stable fields → durable dashboards:</strong> names/types stop drifting, so alerts and charts don’t silently break.</li>
-        <li><strong>Governed PII → easier audits:</strong> redaction/forbidden policy with versioned evidence.</li>
-        <li><strong>Consistent metadata → faster triage:</strong> correlation IDs; app/env/tenant tagging across services.</li>
-      </ul>
-    </article>
-  </div>
-
-  <div class="space"></div>
-
-  <div class="grid">
-    <article class="col-12 glass reveal" style="padding:16px">
-      <h3 style="margin-top:0">Concrete example</h3>
       <div class="grid">
-        <div class="col-6">
-          <strong class="k">Before Cerbi (same “user” field, 4 shapes)</strong>
-          <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{"userId": 7}
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">What Cerbi <em>is</em></h3>
+          <ul>
+            <li><strong>Contract + policy for logs</strong> (schemas, required/forbidden fields, types, enums, tags, PII policy).</li>
+            <li><strong>Build-time enforcement</strong> (Roslyn analyzer) that catches violations in IDE/CI.</li>
+            <li><strong>Runtime enforcement</strong> that validates, redacts, and <em>flags</em> violations—without dropping the event.</li>
+            <li><strong>Governance hub</strong> (CerbiShield) with RBAC, versioning, rollbacks, and audit history.</li>
+            <li><strong>Vendor-neutral</strong>: forward to Splunk/ELK/Datadog/OTel/file/cloud—no lock-in.</li>
+          </ul>
+        </article>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">What Cerbi is <em>not</em></h3>
+          <ul>
+            <li>Not a log store, search UI, APM, or SIEM.</li>
+            <li>Not a sink/SaaS that forces migration.</li>
+            <li>Not a filter that drops logs—we <em>preserve</em> signal with redaction + violation metadata.</li>
+            <li>Not tied to a single framework—works with Serilog today; MEL/NLog next; native with CerbiStream.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="space"></div>
+
+      <div class="grid">
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">How it integrates (before your sinks)</h3>
+          <ol>
+            <li><strong>Profiles in CerbiShield:</strong> Define schemas/rules; approve with RBAC & versioning.</li>
+            <li><strong>Build-time validation:</strong> IDE/CI diagnostics prevent bad patterns from shipping.</li>
+            <li><strong>Runtime validation:</strong> Redact/flag violations and attach violation metadata.</li>
+            <li><strong>Forward as usual:</strong> Cleaned events go to Splunk/ELK/Datadog/OTel/file/etc.</li>
+          </ol>
+          <pre class="kbd" style="margin:10px 0 0;white-space:pre-wrap"><code>App → Cerbi (policy + metadata) → your sinks (Splunk/ELK/Datadog/OTel/file/cloud)</code></pre>
+        </article>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Why your existing tools get better</h3>
+          <ul>
+            <li><strong>Cleaner data → lower cost:</strong> fewer duplicates + less schema drift reduce ingestion and index churn.</li>
+            <li><strong>Stable fields → durable dashboards:</strong> names/types stop drifting, so alerts and charts don’t silently break.</li>
+            <li><strong>Governed PII → easier audits:</strong> redaction/forbidden policy with versioned evidence.</li>
+            <li><strong>Consistent metadata → faster triage:</strong> correlation IDs; app/env/tenant tagging across services.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="space"></div>
+
+      <div class="grid">
+        <article class="col-12 glass reveal" style="padding:16px">
+          <h3 style="margin-top:0">Concrete example</h3>
+          <div class="grid">
+            <div class="col-6">
+              <strong class="k">Before Cerbi (same “user” field, 4 shapes)</strong>
+              <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{"userId": 7}
 {"user_id": "7"}
 {"user": {"id": 7, "email": "jane@ex.com"}}
 {"uid": "007"}</code></pre>
-        </div>
-        <div class="col-6">
-          <strong class="k">With Cerbi (profile enforced)</strong>
-          <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{
+            </div>
+            <div class="col-6">
+              <strong class="k">With Cerbi (profile enforced)</strong>
+              <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{
   "timestamp":"2025-08-27T14:33:12.120Z",
   "level":"Information",
   "action":"UserLoggedIn",
@@ -415,59 +424,58 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   "traceId":"a1b2c3",
   "tags":["auth","success"]
 }</code></pre>
-          <p class="k" style="margin:8px 0 0">If an email appears, runtime redacts and sets <span class="kbd">violations:[{"field":"user.email","rule":"Forbidden","action":"Redacted"}]</span>. The event still ships—signal preserved, policy enforced.</p>
-        </div>
+              <p class="k" style="margin:8px 0 0">If an email appears, runtime redacts and sets <span class="kbd">violations:[{"field":"user.email","rule":"Forbidden","action":"Redacted"}]</span>. The event still ships—signal preserved, policy enforced.</p>
+            </div>
+          </div>
+        </article>
       </div>
-    </article>
-  </div>
 
-  <div class="space"></div>
+      <div class="space"></div>
 
-  <div class="grid">
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Who benefits</h3>
-      <ul>
-        <li><strong>Engineers:</strong> clear, fixable diagnostics; fewer on-call surprises.</li>
-        <li><strong>SRE/O11y:</strong> stable dashboards + alerts across releases.</li>
-        <li><strong>Security/Privacy:</strong> policy proof, RBAC, audit history.</li>
-        <li><strong>Data/ML:</strong> consistent features for modeling and LLMs.</li>
-        <li><strong>Finance:</strong> lower ingestion/storage + less waste.</li>
-      </ul>
-    </article>
+      <div class="grid">
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Who benefits</h3>
+          <ul>
+            <li><strong>Engineers:</strong> clear, fixable diagnostics; fewer on-call surprises.</li>
+            <li><strong>SRE/O11y:</strong> stable dashboards + alerts across releases.</li>
+            <li><strong>Security/Privacy:</strong> policy proof, RBAC, audit history.</li>
+            <li><strong>Data/ML:</strong> consistent features for modeling and LLMs.</li>
+            <li><strong>Finance:</strong> lower ingestion/storage + less waste.</li>
+          </ul>
+        </article>
 
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Migration path</h3>
-      <ul>
-        <li><strong>Keep your logger:</strong> Serilog plugin today; MEL/NLog adapters next.</li>
-        <li><strong>Adopt gradually:</strong> start with one profile (e.g., auth), expand per domain.</li>
-        <li><strong>Relax-mode first:</strong> flag/redact while teams fix; then tighten to block at build-time.</li>
-      </ul>
-    </article>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Migration path</h3>
+          <ul>
+            <li><strong>Keep your logger:</strong> Serilog plugin today; MEL/NLog adapters next.</li>
+            <li><strong>Adopt gradually:</strong> start with one profile (e.g., auth), expand per domain.</li>
+            <li><strong>Relax-mode first:</strong> flag/redact while teams fix; then tighten to block at build-time.</li>
+          </ul>
+        </article>
 
-    <article class="col-4 card tilt reveal"><div class="glare"></div>
-      <h3 style="margin-top:4px">Why this isn’t optional</h3>
-      <p>Privacy laws and breach rules increasingly treat logs as evidence and regulated data. Without structure and policy <em>at the source</em>, teams either slow down or accept risk. Cerbi lets you keep velocity <em>and</em> raise the bar on compliance.</p>
-    </article>
-  </div>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Why this isn’t optional</h3>
+          <p>Privacy laws and breach rules increasingly treat logs as evidence and regulated data. Without structure and policy <em>at the source</em>, teams either slow down or accept risk. Cerbi lets you keep velocity <em>and</em> raise the bar on compliance.</p>
+        </article>
+      </div>
 
-  <div class="space"></div>
+      <div class="space"></div>
 
-  <details class="glass reveal" style="padding:14px;border-radius:14px">
-    <summary><strong>FAQ</strong> — “Are you competing with our logging vendor?”</summary>
-    <ul style="margin-top:10px">
-      <li><strong>No.</strong> We don’t store or search logs; we make your logs <em>worth more</em> wherever they go.</li>
-      <li><strong>Costs usually drop</strong> after adding Cerbi: fewer duplicate fields and less schema drift reduce ingestion and index churn.</li>
-      <li><strong>Dashboards last longer:</strong> teams stop fixing charts every sprint due to field changes.</li>
-      <li><strong>Audit stories simplify:</strong> redaction + versioned policy = evidence you can hand to Risk/Legal.</li>
-    </ul>
-  </details>
-</section>
-
+      <details class="glass reveal" style="padding:14px;border-radius:14px">
+        <summary><strong>FAQ</strong> — “Are you competing with our logging vendor?”</summary>
+        <ul style="margin-top:10px">
+          <li><strong>No.</strong> We don’t store or search logs; we make your logs <em>worth more</em> wherever they go.</li>
+          <li><strong>Costs usually drop</strong> after adding Cerbi: fewer duplicate fields and less schema drift reduce ingestion and index churn.</li>
+          <li><strong>Dashboards last longer:</strong> teams stop fixing charts every sprint due to field changes.</li>
+          <li><strong>Audit stories simplify:</strong> redaction + versioned policy = evidence you can hand to Risk/Legal.</li>
+        </ul>
+      </details>
+    </section>
 
     <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
       <div class="eyebrow">What’s included</div>
-      <h2>The Cerbi Ecosystem</h2>
+      <h2>The <span class="hl">Cerbi</span> Ecosystem</h2>
       <p class="lead">A cohesive suite where each component addresses a critical aspect of enterprise logging.</p>
 
       <div class="glass" style="padding:8px 12px;overflow-x:auto">
@@ -520,7 +528,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <!-- GOVERNANCE -->
     <section id="governance" class="container section">
       <div class="eyebrow">Policy, then telemetry</div>
-      <h2>Governance That Meets Teams Where They Are</h2>
+      <h2><span class="hl">Governance</span> That Meets Teams Where They Are</h2>
       <p class="lead">Keep Serilog/NLog/MEL—add Cerbi governance today. Or go all-in with CerbiStream. Either way, the <strong>same governance profiles</strong> power build-time diagnostics and runtime enforcement.</p>
       <div class="grid">
         <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer flags violations in IDE/CI with precise, fix-friendly messages—before code ships.</p></div>
@@ -553,7 +561,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <!-- DASHBOARD SLIDER -->
     <section id="dashboards" class="container section">
       <div class="eyebrow">See it</div>
-      <h2>CerbiShield in Action</h2>
+      <h2><span class="hl">CerbiShield</span> in Action</h2>
       <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
 
       <div class="glass tilt reveal" style="padding:16px">
@@ -570,51 +578,51 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-<!-- ======================= PACKAGES ======================= -->
-<section id="packages" class="container section">
-  <h2>NuGet Packages & How They Fit</h2>
-  <p class="lead">
-    Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.
-  </p>
+    <!-- ======================= PACKAGES ======================= -->
+    <section id="packages" class="container section">
+      <h2>NuGet <span class="hl">Packages</span> & How They Fit</h2>
+      <p class="lead">
+        Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.
+      </p>
 
-  <!-- High-level graph -->
-  <div class="glass reveal" style="padding:16px">
-    <h3 style="margin:4px 0 10px">How packages relate</h3>
-    <pre class="kbd" style="white-space:pre-wrap;margin:0">
+      <!-- High-level graph -->
+      <div class="glass reveal" style="padding:16px">
+        <h3 style="margin:4px 0 10px">How packages relate</h3>
+        <pre class="kbd" style="white-space:pre-wrap;margin:0">
 Apps (Serilog / MEL / NLog / CerbiStream)
   ├─▶ Build-time:  CerbiStream.GovernanceAnalyzer  ·  Cerbi.Serilog.GovernanceAnalyzer
   ├─▶ Runtime:     Cerbi.MEL.Governance  →  Cerbi.Governance.Runtime  →  Cerbi.Governance.Core
   └─▶ Native logger: CerbiStream (structured, encrypted, governance-ready)
-    </pre>
-  </div>
-
-  <div class="space"></div>
-
-  <!-- Package cards -->
-  <div class="grid">
-
-    <!-- CerbiStream -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">CerbiStream</h3>
-      <p class="k" style="margin:0 0 10px">Structured, secure logger with governance-ready metadata.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
+        </pre>
       </div>
-      <ul>
-        <li><strong>What it is:</strong> modern .NET logger that emits consistent JSON with app/env/tenant/correlation.</li>
-        <li><strong>Security:</strong> optional AES/Base64 encryption + redaction helpers.</li>
-        <li><strong>Reliability:</strong> <span class="kbd">WithFileFallback()</span> keeps signal during outages.</li>
-        <li><strong>Governance-ready:</strong> first-class tags, categories, and stable field shapes.</li>
-      </ul>
-      <details class="glass" style="padding:12px;border-radius:12px">
-        <summary><strong>Install & sample</strong></summary>
-        <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream</code></pre>
-        <pre style="margin:8px 0 0;max-height:240px;overflow:auto"><code class="language-csharp">using CerbiStream;
+
+      <div class="space"></div>
+
+      <!-- Package cards -->
+      <div class="grid">
+
+        <!-- CerbiStream -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">CerbiStream</h3>
+          <p class="k" style="margin:0 0 10px">Structured, secure logger with governance-ready metadata.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>What it is:</strong> modern .NET logger that emits consistent JSON with app/env/tenant/correlation.</li>
+            <li><strong>Security:</strong> optional AES/Base64 encryption + redaction helpers.</li>
+            <li><strong>Reliability:</strong> <span class="kbd">WithFileFallback()</span> keeps signal during outages.</li>
+            <li><strong>Governance-ready:</strong> first-class tags, categories, and stable field shapes.</li>
+          </ul>
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install & sample</strong></summary>
+            <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream</code></pre>
+            <pre style="margin:8px 0 0;max-height:240px;overflow:auto"><code class="language-csharp">using CerbiStream;
 
 var logger = LoggerFactory.Create(b =>
 {
@@ -625,143 +633,142 @@ var logger = LoggerFactory.Create(b =>
 }).CreateLogger&lt;Program&gt;();
 
 logger.LogInformation("Order created {@order}", new { Id = 42, Amount = 99.00M });</code></pre>
-      </details>
-    </article>
+          </details>
+        </article>
 
-    <!-- Cerbi.MEL.Governance -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">Cerbi.MEL.Governance</h3>
-      <p class="k" style="margin:0 0 10px">Runtime governance for Microsoft.Extensions.Logging (MEL).</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
-      </div>
-      <ul>
-        <li><strong>Validates at runtime:</strong> required/forbidden fields, enums, types.</li>
-        <li><strong>Safer prod:</strong> redacts/flags violations (doesn’t drop events).</li>
-        <li><strong>Connects to Shield:</strong> reads versioned profiles; supports live reload.</li>
-      </ul>
-      <details class="glass" style="padding:12px;border-radius:12px">
-        <summary><strong>Install & wire-up</strong></summary>
-        <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.MEL.Governance</code></pre>
-        <pre style="margin:8px 0 0;max-height:220px;overflow:auto"><code class="language-csharp">builder.Logging.AddCerbiGovernance(o =>
+        <!-- Cerbi.MEL.Governance -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.MEL.Governance</h3>
+          <p class="k" style="margin:0 0 10px">Runtime governance for Microsoft.Extensions.Logging (MEL).</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.MEL.Governance/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.MEL.Governance?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.MEL.Governance?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Validates at runtime:</strong> required/forbidden fields, enums, types.</li>
+            <li><strong>Safer prod:</strong> redacts/flags violations (doesn’t drop events).</li>
+            <li><strong>Connects to Shield:</strong> reads versioned profiles; supports live reload.</li>
+          </ul>
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install & wire-up</strong></summary>
+            <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.MEL.Governance</code></pre>
+            <pre style="margin:8px 0 0;max-height:220px;overflow:auto"><code class="language-csharp">builder.Logging.AddCerbiGovernance(o =>
 {
   o.ProfilePath = "cerbi_governance.json";
   o.FileFallback = true;
 });</code></pre>
-      </details>
-    </article>
+          </details>
+        </article>
 
-    <!-- CerbiStream.GovernanceAnalyzer -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">CerbiStream.GovernanceAnalyzer</h3>
-      <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance at build-time for CerbiStream apps.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
+        <!-- CerbiStream.GovernanceAnalyzer -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">CerbiStream.GovernanceAnalyzer</h3>
+          <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance at build-time for CerbiStream apps.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Catches violations early:</strong> IDE & CI diagnostics with precise messages.</li>
+            <li><strong>Policy-aware:</strong> reads CerbiShield profiles and versions.</li>
+            <li><strong>Great for large teams:</strong> shift-left enforcement reduces prod churn.</li>
+          </ul>
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install</strong></summary>
+            <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream.GovernanceAnalyzer</code></pre>
+          </details>
+        </article>
+
+        <!-- Cerbi.Serilog.GovernanceAnalyzer -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Serilog.GovernanceAnalyzer</h3>
+          <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance rules for Serilog projects.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Applies Cerbi policy</strong> to Serilog usage during build.</li>
+            <li><strong>Keeps field names/types stable</strong> across releases.</li>
+            <li><strong>Pairs well with</strong> CerbiShield profile reviews & approvals.</li>
+          </ul>
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install</strong></summary>
+            <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
+          </details>
+        </article>
+
+        <!-- Cerbi.Governance.Runtime -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
+          <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
+            <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
+            <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
+          </ul>
+        </article>
+
+        <!-- Cerbi.Governance.Core -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
+          <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
+            <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
+            <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
+          </ul>
+        </article>
+
       </div>
-      <ul>
-        <li><strong>Catches violations early:</strong> IDE & CI diagnostics with precise messages.</li>
-        <li><strong>Policy-aware:</strong> reads CerbiShield profiles and versions.</li>
-        <li><strong>Great for large teams:</strong> shift-left enforcement reduces prod churn.</li>
-      </ul>
-      <details class="glass" style="padding:12px;border-radius:12px">
-        <summary><strong>Install</strong></summary>
-        <pre style="margin:8px 0 0"><code>dotnet add package CerbiStream.GovernanceAnalyzer</code></pre>
-      </details>
-    </article>
 
-    <!-- Cerbi.Serilog.GovernanceAnalyzer -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">Cerbi.Serilog.GovernanceAnalyzer</h3>
-      <p class="k" style="margin:0 0 10px">Roslyn analyzer that enforces governance rules for Serilog projects.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
-      </div>
-      <ul>
-        <li><strong>Applies Cerbi policy</strong> to Serilog usage during build.</li>
-        <li><strong>Keeps field names/types stable</strong> across releases.</li>
-        <li><strong>Pairs well with</strong> CerbiShield profile reviews & approvals.</li>
-      </ul>
-      <details class="glass" style="padding:12px;border-radius:12px">
-        <summary><strong>Install</strong></summary>
-        <pre style="margin:8px 0 0"><code>dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
-      </details>
-    </article>
+      <div class="space"></div>
 
-    <!-- Cerbi.Governance.Runtime -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
-      <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
-      </div>
-      <ul>
-        <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
-        <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
-        <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
-      </ul>
-    </article>
-
-    <!-- Cerbi.Governance.Core -->
-    <article class="col-6 glass tilt reveal" style="padding:16px">
-      <div class="glare"></div>
-      <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
-      <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-        <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener">
-          <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
-        </a>
-        <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
-        <span class="pill ok">.NET 8.0+</span>
-      </div>
-      <ul>
-        <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
-        <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
-        <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
-      </ul>
-    </article>
-
-  </div>
-
-  <div class="space"></div>
-
-  <!-- Quick copy: all installs -->
-  <div class="glass reveal" style="padding:16px">
-    <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
-    <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
+      <!-- Quick copy: all installs -->
+      <div class="glass reveal" style="padding:16px">
+        <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
+        <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
 dotnet add package CerbiStream.GovernanceAnalyzer
 dotnet add package Cerbi.MEL.Governance
 dotnet add package Cerbi.Governance.Core
 dotnet add package Cerbi.Governance.Runtime
 dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
-    <button class="btn" data-copy="#pkgInstall">Copy</button>
-  </div>
-</section>
-
+        <button class="btn" data-copy="#pkgInstall">Copy</button>
+      </div>
+    </section>
 
     <!-- REPOSITORIES -->
     <section id="repos" class="container section">
       <div class="eyebrow">Open source</div>
-      <h2>📦 Cerbi Repositories</h2>
+      <h2>📦 <span class="hl">Cerbi</span> Repositories</h2>
       <p class="lead">Open-source packages with a shared governance core. Pick what you need; stay portable.</p>
 
       <div class="grid">
@@ -948,109 +955,108 @@ dotnet add package Cerbi.Governance.Runtime
       </div>
     </section>
 
-<!-- ===================== COMPARE ===================== -->
-<section id="compare" class="container section">
-  <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHAT YOU GET</p>
-  <h2>Logger Governance Comparison</h2>
+    <!-- ===================== COMPARE ===================== -->
+    <section id="compare" class="container section">
+      <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHAT YOU GET</p>
+      <h2>Logger <span class="hl">Governance</span> Comparison</h2>
 
-  <!-- Filter chips (same tags your JS uses) -->
-  <div class="filters" role="toolbar" aria-label="Filter comparison">
-    <button class="filter active" data-tag="all">All</button>
-    <button class="filter" data-tag="build">Build-time</button>
-    <button class="filter" data-tag="runtime">Runtime</button>
-    <button class="filter" data-tag="encryption">Encryption</button>
-    <button class="filter" data-tag="routing">Routing</button>
-  </div>
+      <!-- Filter chips (same tags your JS uses) -->
+      <div class="filters" role="toolbar" aria-label="Filter comparison">
+        <button class="filter active" data-tag="all">All</button>
+        <button class="filter" data-tag="build">Build-time</button>
+        <button class="filter" data-tag="runtime">Runtime</button>
+        <button class="filter" data-tag="encryption">Encryption</button>
+        <button class="filter" data-tag="routing">Routing</button>
+      </div>
 
-  <div class="glass" style="padding:8px 12px;overflow-x:auto">
-    <table aria-label="Logger comparison table" id="compareTable">
-      <thead>
-        <tr>
-          <th>Capability</th>
-          <th>CerbiStream (Modern Default)</th>
-          <th>MEL + Governance (Available Now)</th>
-          <th>Serilog + Governance Analyzer (Build-time)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-tags="build">
-          <td>Build-Time Governance Enforcement</td>
-          <td>✅ Roslyn Analyzer integrated <span class="kbd">CerbiStream.GovernanceAnalyzer</span></td>
-          <td>❌ Not applicable (runtime package)</td>
-          <td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td>
-        </tr>
+      <div class="glass" style="padding:8px 12px;overflow-x:auto">
+        <table aria-label="Logger comparison table" id="compareTable">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>CerbiStream (Modern Default)</th>
+              <th>MEL + Governance (Available Now)</th>
+              <th>Serilog + Governance Analyzer (Build-time)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-tags="build">
+              <td>Build-Time Governance Enforcement</td>
+              <td>✅ Roslyn Analyzer integrated <span class="kbd">CerbiStream.GovernanceAnalyzer</span></td>
+              <td>❌ Not applicable (runtime package)</td>
+              <td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td>
+            </tr>
 
-        <tr data-tags="runtime">
-          <td>Runtime Governance Enforcement</td>
-          <td>✅ Built-in runtime validators</td>
-          <td>✅ Via <span class="kbd">Cerbi.MEL.Governance</span></td>
-          <td>⚠️ Build-time only (no runtime validator)</td>
-        </tr>
+            <tr data-tags="runtime">
+              <td>Runtime Governance Enforcement</td>
+              <td>✅ Built-in runtime validators</td>
+              <td>✅ Via <span class="kbd">Cerbi.MEL.Governance</span></td>
+              <td>⚠️ Build-time only (no runtime validator)</td>
+            </tr>
 
-        <tr data-tags="encryption">
-          <td>Encryption Support (AES, Base64)</td>
-          <td>✅ Built-in</td>
-          <td>❌ Not included (use app/transport)</td>
-          <td>❌ Not included</td>
-        </tr>
+            <tr data-tags="encryption">
+              <td>Encryption Support (AES, Base64)</td>
+              <td>✅ Built-in</td>
+              <td>❌ Not included (use app/transport)</td>
+              <td>❌ Not included</td>
+            </tr>
 
-        <tr data-tags="routing">
-          <td>File Fallback Logging</td>
-          <td>✅ <span class="kbd">WithFileFallback()</span></td>
-          <td>✅ Supported via your MEL providers/sinks</td>
-          <td>✅ Via <span class="kbd">Serilog.Sinks.File</span></td>
-        </tr>
+            <tr data-tags="routing">
+              <td>File Fallback Logging</td>
+              <td>✅ <span class="kbd">WithFileFallback()</span></td>
+              <td>✅ Supported via your MEL providers/sinks</td>
+              <td>✅ Via <span class="kbd">Serilog.Sinks.File</span></td>
+            </tr>
 
-        <tr data-tags="routing">
-          <td>Telemetry Routing &amp; Enrichment</td>
-          <td>✅ Built-in (App Insights, OTel)</td>
-          <td>✅ Supported via MEL providers &amp; enrichers</td>
-          <td>✅ Supported via Serilog sinks &amp; enrichers</td>
-        </tr>
+            <tr data-tags="routing">
+              <td>Telemetry Routing &amp; Enrichment</td>
+              <td>✅ Built-in (App Insights, OTel)</td>
+              <td>✅ Supported via MEL providers &amp; enrichers</td>
+              <td>✅ Supported via Serilog sinks &amp; enrichers</td>
+            </tr>
 
-        <tr data-tags="routing">
-          <td>ML / CerbIQ Compatibility</td>
-          <td>✅ Schema-aligned automatically</td>
-          <td>✅ Requires matching metadata (CerbiShield assists)</td>
-          <td>✅ Requires matching metadata (CerbiShield assists)</td>
-        </tr>
+            <tr data-tags="routing">
+              <td>ML / CerbIQ Compatibility</td>
+              <td>✅ Schema-aligned automatically</td>
+              <td>✅ Requires matching metadata (CerbiShield assists)</td>
+              <td>✅ Requires matching metadata (CerbiShield assists)</td>
+            </tr>
 
-        <tr data-tags="build runtime">
-          <td>Governance Profile Reloading</td>
-          <td>✅ Supported</td>
-          <td>✅ Supported</td>
-          <td>✅ Supported</td>
-        </tr>
+            <tr data-tags="build runtime">
+              <td>Governance Profile Reloading</td>
+              <td>✅ Supported</td>
+              <td>✅ Supported</td>
+              <td>✅ Supported</td>
+            </tr>
 
-        <tr data-tags="build runtime">
-          <td>Custom Rule Plugins</td>
-          <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
-          <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
-          <td>⚠️ Analyzer-only (runtime plugins not applicable)</td>
-        </tr>
+            <tr data-tags="build runtime">
+              <td>Custom Rule Plugins</td>
+              <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
+              <td>✅ Via <span class="kbd">ICustomGovernancePlugin</span></td>
+              <td>⚠️ Analyzer-only (runtime plugins not applicable)</td>
+            </tr>
 
-        <tr data-tags="routing">
-          <td>App Rollup / Grouping Support</td>
-          <td>✅ Built-in</td>
-          <td>⚠️ External design needed</td>
-          <td>⚠️ External design needed</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+            <tr data-tags="routing">
+              <td>App Rollup / Grouping Support</td>
+              <td>✅ Built-in</td>
+              <td>⚠️ External design needed</td>
+              <td>⚠️ External design needed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <p class="k" style="margin-top:10px">
-    <strong>Notes:</strong> CerbiStream ships with both <em>build-time</em> and <em>runtime</em> safeguards. If your apps use Microsoft.Extensions.Logging, add
-    <span class="kbd">Cerbi.MEL.Governance</span> for runtime validation today. Serilog projects are covered at build-time via
-    <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span>; runtime validation there is on the roadmap.
-  </p>
-</section>
-
+      <p class="k" style="margin-top:10px">
+        <strong>Notes:</strong> CerbiStream ships with both <em>build-time</em> and <em>runtime</em> safeguards. If your apps use Microsoft.Extensions.Logging, add
+        <span class="kbd">Cerbi.MEL.Governance</span> for runtime validation today. Serilog projects are covered at build-time via
+        <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span>; runtime validation there is on the roadmap.
+      </p>
+    </section>
 
     <!-- ARCHITECTURE -->
     <section id="architecture" class="container section">
       <div class="eyebrow">How it flows</div>
-      <h2>Architecture & Flow</h2>
+      <h2><span class="hl">Architecture</span> & Flow</h2>
       <div class="grid">
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
@@ -1080,7 +1086,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     <!-- CONTACT -->
     <section id="contact" class="container section">
       <div class="eyebrow">Let’s talk</div>
-      <h2>Get in Touch</h2>
+      <h2>Get in <span class="hl">Touch</span></h2>
       <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
 
       <div class="glass tilt" style="padding:16px">
@@ -1223,7 +1229,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     });
   }
 })();
-</script>
+  </script>
 
 </body>
 </html>
