@@ -491,3 +491,52 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 /* Keep hero heading crisp */
 [data-theme="light"] .hero h1{ color: var(--text); text-shadow: none; }
 
+/* --- Dark mode: make the top ribbon pop --- */
+[data-theme="dark"] .ribbon{
+  position: relative;            /* for pseudo-elements below */
+  z-index: 70;
+  background:
+    linear-gradient(90deg,
+      rgba(255,77,0,.16) 0%,
+      rgba(255,138,0,.12) 22%,
+      rgba(96,140,255,.18) 60%,
+      rgba(62,110,220,.16) 100%),
+    rgba(8,12,20,.72);
+  border-bottom: 1px solid rgba(255,77,0,.32);
+  box-shadow:
+    0 8px 28px rgba(0,0,0,.35),
+    inset 0 -1px 0 rgba(255,77,0,.18);
+}
+
+[data-theme="dark"] .ribbon .container{
+  color: #eaf2ff;
+  text-shadow: 0 0 10px rgba(100,160,255,.25);
+}
+
+/* Amp up the little ⌘K pills on the ribbon */
+[data-theme="dark"] .ribbon .kbd{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.28);
+  box-shadow:
+    0 0 0 2px rgba(255,77,0,.18) inset,
+    0 0 14px rgba(255,77,0,.12);
+}
+
+/* Subtle animated highlight line */
+[data-theme="dark"] .ribbon::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:-1px; height:2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:.7; filter: blur(.4px);
+}
+
+/* Soft spotlight glow across the banner */
+[data-theme="dark"] .ribbon::after{
+  content:"";
+  position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(620px 140px at 60% 50%, rgba(255,77,0,.10), transparent 60%);
+  opacity:.55;
+}
+
+
