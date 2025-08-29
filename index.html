@@ -158,16 +158,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </p>
     </section>
 
-    <!-- SIGNATURE ART -->
-    <section id="hero-art" class="container section">
-      <div class="eyebrow">Signature art</div>
-      <h2>Shield • Tiles • Data flow</h2>
-      <div class="glass tilt reveal" style="padding:18px">
-        <div class="glare" aria-hidden="true"></div>
-        <div class="img-frame sig-art" role="img" aria-label="Cerbi signature artwork: shield + tiles + data flow"></div>
-        <div class="img-cap">A simple metaphor: structure + safety + motion.</div>
-      </div>
-    </section>
+<!-- SIGNATURE ART -->
+<section id="hero-art" class="container section">
+  <div class="glass tilt reveal" style="padding:18px">
+    <div class="glare" aria-hidden="true"></div>
+
+    <!-- Rotating pop-art panel -->
+    <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
+
+    <div class="img-cap">
+      Signature art — pop-art panels fade every 6s. Add more files to <code>assets/popart/</code>.
+    </div>
+  </div>
+</section>
 
     <!-- WHY -->
 <section id="why" class="container section">
@@ -1075,5 +1078,100 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <!-- Scripts -->
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
+
+  <script>
+/* Cerbi pop-art rotator v2
+   - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
+   - Randomizes order & starting slide
+   - Crossfade + random motion per slide
+*/
+(function(){
+  const MAX = 50;
+  const DURATION = 6000; // ms per slide
+  const rot = document.getElementById('sigRotator');
+  if (!rot) return;
+
+  const variants = [
+    'sigZoom', 'sigPanLeft', 'sigPanRight', 'sigTiltIn', 'sigDriftUp', 'sigDriftDown'
+  ];
+
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+  // Fisher-Yates shuffle (stable)
+  function shuffle(a){
+    for (let i=a.length-1; i>0; i--){
+      const j = Math.floor(Math.random() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const candidates = [];
+  let probes = 0, found = [];
+
+  function finalize(){
+    if (!found.length){
+      rot.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--muted)">Drop images into <code>assets/popart/</code>: <em>popart-01.png</em>…</div>';
+      return;
+    }
+
+    // Randomize order and start index
+    found = shuffle(found);
+    const startIndex = Math.floor(Math.random() * found.length);
+
+    // Build DOM
+    const els = found.map((src,i)=>{
+      const img = new Image();
+      img.decoding = 'async';
+      img.alt = 'Cerbi pop-art panel ' + (i+1);
+      img.src = src;
+      rot.appendChild(img);
+      return img;
+    });
+
+    let idx = startIndex;
+    let timer = null;
+
+    function applyMotion(el){
+      // re-apply animation so it restarts every time the slide shows
+      const name = pick(variants);
+      const secs = (DURATION/1000).toFixed(2) + 's';
+      el.style.animation = 'none';
+      // ensure style flush before applying animation
+      requestAnimationFrame(()=>{
+        el.style.animation = `${name} ${secs} ease-in-out both`;
+      });
+    }
+
+    function show(n){
+      els.forEach((el, j)=>{
+        const on = (j === n);
+        el.classList.toggle('show', on);
+        if (on) applyMotion(el);
+      });
+    }
+
+    show(idx);
+    timer = setInterval(()=>{
+      idx = (idx + 1) % els.length;
+      show(idx);
+    }, DURATION);
+  }
+
+  // Preload/probe files (works on GitHub Pages)
+  for (let i=1; i<=MAX; i++){
+    const n = String(i).padStart(2,'0');
+    ['png','jpg','jpeg','webp'].forEach(ext=>{
+      const url = `assets/popart/popart-${n}.${ext}`;
+      const probe = new Image();
+      probe.onload  = ()=>{ found.push(url); if(++probes===MAX*4) finalize(); };
+      probe.onerror = ()=>{ if(++probes===MAX*4) finalize(); };
+      probe.src = url + `?cb=${Date.now()}`; // bust cache for first load after upload
+      candidates.push(url);
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
