@@ -455,3 +455,39 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 [data-theme="light"] .tiles { opacity: .12; }
 [data-theme="light"] .sky   { opacity: .10; }
 
+/* --- Light theme: background + hero tuning (final pass) --- */
+[data-theme="light"]{
+  /* swap the page gradient tokens used by <html> */
+  --bg-start: #ffffff;
+  --bg-end:   #f6f8fc;
+
+  /* lighter tile density on light */
+  --tile-opacity: .04;
+}
+
+/* Hero background/grid should be subtle on light */
+[data-theme="light"] .hero .hero-bg{
+  opacity: .24;                /* down from .55 */
+  filter: blur(.5px) saturate(1.05);
+}
+
+/* The space veil is almost off in light and no blend tricks */
+[data-theme="light"] .veil{
+  opacity: .06;                /* was .6/.15 earlier */
+  mix-blend-mode: normal;
+  filter: none;
+}
+
+/* Starfield even subtler on light */
+[data-theme="light"] .sky{ opacity: .06; }
+[data-theme="light"] .tiles{ opacity: .08; }
+
+/* Image frames on light should look like cards, not dark panels */
+[data-theme="light"] .img-frame{
+  border-color: var(--glass-border);
+  background: radial-gradient(120% 100% at 100% 0%, rgba(16,24,40,.06), transparent 60%), #fff;
+}
+
+/* Keep hero heading crisp */
+[data-theme="light"] .hero h1{ color: var(--text); text-shadow: none; }
+
