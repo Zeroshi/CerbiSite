@@ -9,13 +9,17 @@ const setTheme = t => {
 };
 
 /* ===== Sticky progress ===== */
-const progressBar = qs('#progress');
-const onScroll = () => {
-  const h = document.documentElement;
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
-  progressBar.style.width = (scrolled * 100).toFixed(2) + '%';
-};
-window.addEventListener('scroll', onScroll, {passive:true});
+(() => {
+  const progressBar = qs('#progress');
+  if (!progressBar) return;
+  const onScroll = () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    progressBar.style.width = (scrolled * 100).toFixed(2) + '%';
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
 
 /* ===== Theme toggle (persisted) ===== */
 (() => {
@@ -34,11 +38,14 @@ qs('#navToggle')?.addEventListener('click', () => {
   qs('#navToggle').setAttribute('aria-expanded', String(open));
 });
 
-/* ===== Command palette (demo) ===== */
+/* ===== Command palette (optional demo) ===== */
 (() => {
   const overlay = qs('#cmdkOverlay');
   const input = qs('#cmdkInput');
   const list = qs('#cmdkList');
+  const trig = qs('#cmdBtn');
+  if (!overlay || !input || !list || !trig) return;
+
   const items = [
     {label:'Why', href:'#why'},
     {label:'Quick Start', href:'#quickstart'},
@@ -51,20 +58,35 @@ qs('#navToggle')?.addEventListener('click', () => {
     {label:'Architecture', href:'#architecture'},
     {label:'Contact', href:'#contact'},
   ];
-  list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
+
+  const render = (rows) => {
+    list.innerHTML = rows.map(i=>`<div class="item" data-href="${i.href}"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
+  };
+  render(items);
+
   list.addEventListener('click', e=>{
     const item = e.target.closest('.item'); if(!item) return;
-    location.hash = item.lastChild.textContent.trim();
+    const dest = item.getAttribute('data-href') || item.lastChild?.textContent?.trim();
+    if (dest) location.hash = dest;
     overlay.classList.remove('open');
   });
-  const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); };
+
+  const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); render(items); };
   const close = ()=>overlay.classList.remove('open');
-  qs('#cmdBtn')?.addEventListener('click', open);
+
+  trig.addEventListener('click', open);
   window.addEventListener('keydown', e=>{
     if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k') { e.preventDefault(); open(); }
     if (e.key==='Escape') close();
   });
   overlay.addEventListener('click', e=>{ if(e.target===overlay) close(); });
+
+  input.addEventListener('input', ()=>{
+    const q = input.value.trim().toLowerCase();
+    if (!q) return render(items);
+    const filtered = items.filter(i=>i.label.toLowerCase().includes(q) || i.href.toLowerCase().includes(q));
+    render(filtered);
+  });
 })();
 
 /* ===== Copy buttons ===== */
@@ -74,16 +96,20 @@ qsa('[data-copy]').forEach(btn=>{
     if (!el) return;
     const text = el.innerText || el.textContent || '';
     navigator.clipboard.writeText(text);
+    const old = btn.textContent;
     btn.textContent = 'Copied!';
-    setTimeout(()=>btn.textContent='Copy', 1200);
+    setTimeout(()=>btn.textContent = old || 'Copy', 1200);
   });
 });
 
 /* ===== Reveal on scroll ===== */
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:.12});
-qsa('.reveal').forEach(el=>obs.observe(el));
+(() => {
+  const els = qsa('.reveal'); if (!els.length) return;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:.12});
+  els.forEach(el=>obs.observe(el));
+})();
 
 /* ===== Spotlight follow ===== */
 document.addEventListener('pointermove', e=>{
@@ -94,7 +120,7 @@ document.addEventListener('pointermove', e=>{
 /* ===== Random bottom illustration loader ===== */
 (() => {
   const el = qs('#bg-illustration'); if (!el) return;
-  const MAX = 50;         // name as background1.png ... background50.png
+  const MAX = 50;         // expects assets/background/background1.png ... background50.png
   const pick = 1 + Math.floor(Math.random()*MAX);
   const url = `assets/background/background${pick}.png`;
   const img = new Image();
@@ -102,7 +128,7 @@ document.addEventListener('pointermove', e=>{
     el.style.setProperty('--bg-illustration', `url("${url}")`);
     el.classList.add('show');
   };
-  img.onerror = () => { /* silently ignore when file absent */ };
+  img.onerror = () => { /* silently ignore */ };
   img.src = url;
 })();
 
@@ -123,8 +149,8 @@ document.addEventListener('pointermove', e=>{
     idx = i;
   }
   function next(){ show((idx+1)%slides.length); }
-  function start(){ timer = setInterval(next, 5200); }
-  function stop(){ clearInterval(timer); }
+  function start(){ stop(); timer = setInterval(next, 5200); }
+  function stop(){ if (timer) clearInterval(timer); }
 
   dots.forEach((d,i)=>d.addEventListener('click', ()=>{ stop(); show(i); start(); }));
   slider.addEventListener('mouseenter', stop);
@@ -150,7 +176,7 @@ document.addEventListener('pointermove', e=>{
   });
 })();
 
-/* ===== Perf chart ===== */
+/* ===== Perf chart (Chart.js) ===== */
 (() => {
   const el = qs('#perfChart'); if (!el || !window.Chart) return;
   const styles = getComputedStyle(document.documentElement);
@@ -220,8 +246,8 @@ document.addEventListener('pointermove', e=>{
 /* ===== Year ===== */
 (() => { const y = qs('#year'); if (y) y.textContent = new Date().getFullYear(); })();
 
-<script>
-(function(){
+/* ===== Floating Contact FAB: hide when contact section visible ===== */
+(() => {
   const fab = document.querySelector('.contact-fab');
   const contact = document.querySelector('#contact');
   if (!fab || !contact || !('IntersectionObserver' in window)) return;
@@ -237,6 +263,74 @@ document.addEventListener('pointermove', e=>{
 
   io.observe(contact);
 })();
-</script>
 
+/* ===== Cerbi pop-art rotator v2 =====
+   - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
+   - Randomizes order & starting slide
+   - Crossfade + random motion per slide
+*/
+(() => {
+  const MAX = 50;
+  const DURATION = 6000; // ms per slide
+  const rot = document.getElementById('sigRotator');
+  if (!rot) return;
 
+  const variants = ['sigZoom','sigPanLeft','sigPanRight','sigTiltIn','sigDriftUp','sigDriftDown'];
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+  // Fisher-Yates shuffle
+  const shuffle = a => { for (let i=a.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+  let found = [];
+  let probes = 0;
+
+  function finalize(){
+    if (!found.length){
+      rot.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--muted)">Drop images into <code>assets/popart/</code> like <em>popart-01.png</em>…</div>';
+      return;
+    }
+    found = shuffle(found);
+    const startIndex = Math.floor(Math.random() * found.length);
+
+    const els = found.map((src,i)=>{
+      const img = new Image();
+      img.decoding = 'async';
+      img.alt = 'Cerbi pop-art panel ' + (i+1);
+      img.src = src;
+      rot.appendChild(img);
+      return img;
+    });
+
+    let idx = startIndex;
+    let timer = null;
+
+    function applyMotion(el){
+      const name = pick(variants);
+      const secs = (DURATION/1000).toFixed(2) + 's';
+      el.style.animation = 'none';
+      requestAnimationFrame(()=>{ el.style.animation = `${name} ${secs} ease-in-out both`; });
+    }
+    function show(n){
+      els.forEach((el,j)=>{
+        const on = (j===n);
+        el.classList.toggle('show', on);
+        if (on) applyMotion(el);
+      });
+    }
+
+    show(idx);
+    timer = setInterval(()=>{ idx = (idx+1)%els.length; show(idx); }, DURATION);
+  }
+
+  // Probe files (png/jpg/jpeg/webp)
+  for (let i=1; i<=MAX; i++){
+    const n = String(i).padStart(2,'0');
+    ['png','jpg','jpeg','webp'].forEach(ext=>{
+      const url = `assets/popart/popart-${n}.${ext}`;
+      const probe = new Image();
+      probe.onload  = ()=>{ found.push(url); if(++probes===MAX*4) finalize(); };
+      probe.onerror = ()=>{ if(++probes===MAX*4) finalize(); };
+      probe.src = url + `?cb=${Date.now()}`; // bust cache first load
+    });
+  }
+})();
