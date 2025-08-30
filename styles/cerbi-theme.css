@@ -546,4 +546,8 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   margin-top: 16px;
 }
 
+/* Why slider should flow normally */
+#whySlider .slide{ position:relative; opacity:0; transition:opacity .45s var(--easing); }
+#whySlider .slide.active{ opacity:1; }
+#whySlider .dots{ position:static; margin-top:10px; } /* take space for dots */
 
