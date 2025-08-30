@@ -1143,33 +1143,37 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 
 
   <!-- Why value slider (new; mirrors your dash slider pattern) -->
-  <script>
+<script>
 (() => {
   const slider = document.querySelector('#whySlider');
   if (!slider) return;
-  const slides = [...slider.querySelectorAll('.slide')];
-  const dotsWrap = slider.querySelector('.dots');
-  let idx = 0, timer;
 
-  dotsWrap.innerHTML = slides.map((_,i)=>`<button aria-label="Go to slide ${i+1}"></button>`).join('');
-  const dots = [...dotsWrap.querySelectorAll('button')];
+  const slides  = [...slider.querySelectorAll('.slide')];
+  const dotsBox = slider.querySelector('.dots');
+  const ROTATE_MS = 5200;
 
-  function show(i){
-    slides.forEach((s,j)=>s.classList.toggle('active', j===i));
-    dots.forEach((d,j)=>d.classList.toggle('active', j===i));
-    idx = i;
+  dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Focus item ${i+1}"></button>`).join('');
+  const dots = [...dotsBox.querySelectorAll('button')];
+
+  let i = 0, t;
+  function highlight(n){
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === n));
+    dots.forEach((d, idx)   => d.classList.toggle('active', idx === n));
+    i = n;
   }
-  function next(){ show((idx+1)%slides.length); }
-  function start(){ stop(); timer = setInterval(next, 5200); }
-  function stop(){ if (timer) clearInterval(timer); }
+  function next(){ highlight((i + 1) % slides.length); }
+  function start(){ stop(); t = setInterval(next, ROTATE_MS); }
+  function stop(){ if (t) clearInterval(t); }
 
-  dots.forEach((d,i)=>d.addEventListener('click', ()=>{ stop(); show(i); start(); }));
+  dots.forEach((d, idx) => d.addEventListener('click', () => { stop(); highlight(idx); start(); }));
   slider.addEventListener('mouseenter', stop);
   slider.addEventListener('mouseleave', start);
 
-  show(0); start();
+  highlight(0);
+  start();
 })();
-  </script>
+</script>
+
 
 </body>
 </html>
