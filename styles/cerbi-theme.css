@@ -551,3 +551,44 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 #whySlider .slide.active{ opacity:1; }
 #whySlider .dots{ position:static; margin-top:10px; } /* take space for dots */
 
+
+/* WHY: compact 2×2 grid with rotating highlight */
+#whySlider{ 
+  display:grid; 
+  grid-template-columns:repeat(2, minmax(0,1fr)); 
+  gap:12px; 
+  align-items:stretch;
+}
+
+/* override the generic dash-slider rules just for this block */
+#whySlider .slide{
+  position:relative;           /* participate in layout (not absolute) */
+  opacity:1;                   /* keep all visible */
+  padding:12px 14px;
+  border:1px solid rgba(127,148,179,.18);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));
+  transition:border-color .2s var(--easing), box-shadow .2s var(--easing), background .2s var(--easing);
+  min-height:110px;
+}
+#whySlider .slide h3{ margin:0 0 6px; font-size:clamp(16px,2vw,18px) }
+#whySlider .slide p.k{ margin:0 0 6px; font-size:14px; opacity:.92 }
+#whySlider .slide ul{ margin:6px 0 0 18px }
+
+#whySlider .slide.active{
+  border-color:rgba(255,77,0,.55);
+  background:linear-gradient(180deg,rgba(255,77,0,.10),rgba(255,77,0,.04));
+  box-shadow:0 0 0 1px rgba(255,77,0,.35), 0 18px 46px rgba(255,77,0,.10);
+}
+#whySlider .slide.active h3{
+  color:var(--accent);
+  text-shadow:0 0 12px rgba(255,77,0,.25);
+}
+
+/* dots sit below the grid, not overlay */
+#whySlider .dots{ grid-column:1 / -1; position:static; margin-top:6px; }
+
+@media (max-width:900px){
+  #whySlider{ grid-template-columns:1fr; }
+}
+
