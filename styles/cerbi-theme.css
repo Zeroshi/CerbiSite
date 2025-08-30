@@ -539,4 +539,43 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   opacity:.55;
 }
 
+/* Make the small utility pills readable in dark/light */
+.theme-toggle{
+  -webkit-appearance:none; appearance:none;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:10px;
+  border:1px solid rgba(127,148,179,.25);
+  background: rgba(255,255,255,.08);   /* visible on dark */
+  color: var(--text); font-weight:600;
+  box-shadow: inset 0 0 0 9999px rgba(12,18,36,.12); /* kill UA white */
+}
+.theme-toggle:hover{ background: rgba(255,255,255,.12); text-decoration:none }
+
+[data-theme="light"] .theme-toggle{
+  background:#fff; color:#101828;
+  border-color: var(--glass-border);
+  box-shadow: none;
+}
+
+/* Stronger, simpler beta ribbon */
+.ribbon-beta{
+  background:
+    linear-gradient(90deg, rgba(255,77,0,.18), rgba(255,77,0,.08)),
+    radial-gradient(60% 140% at 85% 0%, rgba(100,160,255,.18), transparent 60%);
+  border-bottom: 1px solid rgba(255,77,0,.28);
+}
+[data-theme="light"] .ribbon-beta{
+  background:
+    linear-gradient(90deg, rgba(255,77,0,.08), rgba(255,77,0,.04)),
+    radial-gradient(60% 140% at 85% 0%, rgba(100,160,255,.10), transparent 60%);
+  border-bottom-color: rgba(16,24,40,.10);
+}
+
+.ribbon-inner{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:8px 0; font-size:14px; color:var(--text);
+}
+.rb-copy{ color:var(--text); opacity:.95 }
+.rb-ctas{ display:flex; gap:8px; flex-wrap:wrap }
+.btn-sm{ padding:8px 12px; border-radius:10px; font-size:13px }
 
