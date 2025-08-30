@@ -468,6 +468,36 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .contact-fab:hover .label,
 .contact-fab:focus-visible .label{ opacity:1; transform: translateX(0) }
 
+/* --- Hero overlay fix --- */
+.hero .value-rotator,
+.hero .cta-bar,
+.hero .row[style*="justify-content:center"] {
+  position: static !important;     /* no absolute/sticky floating */
+  transform: none !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 1;                      /* above background, below next cards */
+  margin-bottom: 14px;             /* give it breathing room */
+}
+
+/* make the following blocks establish their own stacking context */
+.hero .glass,
+.hero .logo-row,
+#hero-art {
+  position: relative;
+  z-index: 0;
+}
+
+/* small screens: a bit more spacing so nothing kisses */
+@media (max-width: 900px){
+  .hero .value-rotator,
+  .hero .cta-bar,
+  .hero .row[style*="justify-content:center"] {
+    margin-bottom: 18px;
+  }
+}
+
+
 /* Light tune */
 [data-theme="light"] .contact-fab{ border-color: var(--glass-border) }
 [data-theme="light"] .contact-fab .label{ border-color: var(--glass-border) }
