@@ -25,8 +25,20 @@
     .hl,.accent{color:var(--accent); text-shadow:0 0 14px rgba(255,77,0,.28);}
     /* Make pop-art section full-bleed and tall for impact */
     .full-bleed{width:100vw;margin-left:50%;transform:translateX(-50%);}
-    #sigRotator{height:min(62vh,680px);} /* bigger stage */
+    #sigRotator{height:min(62vh,680px);}
     @media (max-width:900px){ #sigRotator{height:48vh;} }
+
+    /* Value carousel simple tweaks */
+    .value-rotator .slide{
+      padding:12px;
+    }
+    .value-rotator h3{ margin:0 0 6px; }
+    .value-rotator ul{ margin:8px 0 0 18px; }
+    .usecase-num{
+      display:inline-grid;place-items:center;min-width:28px;height:28px;border-radius:999px;
+      background:var(--accent); color:#000; font-weight:700; font-size:14px; margin-right:8px;
+      box-shadow:0 0 14px rgba(255,77,0,.35);
+    }
   </style>
 
   <!-- Chart.js for the perf chart -->
@@ -41,18 +53,17 @@
   <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
-<div class="ribbon ribbon-beta" role="status">
-  <div class="container ribbon-inner">
-    <div class="rb-copy">
-      <strong>🚀 CerbiShield Dashboard</strong> — Beta preview available.
-    </div>
-    <div class="rb-ctas">
-      <a class="btn btn-ghost btn-sm" href="#dashboards">See preview</a>
-      <a class="btn btn-primary btn-sm" href="https://form.jotform.com/252385904589067" target="_blank" rel="noopener">Request access</a>
+  <div class="ribbon ribbon-beta" role="status">
+    <div class="container ribbon-inner">
+      <div class="rb-copy">
+        <strong>🚀 CerbiShield Dashboard</strong> — Beta preview available.
+      </div>
+      <div class="rb-ctas">
+        <a class="btn btn-ghost btn-sm" href="#dashboards">See preview</a>
+        <a class="btn btn-primary btn-sm" href="https://form.jotform.com/252385904589067" target="_blank" rel="noopener">Request access</a>
+      </div>
     </div>
   </div>
-</div>
-
 
   <!-- Nav -->
   <header class="nav">
@@ -64,6 +75,7 @@
       <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
       <nav id="primaryNav" class="nav-links" aria-label="Primary">
         <a href="#why">Why</a>
+        <a href="#usecases">Use Cases</a>
         <a href="#quickstart">Quick Start</a>
         <a href="#ecosystem">Ecosystem</a>
         <a href="#governance">Governance</a>
@@ -128,55 +140,43 @@
       <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
-      <!-- Sales pitch: why this matters now -->
-      <div class="glass reveal" style="padding:16px;margin:14px auto;max-width:980px">
-        <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHY TEAMS PICK CERBI</p>
-        <p style="margin:0 0 8px">
-          Logs aren’t just exhaust anymore—they’re your compliance record, forensic trail, and ML fuel.
-          Cerbi turns messy, app-by-app logging into governed, trustworthy <em>data products</em> that cut cost and risk while
-          making every downstream tool (Splunk, ELK, Datadog, Snowflake) work better.
-        </p>
-
-        <div class="grid" style="margin-top:8px">
-          <article class="col-4 card tilt"><div class="glare"></div>
-            <h3 style="margin:6px 0 6px">Lower Ingestion Cost</h3>
-            <p class="k" style="margin:0">
-              De-duplicate, enforce schemas, and add roll-up metadata so you ingest less noise and query less junk.
-            </p>
-            <ul style="margin:8px 0 0 18px">
-              <li>Stable fields → smaller indexes</li>
-              <li>Rollups & tags → faster queries</li>
+      <!-- WHY VALUE ROTATOR (executive-friendly, near top) -->
+      <div class="glass tilt reveal value-rotator" style="padding:16px;margin:14px auto;max-width:980px">
+        <div class="glare" aria-hidden="true"></div>
+        <div id="whySlider" class="dash-slider">
+          <figure class="slide active">
+            <h3>💸 Lower Ingestion & Storage Cost</h3>
+            <p class="k">Normalize & de-duplicate at the source; ship less noise to Splunk/ELK/Datadog.</p>
+            <ul>
+              <li>Stable fields → smaller indexes & faster queries</li>
+              <li>Rollups/tags → fewer high-cardinality surprises</li>
             </ul>
-          </article>
-
-          <article class="col-4 card tilt"><div class="glare"></div>
-            <h3 style="margin:6px 0 6px">Compliance Without Friction</h3>
-            <p class="k" style="margin:0">
-              PII rules at build-time and runtime. Violate a rule? We redact and flag—don’t drop the signal.
-            </p>
-            <ul style="margin:8px 0 0 18px">
-              <li>Versioned policies in CerbiShield</li>
-              <li>Audit history & RBAC out of the box</li>
+          </figure>
+          <figure class="slide">
+            <h3>🔐 Compliance Without Friction</h3>
+            <p class="k">PII rules at build-time & runtime. Redact & flag—don’t drop critical signals.</p>
+            <ul>
+              <li>Versioned policies in CerbiShield (RBAC & audit history)</li>
+              <li>Relax-mode for safe rollout in prod</li>
             </ul>
-          </article>
-
-          <article class="col-4 card tilt"><div class="glare"></div>
-            <h3 style="margin:6px 0 6px">Make Every Tool Better</h3>
-            <p class="k" style="margin:0">
-              We’re not a sink. We improve what you send to your sinks: cleaner data, stable shapes, richer context.
-            </p>
-            <ul style="margin:8px 0 0 18px">
-              <li>Fewer broken dashboards</li>
+          </figure>
+          <figure class="slide">
+            <h3>📈 Make Every Tool Better</h3>
+            <p class="k">We’re not a sink—we improve what your sinks receive with richer, consistent context.</p>
+            <ul>
+              <li>Durable dashboards (no silent breakage)</li>
               <li>ML-ready metadata for LLMs & models</li>
             </ul>
-          </article>
-        </div>
-
-        <div class="chip-row" style="margin-top:12px">
-          <span class="chip">Vendor-neutral</span>
-          <span class="chip">PII-aware by design</span>
-          <span class="chip">Build-time + Runtime</span>
-          <span class="chip">Governance you control</span>
+          </figure>
+          <figure class="slide">
+            <h3>⏱️ Faster Investigations</h3>
+            <p class="k">Consistent correlation (app/env/tenant/trace) across services speeds triage.</p>
+            <ul>
+              <li>Clean joins through stable shapes</li>
+              <li>Actionable violation metadata</li>
+            </ul>
+          </figure>
+          <div class="dots" aria-label="slider controls"></div>
         </div>
       </div>
 
@@ -192,58 +192,63 @@
       </div>
     </section>
 
-    <!-- SIGNATURE ART — moved directly under hero, made full-bleed for impact -->
+    <!-- SIGNATURE ART — full-bleed -->
     <section id="hero-art" class="section full-bleed">
       <div class="glass tilt reveal" style="padding:18px">
         <div class="glare" aria-hidden="true"></div>
-
-        <!-- Rotating pop-art panel -->
         <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
-
-        <div class="img-cap">
-          <code>Cerbi</code>.
-        </div>
+        <div class="img-cap"><code>Cerbi</code>.</div>
       </div>
     </section>
 
-    <!-- QUICK START -->
-    <section id="quickstart" class="container section">
-      <div class="eyebrow">Get started</div>
-      <h2>⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
-      <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
+    <!-- ==================== USE CASES (near top) ==================== -->
+    <section id="usecases" class="container section">
+      <div class="eyebrow">Real outcomes</div>
+      <h2>💥 <span class="hl">Use Cases</span> (for teams & execs)</h2>
+      <p class="lead">Short, concrete wins you can expect. Each can start small and expand safely across the org.</p>
 
-      <div class="glass tilt reveal" style="padding:18px;position:relative">
-        <div class="glare"></div>
-        <pre class="codeblock"><code>
-// 1) Install
-dotnet add package CerbiStream
+      <div class="grid">
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">1</span>Cut Log Spend</h3>
+          <p class="k">Normalize fields, roll up noise, and de-duplicate before indexing.</p>
+          <ul><li>Less high-cardinality churn</li><li>Smaller indexes, faster queries</li></ul>
+        </article>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">2</span>Prove Compliance</h3>
+          <p class="k">Versioned PII policy + redaction metadata you can hand to Risk/Legal.</p>
+          <ul><li>Build-time rules + runtime enforcement</li><li>RBAC & audit history in CerbiShield</li></ul>
+        </article>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">3</span>Stabilize Dashboards</h3>
+          <p class="k">Stop breaking charts every sprint due to field drift.</p>
+          <ul><li>Stable names & types</li><li>Durable alerts across releases</li></ul>
+        </article>
 
-// 2) Configure in Program.cs (MEL)
-using CerbiStream;
-
-var logger = LoggerFactory.Create(builder =>
-{
-  builder.AddCerbiStream(options =>
-  {
-    options.WithFileFallback();                     // resilient logging
-    options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
-  });
-}).CreateLogger&lt;Program&gt;();
-
-// 3) Log safely with governance validation
-logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
-        </code></pre>
-        <button class="btn" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">4</span>Accelerate Incidents</h3>
+          <p class="k">Consistent app/env/tenant/trace IDs → faster triage and MTTR.</p>
+          <ul><li>Joinable logs across services</li><li>Violation context included</li></ul>
+        </article>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">5</span>Ship ML-Ready Telemetry</h3>
+          <p class="k">Clean, governed features for LLMs & models—without PII surprises.</p>
+          <ul><li>Tags, categories, enums</li><li>Consistent shapes for training</li></ul>
+        </article>
+        <article class="col-4 card tilt reveal"><div class="glare"></div>
+          <h3><span class="usecase-num">6</span>Adopt Gradually</h3>
+          <p class="k">Start with one domain (e.g., auth), run in relax-mode, then tighten.</p>
+          <ul><li>Keep your loggers/sinks</li><li>No vendor lock-in</li></ul>
+        </article>
       </div>
 
-      <p style="margin-top:14px">
-        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">
-          View full docs on GitHub →
-        </a>
-      </p>
+      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <a class="btn btn-primary" href="#governance">See Governance in action</a>
+        <a class="btn" href="#packages">Pick your packages</a>
+        <a class="btn btn-ghost" href="#compare">Compare approaches</a>
+      </div>
     </section>
 
-    <!-- WHY -->
+    <!-- ==================== WHY (kept in full) ==================== -->
     <section id="why" class="container section">
       <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
       <h2>Why <span class="hl">CerbiStream</span> Exists</h2>
@@ -345,141 +350,44 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- ============ Positioning: Where Cerbi Fits ============ -->
-    <section id="positioning" class="container section">
-      <h2>Where <span class="hl">Cerbi</span> Fits (and what we don’t do)</h2>
+    <!-- ==================== QUICK START (moved slightly lower) ==================== -->
+    <section id="quickstart" class="container section">
+      <div class="eyebrow">Get started</div>
+      <h2>⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
+      <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
 
-      <article class="glass reveal" style="padding:16px">
-        <p style="margin:0 0 8px">
-          <strong>Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks.</strong> We sit <em>before</em> them—as the contract and enforcement layer that makes your logs <strong>clean, governed, and consistent</strong> before they touch any index, bucket, queue, or dashboard.
-        </p>
-        <p class="k" style="margin:0">
-          The result: <strong>lower cost</strong> (less noise, fewer duplicates), <strong>fewer broken dashboards</strong> (stable field names and types), and <strong>audit-ready telemetry</strong> (PII-aware policy, redaction, and versioned governance).
-        </p>
-      </article>
+      <div class="glass tilt reveal" style="padding:18px;position:relative">
+        <div class="glare"></div>
+        <pre class="codeblock"><code>
+// 1) Install
+dotnet add package CerbiStream
 
-      <div class="space"></div>
+// 2) Configure in Program.cs (MEL)
+using CerbiStream;
 
-      <div class="grid">
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">What Cerbi <em>is</em></h3>
-          <ul>
-            <li><strong>Contract + policy for logs</strong> (schemas, required/forbidden fields, types, enums, tags, PII policy).</li>
-            <li><strong>Build-time enforcement</strong> (Roslyn analyzer) that catches violations in IDE/CI.</li>
-            <li><strong>Runtime enforcement</strong> that validates, redacts, and <em>flags</em> violations—without dropping the event.</li>
-            <li><strong>Governance hub</strong> (CerbiShield) with RBAC, versioning, rollbacks, and audit history.</li>
-            <li><strong>Vendor-neutral</strong>: forward to Splunk/ELK/Datadog/OTel/file/cloud—no lock-in.</li>
-          </ul>
-        </article>
+var logger = LoggerFactory.Create(builder =>
+{
+  builder.AddCerbiStream(options =>
+  {
+    options.WithFileFallback();                     // resilient logging
+    options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
+  });
+}).CreateLogger&lt;Program&gt;();
 
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">What Cerbi is <em>not</em></h3>
-          <ul>
-            <li>Not a log store, search UI, APM, or SIEM.</li>
-            <li>Not a sink/SaaS that forces migration.</li>
-            <li>Not a filter that drops logs—we <em>preserve</em> signal with redaction + violation metadata.</li>
-            <li>Not tied to a single framework—works with Serilog today; MEL/NLog next; native with CerbiStream.</li>
-          </ul>
-        </article>
+// 3) Log safely with governance validation
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
+        </code></pre>
+        <button class="btn" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
       </div>
 
-      <div class="space"></div>
-
-      <div class="grid">
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">How it integrates (before your sinks)</h3>
-          <ol>
-            <li><strong>Profiles in CerbiShield:</strong> Define schemas/rules; approve with RBAC & versioning.</li>
-            <li><strong>Build-time validation:</strong> IDE/CI diagnostics prevent bad patterns from shipping.</li>
-            <li><strong>Runtime validation:</strong> Redact/flag violations and attach violation metadata.</li>
-            <li><strong>Forward as usual:</strong> Cleaned events go to Splunk/ELK/Datadog/OTel/file/etc.</li>
-          </ol>
-          <pre class="kbd" style="margin:10px 0 0;white-space:pre-wrap"><code>App → Cerbi (policy + metadata) → your sinks (Splunk/ELK/Datadog/OTel/file/cloud)</code></pre>
-        </article>
-
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">Why your existing tools get better</h3>
-          <ul>
-            <li><strong>Cleaner data → lower cost:</strong> fewer duplicates + less schema drift reduce ingestion and index churn.</li>
-            <li><strong>Stable fields → durable dashboards:</strong> names/types stop drifting, so alerts and charts don’t silently break.</li>
-            <li><strong>Governed PII → easier audits:</strong> redaction/forbidden policy with versioned evidence.</li>
-            <li><strong>Consistent metadata → faster triage:</strong> correlation IDs; app/env/tenant tagging across services.</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="space"></div>
-
-      <div class="grid">
-        <article class="col-12 glass reveal" style="padding:16px">
-          <h3 style="margin-top:0">Concrete example</h3>
-          <div class="grid">
-            <div class="col-6">
-              <strong class="k">Before Cerbi (same “user” field, 4 shapes)</strong>
-              <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{"userId": 7}
-{"user_id": "7"}
-{"user": {"id": 7, "email": "jane@ex.com"}}
-{"uid": "007"}</code></pre>
-            </div>
-            <div class="col-6">
-              <strong class="k">With Cerbi (profile enforced)</strong>
-              <pre class="kbd" style="margin:6px 0 0;max-height:220px;overflow:auto"><code class="language-json">{
-  "timestamp":"2025-08-27T14:33:12.120Z",
-  "level":"Information",
-  "action":"UserLoggedIn",
-  "user":{"id":"7"},
-  "app":"identity-api",
-  "env":"prod",
-  "traceId":"a1b2c3",
-  "tags":["auth","success"]
-}</code></pre>
-              <p class="k" style="margin:8px 0 0">If an email appears, runtime redacts and sets <span class="kbd">violations:[{"field":"user.email","rule":"Forbidden","action":"Redacted"}]</span>. The event still ships—signal preserved, policy enforced.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="space"></div>
-
-      <div class="grid">
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">Who benefits</h3>
-          <ul>
-            <li><strong>Engineers:</strong> clear, fixable diagnostics; fewer on-call surprises.</li>
-            <li><strong>SRE/O11y:</strong> stable dashboards + alerts across releases.</li>
-            <li><strong>Security/Privacy:</strong> policy proof, RBAC, audit history.</li>
-            <li><strong>Data/ML:</strong> consistent features for modeling and LLMs.</li>
-            <li><strong>Finance:</strong> lower ingestion/storage + less waste.</li>
-          </ul>
-        </article>
-
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">Migration path</h3>
-          <ul>
-            <li><strong>Keep your logger:</strong> Serilog plugin today; MEL/NLog adapters next.</li>
-            <li><strong>Adopt gradually:</strong> start with one profile (e.g., auth), expand per domain.</li>
-            <li><strong>Relax-mode first:</strong> flag/redact while teams fix; then tighten to block at build-time.</li>
-          </ul>
-        </article>
-
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3 style="margin-top:4px">Why this isn’t optional</h3>
-          <p>Privacy laws and breach rules increasingly treat logs as evidence and regulated data. Without structure and policy <em>at the source</em>, teams either slow down or accept risk. Cerbi lets you keep velocity <em>and</em> raise the bar on compliance.</p>
-        </article>
-      </div>
-
-      <div class="space"></div>
-
-      <details class="glass reveal" style="padding:14px;border-radius:14px">
-        <summary><strong>FAQ</strong> — “Are you competing with our logging vendor?”</summary>
-        <ul style="margin-top:10px">
-          <li><strong>No.</strong> We don’t store or search logs; we make your logs <em>worth more</em> wherever they go.</li>
-          <li><strong>Costs usually drop</strong> after adding Cerbi: fewer duplicate fields and less schema drift reduce ingestion and index churn.</li>
-          <li><strong>Dashboards last longer:</strong> teams stop fixing charts every sprint due to field changes.</li>
-          <li><strong>Audit stories simplify:</strong> redaction + versioned policy = evidence you can hand to Risk/Legal.</li>
-        </ul>
-      </details>
+      <p style="margin-top:14px">
+        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">
+          View full docs on GitHub →
+        </a>
+      </p>
     </section>
+
+    <!-- =================== ORIGINAL CONTENT BELOW (unchanged) =================== -->
 
     <!-- ECOSYSTEM -->
     <section id="ecosystem" class="container section">
@@ -969,7 +877,7 @@ dotnet add package Cerbi.Governance.Runtime
       <p class="k" style="letter-spacing:.12em;margin:0 0 6px">WHAT YOU GET</p>
       <h2>Logger <span class="hl">Governance</span> Comparison</h2>
 
-      <!-- Filter chips (same tags your JS uses) -->
+      <!-- Filter chips -->
       <div class="filters" role="toolbar" aria-label="Filter comparison">
         <button class="filter active" data-tag="all">All</button>
         <button class="filter" data-tag="build">Build-time</button>
@@ -1119,6 +1027,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <a class="tag" href="#why">Why</a>
+        <a class="tag" href="#usecases">Use Cases</a>
         <a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a>
         <a class="tag" href="#governance">Governance</a>
@@ -1143,17 +1052,16 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   </div>
 
   <!-- Floating Contact button -->
-<a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
-  <!-- Replace this image with your own (square works best) -->
-  <img src="assets/contact-fab.png" alt="" />
-  <span class="label">Contact</span>
-</a>
-
+  <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
+    <img src="assets/contact-fab.png" alt="" />
+    <span class="label">Contact</span>
+  </a>
 
   <!-- Scripts -->
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
 
+  <!-- Pop-art rotator (unchanged) -->
   <script>
 /* Cerbi pop-art rotator v2
    - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
@@ -1181,7 +1089,6 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     return a;
   }
 
-  const candidates = [];
   let probes = 0, found = [];
 
   function finalize(){
@@ -1208,11 +1115,9 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     let timer = null;
 
     function applyMotion(el){
-      // re-apply animation so it restarts every time the slide shows
       const name = pick(variants);
       const secs = (DURATION/1000).toFixed(2) + 's';
       el.style.animation = 'none';
-      // ensure style flush before applying animation
       requestAnimationFrame(()=>{
         el.style.animation = `${name} ${secs} ease-in-out both`;
       });
@@ -1233,7 +1138,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     }, DURATION);
   }
 
-  // Preload/probe files (works on GitHub Pages)
+  // Preload/probe files
   for (let i=1; i<=MAX; i++){
     const n = String(i).padStart(2,'0');
     ['png','jpg','jpeg','webp'].forEach(ext=>{
@@ -1241,10 +1146,38 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       const probe = new Image();
       probe.onload  = ()=>{ found.push(url); if(++probes===MAX*4) finalize(); };
       probe.onerror = ()=>{ if(++probes===MAX*4) finalize(); };
-      probe.src = url + `?cb=${Date.now()}`; // bust cache for first load after upload
-      candidates.push(url);
+      probe.src = url + `?cb=${Date.now()}`;
     });
   }
+})();
+  </script>
+
+  <!-- Why value slider (new; mirrors your dash slider pattern) -->
+  <script>
+(() => {
+  const slider = document.querySelector('#whySlider');
+  if (!slider) return;
+  const slides = [...slider.querySelectorAll('.slide')];
+  const dotsWrap = slider.querySelector('.dots');
+  let idx = 0, timer;
+
+  dotsWrap.innerHTML = slides.map((_,i)=>`<button aria-label="Go to slide ${i+1}"></button>`).join('');
+  const dots = [...dotsWrap.querySelectorAll('button')];
+
+  function show(i){
+    slides.forEach((s,j)=>s.classList.toggle('active', j===i));
+    dots.forEach((d,j)=>d.classList.toggle('active', j===i));
+    idx = i;
+  }
+  function next(){ show((idx+1)%slides.length); }
+  function start(){ stop(); timer = setInterval(next, 5200); }
+  function stop(){ if (timer) clearInterval(timer); }
+
+  dots.forEach((d,i)=>d.addEventListener('click', ()=>{ stop(); show(i); start(); }));
+  slider.addEventListener('mouseenter', stop);
+  slider.addEventListener('mouseleave', start);
+
+  show(0); start();
 })();
   </script>
 
