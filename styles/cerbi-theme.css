@@ -519,3 +519,31 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   .contact-fab.is-hidden{ opacity: 1; pointer-events:auto; transform: none; } /* never auto-hide on phones */
 }
 
+/* --- HERO OVERLAY: force normal flow so it can't sit on top of later content --- */
+.hero { overflow: visible; } /* just in case */
+.hero .value-rotator,
+.hero .cta-bar,
+.hero .cta-rail,
+.hero .hero-cta,
+.hero .cta,
+.hero .cta-panel {
+  position: static !important;
+  inset: auto !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 14px auto 10px !important; /* centers and adds space */
+  max-width: max-content;
+  z-index: 2;
+}
+
+/* keep the items that follow clear and tidy */
+.hero .logo-row,
+#hero-art,
+.hero .glass {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+}
+
+
