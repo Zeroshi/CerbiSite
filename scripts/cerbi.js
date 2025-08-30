@@ -247,22 +247,26 @@ document.addEventListener('pointermove', e=>{
 (() => { const y = qs('#year'); if (y) y.textContent = new Date().getFullYear(); })();
 
 /* ===== Floating Contact FAB: hide when contact section visible ===== */
-(() => {
+(function(){
   const fab = document.querySelector('.contact-fab');
   const contact = document.querySelector('#contact');
-  if (!fab || !contact || !('IntersectionObserver' in window)) return;
+  if (!fab || !contact) return;
 
-  const io = new IntersectionObserver((entries)=>{
-    for (const e of entries){
-      if (e.target === contact){
-        if (e.isIntersecting) fab.classList.add('is-hidden');
-        else fab.classList.remove('is-hidden');
-      }
-    }
-  }, { rootMargin: '0px 0px -20% 0px', threshold: 0.05 });
+  // Keep the FAB always visible on small screens—too easy to hide by accident
+  const isMobile = window.matchMedia('(max-width: 900px)').matches;
+  if (isMobile) return;
+
+  // Desktop: hide only when most of the contact section is in view
+  const io = new IntersectionObserver(([entry])=>{
+    if (!entry) return;
+    const mostlyVisible = entry.isIntersecting && entry.intersectionRatio >= 0.6;
+    fab.classList.toggle('is-hidden', mostlyVisible);
+  }, { threshold: [0, 0.6], rootMargin: '0px 0px -10% 0px' });
 
   io.observe(contact);
 })();
+
+
 
 /* ===== Cerbi pop-art rotator v2 =====
    - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
@@ -334,3 +338,4 @@ document.addEventListener('pointermove', e=>{
     });
   }
 })();
+
