@@ -219,3 +219,24 @@ document.addEventListener('pointermove', e=>{
 
 /* ===== Year ===== */
 (() => { const y = qs('#year'); if (y) y.textContent = new Date().getFullYear(); })();
+
+<script>
+(function(){
+  const fab = document.querySelector('.contact-fab');
+  const contact = document.querySelector('#contact');
+  if (!fab || !contact || !('IntersectionObserver' in window)) return;
+
+  const io = new IntersectionObserver((entries)=>{
+    for (const e of entries){
+      if (e.target === contact){
+        if (e.isIntersecting) fab.classList.add('is-hidden');
+        else fab.classList.remove('is-hidden');
+      }
+    }
+  }, { rootMargin: '0px 0px -20% 0px', threshold: 0.05 });
+
+  io.observe(contact);
+})();
+</script>
+
+
