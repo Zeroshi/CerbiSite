@@ -424,9 +424,10 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   --fab-size: 56px;
   --fab-side: 18px;
   position: fixed;
-  z-index: 1100;
-  right: var(--fab-side);
-  top: 50%; transform: translateY(-50%);
+  z-index: 9999;                    /* be above everything */
+  right: max(var(--fab-side), env(safe-area-inset-right));
+  top: 50%;
+  transform: translateY(-50%) translateZ(0);  /* iOS paint fix */
   width: var(--fab-size); height: var(--fab-size);
   display: inline-flex; align-items: center; justify-content: center;
   border-radius: 999px;
@@ -434,10 +435,26 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   border: 1px solid rgba(127,148,179,.22);
   box-shadow: var(--shadow);
   backdrop-filter: saturate(160%) blur(6px);
+  -webkit-backdrop-filter: saturate(160%) blur(6px); /* iOS */
   text-decoration: none;
   transition: transform .18s var(--easing), box-shadow .2s var(--easing), opacity .2s ease;
+  pointer-events: auto; /* ensure clickable even over canvases */
 }
-.contact-fab img{ width:70%; height:70%; object-fit:contain; display:block; filter: drop-shadow(0 2px 6px rgba(0,0,0,.18)) }
+
+.contact-fab img{
+  width: 70%; height: 70%; object-fit: contain; display:block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.18));
+}
+
+/* Hover/focus */
+.contact-fab:hover,
+.contact-fab:focus-visible{
+  transform: translateY(-50%) translateZ(0) scale(1.04);
+  box-shadow: 0 18px 48px rgba(10,20,40,.28);
+  outline: none;
+}
+
+/* Label bubble */
 .contact-fab .label{
   position: absolute; right: calc(100% + 10px); white-space: nowrap;
   font-weight: 700; font-size: 12px; letter-spacing: .02em;
@@ -448,15 +465,27 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   transition: opacity .18s var(--easing), transform .18s var(--easing);
   pointer-events: none;
 }
-.contact-fab:hover,
-.contact-fab:focus-visible{ transform: translateY(-50%) scale(1.04); box-shadow: 0 18px 48px rgba(10,20,40,.28); outline: none }
 .contact-fab:hover .label,
 .contact-fab:focus-visible .label{ opacity:1; transform: translateX(0) }
+
+/* Light tune */
 [data-theme="light"] .contact-fab{ border-color: var(--glass-border) }
 [data-theme="light"] .contact-fab .label{ border-color: var(--glass-border) }
+
+/* Mobile: pin to bottom-right, avoid notch / Safari UI */
 @media (max-width: 900px){
-  .contact-fab{ --fab-size: 48px; bottom: 16px; top: auto; transform: none; right: 16px; }
-  .contact-fab .label{ display: none }
+  .contact-fab{
+    --fab-size: 48px;
+    top: auto; transform: none;
+    bottom: max(16px, calc(env(safe-area-inset-bottom) + 12px));
+    right: max(16px, calc(env(safe-area-inset-right) + 12px));
+  }
+  .contact-fab .label{ display: none } /* minimal on mobile */
 }
-.contact-fab.is-hidden{ opacity:.0; pointer-events:none; transform: translateY(-50%) scale(.98) }
-@media (max-width: 900px){ .contact-fab.is-hidden{ transform: scale(.98) } }
+
+/* Hidden state (when contact section is visible on desktop only) */
+.contact-fab.is-hidden{ opacity: 0; pointer-events:none; transform: translateY(-50%) translateZ(0) scale(.98) }
+@media (max-width: 900px){
+  .contact-fab.is-hidden{ opacity: 1; pointer-events:auto; transform: none; } /* never auto-hide on phones */
+}
+
