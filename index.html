@@ -1062,95 +1062,85 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
 
   <!-- Pop-art rotator (unchanged) -->
-  <script>
-/* Cerbi pop-art rotator v2
-   - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
-   - Randomizes order & starting slide
-   - Crossfade + random motion per slide
-*/
+ <script>
+/* Lazy pop-art rotator: initializes when #hero-art appears */
 (function(){
-  const MAX = 50;
-  const DURATION = 6000; // ms per slide
+  const section = document.getElementById('hero-art');
   const rot = document.getElementById('sigRotator');
-  if (!rot) return;
+  if (!section || !rot) return;
 
-  const variants = [
-    'sigZoom', 'sigPanLeft', 'sigPanRight', 'sigTiltIn', 'sigDriftUp', 'sigDriftDown'
-  ];
+  const MAX = 50;
+  const EXT = ['webp','jpg','jpeg','png'];
+  const TARGET = 10;            // stop probing after we find this many
+  const DURATION = 6000;        // ms per slide
+  const variants = ['sigZoom','sigPanLeft','sigPanRight','sigTiltIn','sigDriftUp','sigDriftDown'];
 
-  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  const shuffle = a => { for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const pick = a => a[Math.floor(Math.random()*a.length)];
 
-  // Fisher-Yates shuffle (stable)
-  function shuffle(a){
-    for (let i=a.length-1; i>0; i--){
-      const j = Math.floor(Math.random() * (i+1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  let probes = 0, found = [];
-
-  function finalize(){
+  function startRotator(found){
     if (!found.length){
-      rot.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--muted)">Drop images into <code>assets/popart/</code>: <em>popart-01.png</em>…</div>';
+      rot.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:var(--muted)">Drop images into <code>assets/popart/</code> like <em>popart-01.png</em>…</div>';
       return;
     }
-
-    // Randomize order and start index
     found = shuffle(found);
-    const startIndex = Math.floor(Math.random() * found.length);
-
-    // Build DOM
     const els = found.map((src,i)=>{
       const img = new Image();
       img.decoding = 'async';
+      img.loading  = 'lazy';
       img.alt = 'Cerbi pop-art panel ' + (i+1);
       img.src = src;
       rot.appendChild(img);
       return img;
     });
 
-    let idx = startIndex;
-    let timer = null;
-
+    let idx = Math.floor(Math.random()*els.length);
     function applyMotion(el){
       const name = pick(variants);
       const secs = (DURATION/1000).toFixed(2) + 's';
       el.style.animation = 'none';
-      requestAnimationFrame(()=>{
-        el.style.animation = `${name} ${secs} ease-in-out both`;
-      });
+      requestAnimationFrame(()=>{ el.style.animation = `${name} ${secs} ease-in-out both`; });
     }
-
     function show(n){
-      els.forEach((el, j)=>{
-        const on = (j === n);
+      els.forEach((el,j)=>{
+        const on = j===n;
         el.classList.toggle('show', on);
         if (on) applyMotion(el);
       });
     }
-
     show(idx);
-    timer = setInterval(()=>{
-      idx = (idx + 1) % els.length;
-      show(idx);
-    }, DURATION);
+    setInterval(()=>{ idx = (idx+1) % els.length; show(idx); }, DURATION);
   }
 
-  // Preload/probe files
-  for (let i=1; i<=MAX; i++){
-    const n = String(i).padStart(2,'0');
-    ['png','jpg','jpeg','webp'].forEach(ext=>{
-      const url = `assets/popart/popart-${n}.${ext}`;
-      const probe = new Image();
-      probe.onload  = ()=>{ found.push(url); if(++probes===MAX*4) finalize(); };
-      probe.onerror = ()=>{ if(++probes===MAX*4) finalize(); };
-      probe.src = url + `?cb=${Date.now()}`;
-    });
+  function init(){
+    const found = [];
+    outer: for (let i=1; i<=MAX; i++){
+      const n = String(i).padStart(2,'0');
+      for (const ext of EXT){
+        const url = `assets/popart/popart-${n}.${ext}`;
+        const probe = new Image();
+        probe.decoding = 'async';
+        probe.onload  = ()=>{ if(found.indexOf(url)<0) found.push(url); };
+        probe.onerror = ()=>{};
+        probe.src = url + `?cb=${Date.now()}`;
+        if (found.length >= TARGET) break outer;
+      }
+    }
+    // Give the probes a quick moment, then start with whatever we have.
+    setTimeout(()=>startRotator(found), 500);
   }
+
+  const onVisible = entries => {
+    if (entries[0] && entries[0].isIntersecting){
+      io.disconnect();
+      (window.requestIdleCallback || setTimeout)(init, 1);
+    }
+  };
+  const io = new IntersectionObserver(onVisible, {threshold: 0.05});
+  io.observe(section);
 })();
-  </script>
+</script>
+
 
   <!-- Why value slider (new; mirrors your dash slider pattern) -->
   <script>
