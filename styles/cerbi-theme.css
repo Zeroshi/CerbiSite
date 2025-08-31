@@ -592,3 +592,33 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   #whySlider{ grid-template-columns:1fr; }
 }
 
+/* LIGHT MODE: raise contrast on cards & body copy */
+[data-theme="light"] .card{
+  /* white surface + gentle depth */
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.92));
+  border-color: var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+[data-theme="light"] .card:hover{
+  box-shadow: 0 10px 30px rgba(2,10,24,.10);
+}
+
+/* headings & text inside cards */
+[data-theme="light"] .card h3{ color:#0b1220 }            /* strong heading */
+[data-theme="light"] .card p,
+[data-theme="light"] .card li{ color:#101828; opacity:1 } /* body copy full contrast */
+[data-theme="light"] .card .k{ color:#344054; opacity:.98 } /* “muted” paragraphs but readable */
+
+/* numbered orange badge in use-cases */
+[data-theme="light"] .usecase-num{
+  background: var(--accent);
+  color:#fff;                 /* white on orange is clearer than black */
+  box-shadow: 0 0 14px rgba(255,77,0,.20);
+}
+
+/* tidy bullet spacing on mobile */
+@media (max-width: 600px){
+  .card ul{ margin-left: 18px }
+}
+
+
