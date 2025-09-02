@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
+  <!-- SEO/A11Y ADD: robots, canonical, manifest, color-scheme, preconnects -->
+  <meta name="robots" content="index,follow" />
+  <meta name="color-scheme" content="dark light" />
+  <link rel="canonical" href="https://cerbi.io/" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://form.jotform.com" crossorigin />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
   <!-- Meta -->
   <meta name="description" content="CerbiSuite brings structure, governance, and observability to enterprise logging with build-time and runtime enforcement, a governance dashboard, and ML-ready metadata." />
   <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
@@ -12,6 +21,18 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/CerbiLogo.png" />
   <meta name="theme-color" content="#0a1224" />
+
+  <!-- SEO/Social ADD: richer Open Graph + Twitter -->
+  <meta property="og:url" content="https://cerbi.io/" />
+  <meta property="og:site_name" content="CerbiSuite" />
+  <meta property="og:image" content="https://cerbi.io/assets/og/cerbi-1200x630.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CerbiSuite hero with product marks" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
+  <meta name="twitter:description" content="Structure, governance, observability—without lock-in." />
+  <meta name="twitter:image" content="https://cerbi.io/assets/og/cerbi-1200x630.jpg" />
 
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
@@ -39,12 +60,58 @@
       background:var(--accent); color:#000; font-weight:700; font-size:14px; margin-right:8px;
       box-shadow:0 0 14px rgba(255,77,0,.35);
     }
+
+    /* A11Y ADD: skip link helper */
+    .visually-hidden-focusable{
+      position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;
+    }
+    .visually-hidden-focusable:focus{
+      position:fixed;left:12px;top:12px;width:auto;height:auto;padding:10px 12px;
+      background:var(--glass);border:1px solid rgba(127,148,179,.25);border-radius:10px;z-index:9999;
+      box-shadow:var(--shadow);
+    }
+  </style>
+
+  <!-- A11Y/PERF ADD: respect reduced motion globally -->
+  <style>
+    @media (prefers-reduced-motion: reduce){
+      *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition:none !important;scroll-behavior:auto !important}
+    }
   </style>
 
   <!-- Chart.js for the perf chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+
+  <!-- Structured Data ADD: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cerbi, LLC",
+    "url": "https://cerbi.io/",
+    "logo": "https://cerbi.io/assets/CerbiLogo.png",
+    "sameAs": ["https://github.com/Zeroshi/Cerbi-CerbiStream"]
+  }
+  </script>
+
+  <!-- Structured Data ADD: SoftwareApplication (CerbiStream) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CerbiStream",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "url": "https://cerbi.io/#packages",
+    "downloadUrl": "https://www.nuget.org/packages/CerbiStream/",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
 </head>
 <body>
+  <!-- A11Y ADD: skip to content -->
+  <a href="#main" class="visually-hidden-focusable">Skip to content</a>
+
   <!-- Background stack -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
@@ -69,7 +136,7 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high"/>
         <span>CerbiSuite</span>
       </div>
       <button id="navToggle" class="theme-toggle mobile-only" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">☰</button>
@@ -99,7 +166,7 @@
   <div id="progress"></div>
 
   <!-- Main -->
-  <main>
+  <main id="main">
     <!-- HERO -->
     <section class="hero container">
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
@@ -186,9 +253,9 @@
       </div>
 
       <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;padding-top:10px">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))"/>
-        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85"/>
-        <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async"/>
+        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85" loading="lazy" decoding="async"/>
+        <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72" loading="lazy" decoding="async"/>
       </div>
     </section>
 
@@ -419,19 +486,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="glass" style="padding:0">
         <div class="enterprise-strip" role="list" aria-label="Enterprise readiness">
           <a class="enterprise-item" role="listitem" href="#governance" aria-label="RBAC">
-            <img src="assets/enterprise/rbac-640.png" width="640" height="640" alt="RBAC">
+            <img src="assets/enterprise/rbac-640.png" width="640" height="640" alt="RBAC" loading="lazy" decoding="async">
             <span class="label">RBAC</span>
           </a>
           <a class="enterprise-item" role="listitem" href="#packages" aria-label="Audit logs">
-            <img src="assets/enterprise/audit-logs-640.png" width="640" height="640" alt="Audit logs">
+            <img src="assets/enterprise/audit-logs-640.png" width="640" height="640" alt="Audit logs" loading="lazy" decoding="async">
             <span class="label">Audit logs</span>
           </a>
           <a class="enterprise-item" role="listitem" href="#governance" aria-label="Governance">
-            <img src="assets/enterprise/governance-640.png" width="640" height="640" alt="Governance">
+            <img src="assets/enterprise/governance-640.png" width="640" height="640" alt="Governance" loading="lazy" decoding="async">
             <span class="label">Governance</span>
           </a>
           <a class="enterprise-item" role="listitem" href="#ecosystem" aria-label="Encryption">
-            <img src="assets/enterprise/encryption-640.png" width="640" height="640" alt="Encryption">
+            <img src="assets/enterprise/encryption-640.png" width="640" height="640" alt="Encryption" loading="lazy" decoding="async">
             <span class="label">Encryption</span>
           </a>
         </div>
@@ -485,9 +552,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="glare" aria-hidden="true"></div>
         <div class="img-frame" role="group" aria-label="CerbiShield dashboard screenshots">
           <div id="dashSlider" class="dash-slider">
-            <figure class="slide active"><img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview"></figure>
-            <figure class="slide"><img src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="CerbiShield — Profiles"></figure>
-            <figure class="slide"><img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations"></figure>
+            <figure class="slide active"><img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview" loading="lazy" decoding="async"></figure>
+            <figure class="slide"><img src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="CerbiShield — Profiles" loading="lazy" decoding="async"></figure>
+            <figure class="slide"><img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations" loading="lazy" decoding="async"></figure>
             <div class="dots" aria-label="slider controls"></div>
           </div>
         </div>
@@ -993,7 +1060,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <img src="assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
+            <img src="assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block" loading="lazy" decoding="async"/>
           </div>
           <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
@@ -1022,7 +1089,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <footer class="footer">
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:10px">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))"/>
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))" loading="lazy" decoding="async"/>
         <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -1053,7 +1120,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 
   <!-- Floating Contact button -->
   <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
-    <img src="assets/contact-fab.png" alt="" />
+    <img src="assets/contact-fab.png" alt="" loading="lazy" decoding="async" />
     <span class="label">Contact</span>
   </a>
 
