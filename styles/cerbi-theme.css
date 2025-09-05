@@ -171,6 +171,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
     rgba(8,12,20,.72);
   border-bottom: 1px solid rgba(255,77,0,.32);
   box-shadow: 0 8px 28px rgba(0,0,0,.35), inset 0 -1px 0 rgba(255,77,0,.18);
+  backdrop-filter: saturate(180%) blur(8px);
 }
 [data-theme="dark"] .ribbon .container{
   color: #eaf2ff;
@@ -259,27 +260,30 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .tilt .glare{position:absolute;inset:-2px;border-radius:inherit;background:radial-gradient(400px 200px at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.25), transparent 50%);mix-blend-mode:soft-light;pointer-events:none;opacity:.0;transition:opacity .2s}
 .tilt:hover .glare{opacity:.35}
 
-/* Frames */
-.img-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid rgba(127,148,179,.25);overflow:hidden;background:
-  radial-gradient(120% 100% at 100% 0%, rgba(100,160,255,.12), transparent 60%),
-  rgba(12,17,24,0.55)}
-.img-frame img{width:100%;height:100%;object-fit:cover;display:block}
-.img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
-[data-theme="light"] .img-frame{ border-color: var(--glass-border); background: radial-gradient(120% 100% at 100% 0%, rgba(16,24,40,.06), transparent 60%), #fff; }
-
-/* Adaptive frame: use a CSS var we’ll set from JS */
+/* ---------- Frames (UNIFIED) ---------- */
 .img-frame{
-  --ar: 16/9;                 /* default fallback */
-  aspect-ratio: var(--ar);
+  position:relative;
+  width:100%;
+  /* allow JS to set --ar; default to 16/9 */
+  aspect-ratio: var(--ar, 16/9);
+  border-radius:16px;
+  border:1px solid rgba(127,148,179,.25);
+  overflow:hidden;
+  background:
+    radial-gradient(120% 100% at 100% 0%, rgba(100,160,255,.12), transparent 60%),
+    rgba(12,17,24,0.55);
 }
-
-/* Never crop dashboard shots */
-.img-frame img,
-.dash-slider img{
-  object-fit: contain;        /* was cover */
-  background:#0a0f1a;         /* subtle letterbox */
+.img-frame img{
+  width:100%;
+  height:100%;
+  object-fit: cover;   /* default behavior (showcase overrides to contain) */
+  display:block;
 }
-
+.img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+[data-theme="light"] .img-frame{
+  border-color: var(--glass-border);
+  background: radial-gradient(120% 100% at 100% 0%, rgba(16,24,40,.06), transparent 60%), #fff;
+}
 
 /* Why page gallery */
 .dash-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;width:100%;height:100%;padding:10px}
@@ -298,15 +302,21 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .enterprise-item:hover img, .enterprise-item:focus-visible img{ transform:scale(1.08); opacity:1; filter:contrast(1.08) saturate(1.05) brightness(1.0); }
 @media (max-width:900px){ .enterprise-strip{ grid-template-columns:1fr 1fr } }
 
-/* Slider */
+/* ---------- Slider ---------- */
 .dash-slider{ position:relative; width:100%; height:100%;}
 .dash-slider .slide{ position:absolute; inset:0; opacity:0; transition:opacity .6s var(--easing); }
 .dash-slider .slide.active{ opacity:1 }
-.dash-slider img{ width:100%; height:100%; object-fit:cover; }
+.dash-slider img{ width:100%; height:100%; object-fit:cover; } /* default: cover */
 .dash-slider .dots{ position:absolute; left:0; right:0; bottom:10px; display:flex; gap:8px; justify-content:center; z-index:3 }
 .dash-slider .dots button{ width:8px; height:8px; border-radius:999px; border:0; background:rgba(255,255,255,.35); cursor:pointer; }
 .dash-slider .dots button.active{ background:var(--accent); box-shadow:0 0 12px rgba(255,77,0,.35) }
 [data-theme="light"] .dash-slider .dots button{ background: rgba(16,24,40,.25) }
+
+/* Scope “never crop” to the dashboard showcase only */
+#dashboards .img-frame.showcase .dash-slider img{
+  object-fit: contain !important;   /* show full screenshots */
+  background:#0a0f1a;               /* subtle letterbox */
+}
 
 /* Tables */
 .table{width:100%;border-collapse:separate;border-spacing:0 8px}
@@ -720,11 +730,11 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 
 /* ---------- WIDE SHOWCASE FRAME (edge glow + full width) ---------- */
 .img-frame.showcase{
-  /* push outside container */
+  /* centered and a bit wider than container */
   width: min(1400px, 98vw);
   margin-left: 50%;
   transform: translateX(-50%);
-  aspect-ratio: 21/9;                    /* more cinematic */
+  aspect-ratio: var(--ar, 21/9);      /* cinematic; can be overridden by JS */
   border-radius: 20px;
   border: 1px solid rgba(127,148,179,.28);
   background:
@@ -747,9 +757,8 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 }
 
 /* keep images crisp, avoid cropping surprises */
-.img-frame.showcase img{ object-fit: cover; }
+.img-frame.showcase img{ object-fit: inherit; } /* inherits cover; showcase-scope sets contain */
 
-/* light theme softens the ambient */
 [data-theme="light"] .img-frame.showcase{
   background: #fff;
   border-color: var(--glass-border);
@@ -766,8 +775,8 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   }
 }
 
+/* Gentle pan/zoom on active slide */
 .dash-slider .slide.active img{
   transform: scale(1.01);
   transition: transform 6s ease-in-out;
 }
-
