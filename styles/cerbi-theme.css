@@ -780,3 +780,40 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   transform: scale(1.01);
   transition: transform 6s ease-in-out;
 }
+
+/* 1) Kill accidental horizontal overflow */
+html, body {
+  margin: 0;
+  max-width: 100%;
+  overflow-x: clip; /* use hidden if you need wider support */
+}
+
+/* 2) If you used 100vw anywhere, keep it from causing overflow */
+[class*="full-bleed"], .hero, .banner, section {
+  width: 100%; /* replace any width:100vw on content rows */
+}
+
+/* 3) Center the main content */
+body > header,
+body > main,
+body > footer,
+.container, .page {
+  width: min(1200px, 100%);
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+/* 4) Images & code should never force the page wider */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+pre, code {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 5) Let flex/grid children actually shrink instead of overflowing */
+:where(.row, .flex, .grid, [class*="grid"], [class*="flex"]) > * {
+  min-width: 0;
+}
