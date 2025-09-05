@@ -766,3 +766,8 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   }
 }
 
+.dash-slider .slide.active img{
+  transform: scale(1.01);
+  transition: transform 6s ease-in-out;
+}
+
