@@ -1241,6 +1241,51 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 })();
 </script>
 
+  <script>
+(() => {
+  const frame  = document.querySelector('#dashboards .img-frame');
+  const slider = document.getElementById('dashSlider');
+  if (!frame || !slider) return;
+
+  const slides = [...slider.querySelectorAll('.slide')];
+  const imgs   = slides.map(s => s.querySelector('img'));
+
+  // Build dots
+  const dotsBox = slider.querySelector('.dots');
+  dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+  const dots = [...dotsBox.querySelectorAll('button')];
+
+  // Store natural ratios as data-ratio when each image is ready
+  function stashRatio(img){
+    if (!img || !img.naturalWidth || !img.naturalHeight) return;
+    img.dataset.ratio = `${img.naturalWidth} / ${img.naturalHeight}`;
+  }
+  imgs.forEach(img => {
+    if (img.complete) stashRatio(img);
+    img.addEventListener('load', () => stashRatio(img), { once:true });
+  });
+
+  // Activate a slide and set the frame's aspect ratio to that image
+  let i = Math.max(0, slides.findIndex(s => s.classList.contains('active')));
+  function show(n){
+    slides.forEach((s,idx)=> s.classList.toggle('active', idx===n));
+    dots.forEach((d,idx)=>   d.classList.toggle('active', idx===n));
+    const img = slides[n].querySelector('img');
+    const r = img.dataset.ratio || (img.naturalWidth && img.naturalHeight
+              ? `${img.naturalWidth} / ${img.naturalHeight}` : null);
+    if (r) frame.style.setProperty('--ar', r);   // ← key line (uses real pixels)
+    i = n;
+  }
+
+  // Wire dots
+  dots.forEach((d,idx)=> d.addEventListener('click', ()=> show(idx)));
+
+  // Initial paint (after a tick so natural sizes exist)
+  requestAnimationFrame(()=> show(i));
+})();
+</script>
+
+
 
 </body>
 </html>
