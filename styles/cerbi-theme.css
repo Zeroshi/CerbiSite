@@ -817,3 +817,54 @@ pre, code {
 :where(.row, .flex, .grid, [class*="grid"], [class*="flex"]) > * {
   min-width: 0;
 }
+
+/* --- Global: safe horizontal overflow fix --- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: hidden; } /* use hidden instead of clip so shadows/rings aren't cut */
+
+/* --- Header / Navbar fixes --- */
+.site-header {            /* whatever your header element is */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;           /* not 100vw */
+  background: var(--panel, #0d1325);
+  border-bottom: 1px solid rgba(255,255,255,.08); /* replace any 100vw line pseudo-element */
+}
+.site-header::before,
+.site-header::after { display: none !important; } /* kills old full-bleed line if used */
+
+/* Center the content inside the header */
+.site-header > .container {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+}
+
+/* Row layout */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.navbar .brand { flex: 0 0 auto; }
+.navbar .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  min-width: 0;                 /* prevent overflow from long labels */
+}
+.navbar .spacer { flex: 1 1 auto; min-width: 0; } /* pushes actions to right */
+.navbar .actions {
+  display: flex;
+  gap: 12px;
+  flex: 0 0 auto;               /* keep buttons from stretching oddly */
+}
+.navbar .actions .btn { white-space: nowrap; } /* avoid wrapping "GitHub" pill */
+
+/* If a generic rule set section{ width:100%; } earlier, make sure header ignores it */
+.site-header { contain: paint; } /* isolates header visuals without affecting width */
+
+/* Images & icons never force horizontal scroll */
+img, svg { max-width: 100%; height: auto; }
+
