@@ -267,6 +267,20 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .img-cap{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 [data-theme="light"] .img-frame{ border-color: var(--glass-border); background: radial-gradient(120% 100% at 100% 0%, rgba(16,24,40,.06), transparent 60%), #fff; }
 
+/* Adaptive frame: use a CSS var we’ll set from JS */
+.img-frame{
+  --ar: 16/9;                 /* default fallback */
+  aspect-ratio: var(--ar);
+}
+
+/* Never crop dashboard shots */
+.img-frame img,
+.dash-slider img{
+  object-fit: contain;        /* was cover */
+  background:#0a0f1a;         /* subtle letterbox */
+}
+
+
 /* Why page gallery */
 .dash-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;width:100%;height:100%;padding:10px}
 .dash-shot{display:block;width:100%;height:100%;border-radius:14px;border:1px solid rgba(127,148,179,.22);background:rgba(255,255,255,.02);overflow:hidden;transition:transform .25s ease, box-shadow .25s ease}
