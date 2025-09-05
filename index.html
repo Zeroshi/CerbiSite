@@ -1241,7 +1241,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 })();
 </script>
 
-  <script>
+<script>
 (() => {
   const frame  = document.querySelector('#dashboards .img-frame');
   const slider = document.getElementById('dashSlider');
@@ -1250,12 +1250,12 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   const slides = [...slider.querySelectorAll('.slide')];
   const imgs   = slides.map(s => s.querySelector('img'));
 
-  // Build dots
+  // dots
   const dotsBox = slider.querySelector('.dots');
   dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
   const dots = [...dotsBox.querySelectorAll('button')];
 
-  // Store natural ratios as data-ratio when each image is ready
+  // stash natural ratio
   function stashRatio(img){
     if (!img || !img.naturalWidth || !img.naturalHeight) return;
     img.dataset.ratio = `${img.naturalWidth} / ${img.naturalHeight}`;
@@ -1265,25 +1265,32 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     img.addEventListener('load', () => stashRatio(img), { once:true });
   });
 
-  // Activate a slide and set the frame's aspect ratio to that image
+  // activate + set aspect ratio
   let i = Math.max(0, slides.findIndex(s => s.classList.contains('active')));
   function show(n){
     slides.forEach((s,idx)=> s.classList.toggle('active', idx===n));
     dots.forEach((d,idx)=>   d.classList.toggle('active', idx===n));
+
     const img = slides[n].querySelector('img');
     const r = img.dataset.ratio || (img.naturalWidth && img.naturalHeight
               ? `${img.naturalWidth} / ${img.naturalHeight}` : null);
-    if (r) frame.style.setProperty('--ar', r);   // ← key line (uses real pixels)
+    if (r) frame.style.setProperty('--ar', r);
     i = n;
+
+    /* 🔔 notify any layout hook to recompute height */
+    window.__cerbiResizeDash && window.__cerbiResizeDash();
   }
 
-  // Wire dots
   dots.forEach((d,idx)=> d.addEventListener('click', ()=> show(idx)));
 
-  // Initial paint (after a tick so natural sizes exist)
-  requestAnimationFrame(()=> show(i));
+  // initial paint + notify once
+  requestAnimationFrame(()=>{
+    show(i);
+    window.__cerbiResizeDash && window.__cerbiResizeDash();
+  });
 })();
 </script>
+
 
   <script>
 (() => {
@@ -1295,6 +1302,37 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 })();
 </script>
 
+<script>
+(function(){
+  const slider = document.getElementById('dashSlider');
+  if (!slider) return;
+
+  const slides = [...slider.querySelectorAll('.slide')];
+
+  function resizeDash(){
+    const activeImg = slider.querySelector('.slide.active img');
+    if (!activeImg) return;
+
+    // compute the rendered height of the active image at current width
+    const w = activeImg.clientWidth || slider.clientWidth;
+    const nh = activeImg.naturalHeight, nw = activeImg.naturalWidth;
+    const h = (nh && nw) ? Math.round(w * (nh / nw)) : activeImg.offsetHeight;
+
+    slider.style.height = h + 'px';
+  }
+
+  // run on load/resize and whenever the slide changes
+  window.addEventListener('resize', resizeDash);
+  slides.forEach(s => {
+    const img = s.querySelector('img');
+    if (img) img.addEventListener('load', resizeDash, {once:false});
+  });
+
+  // expose a hook you can call after you change slides
+  window.__cerbiResizeDash = resizeDash;
+  resizeDash();
+})();
+</script>
 
 
 </body>
