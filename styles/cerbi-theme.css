@@ -868,3 +868,36 @@ html, body { overflow-x: hidden; } /* use hidden instead of clip so shadows/ring
 /* Images & icons never force horizontal scroll */
 img, svg { max-width: 100%; height: auto; }
 
+/* Brand ↔ menu spacing */
+:root { --brand-gap: clamp(20px, 4vw, 64px); } /* tweak to taste */
+
+.site-header .navbar {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.5vw, 20px); /* internal spacing */
+}
+
+.site-header .navbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;                 /* icon + wordmark spacing */
+  margin-inline-end: var(--brand-gap); /* <-- main logo-to-menu gap */
+  flex: 0 0 auto;
+}
+
+.site-header .navbar .links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 24px;
+  row-gap: 8px;
+  min-width: 0;              /* prevents overflow */
+}
+
+.site-header .navbar .actions { flex: 0 0 auto; }
+
+/* Optional: tighten on smaller screens */
+@media (max-width: 900px) {
+  :root { --brand-gap: clamp(12px, 2.5vw, 28px); }
+}
+
+
