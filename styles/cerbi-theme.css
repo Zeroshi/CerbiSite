@@ -1100,3 +1100,99 @@ nav.site-nav > .container{
 /* Safety: no child forces horizontal scroll */
 :where(header.site-header, .site-header, nav.site-nav) *{ min-width: 0; }
 
+/* ========= Cerbi Header: grouped layout & full-bleed bar ========= */
+:root{
+  --nav-h: 72px;
+  --nav-bg: linear-gradient(180deg,#111a31 0%,#0d1730 60%,#0a1224 100%);
+  --nav-accent: rgba(255,77,0,.55);
+  --container-w: 1200px;
+  --container-pad: clamp(16px,4vw,32px);
+
+  --brand-gap: clamp(24px,5vw,96px);
+  --links-col-gap: clamp(18px,2.2vw,36px);
+  --links-row-gap: 10px;
+}
+
+/* Full-width bar */
+header.site-header, .site-header, nav.site-nav{
+  position: sticky; top: 0; z-index: 1000;
+  width: 100%;
+  background: var(--nav-bg);
+  box-shadow: inset 0 -2px 0 var(--nav-accent);
+}
+
+/* Grid: brand | links | actions  (works with .container or .nav-row) */
+:where(header.site-header, .site-header, nav.site-nav) > :is(.nav-row, .container){
+  max-width: var(--container-w);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  min-height: var(--nav-h);
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* brand | links | actions */
+  align-items: center;
+  column-gap: 16px;
+}
+
+/* --- Brand (left) --- */
+:where(header.site-header, .site-header, nav.site-nav) :is(.brand, .logo){
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-inline-end: var(--brand-gap);
+  white-space: nowrap;
+  grid-column: 1;
+}
+
+/* --- Menu (center block) --- */
+:where(header.site-header, .site-header, nav.site-nav) :is(.links, .nav-links){
+  grid-column: 2;                 /* center column */
+  margin-inline: auto;            /* center the whole block */
+  display: grid;
+  grid-auto-flow: column;         /* neat columns, two rows when wrapped */
+  grid-auto-columns: max-content;
+  grid-template-rows: repeat(2, auto);
+  column-gap: var(--links-col-gap);
+  row-gap: var(--links-row-gap);
+  justify-content: center;
+  align-content: center;
+  min-width: 0;
+}
+:where(header.site-header, .site-header, nav.site-nav) :is(.links, .nav-links) > *{
+  white-space: nowrap;
+}
+
+/* --- Actions (right) --- */
+:where(header.site-header, .site-header, nav.site-nav) :is(.actions, .nav-actions){
+  grid-column: 3;                  /* right column */
+  justify-self: end;
+  display: flex; align-items: center; gap: 12px;
+  white-space: nowrap;
+}
+
+/* Pretty <kbd> badges (for ⌘K / Ctrl K) */
+.kbd-badge kbd{
+  font: 600 12px/1.2 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(6px);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+/* Mobile: let links wrap naturally under the brand */
+@media (max-width: 1100px){
+  :where(header.site-header, .site-header, nav.site-nav) > :is(.nav-row, .container){
+    grid-template-columns: auto 1fr;          /* brand | (links+actions) */
+    grid-auto-rows: auto;
+  }
+  :where(header.site-header, .site-header, nav.site-nav) :is(.actions, .nav-actions){
+    grid-column: 2; justify-self: end;
+  }
+  :where(header.site-header, .site-header, nav.site-nav) :is(.links, .nav-links){
+    grid-column: 2; justify-content: flex-start; margin-inline: 0;
+  }
+}
+
+/* Safety: prevent bottom scrollbar */
+html, body{ overflow-x: hidden; }
+:where(header.site-header, .site-header, nav.site-nav) *{ min-width: 0; }
+
