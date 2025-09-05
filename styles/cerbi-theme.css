@@ -901,3 +901,74 @@ img, svg { max-width: 100%; height: auto; }
 }
 
 
+/* ===== Full-width menu bar with strong background ===== */
+:root{
+  --nav-h: 68px;
+  --nav-gap: clamp(20px, 5vw, 80px); /* logo → menu gap */
+  --nav-bg: linear-gradient(180deg, #0f1d3a 0%, #0c1831 60%, #0a1124 100%);
+  --nav-border: rgba(255,77,0,.45);
+}
+
+/* Treat the header/nav strip as a full-bleed bar */
+header, .site-header, nav.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;                  /* full page width (no 100vw) */
+  background: var(--nav-bg);
+  box-shadow: inset 0 -2px 0 var(--nav-border);
+}
+
+/* Center inner row but keep bar full width */
+header > .container,
+.site-header > .container,
+nav.site-nav > .container,
+header > .nav-inner,
+.site-header > .nav-inner {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 32px);
+  min-height: var(--nav-h);
+
+  /* robust layout even when links wrap to two rows */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 16px;
+}
+
+/* ===== Logo → menu spacing (works even when links wrap) ===== */
+header .brand, .site-header .brand, nav.site-nav .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;                     /* icon + wordmark spacing */
+}
+
+/* put a hard gap after the first column (the brand) */
+header > .container > :first-child,
+.site-header > .container > :first-child,
+nav.site-nav > .container > :first-child,
+header > .nav-inner > :first-child,
+.site-header > .nav-inner > :first-child {
+  margin-inline-end: var(--nav-gap);
+}
+
+/* Links block */
+header .links, .site-header .links, nav.site-nav .links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 28px;
+  row-gap: 8px;
+  min-width: 0;                  /* prevents overflow */
+}
+
+/* Right-side actions (Theme / GitHub / Contact) */
+header .actions, .site-header .actions, nav.site-nav .actions {
+  display: flex;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+/* Prevent any element from causing a bottom scrollbar */
+html, body { overflow-x: hidden; }
+:where(header, .site-header, nav.site-nav) * { min-width: 0; }
