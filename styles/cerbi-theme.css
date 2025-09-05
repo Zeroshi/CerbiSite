@@ -685,3 +685,37 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 }
 .nav.scrolled .nav-inner{ padding:10px 0; transition:padding .2s var(--easing) }
 
+/* ---------- FIX: scope the compact/scrolled state properly ---------- */
+
+/* Dark mode: compact state (neon glass) */
+[data-theme="dark"] .nav.scrolled{
+  background:
+    radial-gradient(110% 200% at 0% -70%, rgba(255,77,0,.10), transparent 60%),
+    radial-gradient(80% 200% at 100% -70%, rgba(95,140,255,.10), transparent 60%),
+    linear-gradient(180deg, rgba(6,12,24,.96), rgba(8,14,28,.88));
+  box-shadow: 0 14px 46px rgba(0,0,0,.55);
+}
+[data-theme="dark"] .nav.scrolled .nav-inner{
+  padding: 10px 0; transition: padding .2s var(--easing);
+}
+
+/* Light mode: keep it bright + elevated (no dark overlay) */
+[data-theme="light"] .nav{
+  background: rgba(255,255,255,.94);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 6px 24px rgba(2,10,24,.08);
+}
+[data-theme="light"] .nav.scrolled{
+  background: rgba(255,255,255,.98);
+  border-bottom-color: var(--glass-border);
+  box-shadow: 0 10px 30px rgba(2,10,24,.10);
+}
+[data-theme="light"] .nav.scrolled .nav-inner{
+  padding: 10px 0; transition: padding .2s var(--easing);
+}
+
+/* Optional: make sure any dark-only overlays stay dark-only */
+[data-theme="light"] .nav::before,
+[data-theme="light"] .nav::after{ content:none !important; }
+
+
