@@ -1285,6 +1285,16 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 })();
 </script>
 
+  <script>
+(() => {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  const on = () => nav.classList.toggle('scrolled', window.scrollY > 6);
+  on();
+  window.addEventListener('scroll', on, { passive: true });
+})();
+</script>
+
 
 
 </body>
