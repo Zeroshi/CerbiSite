@@ -1196,3 +1196,52 @@ header.site-header, .site-header, nav.site-nav{
 html, body{ overflow-x: hidden; }
 :where(header.site-header, .site-header, nav.site-nav) *{ min-width: 0; }
 
+
+/* Give the center column maximum breathing room */
+.site-header > .nav-row,
+header.site-header > .container,
+nav.site-nav > .container{
+  grid-template-columns: auto minmax(0,1fr) auto; /* brand | links | actions */
+}
+
+/* Compact, stacked actions (right side) */
+.site-header .actions,
+nav.site-nav .actions{
+  display: grid;
+  grid-template-columns: repeat(2, max-content); /* 2 columns */
+  grid-auto-rows: max-content;
+  gap: 10px 12px;               /* row x col gap */
+  justify-content: end;         /* stick to the right edge */
+  justify-items: end;           /* each button right-aligned */
+  align-content: center;
+  white-space: nowrap;
+}
+
+/* Slightly tighten padding to reduce width */
+.site-header .actions > *{
+  padding: 8px 12px;            /* adjust if your buttons use different tokens */
+}
+
+/* Hotkey badge (⌘K / Ctrl K) stays small */
+.kbd-badge kbd{ font-size: 12px; padding: 2px 6px; border-radius: 8px; }
+
+/* Ultra-wide: return to a single row */
+@media (min-width: 1440px){
+  .site-header .actions,
+  nav.site-nav .actions{
+    display: flex;
+    gap: 12px;
+  }
+}
+
+/* Tablet & down: stack vertically (one per row) */
+@media (max-width: 1100px){
+  .site-header .actions,
+  nav.site-nav .actions{
+    grid-template-columns: 1fr;  /* single column */
+    justify-items: end;
+    gap: 8px;
+  }
+}
+
+
