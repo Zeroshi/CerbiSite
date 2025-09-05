@@ -1334,6 +1334,20 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 })();
 </script>
 
+<script>
+  (function(){
+    const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    document.querySelectorAll('[data-command-palette]').forEach(btn => {
+      const badge = btn.querySelector('.hotkey');
+      if (!badge) return;
+      const label = isApple ? '⌘K' : 'Ctrl K';
+      badge.textContent = label;
+      btn.setAttribute('aria-label', (btn.getAttribute('aria-label') || 'Open command palette') + ' (' + label + ')');
+      btn.title = 'Open command palette (' + label + ')';
+    });
+  })();
+</script>
 
+  
 </body>
 </html>
