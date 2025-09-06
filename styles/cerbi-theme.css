@@ -2057,3 +2057,45 @@ html,body{ overflow-x:hidden; }
     radial-gradient(520px 520px at 82% 16%, rgba(120,160,255,.22), transparent 62%),
     radial-gradient(640px 640px at 50% 92%, rgba(255,138,0,.14), transparent 70%);
 }
+
+/* --- Mobile nav fix: overlay menu, no header stacking --- */
+@media (max-width: 900px){
+  /* keep header compact */
+  .nav .nav-inner{
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* brand | spacer | burger */
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* hide the right-side action row on phones (Theme/⌘K/Contact/GitHub).
+     These links still exist elsewhere (e.g., Contact in the menu). */
+  .nav .row{ display: none !important; }
+
+  /* ensure the hamburger is visible */
+  .mobile-only{ display: inline-flex !important; }
+
+  /* overlay panel for the main menu */
+  #primaryNav.nav-links{
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: calc(var(--nav-h, 68px) + 8px);
+    display: none !important;            /* closed by default */
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--panel);
+    border: 1px solid rgba(127,148,179,.25);
+    box-shadow: var(--shadow);
+    z-index: 1200;
+    max-height: calc(100vh - var(--nav-h, 68px) - 24px);
+    overflow: auto;
+  }
+  #primaryNav.nav-links.open{ display: flex !important; }
+
+  /* lock page scroll when menu is open */
+  body.menu-open{ overflow: hidden; }
+}
+
