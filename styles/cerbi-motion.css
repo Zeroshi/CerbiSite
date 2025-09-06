@@ -1,0 +1,98 @@
+/* ======================================================================
+   Cerbi Motion (additive) — soft orbs, gentle tile drift, veil parallax
+   Safe to include after your main theme. No content changes required.
+   ====================================================================== */
+
+/* --- Organic color orbs --- */
+.bg-orbs{
+  position: fixed;
+  inset: -10% -10% 0 -10%;
+  z-index: -3;
+  pointer-events: none;
+}
+.bg-orbs::before,
+.bg-orbs::after{
+  content: "";
+  position: absolute;
+  width: 42vw; height: 42vw;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .22;
+  mix-blend-mode: screen;
+}
+:root[data-theme="light"] .bg-orbs::before,
+:root[data-theme="light"] .bg-orbs::after{
+  mix-blend-mode: normal;
+  opacity: .12;
+}
+
+.bg-orbs::before{
+  background: radial-gradient(closest-side, rgba(255,77,0,.45), transparent 70%);
+  left: -8%; top: -6%;
+  animation: orb1 70s ease-in-out infinite alternate;
+}
+.bg-orbs::after{
+  background: radial-gradient(closest-side, rgba(120,160,255,.40), transparent 70%);
+  right: -6%; top: -10%;
+  animation: orb2 90s ease-in-out infinite alternate;
+}
+
+@keyframes orb1{
+  0%{ transform: translateY(0) scale(1) }
+  100%{ transform: translate(6vw, 4vh) scale(1.06) }
+}
+@keyframes orb2{
+  0%{ transform: translateY(0) scale(1) }
+  100%{ transform: translate(-5vw, 6vh) scale(1.08) }
+}
+
+/* --- Gentle drift on micro-grid tiles --- */
+.tiles::before{ animation: tilesPan 120s linear infinite; }
+.tiles::after { animation: tilesPan2 160s linear infinite; }
+
+@keyframes tilesPan{
+  0%{ background-position: 0 0, 0 0; }
+  100%{ background-position: 200px 200px, 0 0; }
+}
+@keyframes tilesPan2{
+  0%{ background-position: 0 0; }
+  100%{ background-position: -240px 0; }
+}
+
+/* --- Veil background slow parallax --- */
+.veil{ animation: veilDrift 80s ease-in-out infinite alternate; }
+@keyframes veilDrift{
+  0%{
+    background-position: 70% 18%;
+    filter: contrast(1.1) saturate(1.05) brightness(0.95);
+  }
+  100%{
+    background-position: 65% 22%;
+    filter: contrast(1.08) saturate(1.02) brightness(0.98);
+  }
+}
+
+/* --- Pointer spotlight already in your DOM; keep it snappy --- */
+.spotlight{
+  background: radial-gradient(
+    420px 420px at var(--mx,50vw) var(--my,50vh),
+    rgba(120,160,255,.10), transparent 60%
+  );
+  mix-blend-mode: screen;
+  transition: background .06s linear;
+}
+
+/* --- Pop-art: cheaper off-screen rendering hint --- */
+.popart-slide{
+  content-visibility: auto;
+  contain-intrinsic-size: 800px 450px;
+}
+
+/* --- Respect reduced motion --- */
+@media (prefers-reduced-motion: reduce){
+  .bg-orbs::before,
+  .bg-orbs::after,
+  .tiles::before,
+  .tiles::after,
+  .veil{ animation: none !important; }
+}
