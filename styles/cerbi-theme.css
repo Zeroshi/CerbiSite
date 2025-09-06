@@ -1626,3 +1626,67 @@ html, body{ overflow-x: hidden; }
 /* Safety */
 html,body{ overflow-x:hidden; }
 
+/* --- Cerbi nav: distinct menu band + stacked actions (works with .nav/.nav-inner/.nav-links) --- */
+
+/* 1) Menu band to visually separate the main menu from the header */
+.nav .nav-links{
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: clamp(18px, 2.2vw, 36px);
+  row-gap: 10px;
+  justify-content: center;
+}
+.nav .nav-links::before{
+  content:"";
+  position:absolute; inset:-6px -10px;
+  border-radius:12px;
+  background: var(--menu-chip-bg, rgba(255,255,255,.04));
+  border: 1px solid var(--menu-chip-border, rgba(255,255,255,.10));
+  backdrop-filter: blur(4px);
+  z-index:-1;
+}
+/* light theme band */
+:root[data-theme="light"] .nav .nav-links::before{
+  background: var(--menu-chip-bg, rgba(2,6,23,.04));
+  border-color: var(--menu-chip-border, rgba(2,6,23,.10));
+}
+/* mobile menu already has its own panel */
+@media (max-width: 820px){
+  .nav .nav-links::before{ display:none; }
+}
+
+/* 2) Stack the right-side actions: utilities on top, CTAs below */
+/* Target the actual container you have: .nav-inner > .row (inline flex previously) */
+.nav .nav-inner > .row{
+  display: grid !important; /* beat the inline style */
+  grid-template-columns: repeat(2, max-content);
+  grid-template-rows: repeat(2, max-content);
+  gap: 8px 12px;            /* row x column gap */
+  justify-content: end;
+  justify-items: end;
+  align-content: center;
+  white-space: nowrap;
+}
+/* place items by order: Theme, ⌘K, Contact, GitHub */
+.nav .nav-inner > .row > :nth-child(1){ grid-column:1; grid-row:1; }
+.nav .nav-inner > .row > :nth-child(2){ grid-column:2; grid-row:1; }
+.nav .nav-inner > .row > :nth-child(3){ grid-column:1; grid-row:2; }
+.nav .nav-inner > .row > :nth-child(4){ grid-column:2; grid-row:2; }
+
+/* make utilities (Theme + ⌘K) smaller without touching the mobile hamburger */
+.nav .nav-inner > .row .theme-toggle{
+  font-size:12.5px; padding:6px 10px; border-radius:10px;
+}
+/* keep CTAs chunky */
+.nav .nav-inner > .row .btn{ font-weight:700; }
+
+/* 3) Ensure layout columns: brand | links | actions, with max room for links */
+.nav .nav-inner{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+
