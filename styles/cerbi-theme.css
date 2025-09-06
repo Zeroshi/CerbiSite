@@ -1244,4 +1244,80 @@ nav.site-nav .actions{
   }
 }
 
+/* ===== Professional header layout ===== */
+
+/* Full-width bar + centered row (keep what you have if already set) */
+.site-header{
+  position: sticky; top: 0; z-index: 1000;
+  width: 100%;
+  background: linear-gradient(180deg,#111a31 0%,#0d1730 60%,#0a1224 100%);
+  box-shadow: inset 0 -2px 0 rgba(255,77,0,.55);
+}
+.site-header > .nav-row,
+.site-header > .container{
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(16px,4vw,32px);
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto; /* brand | links | actions */
+  align-items: center;
+  column-gap: 16px;
+}
+
+/* Brand (left) with comfortable gap to menu */
+.site-header .brand{
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-inline-end: clamp(24px,5vw,96px);
+  white-space: nowrap;
+}
+
+/* Menu (center) — simple, balanced wrap */
+.site-header .links{
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: clamp(18px, 2.2vw, 36px);
+  row-gap: 10px;
+  justify-content: center;   /* keep the block centered */
+  align-content: center;
+  min-width: 0;
+}
+.site-header .links > *{ white-space: nowrap; }
+
+/* Actions (right) — single, compact row */
+.site-header .actions{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* Trim button padding slightly so the row stays narrow */
+.site-header .actions > *{
+  padding: 8px 12px; /* adjust if you have tokens */
+}
+
+/* RESPONSIVE PRIORITY:
+   On medium screens hide Theme; on tighter screens hide Theme + ⌘K.
+   (Assumes actions order: [Theme][⌘K][Contact][GitHub]) */
+@media (max-width: 1400px){
+  .site-header .actions > :nth-child(1){ display: none; } /* hide Theme */
+}
+@media (max-width: 1260px){
+  .site-header .actions > :nth-child(2){ display: none; } /* hide ⌘K */
+}
+
+/* Mobile: let menu left-align next to actions; actions stay a tiny row */
+@media (max-width: 1100px){
+  .site-header > .nav-row,
+  .site-header > .container{
+    grid-template-columns: auto 1fr;         /* brand | (links+actions) */
+  }
+  .site-header .links{ justify-content: flex-start; }
+  .site-header .actions{ justify-self: end; }
+}
+
+/* Safety: prevent accidental horizontal scroll */
+html, body{ overflow-x: hidden; }
+:where(.site-header) *{ min-width: 0; }
 
