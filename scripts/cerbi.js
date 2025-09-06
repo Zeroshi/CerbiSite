@@ -1,12 +1,66 @@
+/* ==========================================================================
+   - Fixes theme init/toggle (syncs head script key + meta theme-color)
+   - Adds robust mobile nav (open/close, scroll lock, outside click, ESC)
+   - Keeps all existing functionality intact
+   ========================================================================== */
+
 /* ===== Utilities ===== */
 const qs  = (sel, el=document)=>el.querySelector(sel);
 const qsa = (sel, el=document)=>[...el.querySelectorAll(sel)];
-const setTheme = t => {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('cerbi-theme', t);
+
+/* ===== Theme helpers (migrate + sync) ===== */
+const THEME_KEY   = 'cerbi-theme'; // this file’s key
+const LEGACY_KEY  = 'theme';       // key used in the inline <head> script
+const getSysTheme = () => matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+function setTheme(t, {persist = true, fromUser = false} = {}) {
+  const theme = (t === 'light' || t === 'dark') ? t : getSysTheme();
+  document.documentElement.setAttribute('data-theme', theme);
+
+  // keep both keys in sync so the <head> boot script and this file agree
+  if (persist) {
+    localStorage.setItem(THEME_KEY, theme);
+    localStorage.setItem(LEGACY_KEY, theme);
+  }
+
+  // update meta theme-color to match UI chrome on mobile
   const meta = qs('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224');
-};
+  if (meta) meta.setAttribute('content', theme === 'light' ? '#ffffff' : '#0a1224');
+
+  // let dependents (e.g., sky canvas) react if they want
+  window.dispatchEvent(new CustomEvent('cerbi:theme', { detail: { theme, fromUser } }));
+}
+
+/* ===== Initial theme boot (migrate legacy key if needed) ===== */
+(() => {
+  const saved = localStorage.getItem(THEME_KEY) || localStorage.getItem(LEGACY_KEY);
+  // If only legacy exists, copy to our key too (but keep legacy for the head script)
+  if (saved && !localStorage.getItem(THEME_KEY)) {
+    localStorage.setItem(THEME_KEY, saved);
+  }
+  setTheme(saved || getSysTheme(), { persist: !saved }); // persist only if first run
+})();
+
+/* Follow system changes ONLY if the user hasn't explicitly toggled */
+(() => {
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const onChange = e => {
+    const userSet = !!localStorage.getItem(THEME_KEY);
+    if (!userSet) setTheme(e.matches ? 'dark' : 'light', { persist: false });
+  };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else mq.addListener(onChange); // Safari
+})();
+
+/* Cross-tab/theme sync */
+window.addEventListener('storage', e => {
+  if (e.key === THEME_KEY || e.key === LEGACY_KEY) {
+    const val = e.newValue;
+    if (val && (val === 'light' || val === 'dark')) {
+      setTheme(val, { persist: false });
+    }
+  }
+});
 
 /* ===== Sticky progress ===== */
 (() => {
@@ -23,20 +77,72 @@ const setTheme = t => {
 
 /* ===== Theme toggle (persisted) ===== */
 (() => {
-  const saved = localStorage.getItem('cerbi-theme');
-  if (saved) setTheme(saved);
   qs('#themeBtn')?.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-    setTheme(cur === 'dark' ? 'light' : 'dark');
+    const cur = document.documentElement.getAttribute('data-theme') || getSysTheme();
+    const next = cur === 'dark' ? 'light' : 'dark';
+    setTheme(next, { persist: true, fromUser: true });
   });
 })();
 
-/* ===== Mobile nav ===== */
-qs('#navToggle')?.addEventListener('click', () => {
+/* ===== Mobile nav (robust) ===== */
+(() => {
+  const toggleBtn = qs('#navToggle');
   const nav = qs('#primaryNav');
-  const open = nav.classList.toggle('open');
-  qs('#navToggle').setAttribute('aria-expanded', String(open));
-});
+  if (!toggleBtn || !nav) return;
+
+  const openClass = 'open';          // applied to #primaryNav
+  const scrollLockClass = 'menu-open'; // applied to <html> for scroll lock (CSS should handle)
+
+  const isOpen = () => nav.classList.contains(openClass);
+  const setExpanded = (v) => toggleBtn.setAttribute('aria-expanded', String(!!v));
+
+  function openMenu() {
+    nav.classList.add(openClass);
+    document.documentElement.classList.add(scrollLockClass);
+    setExpanded(true);
+    // focus first link for a11y
+    const firstLink = nav.querySelector('a,button');
+    firstLink && firstLink.focus({ preventScroll: true });
+  }
+  function closeMenu() {
+    nav.classList.remove(openClass);
+    document.documentElement.classList.remove(scrollLockClass);
+    setExpanded(false);
+  }
+  function toggleMenu() { isOpen() ? closeMenu() : openMenu(); }
+
+  toggleBtn.addEventListener('click', toggleMenu);
+
+  // Close when clicking a nav link (anchor navigation)
+  nav.addEventListener('click', e => {
+    const a = e.target.closest('a');
+    if (a) closeMenu();
+  });
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    if (!isOpen()) return;
+    const withinNav = e.target.closest('#primaryNav');
+    const withinButton = e.target.closest('#navToggle');
+    if (!withinNav && !withinButton) closeMenu();
+  });
+
+  // Escape to close
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && isOpen()) closeMenu();
+  });
+
+  // On resize to desktop, ensure menu is reset
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', () => {
+    const w = window.innerWidth;
+    // if crossing typical mobile breakpoint, reset
+    if ((lastW <= 900 && w > 900) || (lastW > 900 && w <= 900)) {
+      closeMenu();
+    }
+    lastW = w;
+  }, { passive: true });
+})();
 
 /* ===== Command palette (optional demo) ===== */
 (() => {
@@ -111,11 +217,15 @@ qsa('[data-copy]').forEach(btn=>{
   els.forEach(el=>obs.observe(el));
 })();
 
-/* ===== Spotlight follow ===== */
-document.addEventListener('pointermove', e=>{
-  document.documentElement.style.setProperty('--mx', e.clientX+'px');
-  document.documentElement.style.setProperty('--my', e.clientY+'px');
-}, {passive:true});
+/* ===== Spotlight follow (skip on touch) ===== */
+(() => {
+  if (matchMedia('(pointer: coarse)').matches) return;
+  document.addEventListener('pointermove', e=>{
+    const R = document.documentElement.style;
+    R.setProperty('--mx', e.clientX+'px');
+    R.setProperty('--my', e.clientY+'px');
+  }, {passive:true});
+})();
 
 /* ===== Random bottom illustration loader ===== */
 (() => {
@@ -147,6 +257,8 @@ document.addEventListener('pointermove', e=>{
     slides.forEach((s,j)=>s.classList.toggle('active', j===i));
     dots.forEach((d,j)=>d.classList.toggle('active', j===i));
     idx = i;
+    // Resize hook if present
+    window.__cerbiResizeDash && window.__cerbiResizeDash();
   }
   function next(){ show((idx+1)%slides.length); }
   function start(){ stop(); timer = setInterval(next, 5200); }
@@ -266,8 +378,6 @@ document.addEventListener('pointermove', e=>{
   io.observe(contact);
 })();
 
-
-
 /* ===== Cerbi pop-art rotator v2 =====
    - Looks for assets/popart/popart-01..50.(png|jpg|jpeg|webp)
    - Randomizes order & starting slide
@@ -338,4 +448,3 @@ document.addEventListener('pointermove', e=>{
     });
   }
 })();
-
