@@ -2032,3 +2032,28 @@ html,body{ overflow-x:hidden; }
   transition: background .06s linear;
 }
 
+/* Light theme: lift the decorative backgrounds so they don't vanish on white */
+:root[data-theme="light"] .veil{
+  opacity: .14;                 /* was .06 — too faint on white */
+  mix-blend-mode: normal;
+  filter: none;
+}
+:root[data-theme="light"] .bg-orbs{
+  opacity: .18;                 /* gentle but visible */
+  mix-blend-mode: multiply;     /* looks natural over light backgrounds */
+  filter: saturate(1.05) contrast(1.05) blur(60px);
+}
+
+/* Safety: if cerbi-motion.css didn't load, ensure .bg-orbs renders */
+.bg-orbs{
+  position: fixed;
+  inset: 0;
+  z-index: -3;                  /* sits above .sky, below content */
+  pointer-events: none;
+  opacity: .28;
+  filter: blur(60px) saturate(1.1);
+  background:
+    radial-gradient(420px 420px at 18% 22%, rgba(255,77,0,.22), transparent 60%),
+    radial-gradient(520px 520px at 82% 16%, rgba(120,160,255,.22), transparent 62%),
+    radial-gradient(640px 640px at 50% 92%, rgba(255,138,0,.14), transparent 70%);
+}
