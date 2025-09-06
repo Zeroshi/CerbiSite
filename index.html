@@ -72,6 +72,12 @@
     }
   </style>
 
+    <script>
+    const saved = localStorage.getItem('theme');
+    const sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', saved || sys);
+  </script>
+
   <!-- A11Y/PERF ADD: respect reduced motion globally -->
   <style>
     @media (prefers-reduced-motion: reduce){
@@ -1346,6 +1352,71 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       btn.title = 'Open command palette (' + label + ')';
     });
   })();
+</script>
+
+  <!-- vendor libs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+
+<!-- your site JS (pointer spotlight + popart lazy + veil defer) -->
+<script defer>
+/* pointer spotlight */
+(() => {
+  if (matchMedia('(pointer: coarse)').matches) return;
+  const R = document.documentElement.style;
+  addEventListener('pointermove', e => {
+    R.setProperty('--mx', e.clientX + 'px');
+    R.setProperty('--my', e.clientY + 'px');
+  }, { passive: true });
+})();
+
+/* pop-art lazy init */
+(() => {
+  const section = document.getElementById('hero-art');
+  const root = document.getElementById('sigRotator');
+  const urls = (window.cerbiSigImages || []);
+  if (!root || !urls.length) return;
+
+  const mount = () => {
+    urls.forEach((url, i) => {
+      const img = new Image();
+      img.width = 1600; img.height = 900;
+      img.decoding = 'async';
+      img.loading = i ? 'lazy' : 'eager';
+      if ('fetchPriority' in img) img.fetchPriority = i ? 'low' : 'high';
+      if (i) img.dataset.src = url; else { img.src = url; img.className = 'show'; }
+      root.appendChild(img);
+    });
+    const lazy = [...root.querySelectorAll('img[data-src]')];
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { const i = e.target; i.src = i.dataset.src; i.removeAttribute('data-src'); io.unobserve(i); }
+      }), { rootMargin: '300px' });
+      lazy.forEach(i => io.observe(i));
+    } else {
+      requestIdleCallback?.(() => lazy.forEach(i => i.src = i.dataset.src)) ||
+      setTimeout(() => lazy.forEach(i => i.src = i.dataset.src), 800);
+    }
+  };
+
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(es => {
+      if (es.some(e => e.isIntersecting)) { obs.disconnect(); mount(); }
+    }, { rootMargin: '400px' });
+    obs.observe(section || root);
+  } else {
+    addEventListener('load', mount, { once:true });
+  }
+})();
+
+/* defer heavy .veil background */
+addEventListener('load', () => {
+  const v = document.querySelector('.veil');
+  if (!v) return;
+  v.style.backgroundImage = 'image-set(' +
+    'url("assets/nebula-1920.jpg") 1x,' +
+    'url("assets/nebula-2560.jpg") 2x,' +
+    'url("assets/nebula-3840.jpg") 3x)';
+});
 </script>
 
   
