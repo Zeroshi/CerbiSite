@@ -1689,4 +1689,64 @@ html,body{ overflow-x:hidden; }
   gap: 16px;
 }
 
+/* === Make middle nav links look like buttons === */
+.nav .nav-links a{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(127,148,179,.25);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,0));
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .01em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: background .18s var(--easing), border-color .18s var(--easing),
+              box-shadow .18s var(--easing), transform .06s ease-out, color .18s var(--easing);
+}
+.nav .nav-links a:hover{
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+  text-decoration: none;
+}
+.nav .nav-links a:active{ transform: translateY(1px); }
+
+/* Keyboard focus ring */
+.nav .nav-links a:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.20), 0 0 0 4px var(--ring);
+}
+
+/* Active/current page/section */
+.nav .nav-links a.is-active,
+.nav .nav-links a[aria-current="page"],
+.nav .nav-links a[aria-current="true"],
+.nav .nav-links a[aria-current="section"],
+.nav .nav-links a[data-active="true"]{
+  background: linear-gradient(180deg, rgba(255,77,0,.18), rgba(255,77,0,.08));
+  border-color: rgba(255,77,0,.45);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(255,77,0,.25);
+}
+
+/* Light theme polish */
+:root[data-theme="light"] .nav .nav-links a{
+  background: #fff;
+  border-color: var(--glass-border);
+  box-shadow: 0 1px 0 rgba(255,255,255,.8);
+  color: var(--text);
+}
+:root[data-theme="light"] .nav .nav-links a:hover{
+  background: #f7f9fc;
+}
+:root[data-theme="light"] .nav .nav-links a.is-active,
+:root[data-theme="light"] .nav .nav-links a[aria-current],
+:root[data-theme="light"] .nav .nav-links a[data-active="true"]{
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+  text-shadow: none;
+}
+
 
