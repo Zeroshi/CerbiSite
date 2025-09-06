@@ -1917,3 +1917,38 @@ html,body{ overflow-x:hidden; }
 .nav .nav-inner > .row > :nth-child(3){ grid-column:1; grid-row:2; } /* Contact */
 .nav .nav-inner > .row > :nth-child(4){ grid-column:2; grid-row:2; } /* GitHub  */
 
+/* Ecosystem table – make the Status column fit pills correctly */
+.table{
+  table-layout: auto;   /* let the browser size columns by content */
+}
+
+/* Reserve space for the Status column and prevent wrapping */
+.table th:nth-child(2),
+.table td:nth-child(2){
+  width: 170px;          /* tweak if your longest label changes */
+  min-width: 150px;
+  max-width: 220px;
+  white-space: nowrap;   /* keep the pill to a single line */
+}
+
+/* Keep the pill height consistent and centered */
+.table td:nth-child(2){
+  vertical-align: middle;
+}
+.table td:nth-child(2) .pill{
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;        /* no double-line vertical bloat */
+  padding: 6px 10px;     /* a touch taller for readability */
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* Slightly tighten longer labels so they still fit */
+.table td:nth-child(2) .pill.beta,
+.table td:nth-child(2) .pill.planned{
+  font-size: 11.5px;
+  padding: 6px 10px;
+}
+
+
