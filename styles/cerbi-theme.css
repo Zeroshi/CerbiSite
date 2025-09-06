@@ -1865,3 +1865,55 @@ html,body{ overflow-x:hidden; }
   box-shadow: 0 8px 24px rgba(2,10,24,.08);
 }
 
+/* --- FIX: prevent overlap between menu pills and right actions --- */
+
+/* Middle column gets true wrapping */
+.nav .nav-links{
+  display: flex !important;           /* override any grid rules */
+  flex-wrap: wrap;
+  gap: 12px 18px;                     /* row x column gap */
+  justify-content: center;            /* or flex-start if you prefer */
+  align-content: center;
+  max-width: 100%;
+  min-width: 0;
+  padding-right: clamp(8px, 2vw, 24px); /* breathing room near actions */
+}
+.nav .nav-links a{ flex: 0 0 auto; }  /* keep pills from stretching */
+
+/* Keep the grid: brand | links | actions */
+.nav .nav-inner{
+  display: grid;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+/* When width is tighter, move the actions below the menu (no collisions) */
+@media (max-width: 1260px){
+  .nav .nav-inner{
+    grid-template-columns: auto 1fr;       /* brand | links */
+    grid-auto-rows: auto;
+  }
+  .nav .nav-inner > .row{
+    grid-column: 1 / -1;                   /* actions on their own line */
+    justify-self: end;
+    margin-top: 6px;
+  }
+}
+
+/* Keep your stacked actions layout */
+.nav .nav-inner > .row{
+  display: grid !important;
+  grid-template-columns: repeat(2, max-content);
+  grid-template-rows: repeat(2, max-content);
+  gap: 8px 12px;
+  justify-content: end;
+  justify-items: end;
+  align-content: center;
+  white-space: nowrap;
+}
+.nav .nav-inner > .row > :nth-child(1){ grid-column:1; grid-row:1; } /* Theme */
+.nav .nav-inner > .row > :nth-child(2){ grid-column:2; grid-row:1; } /* ⌘K    */
+.nav .nav-inner > .row > :nth-child(3){ grid-column:1; grid-row:2; } /* Contact */
+.nav .nav-inner > .row > :nth-child(4){ grid-column:2; grid-row:2; } /* GitHub  */
+
