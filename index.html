@@ -1425,6 +1425,41 @@ addEventListener('load', () => {
 });
 </script>
 
+  <script>
+(() => {
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  const navToggle = document.getElementById('navToggle');
+  const primaryNav = document.getElementById('primaryNav');
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+  function setTheme(mode){
+    root.setAttribute('data-theme', mode);
+    localStorage.setItem('theme', mode);
+    if (metaTheme) metaTheme.setAttribute('content', mode === 'dark' ? '#0a1224' : '#f7fafc');
+  }
+
+  // initialize from saved/system on first paint (if your early <script> ran already, this keeps it in sync)
+  (function initTheme(){
+    const saved = localStorage.getItem('theme');
+    const sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    setTheme(saved || sys);
+  })();
+
+  // click: toggle theme
+  themeBtn?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+  });
+
+  // mobile menu toggle
+  navToggle?.addEventListener('click', () => {
+    const open = primaryNav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
+
   
 </body>
 </html>
