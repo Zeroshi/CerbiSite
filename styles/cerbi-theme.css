@@ -1397,3 +1397,78 @@ html, body{ overflow-x: hidden; }
 /* Safety: prevent accidental horizontal scroll */
 html, body{ overflow-x: hidden; }
 :where(.site-header) *{ min-width: 0; }
+
+
+/* ===== Right-side actions: utilities on top, CTAs below ===== */
+
+/* Keep center column roomy */
+.site-header > .nav-row,
+.site-header > .container{
+  grid-template-columns: auto minmax(0,1fr) auto; /* brand | links | actions */
+}
+
+/* Two-row, two-column grid for actions */
+.site-header .actions{
+  display: grid;
+  grid-template-columns: repeat(2, max-content); /* 2 columns */
+  grid-auto-rows: max-content;
+  gap: 8px 12px;                 /* row x col gap */
+  justify-content: end;          /* hug right edge */
+  justify-items: end;
+  align-content: center;
+  white-space: nowrap;
+}
+
+/* ---------- Size + placement ---------- */
+/* If you can add classes, use:
+   <button class="btn utility">Theme</button>
+   <button class="btn utility">⌘K</button>
+   <button class="btn cta">Contact</button>
+   <button class="btn cta">GitHub</button>
+*/
+.site-header .actions > .utility{
+  font-size: 12.5px;
+  padding: 6px 10px;             /* smaller pills */
+  border-radius: 10px;
+}
+.site-header .actions > .cta{
+  font-size: 15px;
+  padding: 10px 14px;            /* larger CTAs */
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* Fallback if you can't add classes: assumes order = Theme, K, Contact, GitHub */
+.site-header .actions > :nth-child(1),
+.site-header .actions > :nth-child(2){  /* Theme + K (top row, smaller) */
+  font-size: 12.5px; padding: 6px 10px; border-radius: 10px;
+}
+
+/* Explicit grid placement to ensure stacking regardless of intrinsic sizes */
+.site-header .actions > :nth-child(1){ grid-column: 1; grid-row: 1; } /* Theme */
+.site-header .actions > :nth-child(2){ grid-column: 2; grid-row: 1; } /* K */
+.site-header .actions > :nth-child(3){ grid-column: 1; grid-row: 2; } /* Contact */
+.site-header .actions > :nth-child(4){ grid-column: 2; grid-row: 2; } /* GitHub */
+
+/* Make the hotkey badge compact */
+.kbd-badge kbd{ font-size: 12px; padding: 2px 6px; border-radius: 8px; }
+
+/* Optional: on very wide screens you can put all four on one row */
+@media (min-width: 1500px){
+  .site-header .actions{
+    grid-template-columns: repeat(4, max-content);
+    grid-auto-flow: column;
+    gap: 12px;
+  }
+  .site-header .actions > :nth-child(n){
+    grid-row: auto; grid-column: auto; /* let them flow in one line */
+  }
+}
+
+/* Mobile: keep actions compact and right-aligned */
+@media (max-width: 1100px){
+  .site-header .actions{
+    grid-template-columns: repeat(2, max-content);
+    gap: 8px 10px;
+  }
+}
