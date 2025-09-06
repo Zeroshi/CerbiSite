@@ -40,6 +40,9 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full" />
+  <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
+
+  
 
   <!-- Accent highlights + full-bleed art (kept tiny & self-contained) -->
   <style>
@@ -118,12 +121,14 @@
   <!-- A11Y ADD: skip to content -->
   <a href="#main" class="visually-hidden-focusable">Skip to content</a>
 
-  <!-- Background stack -->
-  <div class="tiles" aria-hidden="true"></div>
-  <canvas id="sky" class="sky" aria-hidden="true"></canvas>
-  <div class="veil" aria-hidden="true"></div>
-  <div id="bg-illustration" class="bg-illustration" aria-hidden="true"></div>
-  <div class="spotlight" aria-hidden="true"></div>
+<!-- Background stack -->
+<div class="tiles" aria-hidden="true"></div>
+<canvas id="sky" class="sky" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="bg-orbs" aria-hidden="true"></div>
+<div id="bg-illustration" class="bg-illustration" aria-hidden="true"></div>
+<div class="spotlight" aria-hidden="true"></div>
+
 
   <!-- Ribbon -->
   <div class="ribbon ribbon-beta" role="status">
@@ -1133,7 +1138,8 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <!-- Scripts -->
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
-
+  <script src="scripts/cerbi-motion.js" defer></script>
+  
   <!-- Pop-art rotator (unchanged) -->
  <script>
 /* Lazy pop-art rotator: initializes when #hero-art appears */
