@@ -85,6 +85,21 @@
     }
   </style>
 
+  <!-- Subtle polish styles: progress, sheen, anchor offset -->
+  <style>
+    #progress{position:fixed;left:0;top:0;height:3px;width:var(--progress,0%);background:linear-gradient(90deg,var(--accent),#ffb380);box-shadow:0 0 10px rgba(255,77,0,.3);z-index:1000;transition:width .12s ease-out}
+    .btn.btn-primary{position:relative;overflow:hidden}
+    .btn.btn-primary::before{content:"";position:absolute;top:-120%;left:-60%;width:45%;height:340%;background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.35) 50%,transparent 100%);transform:translateX(-120%) rotate(25deg);transition:transform .6s ease;pointer-events:none}
+    .btn.btn-primary:hover::before{transform:translateX(260%) rotate(25deg)}
+    section[id]{scroll-margin-top:72px}
+    @media (prefers-reduced-motion: reduce){
+      #progress{transition:none}
+      .btn.btn-primary::before{display:none}
+    }
+  </style>
+
+  <!-- Removed Chart.js: not used -->
+
   <!-- Structured Data ADD: Organization -->
   <script type="application/ld+json">
   {
@@ -703,56 +718,242 @@ dotnet add package Cerbi.Serilog.GovernanceAnalyzer
           </details>
         </article>
 
-        <!-- Core + Runtime -->
+        <!-- Cerbi.Governance.Runtime -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
+          <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener noreferrer">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
+            <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
+            <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
+          </ul>
+        </article>
+
+        <!-- Cerbi.Governance.Core -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
+          <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener noreferrer">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
+            <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
+            <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
+          </ul>
+        </article>
+
+      </div>
+
+      <div class="space"></div>
+
+      <!-- Quick copy: all installs -->
+      <div class="glass reveal" style="padding:16px">
+        <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
+        <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
+dotnet add package CerbiStream.GovernanceAnalyzer
+dotnet add package Cerbi.MEL.Governance
+dotnet add package Cerbi.Governance.Core
+dotnet add package Cerbi.Governance.Runtime
+dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
+        <button class="btn" data-copy="#pkgInstall">Copy</button>
+      </div>
+    </section>
+
+    <!-- REPOSITORIES -->
+    <section id="repos" class="container section">
+      <div class="eyebrow">Open source</div>
+      <h2>📦 <span class="hl">Cerbi</span> Repositories</h2>
+      <p class="lead">Open-source packages with a shared governance core. Pick what you need; stay portable.</p>
+
+      <div class="grid">
+        <!-- CerbiStream -->
         <article class="col-6 glass tilt reveal" style="padding:16px">
           <div class="glare"></div>
           <div class="card-head">
-            <h3>Cerbi.Governance.Core & Runtime</h3>
+            <h3>CerbiStream</h3>
             <span class="pill ok">GA</span>
           </div>
-          <p class="muted">Shared governance models, enums, and runtime engine used by analyzers and plugins.</p>
+          <p class="muted">Core .NET structured logger with governance hooks, encryption, and resilient file fallback.</p>
 
           <div class="badges">
-            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=Core"/>
-            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=Runtime"/>
+            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream?logo=nuget&label="/>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream?label="/>
+            <img alt="GitHub stars" src="https://img.shields.io/github/stars/Zeroshi/Cerbi-CerbiStream?style=social"/>
           </div>
 
           <ul class="list">
-            <li><strong>Contracts:</strong> <code>GovernanceRuleSet</code>, <code>RuleViolation</code>, <code>ICustomGovernancePlugin</code></li>
-            <li><strong>Runtime:</strong> Executes profile rules, emits violation metadata, supports relax-mode</li>
-            <li><strong>Targets:</strong> .NET Standard 2.1 / .NET 6+</li>
+            <li><strong>Features:</strong> Structured JSON logs, AES/Base64 encryption, <code>WithFileFallback()</code>, live profile reload</li>
+            <li><strong>Governance:</strong> Required/Forbidden fields, redaction, tagging, relax-mode bypass</li>
+            <li><strong>Compatibility:</strong> .NET 6/7/8; Serilog/NLog/MEL via adapters</li>
           </ul>
 
           <details class="glass" style="padding:12px;border-radius:12px">
-            <summary><strong>Install</strong></summary>
+            <summary><strong>Install & Configure</strong></summary>
             <pre class="codeblock"><code>
-dotnet add package Cerbi.Governance.Core
-dotnet add package Cerbi.Governance.Runtime
+// Install
+dotnet add package CerbiStream
+
+// Program.cs (MEL)
+using CerbiStream;
+var logger = LoggerFactory.Create(b =>
+{
+  b.AddCerbiStream(o =>
+  {
+    o.WithFileFallback();
+    o.UseGovernance("cerbi_governance.json");
+  });
+}).CreateLogger&lt;Program&gt;();
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             </code></pre>
             <button class="btn" data-copy="#repos code">Copy</button>
           </details>
 
           <p style="margin-top:10px">
-            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener noreferrer">Core NuGet →</a> ·
-            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener noreferrer">Runtime NuGet →</a>
+            <a href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener noreferrer">GitHub →</a> ·
+            <a href="https://www.nuget.org/packages/CerbiStream/" target="_blank" rel="noopener noreferrer">NuGet →</a>
           </p>
         </article>
 
-        <!-- CerbiShield -->
-        <article class="col-12 glass tilt reveal" style="padding:16px">
+        <!-- CerbiStream.GovernanceAnalyzer -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
           <div class="glare"></div>
           <div class="card-head">
-            <h3>CerbiShield (Dashboard + APIs)</h3>
-            <span class="pill beta">Beta</span>
+            <h3>CerbiStream.GovernanceAnalyzer</h3>
+            <span class="pill ok">GA</span>
           </div>
-          <p class="muted">Governance UI, RBAC, profile store, validation, and deployment (GitHub, Filesystem, Azure Blob, S3, GCS). Audit history included.</p>
+          <p class="muted">Roslyn analyzer enforcing governance at build time: required/forbidden fields, enums, types.</p>
+
+          <div class="badges">
+            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/CerbiStream.GovernanceAnalyzer?logo=nuget&label="/>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/CerbiStream.GovernanceAnalyzer?label="/>
+          </div>
+
           <ul class="list">
-            <li><strong>APIs:</strong> Store, Validation, Deploy, Reporting</li>
-            <li><strong>RBAC:</strong> Enterprise-grade claims-based roles, JWT middleware</li>
-            <li><strong>Deploy:</strong> History, rollbacks, multi-target (Enterprise)</li>
+            <li><strong>Features:</strong> IDE diagnostics, CI enforcement, profile-version awareness</li>
+            <li><strong>Profiles:</strong> JSON governance with versioning & plugins</li>
+            <li><strong>Output:</strong> Compiler warnings/errors with actionable messages</li>
           </ul>
-          <p class="k">Preview: <a href="https://v0-cerbi-shield-governance-dashboard.vercel.app/" target="_blank" rel="noopener noreferrer">CerbiShield Dashboard</a></p>
+
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install & Use</strong></summary>
+            <pre class="codeblock"><code>
+// Install analyzer (per project)
+dotnet add package CerbiStream.GovernanceAnalyzer
+
+// Place cerbi_governance.json at repo or project root.
+// Analyzer will surface diagnostics in IDE/CI automatically.
+            </code></pre>
+            <button class="btn" data-copy="#repos code">Copy</button>
+          </details>
+
+          <p style="margin-top:10px">
+            <a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer/" target="_blank" rel="noopener noreferrer">NuGet →</a>
+          </p>
         </article>
+
+        <!-- Cerbi.Serilog.GovernanceAnalyzer -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <div class="card-head">
+            <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
+            <span class="pill ok">GA</span>
+          </div>
+          <p class="muted">Roslyn analyzer enforcing governance at build time for <strong>Serilog</strong> projects.</p>
+
+          <div class="badges">
+            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Serilog.GovernanceAnalyzer?logo=nuget&label="/>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Serilog.GovernanceAnalyzer?label="/>
+          </div>
+
+          <ul class="list">
+            <li><strong>Features:</strong> Build-time diagnostics, CI enforcement, field/type stability</li>
+            <li><strong>Use Case:</strong> Keep Serilog; add Cerbi policy checks during build</li>
+            <li><strong>Targets:</strong> .NET 6/7/8; works with standard Serilog setups</li>
+          </ul>
+
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Quick Start</strong></summary>
+            <pre class="codeblock"><code>
+// Install analyzer (per project)
+dotnet add package Cerbi.Serilog.GovernanceAnalyzer
+
+// Place cerbi_governance.json at repo or project root.
+// Analyzer will surface diagnostics in IDE/CI automatically.
+            </code></pre>
+            <button class="btn" data-copy="#repos code">Copy</button>
+          </details>
+
+          <p style="margin-top:10px">
+            <a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer/" target="_blank" rel="noopener noreferrer">NuGet →</a>
+          </p>
+        </article>
+
+        <!-- Cerbi.Governance.Runtime -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
+          <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener noreferrer">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
+            <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
+            <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
+          </ul>
+        </article>
+
+        <!-- Cerbi.Governance.Core -->
+        <article class="col-6 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
+          <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener noreferrer">
+              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
+            </a>
+            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
+            <span class="pill ok">.NET 8.0+</span>
+          </div>
+          <ul>
+            <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
+            <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
+            <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
+          </ul>
+        </article>
+
+      </div>
+
+      <div class="space"></div>
+
+      <!-- Quick copy: all installs -->
+      <div class="glass reveal" style="padding:16px">
+        <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
+        <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
+dotnet add package CerbiStream.GovernanceAnalyzer
+dotnet add package Cerbi.MEL.Governance
+dotnet add package Cerbi.Governance.Core
+dotnet add package Cerbi.Governance.Runtime
+dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
+        <button class="btn" data-copy="#pkgInstall">Copy</button>
       </div>
     </section>
 
@@ -945,7 +1146,8 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-
+  
+  <!-- Removed probing pop-art rotator to avoid 404 spam on GitHub Pages -->
 
   <!-- Why value slider (new; mirrors your dash slider pattern) -->
 <script>
@@ -1202,6 +1404,85 @@ addEventListener('load', () => {
   navToggle?.addEventListener('click', () => {
     const open = primaryNav.classList.toggle('open');
     navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
+
+<!-- Subtle polish scripts: progress, parallax, tilt/glare -->
+<script>
+(() => {
+  // Scroll progress bar
+  const bar = document.getElementById('progress');
+  if (!bar) return;
+  function update(){
+    const h = document.documentElement;
+    const max = (h.scrollHeight - innerHeight) || 1;
+    const v = Math.min(1, Math.max(0, scrollY / max));
+    bar.style.setProperty('--progress', (v * 100).toFixed(2) + '%');
+  }
+  update();
+  addEventListener('scroll', update, {passive:true});
+  addEventListener('resize', update);
+})();
+
+(() => {
+  // Pointer + scroll parallax for background layers
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  const layers = [
+    { el: document.querySelector('.bg-orbs'), depth: 10 },
+    { el: document.querySelector('.tiles'), depth: 6 },
+    { el: document.querySelector('.spotlight'), depth: 12 }
+  ].filter(x=>x.el);
+  if (!layers.length) return;
+
+  let mx = innerWidth/2, my = innerHeight/2, sy = 0;
+  addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, {passive:true});
+  addEventListener('scroll', () => { sy = scrollY; }, {passive:true});
+
+  function frame(){
+    const cx = mx / innerWidth - 0.5;
+    const cy = my / innerHeight - 0.5;
+    const sr = (sy / Math.max(1, document.documentElement.scrollHeight - innerHeight)) - 0.5;
+    layers.forEach(({el, depth}) => {
+      const x = cx * depth;
+      const y = cy * depth + sr * depth * 2;
+      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+(() => {
+  // 3D tilt and dynamic glare for cards
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+  const TILT = 6;
+  document.querySelectorAll('.tilt').forEach(card => {
+    let raf = 0;
+    function onMove(e){
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      const rx = (-py * TILT).toFixed(2);
+      const ry = ( px * TILT).toFixed(2);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      const glare = card.querySelector('.glare');
+      if (glare){
+        glare.style.background = `radial-gradient(500px circle at ${(px+0.5)*100}% ${(py+0.5)*100}%, rgba(255,255,255,.16), transparent 40%)`;
+      }
+    }
+    function reset(){
+      card.style.transform = '';
+      const glare = card.querySelector('.glare');
+      if (glare) glare.style.background = '';
+    }
+    card.addEventListener('pointermove', onMove);
+    card.addEventListener('pointerleave', reset);
   });
 })();
 </script>
