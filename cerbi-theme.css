@@ -180,7 +180,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 
 /* ===================== Components ===================== */
 .glass{background:var(--glass);border:1px solid rgba(127,148,179,.18);border-radius:var(--radius);box-shadow:var(--shadow)}
-.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;padding:12px 16px;border-radius:12px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700padding:12px 16px;border-radius:12px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0));color:var(--text)}
 .btn-primary{background:linear-gradient(180deg,rgba(255,77,0,.18),rgba(255,77,0,.08));border-color:rgba(255,77,0,.45); color:#fff}
 .btn-ghost{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0))}
 
@@ -603,7 +603,7 @@ body{ overflow-x: hidden; }
 .value-rotator .slide{ padding:18px 6px }
 
 /* Dots inside rotator should not overlap next section */
-#whySlider .dots{ bottom:6px }
+#whySlider .dots{ bottom: auto; margin-top:14px }
 
 /* Signature rotator: center images and allow contain scaling, avoid left alignment */
 .sig-rotator{ display:grid; place-items:center; min-height: clamp(240px, 38vw, 480px); }
@@ -669,5 +669,18 @@ body{ overflow-x: hidden; }
 
 /* Safety: ensure hero sheen remains crisp on dark variants */
 .hero h1{ filter: contrast(1.05) saturate(1.08) }
+
+
+
+/* Ensure WHY slider slides stay in document flow and reserve height to avoid overlapping following sections */
+#whySlider{ min-height:360px; }
+#whySlider .slide{
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
 
 
