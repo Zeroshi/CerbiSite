@@ -546,5 +546,29 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .sig-rotator img{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
 .sig-rotator img.show{ opacity: 1; visibility: visible; pointer-events: none; }
 
+/* Background clock base styles (in case JS loads after CSS) */
+#bg-clock {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+    z-index: -1; /* keep it behind content */
+    user-select: none;
+    opacity: 0.05; /* master transparency */
+    line-height: 1;
+}
+
+/* Slightly lower opacity on small screens so it never competes with content */
+@media (max-width: 600px) {
+    #bg-clock {
+        opacity: 0.035;
+    }
+}
+
+/* If you ever need to kill it on specific pages: */
+.page-no-clock #bg-clock {
+    display: none !important;
+}
 
 
