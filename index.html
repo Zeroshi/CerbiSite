@@ -902,58 +902,56 @@ dotnet add package Cerbi.Serilog.GovernanceAnalyzer
           </p>
         </article>
 
-        <!-- Cerbi.Governance.Runtime -->
+        <!-- Core + Runtime -->
         <article class="col-6 glass tilt reveal" style="padding:16px">
           <div class="glare"></div>
-          <h3 style="margin:0 0 6px">Cerbi.Governance.Runtime</h3>
-          <p class="k" style="margin:0 0 10px">Core runtime engine that evaluates profiles and emits violation metadata.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener noreferrer">
-              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=%20"/>
-            </a>
-            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Runtime?label=%20"/>
-            <span class="pill ok">.NET 8.0+</span>
+          <div class="card-head">
+            <h3>Cerbi.Governance.Core & Runtime</h3>
+            <span class="pill ok">GA</span>
           </div>
-          <ul>
-            <li><strong>Used by:</strong> Cerbi.MEL.Governance and other adapters.</li>
-            <li><strong>Redaction & flagging:</strong> preserve signal while enforcing policy.</li>
-            <li><strong>Plugin model:</strong> custom rule extensions via interfaces.</li>
-          </ul>
-        </article>
+          <p class="muted">Shared governance models, enums, and runtime engine used by analyzers and plugins.</p>
 
-        <!-- Cerbi.Governance.Core -->
-        <article class="col-6 glass tilt reveal" style="padding:16px">
-          <div class="glare"></div>
-          <h3 style="margin:0 0 6px">Cerbi.Governance.Core</h3>
-          <p class="k" style="margin:0 0 10px">Shared contracts and models for analyzers and runtime.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
-            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener noreferrer">
-              <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=%20"/>
-            </a>
-            <img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/Cerbi.Governance.Core?label=%20"/>
-            <span class="pill ok">.NET 8.0+</span>
+          <div class="badges">
+            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Core?logo=nuget&label=Core"/>
+            <img alt="NuGet Version" src="https://img.shields.io/nuget/v/Cerbi.Governance.Runtime?logo=nuget&label=Runtime"/>
           </div>
-          <ul>
-            <li><strong>Models:</strong> <span class="kbd">GovernanceRuleSet</span>, <span class="kbd">RuleViolation</span>, enums, and policy types.</li>
-            <li><strong>Stable surface:</strong> the common language for build-time and runtime.</li>
-            <li><strong>Good for:</strong> writing custom rule plugins shared across orgs.</li>
+
+          <ul class="list">
+            <li><strong>Contracts:</strong> <code>GovernanceRuleSet</code>, <code>RuleViolation</code>, <code>ICustomGovernancePlugin</code></li>
+            <li><strong>Runtime:</strong> Executes profile rules, emits violation metadata, supports relax-mode</li>
+            <li><strong>Targets:</strong> .NET Standard 2.1 / .NET 6+</li>
           </ul>
-        </article>
 
-      </div>
-
-      <div class="space"></div>
-
-      <!-- Quick copy: all installs -->
-      <div class="glass reveal" style="padding:16px">
-        <h3 style="margin:0 0 8px">Quick install (copy/paste)</h3>
-        <pre id="pkgInstall" style="margin:6px 0 0;max-height:240px;overflow:auto"><code>dotnet add package CerbiStream
-dotnet add package CerbiStream.GovernanceAnalyzer
-dotnet add package Cerbi.MEL.Governance
+          <details class="glass" style="padding:12px;border-radius:12px">
+            <summary><strong>Install</strong></summary>
+            <pre class="codeblock"><code>
 dotnet add package Cerbi.Governance.Core
 dotnet add package Cerbi.Governance.Runtime
-dotnet add package Cerbi.Serilog.GovernanceAnalyzer</code></pre>
-        <button class="btn" data-copy="#pkgInstall">Copy</button>
+            </code></pre>
+            <button class="btn" data-copy="#repos code">Copy</button>
+          </details>
+
+          <p style="margin-top:10px">
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Core/" target="_blank" rel="noopener noreferrer">Core NuGet →</a> ·
+            <a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime/" target="_blank" rel="noopener noreferrer">Runtime NuGet →</a>
+          </p>
+        </article>
+
+        <!-- CerbiShield -->
+        <article class="col-12 glass tilt reveal" style="padding:16px">
+          <div class="glare"></div>
+          <div class="card-head">
+            <h3>CerbiShield (Dashboard + APIs)</h3>
+            <span class="pill beta">Beta</span>
+          </div>
+          <p class="muted">Governance UI, RBAC, profile store, validation, and deployment (GitHub, Filesystem, Azure Blob, S3, GCS). Audit history included.</p>
+          <ul class="list">
+            <li><strong>APIs:</strong> Store, Validation, Deploy, Reporting</li>
+            <li><strong>RBAC:</strong> Enterprise-grade claims-based roles, JWT middleware</li>
+            <li><strong>Deploy:</strong> History, rollbacks, multi-target (Enterprise)</li>
+          </ul>
+          <p class="k">Preview: <a href="https://v0-cerbi-shield-governance-dashboard.vercel.app/" target="_blank" rel="noopener noreferrer">CerbiShield Dashboard</a></p>
+        </article>
       </div>
     </section>
 
@@ -1197,7 +1195,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
 
   // stash natural ratio
   function stashRatio(img){
-    if (!img || !img.naturalWidth || !img.naturalHeight) return;
+    if (!img || !img.naturalWidth || ! img.naturalHeight) return;
     img.dataset.ratio = `${img.naturalWidth} / ${img.naturalHeight}`;
   }
   imgs.forEach(img => {
@@ -1484,6 +1482,194 @@ addEventListener('load', () => {
     card.addEventListener('pointermove', onMove);
     card.addEventListener('pointerleave', reset);
   });
+})();
+</script>
+
+<!-- Interactive features: command palette, compare filter, copy-to-clipboard, live governance demo -->
+<script>
+(() => {
+  // Copy-to-clipboard for any button[data-copy]
+  addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-copy]');
+    if (!btn) return;
+    const sel = btn.getAttribute('data-copy');
+    const el = document.querySelector(sel);
+    if (!el) return;
+    const text = el.innerText || el.textContent || '';
+    try {
+      await navigator.clipboard.writeText(text);
+      const prev = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 1200);
+    } catch {}
+  });
+})();
+
+(() => {
+  // Command palette (⌘K / Ctrl+K)
+  const overlay = document.getElementById('cmdkOverlay');
+  const shell = overlay?.querySelector('.cmdk');
+  const input = document.getElementById('cmdkInput');
+  const list = document.getElementById('cmdkList');
+  const btn = document.getElementById('cmdBtn');
+  if (!overlay || !input || !list || !btn) return;
+
+  const scrollToSel = sel => () => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const openUrl = url => () => window.open(url, '_blank', 'noopener,noreferrer');
+
+  const commands = [
+    { label: 'Why', action: scrollToSel('#why'), keywords: 'problem approach value' },
+    { label: 'Use Cases', action: scrollToSel('#usecases'), keywords: 'outcomes cases' },
+    { label: 'Quick Start', action: scrollToSel('#quickstart'), keywords: 'install nuget setup' },
+    { label: 'Ecosystem', action: scrollToSel('#ecosystem'), keywords: 'suite components' },
+    { label: 'Governance', action: scrollToSel('#governance'), keywords: 'policy rules pii' },
+    { label: 'Dashboards', action: scrollToSel('#dashboards'), keywords: 'ui screenshots' },
+    { label: 'Packages', action: scrollToSel('#packages'), keywords: 'nuget libraries' },
+    { label: 'Compare', action: scrollToSel('#compare'), keywords: 'table differences' },
+    { label: 'Architecture', action: scrollToSel('#architecture'), keywords: 'diagram flow' },
+    { label: 'Contact', action: scrollToSel('#contact'), keywords: 'email form' },
+    { label: 'GitHub (CerbiStream)', action: openUrl('https://github.com/Zeroshi/Cerbi-CerbiStream'), keywords: 'repo source code' },
+    { label: 'CerbiShield Preview', action: openUrl('https://v0-cerbi-shield-governance-dashboard.vercel.app/'), keywords: 'dashboard preview' }
+  ];
+
+  let filtered = [...commands];
+  let idx = 0;
+
+  function render() {
+    list.innerHTML = filtered.map((c, i) => `<button class="item${i===idx?' active':''}" data-idx="${i}">${c.label}</button>`).join('');
+  }
+
+  function open() {
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    input.value = '';
+    filtered = [...commands];
+    idx = 0;
+    render();
+    setTimeout(() => input.focus(), 0);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function choose(i = idx) {
+    const cmd = filtered[i];
+    if (!cmd) return;
+    close();
+    setTimeout(() => cmd.action(), 0);
+  }
+
+  btn.addEventListener('click', open);
+
+  addEventListener('keydown', (e) => {
+    const mac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    if ((mac && e.metaKey && e.key.toLowerCase() === 'k') || (!mac && e.ctrlKey && e.key.toLowerCase() === 'k')) {
+      e.preventDefault();
+      open();
+    }
+    if (overlay.classList.contains('open')) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); idx = (idx + 1) % filtered.length; render(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); idx = (idx - 1 + filtered.length) % filtered.length; render(); }
+      if (e.key === 'Enter') { e.preventDefault(); choose(); }
+    }
+  });
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    filtered = !q ? [...commands] : commands.filter(c => c.label.toLowerCase().includes(q) || c.keywords.includes(q));
+    idx = 0;
+    render();
+  });
+
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('button.item');
+    if (!b) return;
+    idx = Number(b.dataset.idx) || 0;
+    choose(idx);
+  });
+
+  overlay.addEventListener('click', (e) => { if (!shell.contains(e.target)) close(); });
+})();
+
+(() => {
+  // Compare table filter chips
+  const scope = document.getElementById('compare');
+  if (!scope) return;
+  const filters = [...scope.querySelectorAll('.filter')];
+  const rows = [...scope.querySelectorAll('tbody tr')];
+  function apply(tag){
+    rows.forEach(r => {
+      const tags = (r.getAttribute('data-tags') || '');
+      const show = tag === 'all' || tags.includes(tag);
+      r.style.display = show ? '' : 'none';
+    });
+  }
+  filters.forEach(btn => btn.addEventListener('click', () => {
+    filters.forEach(b => b.classList.toggle('active', b === btn));
+    apply(btn.dataset.tag);
+  }));
+})();
+
+(() => {
+  // Live governance demo logic
+  const sw = document.getElementById('piiSwitch');
+  const inputEl = document.getElementById('inputJson');
+  const evalEl = document.getElementById('evalJson');
+  if (!sw || !inputEl || !evalEl) return;
+
+  let includePII = false;
+
+  function createLog(){
+    const base = {
+      timestamp: new Date().toISOString(),
+      level: 'Information',
+      user: { id: '7' },
+      action: 'UserLoggedIn',
+      app: 'identity-api',
+      env: 'prod',
+      traceId: 'a1b2c3',
+      tags: ['auth','success']
+    };
+    if (includePII) base.email = 'jane@ex.com';
+    return base;
+  }
+
+  function evaluate(log){
+    const violations = [];
+    const redacted = JSON.parse(JSON.stringify(log));
+    if (typeof log.email === 'string'){
+      violations.push({ rule: 'PII.Email', field: 'email', action: 'redact' });
+      redacted.email = '***redacted***';
+    }
+    return { ok: violations.length === 0, violations, redactedLog: redacted };
+  }
+
+  function render(){
+    const log = createLog();
+    const result = evaluate(log);
+    inputEl.textContent = JSON.stringify(log, null, 2);
+    evalEl.textContent = JSON.stringify(result, null, 2);
+  }
+
+  function setSwitch(on){
+    includePII = !!on;
+    sw.setAttribute('aria-checked', on ? 'true' : 'false');
+    sw.classList.toggle('on', on);
+    render();
+  }
+
+  sw.addEventListener('click', () => setSwitch(sw.getAttribute('aria-checked') !== 'true'));
+  sw.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(sw.getAttribute('aria-checked') !== 'true'); }
+  });
+
+  setSwitch(false);
 })();
 </script>
 
