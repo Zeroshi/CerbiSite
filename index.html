@@ -987,5 +987,49 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       }catch{}
     })();
   </script>
+
+  <script>
+/* Large low-contrast background clock (HH:MM) */
+(() => {
+  const el = document.getElementById('bg-clock');
+  if (!el) return;
+
+  // Respect theme color for readability
+  const setColor = () => {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    // Use muted for dark, text for light if available
+    const cs = getComputedStyle(document.documentElement);
+    const dark = cs.getPropertyValue('--muted').trim() || '#a7b4cf';
+    const light = cs.getPropertyValue('--text').trim() || '#0a0a0a';
+    el.style.color = theme === 'light' ? light : dark;
+  };
+  new MutationObserver(setColor).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  setColor();
+
+  const render = () => {
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    el.textContent = `${hh}:${mm}`;
+  };
+  render();
+
+  // If reduced motion: update per minute; else once per second
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) {
+    const fireNextMinute = () => {
+      const wait = 60000 - (Date.now() % 60000);
+      setTimeout(() => { render(); fireNextMinute(); }, wait);
+    };
+    fireNextMinute();
+  } else {
+    setInterval(render, 1000);
+  }
+
+  // Keep size crisp on resize (CSS handles most of it)
+  addEventListener('resize', () => { /* no-op, CSS clamp handles size */ }, { passive: true });
+})();
+</script>
+
 </body>
 </html>
