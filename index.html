@@ -517,8 +517,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="img-frame showcase" role="group" aria-label="CerbiShield dashboard screenshots">
           <div id="dashSlider" class="dash-slider">
             <figure class="slide active"><img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview" loading="lazy" decoding="async"></figure>
-            <figure class="slide"><img width="1200" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="CerbiShield — Profiles" loading="lazy" decoding="async"></figure>
-            <figure class="slide"><img width="2400" height="1800" src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations" loading="lazy" decoding="async"></figure>
+            <figure class="slide"><img width="1600" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="CerbiShield — Profiles" loading="lazy" decoding="async"></figure>
+            <figure class="slide"><img width="1600" height="900" src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations" loading="lazy" decoding="async"></figure>
             <div class="dots" aria-label="slider controls"></div>
           </div>
         </div>
@@ -960,10 +960,12 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       try{
         const btn = document.getElementById('themeBtn');
         if (!btn) return;
+        const themes = ['dark','dusk','emerald','violet','midnight','amber','teal','light'];
+        // rotate through variants
         btn.addEventListener('click', ()=>{
           const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-          const themes = ['dark','light','dusk','emerald','violet'];
-          const next = cur === 'dark' ? 'light' : 'dark';
+          const idx = themes.indexOf(cur);
+          const next = themes[(idx + 1) % themes.length] || themes[0];
           document.documentElement.setAttribute('data-theme', next);
           localStorage.setItem('cerbi-theme', next); localStorage.setItem('theme', next);
           const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', next === 'light' ? '#ffffff' : '#0a1224');
@@ -972,57 +974,14 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
         // Randomize on first visit if nothing saved
         const saved = localStorage.getItem('cerbi-theme') || localStorage.getItem('theme');
         if (!saved) {
-          const themes = ['dark','light','dusk','emerald','violet'];
           const pick = themes[Math.floor(Math.random()*themes.length)];
           document.documentElement.setAttribute('data-theme', pick);
           localStorage.setItem('cerbi-theme', pick); localStorage.setItem('theme', pick);
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', pick === 'light' ? '#ffffff' : '#0a1224');
         }
       }catch{}
     })();
   </script>
-
-  <script>
-    (() => {
-      const scope = document.getElementById('compare'); if (!scope) return;
-      const filters = [...scope.querySelectorAll('.filter')]; const rows = [...scope.querySelectorAll('tbody tr')];
-      function apply(tag){ rows.forEach(r => { const tags = (r.getAttribute('data-tags') || ''); const show = tag === 'all' || tags.includes(tag); r.style.display = show ? '' : 'none'; }); }
-      filters.forEach(btn => btn.addEventListener('click', () => { filters.forEach(b => b.classList.toggle('active', b === btn)); apply(btn.dataset.tag); }));
-    })();
-
-    (() => {
-      const sw = document.getElementById('piiSwitch'); const inputEl = document.getElementById('inputJson'); const evalEl = document.getElementById('evalJson'); if (!sw || !inputEl || !evalEl) return;
-      let includePII = false;
-      function createLog(){ const base = { timestamp: new Date().toISOString(), level: 'Information', user: { id: '7' }, action: 'UserLoggedIn', app: 'identity-api', env: 'prod', traceId: 'a1b2c3', tags: ['auth','success'] }; if (includePII) base.email = 'jane@ex.com'; return base; }
-      function evaluate(log){ const violations = []; const redacted = JSON.parse(JSON.stringify(log)); if (typeof log.email === 'string'){ violations.push({ rule: 'PII.Email', field: 'email', action: 'redact' }); redacted.email = '***redacted***'; } return { ok: violations.length === 0, violations, redactedLog: redacted }; }
-      function render(){ const log = createLog(); const result = evaluate(log); inputEl.textContent = JSON.stringify(log, null, 2); evalEl.textContent = JSON.stringify(result, null, 2); }
-      function setSwitch(on){ includePII = !!on; sw.setAttribute('aria-checked', on ? 'true' : 'false'); sw.classList.toggle('on', on); render(); }
-      sw.addEventListener('click', () => setSwitch(sw.getAttribute('aria-checked') !== 'true'));
-      sw.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSwitch(sw.getAttribute('aria-checked') !== 'true'); } });
-      setSwitch(false);
-    })();
-
-    // Footer year
-    (function(){ const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear(); })();
-
-    // Dynamic clock
-    (function(){
-      const el = document.getElementById('clock'); if (!el) return;
-      function fmt(){ const d = new Date(); const date = d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'2-digit' }); const time = d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', second:'2-digit' }); return `${date} ${time}`; }
-      function tick(){ el.textContent = fmt(); }
-      tick(); const t = setInterval(tick, 1000); addEventListener('visibilitychange', ()=>{ if (!document.hidden) tick(); }); addEventListener('beforeunload', ()=> clearInterval(t));
-    })();
-
-    // Background clock (large, decorative)
-    (function(){
-      const el = document.getElementById('bg-clock'); if (!el) return;
-      function fmt(){ const d = new Date(); return d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' }); }
-      function tick(){ el.textContent = fmt(); }
-      // style via CSS already present in cerbi-theme.css
-      tick(); setInterval(tick, 1000);
-    })();
-   })();
-   </script>
-
-  <noscript><style>.reveal,.tilt{opacity:1 !important;transform:none !important;animation:none !important}.cmdk-overlay{display:none !important}</style></noscript>
 </body>
 </html>
