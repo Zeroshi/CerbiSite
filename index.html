@@ -121,6 +121,20 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"SoftwareApplication","name":"CerbiStream","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","url":"https://cerbi.io/#packages","downloadUrl":"https://www.nuget.org/packages/CerbiStream/","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
   </script>
+
+  <!-- Domain canonicalization: redirect www.cerbi.io to cerbi.io -->
+  <script>
+    (function(){
+      try{
+        var h = location.hostname.toLowerCase();
+        if (h === 'www.cerbi.io') {
+          var target = 'https://cerbi.io' + location.pathname + location.search + location.hash;
+          location.replace(target);
+        }
+      }catch{}
+    })();
+  </script>
+
 </head>
 <body>
   <a href="#main" class="visually-hidden-focusable">Skip to content</a>
@@ -1453,5 +1467,33 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
     </style>
   </noscript>
 
+  <!-- Dynamic clock widget (top-right, non-intrusive) -->
+  <style>
+    .clock{position:fixed;top:10px;right:10px;z-index:1100;padding:6px 10px;border-radius:10px;background:rgba(10,18,36,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(127,148,179,.25);font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:12.5px;line-height:1;color:var(--text)}
+    :root[data-theme="light"] .clock{background:rgba(255,255,255,.75);border-color:rgba(0,0,0,.10)}
+  </style>
+
+  <div id="clock" class="clock" role="timer" aria-live="polite" title="Local time"></div>
+  <script>
+    (function(){
+      const el = document.getElementById('clock');
+      if (!el) return;
+
+      // Use Intl for locale-aware time; show seconds and timezone short name
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      function fmt(){
+        const d = new Date();
+        const date = d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'2-digit' });
+        const time = d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        return `${date} ${time}`;
+      }
+
+      function tick(){ el.textContent = fmt(); }
+      tick();
+      const t = setInterval(tick, 1000);
+      addEventListener('visibilitychange', ()=>{ if (!document.hidden) tick(); });
+      addEventListener('beforeunload', ()=> clearInterval(t));
+    })();
+  </script>
 </body>
 </html>
