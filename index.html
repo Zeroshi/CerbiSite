@@ -106,6 +106,8 @@
 
   <!-- Background layers -->
   <div class="tiles" aria-hidden="true"></div>
+  <!-- Large background clock (decorative, low opacity) -->
+  <div id="bg-clock" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="bg-orbs" aria-hidden="true"></div>
@@ -896,10 +898,17 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       <h2>Get in <span class="hl">Touch</span></h2>
       <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
 
-      <div class="glass tilt" style="padding:16px">
-        <div class="glare"></div>
-        <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:700px;border:0;border-radius:12px;background:rgba(255,255,255,.02)" loading="lazy"></iframe>
-        <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
+      <div class="grid" style="align-items:start;gap:18px">
+        <div class="col-7 glass tilt" style="padding:16px">
+          <div class="glare"></div>
+          <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:680px;border:0;border-radius:12px;background:rgba(255,255,255,.02)" loading="lazy"></iframe>
+          <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
+        </div>
+        <div class="col-5 contact-art">
+          <div class="img-frame" role="img" aria-label="Contact illustration">
+            <img src="assets/contact/contact-illustration.jpg" alt="Contact Cerbi" loading="lazy" decoding="async" style="width:auto;max-width:100%;height:100%;object-fit:contain;display:block;margin:0 auto;" />
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -945,114 +954,34 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
 
-  <!-- Why slider init -->
-  <script>
-    (() => {
-      const slider = document.querySelector('#whySlider');
-      if (!slider) return;
-      const slides  = [...slider.querySelectorAll('.slide')];
-      const dotsBox = slider.querySelector('.dots');
-      const ROTATE_MS = 5200;
-      dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Focus item ${i+1}"></button>`).join('');
-      const dots = [...dotsBox.querySelectorAll('button')];
-      let i = 0, t;
-      function highlight(n){ slides.forEach((s, idx) => s.classList.toggle('active', idx === n)); dots.forEach((d, idx) => d.classList.toggle('active', idx === n)); i = n; }
-      function next(){ highlight((i + 1) % slides.length); }
-      function start(){ stop(); t = setInterval(next, ROTATE_MS); }
-      function stop(){ if (t) clearInterval(t); }
-      dots.forEach((d, idx) => d.addEventListener('click', () => { stop(); highlight(idx); start(); }));
-      slider.addEventListener('mouseenter', stop);
-      slider.addEventListener('mouseleave', start);
-      highlight(0); start();
-    })();
-  </script>
-
-  <!-- Dash slider init -->
-  <script>
-    (() => {
-      const frame  = document.querySelector('#dashboards .img-frame');
-      const slider = document.getElementById('dashSlider');
-      if (!frame || !slider) return;
-      const slides = [...slider.querySelectorAll('.slide')];
-      const imgs   = slides.map(s => s.querySelector('img'));
-      const dotsBox = slider.querySelector('.dots');
-      dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
-      const dots = [...dotsBox.querySelectorAll('button')];
-      function stashRatio(img){ if (!img || !img.naturalWidth || ! img.naturalHeight) return; img.dataset.ratio = `${img.naturalWidth} / ${img.naturalHeight}`; }
-      imgs.forEach(img => { if (img.complete) stashRatio(img); img.addEventListener('load', () => stashRatio(img), { once:true }); });
-      let i = Math.max(0, slides.findIndex(s => s.classList.contains('active')));
-      function show(n){ slides.forEach((s,idx)=> s.classList.toggle('active', idx===n)); dots.forEach((d,idx)=>   d.classList.toggle('active', idx===n)); const img = slides[n].querySelector('img'); const r = img.dataset.ratio || (img.naturalWidth && img.naturalHeight ? `${img.naturalWidth} / ${img.naturalHeight}` : null); if (r) frame.style.setProperty('--ar', r); i = n; window.__cerbiResizeDash && window.__cerbiResizeDash(); }
-      dots.forEach((d,idx)=> d.addEventListener('click', ()=> show(idx)));
-      requestAnimationFrame(()=>{ show(i); window.__cerbiResizeDash && window.__cerbiResizeDash(); });
-    })();
-  </script>
-
-  <!-- Nav scrolled state -->
-  <script>
-    (() => {
-      const nav = document.querySelector('.nav'); if (!nav) return;
-      const on = () => nav.classList.toggle('scrolled', window.scrollY > 6);
-      on(); window.addEventListener('scroll', on, { passive: true });
-    })();
-  </script>
-
-  <!-- Dash slider height sync -->
+  <!-- Inline theme toggle fallback & randomizer when no saved theme -->
   <script>
     (function(){
-      const slider = document.getElementById('dashSlider'); if (!slider) return;
-      const slides = [...slider.querySelectorAll('.slide')];
-      function resizeDash(){ const activeImg = slider.querySelector('.slide.active img'); if (!activeImg) return; const w = activeImg.clientWidth || slider.clientWidth; const nh = activeImg.naturalHeight, nw = activeImg.naturalWidth; const h = (nh && nw) ? Math.round(w * (nh / nw)) : activeImg.offsetHeight; slider.style.height = h + 'px'; }
-      window.addEventListener('resize', resizeDash);
-      slides.forEach(s => { const img = s.querySelector('img'); if (img) img.addEventListener('load', resizeDash); });
-      window.__cerbiResizeDash = resizeDash; resizeDash();
+      try{
+        const btn = document.getElementById('themeBtn');
+        if (!btn) return;
+        btn.addEventListener('click', ()=>{
+          const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          const themes = ['dark','light','dusk','emerald','violet'];
+          const next = cur === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('cerbi-theme', next); localStorage.setItem('theme', next);
+          const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', next === 'light' ? '#ffffff' : '#0a1224');
+        });
+
+        // Randomize on first visit if nothing saved
+        const saved = localStorage.getItem('cerbi-theme') || localStorage.getItem('theme');
+        if (!saved) {
+          const themes = ['dark','light','dusk','emerald','violet'];
+          const pick = themes[Math.floor(Math.random()*themes.length)];
+          document.documentElement.setAttribute('data-theme', pick);
+          localStorage.setItem('cerbi-theme', pick); localStorage.setItem('theme', pick);
+        }
+      }catch{}
     })();
   </script>
 
-  <!-- Copy buttons + cmd palette + compare filter + governance demo -->
   <script>
-    (() => {
-      addEventListener('click', async (e) => {
-        const btn = e.target.closest('button[data-copy]'); if (!btn) return;
-        const sel = btn.getAttribute('data-copy'); const el = document.querySelector(sel); if (!el) return;
-        const text = el.innerText || el.textContent || '';
-        try { await navigator.clipboard.writeText(text); const prev = btn.textContent; btn.disabled = true; btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 1200); } catch {}
-      });
-    })();
-
-    (() => {
-      const overlay = document.getElementById('cmdkOverlay'); const shell = overlay?.querySelector('.cmdk'); const input = document.getElementById('cmdkInput'); const list = document.getElementById('cmdkList'); const btn = document.getElementById('cmdBtn'); if (!overlay || !input || !list || !btn) return;
-      const scrollToSel = sel => () => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      const openUrl = url => () => window.open(url, '_blank', 'noopener,noreferrer');
-      const commands = [
-        { label: 'Why', action: scrollToSel('#why'), keywords: 'problem approach value' },
-        { label: 'Use Cases', action: scrollToSel('#usecases'), keywords: 'outcomes cases' },
-        { label: 'Quick Start', action: scrollToSel('#quickstart'), keywords: 'install nuget setup' },
-        { label: 'Ecosystem', action: scrollToSel('#ecosystem'), keywords: 'suite components' },
-        { label: 'Governance', action: scrollToSel('#governance'), keywords: 'policy rules pii' },
-        { label: 'Dashboards', action: scrollToSel('#dashboards'), keywords: 'ui screenshots' },
-        { label: 'Packages', action: scrollToSel('#packages'), keywords: 'nuget libraries' },
-        { label: 'Compare', action: scrollToSel('#compare'), keywords: 'table differences' },
-        { label: 'Architecture', action: scrollToSel('#architecture'), keywords: 'diagram flow' },
-        { label: 'Contact', action: scrollToSel('#contact'), keywords: 'email form' },
-        { label: 'GitHub (CerbiStream)', action: openUrl('https://github.com/Zeroshi/Cerbi-CerbiStream'), keywords: 'repo source code' },
-        { label: 'CerbiShield Preview', action: openUrl('https://v0-cerbi-shield-governance-dashboard.vercel.app/'), keywords: 'dashboard preview' }
-      ];
-      let filtered = [...commands]; let idx = 0;
-      function render() { list.innerHTML = filtered.map((c, i) => `<button class="item${i===idx?' active':''}" data-idx="${i}">${c.label}</button>`).join(''); }
-      function open() { overlay.classList.add('open'); overlay.setAttribute('aria-hidden', 'false'); input.value = ''; filtered = [...commands]; idx = 0; render(); setTimeout(() => input.focus(), 0); document.body.style.overflow = 'hidden'; }
-      function close() { overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
-      function choose(i = idx) { const cmd = filtered[i]; if (!cmd) return; close(); setTimeout(() => cmd.action(), 0); }
-      btn.addEventListener('click', open);
-      addEventListener('keydown', (e) => {
-        const mac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
-        if ((mac && e.metaKey && e.key.toLowerCase() === 'k') || (!mac && e.ctrlKey && e.key.toLowerCase() === 'k')) { e.preventDefault(); open(); }
-        if (overlay.classList.contains('open')) { if (e.key === 'Escape') { e.preventDefault(); close(); } if (e.key === 'ArrowDown') { e.preventDefault(); idx = (idx + 1) % filtered.length; render(); } if (e.key === 'ArrowUp') { e.preventDefault(); idx = (idx - 1 + filtered.length) % filtered.length; render(); } if (e.key === 'Enter') { e.preventDefault(); choose(); } }
-      });
-      input.addEventListener('input', () => { const q = input.value.trim().toLowerCase(); filtered = !q ? [...commands] : commands.filter(c => c.label.toLowerCase().includes(q) || c.keywords.includes(q)); idx = 0; render(); });
-      list.addEventListener('click', (e) => { const b = e.target.closest('button.item'); if (!b) return; idx = Number(b.dataset.idx) || 0; choose(idx); });
-      overlay.addEventListener('click', (e) => { if (!shell.contains(e.target)) close(); });
-    })();
-
     (() => {
       const scope = document.getElementById('compare'); if (!scope) return;
       const filters = [...scope.querySelectorAll('.filter')]; const rows = [...scope.querySelectorAll('tbody tr')];
@@ -1082,7 +1011,17 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
       function tick(){ el.textContent = fmt(); }
       tick(); const t = setInterval(tick, 1000); addEventListener('visibilitychange', ()=>{ if (!document.hidden) tick(); }); addEventListener('beforeunload', ()=> clearInterval(t));
     })();
-  </script>
+
+    // Background clock (large, decorative)
+    (function(){
+      const el = document.getElementById('bg-clock'); if (!el) return;
+      function fmt(){ const d = new Date(); return d.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' }); }
+      function tick(){ el.textContent = fmt(); }
+      // style via CSS already present in cerbi-theme.css
+      tick(); setInterval(tick, 1000);
+    })();
+   })();
+   </script>
 
   <noscript><style>.reveal,.tilt{opacity:1 !important;transform:none !important;animation:none !important}.cmdk-overlay{display:none !important}</style></noscript>
 </body>
