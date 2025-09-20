@@ -70,9 +70,20 @@
       background:var(--glass);border:1px solid rgba(127,148,179,.25);border-radius:10px;z-index:9999;
       box-shadow:var(--shadow);
     }
+
+    /* Styles for the theme rail */
+    .theme-rail{position:fixed;left:12px;bottom:12px;display:flex;gap:8px;z-index:1200;padding:8px;border-radius:12px;background:var(--glass);border:1px solid rgba(127,148,179,.22);box-shadow:var(--shadow)}
+    .theme-dot{width:18px;height:18px;border-radius:999px;border:1px solid rgba(127,148,179,.35);background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.02));cursor:pointer}
+    .theme-dot[data-theme="dark"]{ background: radial-gradient(120% 120% at 30% 10%, #2a3f7a, transparent 60%), #0b1224 }
+    .theme-dot[data-theme="light"]{ background: linear-gradient(180deg,#fff,#eef2f7) }
+    .theme-dot[data-theme="dusk"]{ background: radial-gradient(140% 140% at 20% 0%, #6b5cff, transparent 60%), #14122c }
+    .theme-dot[data-theme="emerald"]{ background: radial-gradient(140% 140% at 20% 0%, #33d1b1, transparent 60%), #0c2422 }
+    .theme-dot[data-theme="violet"]{ background: radial-gradient(140% 140% at 20% 0%, #bf8bff, transparent 60%), #1a1233 }
+    .theme-dot.random{ width:auto; height:auto; padding:0 8px; font-size:12px; border-radius:10px }
+    @media (max-width: 820px){ .theme-rail{ display:none } }
   </style>
 
-    <script>
+  <script>
     const saved = localStorage.getItem('theme');
     const sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', saved || sys);
@@ -184,6 +195,16 @@
 
   <!-- Progress bar -->
   <div id="progress"></div>
+
+  <!-- Theme switcher rail (non-intrusive) -->
+  <div id="themeRail" class="theme-rail" aria-label="Theme presets" role="toolbar">
+    <button class="theme-dot" data-theme="dark" title="Aurora (Dark)" aria-label="Aurora dark"></button>
+    <button class="theme-dot" data-theme="light" title="Aurora (Light)" aria-label="Aurora light"></button>
+    <button class="theme-dot" data-theme="dusk" title="Dusk" aria-label="Dusk"></button>
+    <button class="theme-dot" data-theme="emerald" title="Emerald" aria-label="Emerald"></button>
+    <button class="theme-dot" data-theme="violet" title="Violet" aria-label="Violet"></button>
+    <button class="theme-dot random" data-theme="random" title="Randomize theme" aria-label="Random theme">🎲</button>
+  </div>
 
   <!-- Main -->
   <main id="main">
@@ -1286,7 +1307,7 @@ We ensure the data flowing into them is correct, compliant, and ML-ready.</code>
   })();
 </script>
 
-  <!-- vendor libs -->
+<!-- vendor libs -->
 
 <!-- your site JS (pointer spotlight + popart lazy + veil defer) -->
 <script defer>
