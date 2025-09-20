@@ -318,15 +318,15 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .enterprise-item{ position:relative; display:block; height:100%; isolation:isolate; outline:none; }
 .enterprise-item img{ width:100%; height:100%; object-fit:cover; display:block; filter:contrast(1.02) saturate(1.02) brightness(.95); transition:transform .35s var(--easing), filter .35s var(--easing), opacity .35s var(--easing); }
 .enterprise-item::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.38), rgba(0,0,0,0) 45%); pointer-events:none; z-index:1; opacity:.8; }
-.enterprise-item .label{ position:absolute; left:50%; bottom:16px; transform:translateX(-50%); z-index:2; background:rgba(10,18,36,.6); border:1px solid rgba(255,77,0,.45); color:var(--accent); padding:8px 14px; border-radius:999px; font-weight:700; text-shadow:0 0 12px rgba(255,77,0,.35); backdrop-filter:saturate(160%) blur(6px); }
+.enterprise-item .label{ position:absolute; left:50%; bottom:16px; transform:translateX(-50%); z-index:2; background:rgba(10,18,36,.6); border:1px solid rgba(255,77,0,.45); color:var(--accent); padding:8px 14px; border-radius:999px; font-weight:700; text-shadow:0 0 12px rgba(255,77,0,.35); backdrop-filter: saturate(160%) blur(6px); }
 .enterprise-strip:hover .enterprise-item img{ opacity:.6; filter:brightness(.85) }
 .enterprise-item:hover img, .enterprise-item:focus-visible img{ transform:scale(1.08); opacity:1; filter:contrast(1.08) saturate(1.05) brightness(1.0); }
 @media (max-width:900px){ .enterprise-strip{ grid-template-columns:1fr 1fr } }
 
 /* ---------- Slider ---------- */
-.dash-slider{ position:relative; width:100%; height:100%;}
-.dash-slider .slide{ position:absolute; inset:0; opacity:0; transition:opacity .6s var(--easing); }
-.dash-slider .slide.active{ opacity:1 }
+.dash-slider{ position: relative; min-height: 120px;}
+.dash-slider .slide{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
+.dash-slider .slide.active{ opacity: 1; visibility: visible; pointer-events: auto; }
 .dash-slider img{ width:100%; height:100%; object-fit:cover; } /* default: cover */
 .dash-slider .dots{ position:absolute; left:0; right:0; bottom:10px; display:flex; gap:8px; justify-content:center; z-index:3 }
 .dash-slider .dots button{ width:8px; height:8px; border-radius:999px; border:0; background:rgba(255,255,255,.35); cursor:pointer; }
@@ -417,7 +417,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
     conic-gradient(from 210deg at 50% 50%, rgba(255,77,0,.12), rgba(96,140,255,.10), transparent 70%);
   filter: blur(24px) saturate(120%);
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Section separators: hairline glow that feels premium */
@@ -483,5 +483,68 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   border-color: var(--glass-border);
   box-shadow: var(--shadow-sm);
 }
+
+/* Fix: keep hero visual effects contained; avoid overlaying later sections */
+.hero{ position: relative; overflow: hidden; }
+.hero::after{ z-index: -1; }
+
+/* Dash slider: ensure only active slide is interactive/visible */
+.dash-slider .slide{ pointer-events: none; visibility: hidden; }
+.dash-slider .slide.active{ pointer-events: auto; visibility: visible; }
+
+/* Signature rotator images never intercept pointer */
+.sig-rotator img{ pointer-events: none; }
+
+/* Fix: Floating Contact FAB pinned bottom-right by default (desktop & mobile) */
+.contact-fab{
+  top: auto !important;
+  transform: none !important;
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 18px)) !important;
+  right: max(18px, calc(env(safe-area-inset-right) + 12px)) !important;
+}
+
+/* Ensure dashboard slider never overlays following content while loading */
+#dashboards .img-frame{ position: relative; z-index: 0; }
+#dashSlider{ position: relative; z-index: 0; }
+#dashSlider .slide{ z-index: 0; }
+
+/* Ecosystem table: keep Status pills on one line, allow horizontal scroll instead of wrapping */
+.table{ table-layout: auto; }
+.table th:nth-child(2), .table td:nth-child(2){
+  width: 180px; min-width: 160px; max-width: 220px; white-space: nowrap;
+}
+.table td:nth-child(2) .pill{ white-space: nowrap; font-size: 11.5px; padding: 6px 10px; }
+
+/* Small screens: turn the matrix into readable stacked cards */
+@media (max-width: 680px){
+  #ecosystem .table{ display: block; }
+  #ecosystem .table thead{ display: none; }
+  #ecosystem .table tbody{ display: grid; gap: 10px; }
+  #ecosystem .table tr{ display: grid; gap: 6px; padding: 12px; border-radius: 12px;
+    background: rgba(255,255,255,.04); border: 1px solid rgba(127,148,179,.18); }
+  :root[data-theme="light"] #ecosystem .table tr{ background: rgba(0,0,0,.03); }
+  #ecosystem .table td{ display: block; border: 0; padding: 0; }
+  #ecosystem .table td:nth-child(1){ font-weight: 700; }
+  #ecosystem .table td:nth-child(2){ order: 3; }
+  #ecosystem .table td:nth-child(3){ order: 2; }
+}
+
+/* Contact section image layout: ensure right-side image stays aligned on desktop */
+#architecture .img-frame{ align-self: start; }
+
+/* Contact section fix: keep iframe card and image side-by-side on desktop grid */
+#contact .grid{ grid-template-columns: repeat(12,1fr); }
+#contact .glass.tilt{ grid-column: span 7; }
+#contact .contact-art{ grid-column: span 5; }
+
+@media (max-width: 900px){
+  #contact .glass.tilt, #contact .contact-art{ grid-column: 1 / -1; }
+}
+
+/* Hero art: keep pop-art rotator images stacked and non-blocking */
+.sig-rotator{ position: relative; }
+.sig-rotator img{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
+.sig-rotator img.show{ opacity: 1; visibility: visible; pointer-events: none; }
+
 
 
