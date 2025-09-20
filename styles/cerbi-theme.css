@@ -53,28 +53,12 @@
   --tile-opacity:.04;
 }
 
-/* ===================== Additional Theme Variants ===================== */
-/* Dusk (deep indigo/violet) — dark scheme, keeps Cerbi orange accent */
-[data-theme="dusk"]{
-  --bg:#0d0c1f; --panel:#14132a; --panel-2:#1b1938;
-  --text:#e9eaf6; --text-strong:#ffffff; --muted:#aab0cf;
-  --bg-start:#0a0a1a; --bg-end:#131433;
-  --tile-opacity:.06;
-}
-/* Emerald (teal/green night) — dark scheme */
-[data-theme="emerald"]{
-  --bg:#061b1a; --panel:#0b2624; --panel-2:#0f2f2c;
-  --text:#e5faf4; --text-strong:#ffffff; --muted:#a5d2c7;
-  --bg-start:#071d1b; --bg-end:#0f2b2a;
-  --tile-opacity:.06;
-}
-/* Violet (royal purple) — dark scheme */
-[data-theme="violet"]{
-  --bg:#130b1f; --panel:#1a1130; --panel-2:#211640;
-  --text:#f0eafe; --text-strong:#ffffff; --muted:#c5b8eb;
-  --bg-start:#120a22; --bg-end:#1e1442;
-  --tile-opacity:.06;
-}
+/* ===================== Additional Theme Variants (commented out for stability rollback) ===================== */
+/*
+[data-theme="dusk"]{ --bg:#0d0c1f; --panel:#14132a; --panel-2:#1b1938; --text:#e9eaf6; --text-strong:#ffffff; --muted:#aab0cf; --bg-start:#0a0a1a; --bg-end:#131433; --tile-opacity:.06; }
+[data-theme="emerald"]{ --bg:#061b1a; --panel:#0b2624; --panel-2:#0f2f2c; --text:#e5faf4; --text-strong:#ffffff; --muted:#a5d2c7; --bg-start:#071d1b; --bg-end:#0f2b2a; --tile-opacity:.06; }
+[data-theme="violet"]{ --bg:#130b1f; --panel:#1a1130; --panel-2:#211640; --text:#f0eafe; --text-strong:#ffffff; --muted:#c5b8eb; --bg-start:#120a22; --bg-end:#1e1442; --tile-opacity:.06; }
+*/
 
 /* ===================== Base ===================== */
 *{box-sizing:border-box}
@@ -1194,4 +1178,5 @@ h3{font-size:clamp(18px,2.2vw,22px)}
             margin-bottom: 18px;
         }
     }
-}
+
+
