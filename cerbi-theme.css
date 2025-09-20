@@ -72,6 +72,21 @@
   --bg-start:#120a22; --bg-end:#1e1442;
   --tile-opacity:.06;
 }
+[data-theme="midnight"]{
+  --bg:#050814; --bg-start:#02030a; --bg-end:#091027; --panel:#081329;
+  --text:#eaf2ff; --text-strong:#ffffff; --muted:#9fb7ff;
+  --accent:#7ce0ff; --accent-2:#4db8ff; --link:#7ce0ff;
+}
+[data-theme="amber"]{
+  --bg:#1b1000; --bg-start:#1b1000; --bg-end:#3a1f00; --panel:#2a1400;
+  --text:#fff8ef; --text-strong:#fff6e8; --muted:#ffd8a8;
+  --accent:#ff9a1a; --accent-2:#ffcf66; --link:#ffb347;
+}
+[data-theme="teal"]{
+  --bg:#001f1f; --bg-start:#001f20; --bg-end:#003033; --panel:#062a2a;
+  --text:#e8fff8; --text-strong:#eafffb; --muted:#a7e6df;
+  --accent:#00d1b2; --accent-2:#2ce6c4; --link:#2ce6c4;
+}
 
 /* ===================== Base ===================== */
 *{box-sizing:border-box}
@@ -575,44 +590,84 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 /* Prevent accidental horizontal overflow from any wide child */
 body{ overflow-x: hidden; }
 
-/* WHY value rotator: reserve enough height and use display toggles so slides don't overlap following content */
-.value-rotator{ position: relative; min-height: 260px; }
-#whySlider{ position: relative; }
-#whySlider .slide{ position: relative; display: none; visibility: visible; opacity: 1; pointer-events: none; }
-#whySlider .slide.active{ display: block; pointer-events: auto; }
-#whySlider .dots{ position: absolute; left: 0; right: 0; bottom: 8px; display: flex; gap: 8px; justify-content: center; }
+/* SHOWCASE: make the CerbiShield screenshots larger and centered */
+.img-frame.showcase{ max-width:1200px; margin:0 auto; }
+.img-frame.showcase img{ width:100%; height:auto; object-fit:contain; display:block; margin:0 auto; }
 
-/* Signature rotator must reserve height to avoid overlapping later sections */
-.sig-rotator{ position: relative; min-height: clamp(220px, 35vw, 420px); aspect-ratio: 16/9; }
-.sig-rotator img{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
-.sig-rotator img.show{ opacity: 1; visibility: visible; }
+/* Ensure dash-slider uses the frame's width for height calc and allow taller images */
+.dash-slider{ min-height:360px; }
+@media (max-width:900px){ .dash-slider{ min-height:220px } }
 
-/* Center large dashboard / frame images and use centered object position */
-.dash-slider img, .img-frame img{ object-position: center center; display: block; margin: 0 auto; }
+/* Value rotator: more vertical spacing and guaranteed stacking context to avoid overlap */
+.value-rotator{ position: relative; min-height: 300px; padding-bottom:18px; z-index:1 }
+.value-rotator .slide{ padding:18px 6px }
 
-/* Ensure dashboard slider only active slide is interactive (keeps previous rules intact) */
-.dash-slider{ position: relative; min-height: 120px; }
-.dash-slider .slide{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
-.dash-slider .slide.active{ opacity: 1; visibility: visible; pointer-events: auto; }
+/* Dots inside rotator should not overlap next section */
+#whySlider .dots{ bottom:6px }
 
-/* Keep other existing rules (no-op placeholder to avoid duplication above) */
+/* Signature rotator: center images and allow contain scaling, avoid left alignment */
+.sig-rotator{ display:grid; place-items:center; min-height: clamp(240px, 38vw, 480px); }
+.sig-rotator img{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:auto; max-width:100%; max-height:100%; object-fit:contain; opacity:0; transition:opacity .6s ease, transform .6s ease; pointer-events:none }
+.sig-rotator img.show{ opacity:1 }
 
-/* Grid extras for 7/5 splits used by contact area */
-.col-7{grid-column:span 7}
-.col-5{grid-column:span 5}
-@media (max-width:900px){.col-7,.col-5{grid-column:span 12}}
-
-/* Contact art image: prefer contain and center */
-.contact-art .img-frame{ display:flex; align-items:center; justify-content:center; padding:12px; min-height:280px }
-.contact-art .img-frame img{ width:auto; max-width:100%; height:100%; object-fit:contain; object-position:center center; display:block }
-
-/* Large background clock: visible but subtle */
+/* Make the large background clock crisp and visible but subtle; add slight stroke for edgy look */
 #bg-clock{
-  position:fixed; inset:0; display:grid; place-items:center; pointer-events:none; z-index:-2; user-select:none;
-  font-weight:700; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial;
-  color: rgba(255,255,255,0.08); font-size: clamp(72px, 12vw, 220px); letter-spacing:8px; opacity:1; mix-blend-mode:overlay; transform:translateZ(0);
+  color: rgba(255,255,255,0.08);
+  -webkit-text-stroke: 1px rgba(255,255,255,0.02);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial;
+  text-transform:uppercase; letter-spacing:10px; pointer-events:none; text-align:center;
 }
-:root[data-theme="light"] #bg-clock{ color: rgba(16,24,40,0.08); }
-@media (max-width:900px){ #bg-clock{ font-size: clamp(42px, 20vw, 120px); opacity:0.06 } }
+:root[data-theme="light"] #bg-clock{ color: rgba(16,24,40,0.08) }
+
+/* Make sliders and img-frames centered inside their container */
+.img-frame, .img-frame.showcase { display:block; margin-left:auto; margin-right:auto }
+.dash-slider .slide{ display:block }
+.dash-slider .slide img{ display:block; margin:0 auto; }
+
+/* Slightly more aggressive hero sheen for 'edgy' but still professional */
+.hero h1{ text-shadow:0 0 28px rgba(100,160,255,.28), 0 6px 30px rgba(255,77,0,.06) }
+
+/* Keep original responsive rules */
+@media (max-width:900px){ .img-frame.showcase{ max-width:94vw } }
+
+/* Ensure showcase slider uses normal document flow so images size the section (prevents tiny slides and left-alignment) */
+#dashboards .img-frame .dash-slider .slide,
+.img-frame.showcase .dash-slider .slide{
+  position: static !important;
+  inset: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+#dashboards .img-frame .dash-slider .slide img,
+.img-frame.showcase .dash-slider .slide img{
+  width:100%; height:auto; object-fit:contain; display:block; margin:0 auto;
+}
+#dashboards .img-frame .dash-slider .dots{ position:relative; margin-top:12px }
+
+/* Move background layers so bg-clock sits between veil and illustration and is visible */
+#bg-clock{ z-index: -2; }
+.bg-illustration{ z-index: -3; }
+.spotlight{ z-index: -4; }
+.sky{ z-index: -5; }
+.tiles{ z-index: -6; }
+
+/* Make bg-clock slightly more visible on darker themes while remaining subtle */
+#bg-clock{ color: rgba(255,255,255,0.10); opacity:0.95 }
+:root[data-theme="light"] #bg-clock{ color: rgba(16,24,40,0.08) }
+
+/* More spacing for value rotator to prevent overlap with following CTAs */
+.value-rotator{ margin-bottom:24px; min-height:340px }
+
+/* Edgy polish: stronger neon rim and subtle glass glare on hover for cards */
+.card:hover{ box-shadow:0 30px 80px rgba(96,140,255,.14), 0 0 30px rgba(255,77,0,.06); transform: translateY(-6px) }
+.btn-primary{ box-shadow: 0 30px 60px rgba(255,77,0,.14) }
+
+/* Keep rotator images centered and prevent left alignment fallback */
+#sigRotator{ position:relative; display:block; }
+#sigRotator img{ left:50% !important; top:50% !important; transform:translate(-50%,-50%) !important }
+
+/* Safety: ensure hero sheen remains crisp on dark variants */
+.hero h1{ filter: contrast(1.05) saturate(1.08) }
 
 
