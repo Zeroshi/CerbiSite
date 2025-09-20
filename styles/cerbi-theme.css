@@ -503,6 +503,62 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   right: max(18px, calc(env(safe-area-inset-right) + 12px)) !important;
 }
 
+/* 1) Keep decorative layers behind content */
+.hero,
+#hero-art,
+.section,
+.container {
+  position: relative;
+  z-index: 0;
+}
+.tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight {
+  position: fixed;      /* or absolute if you already use that */
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;          /* always below content */
+}
+
+/* 2) Ensure full-bleed art cannot overlap following sections */
+.section.full-bleed {
+  overflow: hidden;     /* contain wide imagery */
+}
+.section + .section,
+.section + .container {
+  isolation: isolate;   /* new stacking context so nothing “from above” bleeds in */
+}
+
+/* 3) Prevent showcase/slider images from overflowing their frame */
+.img-frame,
+.showcase {
+  position: relative;
+  overflow: hidden;
+}
+.showcase .slide img {
+  display: block;
+  width: 100%;
+  height: auto;         /* no stretching */
+  object-fit: contain;
+}
+
+/* 4) Card images (if any) should never poke out */
+.card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 5) Make sure any absolutely positioned background in hero stays behind */
+.hero::after {
+  z-index: -1 !important;
+}
+
+/* 6) Belt-and-suspenders: content sits above decorative layers */
+main, header, footer, .nav, .ribbon, .section .card, .glass {
+  position: relative;
+  z-index: 1;
+}
+
+
 /* Ensure dashboard slider never overlays following content while loading */
 #dashboards .img-frame{ position: relative; z-index: 0; }
 #dashSlider{ position: relative; z-index: 0; }
