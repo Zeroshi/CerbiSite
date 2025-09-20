@@ -448,3 +448,84 @@ qsa('[data-copy]').forEach(btn=>{
     });
   }
 })();
+
+// cerbi.js — site glue
+
+// Nav scrolled state
+(() => {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  const on = () => nav.classList.toggle('scrolled', window.scrollY > 6);
+  on();
+  addEventListener('scroll', on, { passive: true });
+})();
+
+// Command palette (existing)
+(() => {
+  const overlay = document.getElementById('cmdkOverlay');
+  const shell = overlay?.querySelector('.cmdk');
+  const input = document.getElementById('cmdkInput');
+  const list = document.getElementById('cmdkList');
+  const btn = document.getElementById('cmdBtn');
+  if (!overlay || !input || !list || !btn) return;
+
+  const scrollToSel = sel => () => document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const openUrl = url => () => window.open(url, '_blank', 'noopener,noreferrer');
+
+  const commands = [
+    { label: 'Why', action: scrollToSel('#why'), keywords: 'problem approach value' },
+    { label: 'Use Cases', action: scrollToSel('#usecases'), keywords: 'outcomes cases' },
+    { label: 'Quick Start', action: scrollToSel('#quickstart'), keywords: 'install nuget setup' },
+    { label: 'Ecosystem', action: scrollToSel('#ecosystem'), keywords: 'suite components' },
+    { label: 'Governance', action: scrollToSel('#governance'), keywords: 'policy rules pii' },
+    { label: 'Dashboards', action: scrollToSel('#dashboards'), keywords: 'ui screenshots' },
+    { label: 'Packages', action: scrollToSel('#packages'), keywords: 'nuget libraries' },
+    { label: 'Compare', action: scrollToSel('#compare'), keywords: 'table differences' },
+    { label: 'Architecture', action: scrollToSel('#architecture'), keywords: 'diagram flow' },
+    { label: 'Contact', action: scrollToSel('#contact'), keywords: 'email form' }
+  ];
+
+  let filtered = [...commands];
+  let idx = 0;
+  const render = () => list.innerHTML = filtered.map((c, i) => `<button class="item${i===idx?' active':''}" data-idx="${i}">${c.label}</button>`).join('');
+  function open(){ overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false'); input.value=''; filtered=[...commands]; idx=0; render(); setTimeout(()=>input.focus(),0); document.body.style.overflow='hidden'; }
+  function close(){ overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  function choose(i=idx){ const cmd=filtered[i]; if(!cmd) return; close(); setTimeout(()=>cmd.action(),0); }
+
+  btn.addEventListener('click', open);
+  addEventListener('keydown', (e) => {
+    const mac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    if ((mac && e.metaKey && e.key.toLowerCase()==='k') || (!mac && e.ctrlKey && e.key.toLowerCase()==='k')) { e.preventDefault(); open(); }
+    if (overlay.classList.contains('open')) {
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); idx=(idx+1)%filtered.length; render(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); idx=(idx-1+filtered.length)%filtered.length; render(); }
+      if (e.key === 'Enter') { e.preventDefault(); choose(); }
+    }
+  });
+  input.addEventListener('input', () => { const q=input.value.trim().toLowerCase(); filtered=!q?[...commands]:commands.filter(c=>c.label.toLowerCase().includes(q)||c.keywords.includes(q)); idx=0; render(); });
+  list.addEventListener('click', (e) => { const b=e.target.closest('button.item'); if(!b) return; idx=Number(b.dataset.idx)||0; choose(idx); });
+  overlay.addEventListener('click', (e) => { if (!shell.contains(e.target)) close(); });
+})();
+
+// Copy buttons delight (small confetti-like glow)
+(() => {
+  addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-copy]');
+    if (!btn) return;
+    const sel = btn.getAttribute('data-copy');
+    const el = document.querySelector(sel);
+    if (!el) return;
+    const text = el.innerText || el.textContent || '';
+    try {
+      await navigator.clipboard.writeText(text);
+      const prev = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Copied!';
+      btn.animate([{boxShadow:'0 0 0px rgba(255,77,0,0)'},{boxShadow:'0 0 24px rgba(255,77,0,.6)'},{boxShadow:'0 0 0px rgba(255,77,0,0)'}],{duration:600});
+      setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 1000);
+    } catch {}
+  });
+})();
+
+
