@@ -90,3 +90,133 @@ html, body {
 .bg-illustration, .spotlight {
   mix-blend-mode: normal;
 }
+
+/* ===================== Cerbi site hardening & polish ===================== */
+
+/* --- Background layers (keep behind everything) --- */
+.tiles,
+.sky,
+.veil,
+.bg-orbs,
+#bg-illustration,
+.spotlight,
+#bg-clock {            /* the big low-contrast clock layer */
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --- Ensure content always stacks above decoration --- */
+header, main, footer,
+.nav, .ribbon, .container, .section,
+.hero, .glass, .card {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;     /* creates a new stacking context per block */
+}
+
+/* Full-bleed sections shouldn’t spill into the next section */
+.section.full-bleed { overflow: hidden; }
+
+/* --- Image & slider containment --- */
+.img-frame,
+.showcase,
+#dashSlider {
+  position: relative;
+  overflow: hidden;       /* clip any tall images or aspect changes */
+}
+
+.showcase .slide img,
+#dashSlider .slide img,
+.card img,
+.contact-art .img-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Hero background pseudo should stay under hero text */
+.hero::after { z-index: -1; }
+
+/* Avoid horizontal scroll from any 100vw usage elsewhere */
+html, body { overflow-x: hidden; }
+
+/* Glass/Card “glare” should not overlap text from other sections */
+.glass, .card { overflow: hidden; }
+
+/* --- Prevent text collisions in dense layouts --- */
+h1, h2, h3, p, .lead, .k, .sub { word-wrap: break-word; overflow-wrap: anywhere; }
+.grid { row-gap: 16px; }
+
+/* --- Progress/clock/fab above content --- */
+#progress, .clock, .contact-fab { position: fixed; z-index: 1100; }
+
+/* ===================== Cute centered Contact FAB ===================== */
+.contact-fab {
+  left: 50%;
+  right: auto;
+  bottom: 20px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(10,18,36,.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(127,148,179,.25);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+:root[data-theme="light"] .contact-fab {
+  background: rgba(255,255,255,.82);
+  border-color: rgba(0,0,0,.10);
+}
+
+.contact-fab img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  border-radius: 50%;
+}
+
+.contact-fab .label {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .2px;
+}
+
+/* Hover “boop” */
+@media (hover:hover) {
+  .contact-fab:hover { transform: translateX(-50%) translateY(-2px) scale(1.02); }
+}
+
+/* Mobile comfort spacing */
+@media (max-width: 520px) {
+  .contact-fab { bottom: 14px; padding: 9px 12px; gap: 8px; }
+  .contact-fab .label { font-size: 13px; }
+}
+
+/* ===================== Background big clock styling ===================== */
+#bg-clock {
+  display: grid;
+  place-items: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 700;
+  letter-spacing: .03em;
+  opacity: .05;                /* very subtle */
+  filter: blur(.5px);
+  color: var(--muted, #a7b4cf);
+  line-height: 1;
+}
+
+/* Fluid size: ~36% of viewport width, clamped for extremes */
+@media (min-width: 0px) {
+  #bg-clock { font-size: clamp(96px, 36vw, 900px); }
+}
+
