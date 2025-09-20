@@ -1,0 +1,92 @@
+/* ========== Cerbi stacking/overflow fixes (non-breaking) ========== */
+
+/* Put all decorative background layers behind real content */
+.tiles,
+.sky,
+.veil,
+.bg-orbs,
+#bg-illustration,
+.spotlight,
+#bg-clock {
+  position: fixed;         /* or absolute in your theme, fixed is fine here */
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;             /* always below content */
+}
+
+/* Ensure main content creates its own stacking context */
+header,
+main,
+footer,
+.nav,
+.ribbon,
+.container,
+.section,
+.glass,
+.card,
+.hero {
+  position: relative;
+  z-index: 0;
+}
+
+/* Hero’s pseudo background should never float above cards */
+.hero::after {
+  z-index: -1 !important;
+}
+
+/* Full-bleed art must not spill into following sections */
+.section.full-bleed {
+  overflow: hidden;
+}
+
+/* Each section starts a new stacking context,
+   so nothing from previous sections can overlap it */
+.section,
+.container {
+  isolation: isolate;
+}
+
+/* The dashboard showcase/slider must clip its images */
+.img-frame,
+.showcase,
+#dashSlider {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Constrain slider images to their frame; avoid surprise height expansions */
+.showcase .slide img,
+#dashSlider .slide img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Generic safety for images inside cards etc. */
+.card img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Avoid horizontal scrolling from any 100vw usage elsewhere */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Keep the progress bar and floating widgets above content but below modals */
+#progress,
+.contact-fab,
+.clock {
+  z-index: 1100;
+  position: fixed;
+}
+
+/* Command palette overlay already handles its own z-index, no change needed */
+
+/* Optional: ensure any later absolute decorations stay behind */
+.bg-illustration, .spotlight {
+  mix-blend-mode: normal;
+}
