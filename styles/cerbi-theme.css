@@ -587,3 +587,24 @@ body{ overflow-x: hidden; }
 .sig-rotator img.show{ opacity: 1; visibility: visible; }
 
 
+/* --- CerbiSite fixes (safe to append) --- */
+.hero, .container.section { isolation: isolate; } /* ensures z-index works as expected */
+
+.img-frame img, .showcase img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.img-frame.showcase { --ar: 16/9; aspect-ratio: var(--ar); position: relative; }
+.img-frame.showcase .dash-slider { position: absolute; inset: 0; }
+
+.contact-art .img-frame { display: grid; place-items: center; }
+.contact-art img { max-width: 100%; height: auto; object-fit: contain; }
+
+@media (max-width: 820px) {
+  .nav .nav-links { max-height: 70vh; overflow-y: auto; }
+}
+
+
