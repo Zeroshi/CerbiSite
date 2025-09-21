@@ -1,328 +1,53 @@
-/* ============ Cerbi mobile stability fixes (non-destructive) ============ */
-/* These rules sit LAST so they override earlier CSS without changing your design. */
+/* Mobile & UX guards: nav toggle, cmdk behavior, sticky offsets */
+(() => {
+  const $ = (s, el=document) => el.querySelector(s);
 
-/* Never trap page scroll on phones due to overlays/menus */
-html, body { height: auto; overflow-y: auto; }
+  /* Mobile nav toggle */
+  (function navToggle(){
+    const toggle = document.getElementById('navToggle');
+    const nav = document.getElementById('primaryNav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', ()=>{
+      const open = nav.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close on navigation
+    nav.addEventListener('click', e=>{
+      if (e.target.tagName === 'A') {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded','false');
+      }
+    });
+  })();
 
-/* Safer 100vh on mobile (address bar) */
-:root { --vh: 1svh; }
-@supports not (height: 1svh) { :root { --vh: 1vh; } }
+  /* Prevent Cmd-K from being auto-active; ensure overlay starts hidden */
+  (function cmdkGuard(){
+    const overlay = document.getElementById('cmdkOverlay');
+    if (!overlay) return;
+    overlay.setAttribute('aria-hidden','true');
+  })();
 
-/* If your hero/sections depend on 100vh, make them stable on phones */
-[data-hero], .hero {
-  min-height: calc(var(--vh) * 100);
-}
+  /* iOS vh fix to prevent jumping content */
+  (function iosVhFix(){
+    const set = () => document.documentElement.style.setProperty('--vh', innerHeight * 0.01 + 'px');
+    set(); addEventListener('resize', set, { passive:true });
+  })();
 
-/* Performance: don’t let long sections block first scroll/paint */
-.section, [data-section] {
-  content-visibility: auto;
-  contain-intrinsic-size: 600px 800px; /* tweak if your sections are taller */
-}
+  /* Ensure “Skip to content” stays hidden until focused (defense-in-depth) */
+  (function skipGuard(){
+    const a = document.querySelector('a[href="#main"]');
+    if (!a) return;
+    a.classList.add('visually-hidden-focusable');
+  })();
 
-/* Mobile nav should never steal scroll */
-.hamburger { touch-action: manipulation; }
-nav, .nav, [data-nav] { -webkit-overflow-scrolling: touch; }
+  /* Contact FAB is CSS-positioned; ensure no conflicting inline style sneaks in */
+  (function fabGuard(){
+    const fab = document.querySelector('.contact-fab');
+    if (!fab) return;
+    fab.style.top = '';
+    fab.style.transform = '';
+    fab.style.bottom = '';
+    fab.style.right = '';
+  })();
 
-/* Common off-canvas patterns: make hidden menus non-interactive until opened */
-.nav:not(.open)[aria-hidden="true"],
-[hidden][data-menu],
-[aria-hidden="true"][data-menu] {
-  pointer-events: none !important;
-}
-
-/* If some global class locks body scroll, kill it on mobile */
-@media (max-width: 980px) {
-  .no-scroll, .lock-scroll, body[style*="overflow: hidden"] {
-    overflow: auto !important;
-  }
-}
-
-/* Animations/visuals: keep taste, reduce cycles for small screens */
-@media (max-width: 640px) {
-  #stars, canvas[data-bg], [data-heavy-anim="true"] {
-    display: none !important;
-  }
-  svg#clock { display: none !important; }
-}
-
-/* Respect users who prefer reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-  #stars, canvas[data-bg], svg#clock { display: none !important; }
-}
-
-/* Touch targets slightly larger on mobile */
-@media (max-width: 860px) {
-  a, button { -webkit-tap-highlight-color: rgba(0,0,0,0.08); }
-}
-
-/* Avoid accidental horizontal scroll from wide grids/images */
-html, body { overflow-x: hidden; }
-img, video, canvas { max-width: 100%; height: auto; }
-
-/* =========================
-   Cerbi — Image System Fixes
-   (spacing, responsive fit, and "pop" for dashboards)
-   ========================= */
-
-/* Universal image safety + spacing */
-img, picture, video, canvas, svg {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-figure, .img-frame { margin-block: 16px; }
-@media (min-width: 900px){ figure, .img-frame { margin-block: 18px; } }
-@media (min-width: 1200px){ figure, .img-frame { margin-block: 20px; } }
-
-/* Caption */
-.img-cap {
-  margin-top: 8px;
-  color: var(--muted);
-  text-align: center;
-  font-size: .95rem;
-}
-
-/* Generic framed image */
-.img-frame {
-  position: relative;
-  display: grid;
-  border-radius: 14px;
-  overflow: clip;
-  background: color-mix(in oklab, var(--panel) 82%, transparent);
-  border: 1px solid color-mix(in oklab, var(--panel-2) 55%, transparent);
-  box-shadow: 0 18px 44px rgba(2,10,35,.38);
-  isolation: isolate;
-}
-.img-frame img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;             /* prevents “squish” when aspect is constrained */
-  background: #0a1224;           /* avoids white flash while loading in dark mode */
-}
-
-/* Tighter image rows that never overlap on mobile */
-.img-row {
-  display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px;
-}
-.img-row > * { grid-column: span 12; }
-@media (min-width: 700px){
-  .img-row > * { grid-column: span 6; }
-}
-@media (min-width: 1100px){
-  .img-row > * { grid-column: span 4; }
-}
-
-/* ===== Dashboards: aspect, polish, and POP ===== */
-#dashboards .img-frame.showcase {
-  --ar: 16/9;
-  aspect-ratio: var(--ar);       /* locks height to stop reflow/jumps */
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)),
-    radial-gradient(120% 120% at 80% 0%, rgba(255,77,0,.15), transparent 60%),
-    color-mix(in oklab, var(--panel) 85%, transparent);
-  border: 1px solid color-mix(in oklab, var(--panel-2) 60%, transparent);
-  box-shadow:
-    0 25px 60px rgba(2,10,35,.55),      /* big ambient depth */
-    0 2px 0 rgba(255,255,255,.04) inset;/* subtle inner lift */
-}
-#dashboards .img-frame.showcase::after {
-  /* faint neon edge to make screenshots pop from the page */
-  content: "";
-  position: absolute; inset: 0; pointer-events: none; border-radius: 13px;
-  box-shadow: 0 0 0 1px rgba(255,77,0,.20), 0 0 32px rgba(255,77,0,.18) inset;
-  mix-blend-mode: screen;
-}
-
-/* Ensure slides fill the frame without distortion */
-#dashboards .img-frame.showcase img {
-  width: 100%; height: 100%;
-  object-fit: cover;             /* fills the 16:9 without letterboxing */
-  image-rendering: auto;
-  filter: contrast(1.03) saturate(1.02); /* a touch of clarity */
-}
-
-/* Slider layering + smooth crossfade (keeps GPU cheap) */
-.dash-slider { position: absolute; inset: 0; }
-.dash-slider .slide {
-  position: absolute; inset: 0;
-  opacity: 0; transition: opacity .35s ease;
-  will-change: opacity;
-}
-.dash-slider .slide.active { opacity: 1; }
-
-/* Dots: centered, larger hit area on mobile */
-.dash-slider .dots {
-  position: absolute; left: 0; right: 0; bottom: 10px;
-  display: flex; gap: 8px; justify-content: center; z-index: 2;
-}
-.dash-slider .dots button{
-  width: 10px; height: 10px; border-radius: 999px;
-  background: rgba(255,255,255,.35);
-  border: 1px solid rgba(255,255,255,.35);
-  box-shadow: 0 0 12px rgba(0,0,0,.35);
-  cursor: pointer;
-}
-.dash-slider .dots button.active{
-  background: var(--accent);
-  border-color: color-mix(in oklab, var(--accent) 70%, #fff);
-  box-shadow: 0 0 12px rgba(255,77,0,.55);
-}
-
-/* Hover/press delight (desktop only) */
-@media (hover: hover){
-  #dashboards .img-frame.showcase:hover img{
-    transform: translateZ(0);      /* promote to its own layer */
-    filter: contrast(1.06) saturate(1.05);
-  }
-}
-
-/* Lightbox overlay (opt-in via data-zoom, JS adds class) */
-.lightbox {
-  position: fixed; inset: 0; z-index: 10000;
-  background: color-mix(in oklab, #000 70%, transparent);
-  display: grid; place-items: center; padding: 4vw;
-}
-.lightbox img {
-  width: min(1200px, 96vw); height: auto; border-radius: 14px;
-  box-shadow: 0 35px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08) inset;
-}
-.lightbox .close {
-  position: fixed; top: 14px; right: 14px;
-  background: rgba(255,255,255,.12); color: #fff;
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 10px; padding: 8px 10px; cursor: pointer;
-  backdrop-filter: blur(6px);
-}
-
-/* ===== Contact FAB bounce ===== */
-@keyframes cerbi-bounce-y {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-
-/* base */
-.contact-fab img{
-  transition: transform .18s ease, box-shadow .18s ease;
-  will-change: transform;
-}
-
-/* hover/focus = bounce */
-@media (hover:hover){
-  .contact-fab:hover img,
-  .contact-fab:focus img,
-  .contact-fab:focus-visible img{
-    animation: cerbi-bounce-y .8s ease-in-out infinite;
-    box-shadow: 0 10px 28px rgba(0,0,0,.45);
-  }
-}
-
-/* keyboard-accessible focus ring on the whole FAB */
-.contact-fab:focus-visible{
-  outline: 3px solid var(--ring);
-  outline-offset: 4px;
-  border-radius: 16px;
-}
-
-/* reduce motion: stop bouncing but keep a subtle lift */
-@media (prefers-reduced-motion: reduce){
-  .contact-fab:hover img,
-  .contact-fab:focus img,
-  .contact-fab:focus-visible img{
-    animation: none;
-    transform: translateY(-2px);
-  }
-}
-
-@media (hover:hover){
-  .contact-fab:hover { transform: translateY(-1px); }
-}
-
-/* ==== Desktop hero spacing & bullet cleanup ==== */
-@media (min-width: 1024px){
-  /* breathing room inside the glass card and below it */
-  .value-rotator{ padding-bottom:18px !important; margin-bottom:22px !important; }
-
-  /* headline copy under the h3 */
-  .value-rotator .k{ margin:.35rem 0 .5rem !important; }
-
-  /* bullet list -> proper margin + real bullets only */
-  .value-rotator ul{
-    margin:8px 0 18px !important;
-    padding-left:1.25rem !important;
-    list-style:disc !important;
-    list-style-position: outside !important;
-  }
-  .value-rotator li{ margin:2px 0 !important; }
-  .value-rotator li::before{ content:none !important; } /* kill theme pseudo-bullets */
-
-  /* the buttons row immediately after the card */
-  .value-rotator + .row{ margin-top:26px !important; }
-}
-
-/* ==== Animated background behind the small .clock badge ==== */
-@keyframes cerbi-spin { to { transform: rotate(360deg); } }
-@keyframes cerbi-pulse {
-  0%,100% { opacity:.18; transform: scale(0.98); }
-  50%     { opacity:.32; transform: scale(1.02); }
-}
-
-.clock{
-  position: fixed; /* you already have this */
-  overflow: visible; /* allow glow to render outside the badge */
-  isolation: isolate; /* keep effects scoped */
-}
-
-/* soft tinted ring that slowly spins */
-.clock::after{
-  content:"";
-  position:absolute; inset:-34px;
-  z-index:-2; border-radius: 999px;
-  background:
-    conic-gradient(from 0deg,
-      rgba(255,77,0,.35),
-      rgba(255,146,54,.15),
-      rgba(127,148,179,.10),
-      rgba(255,77,0,.35));
-  filter: blur(22px);
-  animation: cerbi-spin 14s linear infinite;
-  opacity:.35;
-  pointer-events:none;
-}
-
-/* inner radial glow that gently pulses */
-.clock::before{
-  content:"";
-  position:absolute; inset:-12px;
-  z-index:-1; border-radius: 16px;
-  background:
-    radial-gradient(60% 60% at 65% 35%, rgba(255,77,0,.30), transparent 70%),
-    radial-gradient(50% 50% at 20% 80%, rgba(255,146,54,.25), transparent 70%);
-  filter: blur(14px);
-  animation: cerbi-pulse 3.6s ease-in-out infinite;
-  pointer-events:none;
-}
-
-/* toned appropriately in light theme */
-:root[data-theme="light"] .clock::after{ opacity:.25; }
-:root[data-theme="light"] .clock::before{ filter: blur(12px); }
-
-/* respect users who prefer less motion */
-@media (prefers-reduced-motion: reduce){
-  .clock::before, .clock::after{ animation: none; }
-}
-
-
-/* Optional: ambient wash behind the BIG #bg-clock */
-#bg-clock{
-  position: fixed; inset:0; pointer-events:none;
-}
-#bg-clock::before{
-  content:"";
-  position:absolute; inset:0; z-index:-1;
-  background:
-    radial-gradient(40% 40% at 65% 15%, rgba(255,77,0,.10), transparent 60%),
-    radial-gradient(35% 35% at 20% 70%, rgba(127,148,179,.10), transparent 60%);
-  animation: cerbi-pulse 6s ease-in-out infinite;
-}
-
+})();
