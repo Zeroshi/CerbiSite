@@ -125,7 +125,7 @@
     .dash-slider .slide{position:absolute;inset:0;opacity:0;transition:opacity .35s ease}
     .dash-slider .slide.active{opacity:1}
 
-    /* Keep grid cards from overlapping on narrow screens */
+    /* Grid safety */
     .grid{row-gap:14px}
 
     /* Progress bar */
@@ -140,10 +140,10 @@
     /* HERO value card spacing */
     .value-rotator{padding-bottom:18px;margin-bottom:22px}
     .value-rotator .k{margin:.35rem 0 .55rem}
-    .value-rotator ul{margin:10px 0 18px;padding-left:1.25rem;list-style:disc;list-style-position:outside}
+    .value-rotator ul{margin:10px 0 22px;padding-left:1.25rem;list-style:disc;list-style-position:outside}
     .value-rotator li::before{content:none}
     .value-rotator li{margin:2px 0}
-    .hero-cta-row{display:flex;gap:10px;justify-content:center;margin-top:28px}
+    .hero-cta-row{display:flex;gap:10px;justify-content:center;margin-top:32px}
 
     /* Contact FAB */
     .contact-fab{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:8500;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
@@ -163,10 +163,15 @@
     .hero .dot:nth-child(3){animation-delay:1.6s}
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
+    /* CONTACT centering */
+    #contact .eyebrow,#contact h2,#contact .lead{text-align:center}
+    #contact .grid{justify-content:center}
+    #contact .grid>.col-12{max-width:960px;margin-inline:auto}
+
     /* Anchor offset for sticky header */
     section[id]{scroll-margin-top:72px}
 
-    /* Reduced motion respect */
+    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important;scroll-behavior:auto!important}
     }
@@ -684,10 +689,50 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=2" defer></script>
 
-  <!-- Clocks, slider, progress, theme button -->
+  <!-- Clocks, slider, progress, theme & command palette -->
   <script>
     // Theme button
     (function(){ const btn=document.getElementById('themeBtn'); if(btn&&window.CerbiTheme){ btn.addEventListener('click', ()=>window.CerbiTheme.toggle()); } })();
+
+    // Command palette (fixed, no page jump; ⌘/Ctrl+K to open, Esc to close)
+    (function(){
+      const overlay=document.getElementById('cmdkOverlay');
+      const input=document.getElementById('cmdkInput');
+      const openBtn=document.getElementById('cmdBtn');
+      if(!overlay||!input) return;
+
+      let lastScroll=0;
+      function open(){
+        lastScroll=window.scrollY||document.documentElement.scrollTop||0;
+        overlay.removeAttribute('aria-hidden');
+        overlay.style.position='fixed';
+        overlay.style.inset='0';
+        overlay.style.display='block';
+        document.documentElement.classList.add('nav-lock');
+        document.body.style.overflow='hidden';
+        setTimeout(()=>input.focus(),0);
+      }
+      function close(){
+        overlay.setAttribute('aria-hidden','true');
+        overlay.style.display='none';
+        document.documentElement.classList.remove('nav-lock');
+        document.body.style.overflow='';
+        window.scrollTo({top:lastScroll,left:0,behavior:'instant'});
+      }
+
+      overlay.addEventListener('click',(e)=>{ if(e.target===overlay) close(); });
+      document.addEventListener('keydown',(e)=>{
+        const meta = e.ctrlKey || e.metaKey;
+        if(meta && e.key.toLowerCase()==='k'){ e.preventDefault(); open(); }
+        if(e.key==='Escape'){ close(); }
+      });
+      if(openBtn){ openBtn.addEventListener('click',(e)=>{ e.preventDefault(); open(); }); }
+
+      // minimal CSS for lock (inline to avoid cache)
+      const lockCSS=document.createElement('style');
+      lockCSS.textContent='html.nav-lock{overflow:hidden} .cmdk-overlay{z-index:2000} .cmdk{position:fixed;left:50%;transform:translateX(-50%);top:12vh;max-width:760px;width:min(92vw,760px);border-radius:12px;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:var(--shadow)}';
+      document.head.appendChild(lockCSS);
+    })();
 
     // Big background clock
     (function(){
