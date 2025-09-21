@@ -5,6 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
+  <!-- SINGLE-SOURCE THEME BOOT (authoritative; fixes “stuck in Light”) -->
+  <script>
+  (function(){
+    const KEY='cerbi-theme';
+    const ORDER=['dark','light','dusk','emerald','violet'];
+    const VALID=new Set(ORDER);
+
+    // Migrate old key then retire it to avoid conflicts
+    try{
+      if(!localStorage.getItem(KEY) && localStorage.getItem('theme')){
+        localStorage.setItem(KEY, localStorage.getItem('theme'));
+      }
+      localStorage.removeItem('theme');
+    }catch{}
+
+    const apply=(t)=>{
+      const theme=VALID.has(t)?t:'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      try{ localStorage.setItem(KEY, theme); }catch{}
+      let m=document.querySelector('meta[name="theme-color"]');
+      if(!m){ m=document.createElement('meta'); m.name='theme-color'; document.head.appendChild(m); }
+      m.setAttribute('content', theme==='light' ? '#ffffff' : '#0a1224');
+    };
+
+    // Initial theme (saved or system)
+    const saved=(()=>{ try{ const v=localStorage.getItem(KEY); return VALID.has(v)?v:null; }catch{return null;} })();
+    const initial=saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    apply(initial);
+
+    // Public API for the button
+    window.CerbiTheme={
+      set: apply,
+      toggle(){
+        const cur=document.documentElement.getAttribute('data-theme')||'dark';
+        apply(ORDER[(ORDER.indexOf(cur)+1)%ORDER.length]);
+      }
+    };
+  })();
+  </script>
+
   <!-- SEO/A11Y -->
   <meta name="robots" content="index,follow" />
   <meta name="color-scheme" content="dark light" />
@@ -36,7 +76,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css">
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=1">
 
   <!-- Page-specific fixes/additions -->
   <style>
@@ -67,11 +107,15 @@
     #bg-clock{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:0;opacity:.05;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;font-weight:700;letter-spacing:.03em;filter:blur(.6px)}
     /* Make sure background layers sit behind */
     .tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight{z-index:-2}
-      /* hero value card → add space under the list and kill double bullets */
-  .value-rotator ul{margin:10px 0 18px !important; padding-left:1.25rem !important; list-style:disc !important;}
-  .value-rotator li::before{content:none !important;}
-  /* also push the buttons even if the inline margin is edited later */
-  .value-rotator + .row{margin-top:28px !important;}
+
+    /* HERO value card → spacing + kill duplicate bullets */
+    .value-rotator{padding-bottom:18px;margin-bottom:22px}
+    .value-rotator .k{margin:.35rem 0 .55rem}
+    .value-rotator ul{margin:10px 0 18px;padding-left:1.25rem;list-style:disc;list-style-position:outside}
+    .value-rotator li::before{content:none}
+    .value-rotator li{margin:2px 0}
+    .hero-cta-row{display:flex;gap:10px;justify-content:center;margin-top:28px}
+
     /* Cute center-right Contact FAB */
     .contact-fab{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:8500;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
     .contact-fab img{width:52px;height:52px;border-radius:15px;box-shadow:0 6px 16px rgba(0,0,0,.35);background:var(--glass);padding:6px;border:1px solid rgba(127,148,179,.25);transition:transform .18s ease, box-shadow .18s ease}
@@ -96,31 +140,6 @@
       *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition:none !important;scroll-behavior:auto !important}
     }
   </style>
-
-  <!-- Early theme boot (includes randomizer) -->
-  <script>
-    (function(){
-      try{
-        const KEYS = ['cerbi-theme','theme'];
-        const getSaved = () => { for (const k of KEYS){ const v = localStorage.getItem(k); if (v) return v; } return null; };
-        const setBoth = (t) => { KEYS.forEach(k => localStorage.setItem(k, t)); };
-        const setAttr = (t) => document.documentElement.setAttribute('data-theme', t);
-        const setMeta = (t) => { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224'); };
-        const valid = v => ['dark','light','dusk','emerald','violet'].includes(v);
-        const params = new URLSearchParams(location.search);
-        const preset = params.get('theme');
-        const random = params.has('randomTheme');
-        const sys = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        let theme = getSaved() || sys;
-        if (preset && valid(preset)) theme = preset;
-        else if (random || !getSaved()){
-          const pool = ['dark','light','dusk','emerald','violet'];
-          theme = pool[Math.floor(Math.random()*pool.length)];
-        }
-        setAttr(theme); setMeta(theme); setBoth(theme);
-      }catch{}
-    })();
-  </script>
 
   <!-- Canonicalize www to apex -->
   <script>
@@ -235,11 +254,10 @@
         </div>
       </div>
 
-<div class="row hero-cta-row">
-  <a class="btn btn-primary" href="#governance">Explore Governance</a>
-  <a class="btn" href="#ecosystem">See Ecosystem</a>
-</div>
-
+      <div class="row hero-cta-row">
+        <a class="btn btn-primary" href="#governance">Explore Governance</a>
+        <a class="btn" href="#ecosystem">See Ecosystem</a>
+      </div>
 
       <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;padding-top:10px">
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async"/>
@@ -509,71 +527,69 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-<!-- DASHBOARDS -->
-<section id="dashboards" class="container section">
-  <div class="eyebrow">See it</div>
-  <h2><span class="hl">CerbiShield</span> in Action</h2>
-  <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
+    <!-- DASHBOARDS -->
+    <section id="dashboards" class="container section">
+      <div class="eyebrow">See it</div>
+      <h2><span class="hl">CerbiShield</span> in Action</h2>
+      <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
 
-  <div class="glass tilt reveal" style="padding:16px">
-    <div class="glare" aria-hidden="true"></div>
+      <div class="glass tilt reveal" style="padding:16px">
+        <div class="glare" aria-hidden="true"></div>
 
-    <div class="img-frame showcase" role="group" aria-label="CerbiShield dashboard screenshots">
-      <div id="dashSlider" class="dash-slider">
+        <div class="img-frame showcase" role="group" aria-label="CerbiShield dashboard screenshots">
+          <div id="dashSlider" class="dash-slider">
 
-        <figure class="slide active">
-          <img
-            width="1600" height="900"
-            src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-            srcset="
-              assets/screenshots/cerbishield-hero-1600x900.jpg 1x,
-              assets/screenshots/cerbishield-hero-2400x1350.jpg 1.5x,
-              assets/screenshots/cerbishield-hero-3200x1800.jpg 2x
-            "
-            sizes="(max-width: 900px) 100vw, 900px"
-            alt="CerbiShield — Overview"
-            loading="lazy" decoding="async" data-zoom>
-        </figure>
+            <figure class="slide active">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-hero-1600x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-hero-1600x900.jpg 1x,
+                  assets/screenshots/cerbishield-hero-2400x1350.jpg 1.5x,
+                  assets/screenshots/cerbishield-hero-3200x1800.jpg 2x
+                "
+                sizes="(max-width: 900px) 100vw, 900px"
+                alt="CerbiShield — Overview"
+                loading="lazy" decoding="async">
+            </figure>
 
-        <figure class="slide">
-          <img
-            width="1600" height="900"
-            src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-            srcset="
-              assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
-              assets/screenshots/cerbishield-profiles-1800x1350.jpg 1.5x,
-              assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x
-            "
-            sizes="(max-width: 900px) 100vw, 900px"
-            alt="CerbiShield — Profiles"
-            loading="lazy" decoding="async" data-zoom>
-        </figure>
+            <figure class="slide">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
+                  assets/screenshots/cerbishield-profiles-1800x1350.jpg 1.5x,
+                  assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x
+                "
+                sizes="(max-width: 900px) 100vw, 900px"
+                alt="CerbiShield — Profiles"
+                loading="lazy" decoding="async">
+            </figure>
 
-        <figure class="slide">
-          <img
-            width="1600" height="900"
-            src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-            srcset="
-              assets/screenshots/cerbishield-violations-1600x1200.jpg 1x,
-              assets/screenshots/cerbishield-violations-2400x1800.jpg 1.5x,
-              assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
-            "
-            sizes="(max-width: 900px) 100vw, 900px"
-            alt="CerbiShield — Violations"
-            loading="lazy" decoding="async" data-zoom>
-        </figure>
+            <figure class="slide">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-violations-1600x1200.jpg 1x,
+                  assets/screenshots/cerbishield-violations-2400x1800.jpg 1.5x,
+                  assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
+                "
+                sizes="(max-width: 900px) 100vw, 900px"
+                alt="CerbiShield — Violations"
+                loading="lazy" decoding="async">
+            </figure>
 
-        <div class="dots" aria-label="slider controls"></div>
+            <div class="dots" aria-label="slider controls"></div>
+          </div>
+        </div>
+
+        <div class="img-cap">One source of truth for policy and enforcement.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="img-cap">One source of truth for policy and enforcement.</div>
-  </div>
-</section>
-
-
-
-    <!-- PACKAGES (unchanged content, safe styles above prevent overlap) -->
+    <!-- PACKAGES -->
     <section id="packages" class="container section">
       <h2>NuGet <span class="hl">Packages</span> & How They Fit</h2>
       <p class="lead">Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.</p>
@@ -588,14 +604,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
 
       <div class="space"></div>
-
-      <!-- ... package cards unchanged ... -->
-      <!-- (Keep your existing package card markup here) -->
+      <!-- … keep your package cards markup here … -->
     </section>
 
-    <!-- REPOS, COMPARE, ARCHITECTURE, CONTACT (existing markup kept) -->
-    <!-- Contact section includes right-side art that now respects object-fit and grid gap -->
-
+    <!-- CONTACT -->
     <section id="contact" class="container section">
       <div class="eyebrow">Let’s talk</div>
       <h2>Get in <span class="hl">Touch</span></h2>
@@ -607,6 +619,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:680px;border:0;border-radius:12px;background:rgba(255,255,255,.02)" loading="lazy"></iframe>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
+      </div>
     </section>
   </main>
 
@@ -646,34 +659,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-
-  <!-- Theme button cycle + first-visit randomizer (matches early boot) -->
-  <script>
-    (function(){
-      try{
-        const btn = document.getElementById('themeBtn');
-        if (!btn) return;
-        const themes = ['dark','light','dusk','emerald','violet'];
-        btn.addEventListener('click', ()=>{
-          const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-          const next = themes[(themes.indexOf(cur)+1) % themes.length];
-          document.documentElement.setAttribute('data-theme', next);
-          localStorage.setItem('cerbi-theme', next);
-          localStorage.setItem('theme', next);
-          const meta = document.querySelector('meta[name="theme-color"]');
-          if (meta) meta.setAttribute('content', next === 'light' ? '#ffffff' : '#0a1224');
-        });
-        if (!localStorage.getItem('cerbi-theme') && !localStorage.getItem('theme')){
-          const pick = themes[Math.floor(Math.random()*themes.length)];
-          document.documentElement.setAttribute('data-theme', pick);
-          localStorage.setItem('cerbi-theme', pick); localStorage.setItem('theme', pick);
-        }
-      }catch{}
-    })();
-  </script>
+  <script src="scripts/mobile-fixes.js" defer></script>
 
   <!-- Background & badge clocks + slider sizing -->
   <script>
+    // Bind theme & mobile nav
+    (() => {
+      const btn = document.getElementById('themeBtn');
+      if (btn && window.CerbiTheme) btn.addEventListener('click', ()=> window.CerbiTheme.toggle());
+      const t=document.getElementById('navToggle'), nav=document.getElementById('primaryNav');
+      if(t && nav){ t.addEventListener('click',()=>{ const o=nav.classList.toggle('open'); t.setAttribute('aria-expanded',o?'true':'false'); }); }
+    })();
+
     // Big background clock
     (() => {
       const clockEl = document.getElementById('bg-clock');
@@ -714,7 +711,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       tick(); setInterval(tick, 1000);
     })();
 
-    // Dashboard slider: keep height and dots in sync without overlaps
+    // Dashboard slider
     (() => {
       const frame = document.querySelector('#dashboards .img-frame');
       const slider = document.getElementById('dashSlider');
@@ -746,6 +743,5 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       addEventListener('resize', on, { passive:true });
     })();
   </script>
-  <script defer src="scripts/mobile-fixes.js"></script>
 </body>
 </html>
