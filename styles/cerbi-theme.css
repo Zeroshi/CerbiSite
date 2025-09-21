@@ -636,3 +636,50 @@ body{ overflow-x: hidden; }
   margin-top: 28px;          /* final gap to your buttons */
 }
 
+/* HERO value card — clearer spacing + stable bullets */
+.value-rotator{
+  max-width:980px;
+  padding:16px 18px 22px;
+  margin:18px auto 40px;       /* ⬅️ extra space below the card */
+}
+.value-rotator .k{margin:.35rem 0 .55rem}
+
+/* Use custom bullets (prevents the “orphan bullets” you’re seeing) */
+.value-rotator ul{
+  margin:10px 0 12px;
+  padding-left:0;
+  list-style:none;
+}
+.value-rotator li{
+  display:flex;
+  gap:.5rem;
+  align-items:flex-start;
+  margin:2px 0;
+}
+.value-rotator li::before{
+  content:"•";
+  line-height:1;
+  transform:translateY(.15em);
+  opacity:.85;
+}
+
+/* Slider dots inside the card get breathing room */
+.value-rotator .dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+}
+
+/* Buttons row sits comfortably below the card */
+.hero-cta-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:20px;             /* space above buttons */
+  margin-bottom:6px;
+}
+
+/* Logos row below the buttons—subtle separation */
+.logo-row{ margin-top:14px; }
+
