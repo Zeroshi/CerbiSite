@@ -181,3 +181,53 @@
   });
 })();
 
+/* === Cerbi | Image & slider enhancements === */
+(function(){
+  const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
+
+  // Make all imgs light by default (cheap wins)
+  $$('img:not([loading])').forEach(i=>i.setAttribute('loading','lazy'));
+  $$('img:not([decoding])').forEach(i=>i.setAttribute('decoding','async'));
+
+  // Dashboard slider wiring
+  const slider = $('#dashSlider');
+  if (slider){
+    const slides = $$('.slide', slider);
+    const dotsBox = slider.querySelector('.dots');
+    if (slides.length && dotsBox){
+      dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+      const dots = $$('.dots button', slider);
+      let idx = Math.max(0, slides.findIndex(s=>s.classList.contains('active')));
+      const show = n => { slides.forEach((s,i)=>s.classList.toggle('active',i===n)); dots.forEach((d,i)=>d.classList.toggle('active',i===n)); idx=n; };
+      dots.forEach((d,i)=> d.addEventListener('click', ()=>{ show(i); stop(); }, {passive:true}));
+      show(idx);
+      // gentle autoplay
+      let t; const start=()=> t=setInterval(()=>show((idx+1)%slides.length), 5000);
+      const stop = ()=> t && clearInterval(t);
+      start();
+      slider.addEventListener('pointerdown', stop, {passive:true});
+      slider.addEventListener('pointerenter', stop, {passive:true});
+      slider.addEventListener('pointerleave', start, {passive:true});
+      document.addEventListener('visibilitychange', ()=> document.hidden ? stop() : start());
+    }
+  }
+
+  // Simple lightbox for images flagged with data-zoom (and for dashboard imgs)
+  function openLightbox(src, alt){
+    const wrap=document.createElement('div');
+    wrap.className='lightbox';
+    wrap.innerHTML=`<button class="close" aria-label="Close (Esc)">Close ✕</button><img src="${src}" alt="${alt||''}">`;
+    document.body.appendChild(wrap);
+    const close=()=>{ wrap.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey=e=> e.key==='Escape' && close();
+    wrap.addEventListener('click', e=> e.target===wrap && close(), {passive:true});
+    wrap.querySelector('.close').addEventListener('click', close, {passive:true});
+    document.addEventListener('keydown', onKey);
+  }
+  $$('img[data-zoom], #dashboards .img-frame.showcase img').forEach(img=>{
+    img.style.cursor='zoom-in';
+    img.addEventListener('click', ()=> openLightbox(img.currentSrc||img.src, img.alt), {passive:true});
+  });
+})();
+
+
