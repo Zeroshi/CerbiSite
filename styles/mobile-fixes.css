@@ -1,9 +1,7 @@
 /* Mobile-specific guardrails and quick fixes */
 
-/* Ensure sticky nav doesn't overlap content anchors */
 section[id]{ scroll-margin-top: 72px }
 
-/* Keep mobile nav usable with long lists */
 @media (max-width: 820px){
   .nav .nav-links{ max-height: 70vh; overflow-y:auto }
 }
@@ -20,7 +18,7 @@ section[id]{ scroll-margin-top: 72px }
   .lightbox-inner{ width: 96vw; max-height: 92vh }
 }
 
-/* Space under hero card / CTAs on smaller devices */
+/* Spacing under hero card / CTAs on smaller devices */
 @media (max-width: 640px){
   .value-rotator{ margin-bottom: 28px }
   .hero-cta-row{ margin-top: 18px; margin-bottom: 8px }
