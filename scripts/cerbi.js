@@ -528,4 +528,29 @@ qsa('[data-copy]').forEach(btn=>{
   });
 })();
 
+/* Cerbi site JS (safe theme handling removed from here — handled inline) */
+(() => {
+  // Tilt & reveal (no-ops if classes not present)
+  const tilts = document.querySelectorAll('.tilt');
+  tilts.forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(800px) rotateX(${(-y*4).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg)`;
+    });
+    el.addEventListener('mouseleave', () => el.style.transform = '');
+  });
+
+  // Copy buttons
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const sel = btn.getAttribute('data-copy');
+      const code = document.querySelector(sel)?.innerText ?? '';
+      try { await navigator.clipboard.writeText(code); btn.textContent = 'Copied!'; setTimeout(()=>btn.textContent='Copy',900); }
+      catch { /* ignore */ }
+    });
+  });
+})();
+
 
