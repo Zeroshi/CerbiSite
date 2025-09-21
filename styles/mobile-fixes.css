@@ -274,3 +274,36 @@ figure, .img-frame { margin-block: 16px; }
   box-shadow:0 35px 120px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08) inset; }
 .lightbox .close { position:fixed; top:14px; right:14px; padding:8px 10px; border-radius:10px;
   background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(6px); }
+
+/* ===== Desktop polish (Edge/large viewports) ===== */
+@media (min-width: 1024px){
+
+  /* hero spacing hierarchy: chips → h1 → sub → card */
+  .hero .chip-row{ margin-top: 8px; gap: 10px; }
+  .hero h1{ margin: 12px 0 12px; }
+  .hero .sub{ margin: 12px auto 0; max-width: 84ch; }
+
+  /* value rotator card breathing room + consistent list */
+  .value-rotator{ margin-top: 16px; }
+  .value-rotator ul{ margin: 6px 0 0; padding-left: 1.1rem; list-style: disc; }
+  .value-rotator li{ margin: 2px 0; }
+}
+
+/* fix “double bullets” in Edge (marker + custom styles) */
+.value-rotator .slide { list-style: none; }           /* figure resets */
+.value-rotator ul{ list-style: disc; }
+.value-rotator ul .k, .value-rotator .k ul{ list-style: disc; }
+
+/* full-bleed signature art: don’t hug container edges on desktop */
+.section.full-bleed{ padding: 0; margin: 18px 0; }
+.section.full-bleed .glass{ max-width: min(1280px, 94vw); margin-inline: auto; }
+.section.full-bleed .img-frame{ margin: 0; border-radius: 14px; overflow: clip; }
+.section.full-bleed .img-frame img{ object-fit: cover; object-position: center; }
+
+/* generic framed image safety so tall/wide shots don’t look cropped awkwardly */
+.img-frame{ border-radius: 14px; overflow: clip; }
+.img-frame img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* prevent any horizontal scrollbars at desktop zoom levels */
+html, body{ overflow-x: hidden; }
+
