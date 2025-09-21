@@ -96,3 +96,45 @@
   .tiles::after,
   .veil{ animation: none !important; }
 }
+
+/* ==== Animated glow behind the small .clock badge ==== */
+@keyframes cerbi-spin { to { transform: rotate(360deg); } }
+@keyframes cerbi-pulse {
+  0%,100% { opacity:.18; transform: scale(0.98); }
+  50%     { opacity:.32; transform: scale(1.02); }
+}
+
+.clock{ isolation:isolate; overflow:visible; }
+
+.clock::after{
+  content:"";
+  position:absolute; inset:-34px; z-index:-2; border-radius:999px;
+  background:
+    conic-gradient(from 0deg,
+      rgba(255,77,0,.35),
+      rgba(255,146,54,.15),
+      rgba(127,148,179,.10),
+      rgba(255,77,0,.35));
+  filter: blur(22px);
+  animation: cerbi-spin 14s linear infinite;
+  opacity:.35; pointer-events:none;
+}
+
+.clock::before{
+  content:"";
+  position:absolute; inset:-12px; z-index:-1; border-radius:16px;
+  background:
+    radial-gradient(60% 60% at 65% 35%, rgba(255,77,0,.30), transparent 70%),
+    radial-gradient(50% 50% at 20% 80%, rgba(255,146,54,.25), transparent 70%);
+  filter: blur(14px);
+  animation: cerbi-pulse 3.6s ease-in-out infinite;
+  pointer-events:none;
+}
+
+:root[data-theme="light"] .clock::after{ opacity:.25; }
+:root[data-theme="light"] .clock::before{ filter: blur(12px); }
+
+@media (prefers-reduced-motion: reduce){
+  .clock::before, .clock::after{ animation: none; }
+}
+
