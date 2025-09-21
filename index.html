@@ -24,9 +24,11 @@
         const t = VALID.has(theme) ? theme : 'dark';
         const root = document.documentElement;
         root.setAttribute('data-theme', t);
-        ORDER.forEach(x=>root.classList.remove(x));
+        // optional helper classes in case any 3rd-party CSS relies on them
+        ORDER.forEach(x => root.classList.remove(x));
         root.classList.add(t);
         try { localStorage.setItem(KEY, t); } catch {}
+        // theme-color for mobile browser UI
         let m = document.querySelector('meta[name="theme-color"]');
         if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
         m.setAttribute('content', t === 'light' ? '#ffffff' : '#0a1224');
@@ -46,12 +48,12 @@
         }
       };
 
-      // guard: restore if anything flips it
-      new MutationObserver(()=>{
-        const want = (()=>{ try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : 'dark'; } catch { return 'dark'; }})();
+      // guard: if anything flips it later, restore user's choice
+      new MutationObserver(() => {
+        const want = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : 'dark'; } catch { return 'dark'; }})();
         const cur = document.documentElement.getAttribute('data-theme') || 'dark';
         if (cur !== want) apply(want);
-      }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     })();
   </script>
 
@@ -84,18 +86,35 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-fixed" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=fix-2025-09-21-1" />
 
   <style>
-    /* Layout polish for header zones (brand • links • actions) */
+    /* Accessibility helper — visually hidden until focused */
+    .visually-hidden-focusable{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .visually-hidden-focusable:focus{position:fixed;left:12px;top:12px;width:auto;height:auto;padding:10px 12px;background:var(--glass);border:1px solid rgba(127,148,179,.25);border-radius:10px;z-index:10000;box-shadow:var(--shadow)}
+
+    /* Header layout: 3 clear zones (brand • links • actions) */
     .nav{position:sticky;top:0;z-index:1000;backdrop-filter:saturate(180%) blur(8px)}
     .nav .container{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
     .brand{display:flex;align-items:center;gap:10px}
     .nav-actions{display:flex;align-items:center;gap:10px;border-left:1px solid var(--line, rgba(127,148,179,.25));padding-left:12px}
     @media (max-width:980px){.nav .container{grid-template-columns:1fr auto}.nav-actions{order:2}.nav-links{grid-column:1/-1}}
 
-    /* Anchor offset for sticky header */
-    section[id]{scroll-margin-top:72px}
+    /* Hero spacing safety net (in case site CSS is cached separately) */
+    .value-rotator{margin-bottom:26px!important}
+    .hero-cta-row{margin-top:22px!important;margin-bottom:10px!important}
+    .logo-row{margin-top:16px!important}
+
+    /* Center images in frames/pop-art + keep them clickable where needed */
+    .img-frame img,.showcase img{object-position:center center}
+    .sig-rotator img{object-position:center center}
+
+    /* Keep background clock behind content but visible */
+    #bg-clock{z-index:-1;opacity:.05}
+    .tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight{z-index:-2}
+
+    /* Contact section: keep the form full width of the card */
+    #contact .glass.tilt iframe{display:block;width:100%!important}
   </style>
 
   <!-- Canonicalize www to apex -->
@@ -183,7 +202,7 @@
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
       <!-- VALUE ROTATOR -->
-      <div class="glass tilt reveal value-rotator">
+      <div class="glass tilt reveal value-rotator" style="max-width:980px;margin:18px auto 40px;padding:16px 18px 22px">
         <div class="glare" aria-hidden="true"></div>
         <div id="whySlider" class="dash-slider">
           <figure class="slide active">
@@ -210,15 +229,15 @@
         </div>
       </div>
 
-      <div class="row hero-cta-row">
+      <div class="row hero-cta-row" style="display:flex;gap:10px;justify-content:center;margin-top:22px;margin-bottom:10px">
         <a class="btn btn-primary" href="#governance">Explore Governance</a>
         <a class="btn" href="#ecosystem">See Ecosystem</a>
       </div>
 
-      <div class="logo-row" aria-label="Trusted by">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" />
-        <img src="assets/CerbiStream.png" alt="CerbiStream logo" />
-        <img src="assets/CerbiShield.png" alt="CerbiShield logo" />
+      <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;margin-top:16px">
+        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
+        <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85" loading="lazy" decoding="async" />
+        <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72" loading="lazy" decoding="async" />
       </div>
     </section>
 
@@ -602,7 +621,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  <!-- Contact FAB (fixed mid-right, as before) -->
+  <!-- Contact FAB (fixed mid-right on desktop; bottom-right on mobile) -->
   <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
     <img src="assets/contact-fab.png" alt="" loading="lazy" decoding="async" />
     <span class="label">Contact</span>
@@ -612,92 +631,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <div id="clock" class="clock" role="timer" aria-live="polite" title="Local time"></div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=2025-09-pro-fixed" defer></script>
-  <script src="scripts/cerbi-motion.js" defer></script>
-
-  <script>
-    // Theme button
-    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
-
-    // CmdK palette (closed by default; no auto-open)
-    (function(){
-      const overlay = document.getElementById('cmdkOverlay');
-      const input = document.getElementById('cmdkInput');
-      const open = () => { overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>input?.focus(), 0); };
-      const close = () => { overlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
-      document.getElementById('cmdBtn')?.addEventListener('click', open);
-      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
-      document.addEventListener('keydown', (e)=>{
-        const k = e.key.toLowerCase();
-        if ((e.metaKey || e.ctrlKey) && k === 'k') { e.preventDefault(); (overlay.getAttribute('aria-hidden')==='true'?open:close)(); }
-        if (k === 'escape' && overlay.getAttribute('aria-hidden')==='false') close();
-      });
-      overlay.setAttribute('aria-hidden','true');
-    })();
-
-    // Big background clock (visible; respects theme)
-    (function(){
-      const el=document.getElementById('bg-clock'); if(!el) return;
-      const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
-      function size(){
-        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        el.style.fontSize=Math.min(Math.max(vw*0.36,96),900)+'px';
-        el.style.lineHeight='1';
-        const theme=document.documentElement.getAttribute('data-theme')||'dark';
-        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
-      }
-      function render(){const d=new Date(); el.textContent=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
-      size(); render(); addEventListener('resize',size,{passive:true});
-      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-      setInterval(render,1000);
-    })();
-
-    // Badge clock
-    (function(){
-      const el=document.getElementById('clock'); if(!el) return;
-      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
-      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
-    })();
-
-    // Dashboard slider + click-to-enlarge (lightbox)
-    (function(){
-      const slider=document.getElementById('dashSlider'); if(!slider) return;
-      const slides=[...slider.querySelectorAll('.slide')];
-      const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
-      const dots=[...dotsBox.querySelectorAll('button')];
-      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
-      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
-
-      // Lightbox
-      const lb = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightbox-img');
-      function open(src, alt){ lbImg.src = src; lbImg.alt = alt||''; lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-      function close(){ lb.setAttribute('aria-hidden','true'); lbImg.src=''; document.body.style.overflow=''; }
-      lb.addEventListener('click', (e)=>{ if(e.target===lb) close(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && lb.getAttribute('aria-hidden')==='false') close(); });
-
-      slides.forEach(fig=>{
-        const img = fig.querySelector('img');
-        img.style.cursor='zoom-in';
-        img.addEventListener('click', ()=>open(img.currentSrc || img.src, img.alt));
-      });
-    })();
-
-    // Progress bar
-    (function(){
-      const bar=document.getElementById('progress'); if(!bar) return;
-      const on=()=>{ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%'); };
-      on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
-    })();
-
-    // Footer year
-    (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
-  </script>
-
-  <!-- Lightbox markup (for dashboard screenshots) -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <img id="lightbox-img" alt="">
-  </div>
+  <script src="scripts/cerbi-sky.js?v=fix-2025-09-21-1" defer></script>
+  <script src="scripts/cerbi.js?v=fix-2025-09-21-1" defer></script>
 </body>
 </html>
