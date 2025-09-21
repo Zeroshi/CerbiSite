@@ -1,53 +1,33 @@
-/* Hero “pop-art” rotator — auto-detects files in /assets/popart and centers them */
-(() => {
-  const host = document.getElementById('sigRotator');
-  if (!host) return;
-
-  // Build a robust candidate list matching your repo: assets/popart/pop-01..20.(jpg|png|webp)
-  const nums = Array.from({length:20}, (_,i)=>String(i+1).padStart(2,'0'));
-  const exts = ['webp','jpg','png','jpeg'];
-  const candidates = [];
-  for (const n of nums) for (const ext of exts) candidates.push(`assets/popart/pop-${n}.${ext}`);
-
-  function tryLoad(src){
-    return new Promise(resolve=>{
-      const img = new Image();
-      img.onload = ()=> resolve(img);
-      img.onerror = ()=> resolve(null);
-      img.decoding = 'async';
-      img.loading = 'lazy';
-      img.alt = 'Cerbi signature art';
-      img.src = src;
-      img.style.objectFit = 'contain';
-      img.style.objectPosition = 'center';
-    });
-  }
-
-  Promise.all(candidates.map(tryLoad)).then(list=>{
-    const images = list.filter(Boolean);
-    if (!images.length) {
-      // No popart found → hide section
-      const section = host.closest('section');
-      if (section) section.style.display = 'none';
-      return;
+/* Tilt + glare + reveal-on-scroll (lightweight, no deps) */
+(function(){
+  const tilts = document.querySelectorAll('.tilt');
+  tilts.forEach(card=>{
+    let rAF = null;
+    const glare = card.querySelector('.glare');
+    function onMove(e){
+      if(rAF) return;
+      rAF = requestAnimationFrame(()=>{
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        card.style.setProperty('--gx', (x*100).toFixed(1) + '%');
+        card.style.setProperty('--gy', (y*100).toFixed(1) + '%');
+        rAF = null;
+      });
     }
-
-    images.forEach((img, i) => {
-      if (i === 0) img.classList.add('show');
-      host.appendChild(img);
-    });
-
-    let idx = 0;
-    const next = () => {
-      const cur = host.querySelectorAll('img')[idx];
-      idx = (idx + 1) % images.length;
-      const nxt = host.querySelectorAll('img')[idx];
-      if (cur) cur.classList.remove('show');
-      if (nxt) nxt.classList.add('show');
-    };
-
-    let timer = setInterval(next, 3600);
-    host.addEventListener('pointerenter', () => clearInterval(timer));
-    host.addEventListener('pointerleave', () => { timer = setInterval(next, 3600); });
+    card.addEventListener('pointermove', onMove);
+    card.addEventListener('pointerleave', ()=>{ if(glare){ glare.style.opacity = '0'; }});
+    card.addEventListener('pointerenter', ()=>{ if(glare){ glare.style.opacity = '0.35'; }});
   });
+
+  // Reveal-on-scroll
+  const revealer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        revealer.unobserve(entry.target);
+      }
+    });
+  }, {rootMargin:'-5% 0px'});
+  document.querySelectorAll('.reveal').forEach(el=>revealer.observe(el));
 })();
