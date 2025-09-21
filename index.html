@@ -11,15 +11,12 @@
       const KEY = 'cerbi-theme';
       const ORDER = ['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
       const VALID = new Set(ORDER);
-
-      // migrate legacy key once, then remove it
       try {
         if (!localStorage.getItem(KEY) && localStorage.getItem('theme')) {
           localStorage.setItem(KEY, localStorage.getItem('theme'));
         }
         localStorage.removeItem('theme');
       } catch {}
-
       function apply(theme) {
         const t = VALID.has(theme) ? theme : 'dark';
         document.documentElement.setAttribute('data-theme', t);
@@ -28,20 +25,10 @@
         if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
         m.setAttribute('content', t === 'light' ? '#ffffff' : '#0a1224');
       }
-
       const saved = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : null; } catch { return null; }})();
       const initial = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       apply(initial);
-
-      // public API for button
-      window.CerbiTheme = {
-        set: apply,
-        toggle() {
-          const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-          const next = ORDER[(ORDER.indexOf(cur) + 1) % ORDER.length];
-          apply(next);
-        }
-      };
+      window.CerbiTheme = { set: apply, toggle(){ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length]; apply(next);} };
     })();
   </script>
 
@@ -76,51 +63,64 @@
   <!-- Styles (your existing files) -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css?v=3" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=4" />
 
+  <!-- Inline, targeted fixes so we don't fight your theme -->
   <style>
-    /* --- Minimal in-file helpers to fix spacing/visibility issues without fighting your CSS --- */
+    :root{ --img-radius:16px; }
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{position:fixed;left:12px;top:12px;padding:10px 12px;background:var(--glass);border:1px solid rgba(127,148,179,.25);border-radius:10px;z-index:10000;box-shadow:var(--shadow)}
 
-    /* Skip link: only visible on focus */
-    .skip-link{
-      position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
-    }
-    .skip-link:focus{
-      position:fixed; left:12px; top:12px; width:auto; height:auto; padding:10px 12px;
-      background:var(--glass); border:1px solid rgba(127,148,179,.25); border-radius:10px; z-index:10000;
-      box-shadow:var(--shadow);
-    }
+    /* Progress */
+    #progress{position:fixed;left:0;top:0;height:3px;width:var(--progress,0%);background:linear-gradient(90deg,var(--accent),#ff9a57);z-index:9000}
 
-    /* Ensure hero value card spacing is generous */
-    .value-rotator{ max-width:980px; padding:16px 18px 22px; margin:18px auto 40px; }
-    .value-rotator .k{ margin:.35rem 0 .55rem }
-    .value-rotator ul{ margin:10px 0 14px; padding-left:0; list-style:none }
-    .value-rotator li{ display:flex; gap:.5rem; align-items:flex-start; margin:3px 0 }
-    .value-rotator li::before{ content:"•"; line-height:1; transform:translateY(.15em); opacity:.85 }
-    .hero-cta-row{ margin-top:24px }
+    /* Contact FAB pinned, not offscreen */
+    .contact-fab{position:fixed;bottom:max(24px,calc(env(safe-area-inset-bottom) + 18px));right:max(18px,calc(env(safe-area-inset-right) + 12px));z-index:8500;display:inline-grid;place-items:center;width:56px;height:56px;border-radius:16px;background:var(--glass);border:1px solid rgba(127,148,179,.25);text-decoration:none;font-size:24px;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+    .contact-fab:focus{outline:2px solid var(--ring)}
 
-    /* Contact FAB stays pinned bottom-right (desktop & mobile) */
-    .contact-fab{
-      position:fixed; bottom: max(24px, calc(env(safe-area-inset-bottom) + 18px)); right:max(18px, calc(env(safe-area-inset-right) + 12px));
-      z-index:8500; display:inline-grid; place-items:center; width:54px; height:54px; border-radius:16px;
-      background:var(--glass); border:1px solid rgba(127,148,179,.25); text-decoration:none; font-size:24px;
-      box-shadow:0 10px 28px rgba(0,0,0,.35);
-    }
+    /* Value rotator spacing fixes */
+    .value-rotator{max-width:980px;padding:16px 18px 22px;margin:18px auto 40px}
+    .value-rotator .k{margin:.35rem 0 .55rem}
+    .value-rotator ul{margin:10px 0 14px;padding-left:0;list-style:none}
+    .value-rotator li{display:flex;gap:.5rem;align-items:flex-start;margin:6px 0}
+    .value-rotator li::before{content:"•";line-height:1;transform:translateY(.15em);opacity:.85}
+    .hero-cta-row{margin-top:24px}
 
-    /* Dashboard showcase images should fill frame but remain “contain” and be clickable */
-    #dashboards .img-frame.showcase{ --ar: 16/9; aspect-ratio: var(--ar); position: relative; }
-    #dashboards .img-frame.showcase img{ object-fit: contain !important; background:#0a0f1a; cursor: zoom-in; }
+    /* Image frames: center + contain unless overridden */
+    .img-frame{position:relative;border-radius:var(--img-radius);overflow:hidden;background:rgba(6,12,24,.6)}
+    .img-frame img{display:block;width:100%;height:auto;object-fit:contain}
+    .img-cap{font-size:.9rem;color:var(--muted);margin-top:8px;text-align:center}
 
-    /* Pop-art rotator centered within its frame */
-    .sig-rotator{ position: relative; min-height: clamp(240px, 36vw, 420px); aspect-ratio: 16/9; }
-    .sig-rotator img{ position:absolute; inset:0; margin:auto; max-width:100%; max-height:100%; object-fit: contain; opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s ease }
-    .sig-rotator img.show{ opacity:1; visibility:visible }
+    /* Dashboards: fixed aspect, zoomable, dots clickable */
+    #dashboards .img-frame.showcase{--ar:16/9;aspect-ratio:var(--ar);padding:8px}
+    #dashboards .img-frame.showcase img{object-fit:contain;background:#0a0f1a;cursor:zoom-in}
 
-    /* Big background clock starts faint, increases with scroll (JS sets a CSS var) */
-    #bg-clock{ position:fixed; inset:0; display:grid; place-items:center; pointer-events:none; z-index:-1; user-select:none; line-height:1; opacity:var(--clock-opacity, .05) }
+    /* Signature art rotator: always centered */
+    .sig-rotator{position:relative;min-height:clamp(220px,36vw,420px);aspect-ratio:16/9}
+    .sig-rotator img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;object-fit:contain;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease}
+    .sig-rotator img.show{opacity:1;visibility:visible}
 
-    /* Use-cases numbering like `1.` not `1` */
-    #usecases h3 .n{ display:inline-block; min-width:1.4em; text-align:right; margin-right:.35em }
+    /* Background clock (big) */
+    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:-1;user-select:none;line-height:1;opacity:var(--clock-opacity,.05)}
+
+    /* Cards grid gutters tighten on mobile */
+    @media (max-width:840px){.grid{gap:12px!important}}
+
+    /* Architecture diagram responsive */
+    .arch-diagram img{width:100%;height:auto;object-fit:contain}
+
+    /* Demo panes */
+    .demo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .demo .pane{background:rgba(255,255,255,.035);border:1px solid rgba(127,148,179,.18);border-radius:12px;padding:10px;min-height:180px}
+    @media (max-width:820px){.demo{grid-template-columns:1fr}}
+
+    /* Dots (sliders) */
+    .dash-slider .dots, #dashboards .dots{display:flex;gap:8px;justify-content:center;margin-top:10px}
+    .dash-slider .dots button{width:9px;height:9px;border-radius:999px;border:1px solid rgba(127,148,179,.48);background:transparent}
+    .dash-slider .dots button.active{background:var(--accent);border-color:var(--accent)}
+
+    /* Fix any long words overflow in code blocks */
+    pre.codeblock, pre.kbd{white-space:pre-wrap;word-wrap:break-word;overflow:auto}
   </style>
 
   <!-- Canonicalize www to apex -->
@@ -184,10 +184,12 @@
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="70%" cy="10%" r="60%">
-            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/><stop offset="60%" stop-color="var(--accent)" stop-opacity="0"/>
+            <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.35"/>
+            <stop offset="60%" stop-color="var(--accent)" stop-opacity="0"/>
           </radialGradient>
           <pattern id="miniTiles" width="24" height="24" patternUnits="userSpaceOnUse">
-            <rect width="24" height="24" fill="none"/><rect x="0" y="0" width="24" height="24" fill="none" stroke="#163258" stroke-width="1" opacity="0.32"/>
+            <rect width="24" height="24" fill="none"/>
+            <rect x="0" y="0" width="24" height="24" fill="none" stroke="#163258" stroke-width="1" opacity="0.32"/>
             <circle cx="1" cy="1" r="1" fill="#b5d0ff" opacity="0.16" />
           </pattern>
           <linearGradient id="grid" x1="0" x2="1"><stop offset="0%" stop-color="#13223e"/><stop offset="100%" stop-color="#0b1630"/></linearGradient>
@@ -217,8 +219,7 @@
             <ul><li>Stable fields → smaller indexes & faster queries</li><li>Rollups/tags → fewer high-cardinality surprises</li></ul>
           </figure>
           <figure class="slide">
-            <h3>Compliance Without F
-riction</h3>
+            <h3>Compliance Without Friction</h3>
             <p class="k">PII rules at build-time & runtime. Redact & flag—don’t drop critical signals.</p>
             <ul><li>Versioned policies in CerbiShield (RBAC & audit history)</li><li>Relax-mode for safe rollout in prod</li></ul>
           </figure>
@@ -252,9 +253,7 @@ riction</h3>
     <section id="hero-art" class="section full-bleed">
       <div class="glass tilt reveal" style="padding:18px">
         <div class="glare" aria-hidden="true"></div>
-        <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels">
-          <!-- JS injects images from /assets/popart/*.jpg -->
-        </div>
+        <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
         <div class="img-cap"><code>Cerbi</code>.</div>
       </div>
     </section>
@@ -296,6 +295,16 @@ riction</h3>
           <p class="k">Start with one domain (e.g., auth), run in relax-mode, then tighten.</p>
           <ul><li>Keep your loggers/sinks</li><li>No vendor lock-in</li></ul>
         </article>
+      </div>
+
+      <div class="glass reveal" style="padding:16px;margin-top:16px">
+        <h3 style="margin:0 0 6px">Business Use Case — Claims Platform (Regulated)</h3>
+        <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules). Developers see IDE diagnostics for forbidden fields; runtime applies redaction and flags violations instead of dropping events. Splunk dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
+        <ul style="margin-top:8px">
+          <li><strong>Why it helps:</strong> lower ingestion cost, faster incident triage, audit-ready evidence.</li>
+          <li><strong>How to roll out:</strong> enable analyzer in CI; deploy runtime validators in relax-mode; tighten over 2 sprints.</li>
+          <li><strong>Future state:</strong> CerbIQ normalizes cross-domain tags; CerbiSense flags anomalies on governed features.</li>
+        </ul>
       </div>
 
       <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
@@ -387,7 +396,15 @@ riction</h3>
       <div class="glass tilt reveal" style="padding:18px;position:relative">
         <div class="glare"></div>
 <pre class="codeblock"><code>// 1) Install
+// Choose the integration that fits your stack
+// Core structured logger (native)
 dotnet add package CerbiStream
+
+// MEL runtime governance (Microsoft.Extensions.Logging)
+dotnet add package Cerbi.MEL.Governance
+
+// Build-time analyzer (Roslyn)
+dotnet add package CerbiStream.GovernanceAnalyzer
 
 // 2) Configure in Program.cs (MEL)
 using CerbiStream;
@@ -431,6 +448,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               <td>Roslyn analyzer that flags governance issues during build (IDE/CI). Reads project governance profiles.</td>
             </tr>
             <tr>
+              <td><strong>Cerbi.MEL.Governance</strong></td><td><span class="pill ok">GA</span></td>
+              <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines; applies redaction/flagging based on profiles.</td>
+            </tr>
+            <tr>
               <td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td>
               <td>Governance dashboard & APIs. Profile authoring, RBAC, audit history, environment-aware deployments, and profile versioning.</td>
             </tr>
@@ -468,6 +489,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <div class="pane"><strong>Input Log</strong><pre><code id="inputJson" class="kbd" aria-live="polite"></code></pre></div>
           <div class="pane"><strong>Evaluation</strong><pre><code id="evalJson" class="kbd" aria-live="polite"></code></pre></div>
         </div>
+        <p class="k" style="margin-top:10px">This demo mirrors Cerbi’s behavior: <em>keep the event</em>, redact sensitive values, and tag violations with metadata for downstream scoring and audit.</p>
       </div>
     </section>
 
@@ -492,7 +514,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               "
               sizes="(max-width: 900px) 100vw, 900px"
               alt="CerbiShield — Overview"
-              data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg">
+              data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
+              loading="lazy" decoding="async">
           </figure>
 
           <figure class="slide">
@@ -506,7 +529,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               "
               sizes="(max-width: 900px) 100vw, 900px"
               alt="CerbiShield — Profiles"
-              data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg">
+              data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
+              loading="lazy" decoding="async">
           </figure>
 
           <figure class="slide">
@@ -520,7 +544,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               "
               sizes="(max-width: 900px) 100vw, 900px"
               alt="CerbiShield — Violations"
-              data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg">
+              data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
+              loading="lazy" decoding="async">
           </figure>
 
           <div class="dots" aria-label="slider controls"></div>
@@ -558,9 +583,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
             <li>Downstream sinks (Splunk/ELK/Datadog/etc.) receive clean, consistent data</li>
           </ul>
+          <h4 style="margin-top:10px">Implementation notes</h4>
+          <ul>
+            <li><strong>Profiles:</strong> JSON stored and versioned; schema-backed for Monaco in the dashboard.</li>
+            <li><strong>Build:</strong> <code>CerbiStream.GovernanceAnalyzer</code> adds IDE/CI diagnostics.</li>
+            <li><strong>Runtime:</strong> <code>Cerbi.MEL.Governance</code> enforces redaction/flagging, honors <em>Relax()</em>.</li>
+            <li><strong>Encryption:</strong> AES/Base64/NoOp via <code>IEncryption</code>; file-fallback with rotation.</li>
+          </ul>
         </article>
         <figure class="col-6 img-frame arch-diagram reveal">
-          <img src="assets/architecture/cerbi-arch@2x.png" alt="Cerbi reference architecture diagram">
+          <img
+            src="assets/architecture/cerbi-arch-1600.png"
+            srcset="assets/architecture/cerbi-arch-1600.png 1x, assets/architecture/cerbi-arch-2400.png 1.5x, assets/architecture/cerbi-arch-3200.png 2x"
+            sizes="(max-width: 900px) 100vw, 900px"
+            alt="Cerbi reference architecture diagram"
+            loading="lazy"
+            decoding="async">
           <figcaption class="img-cap">Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.</figcaption>
         </figure>
       </div>
@@ -622,7 +660,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <h2>Trusted with <span class="hl">Microsoft</span></h2>
       <p class="lead">We’re proud to be a Microsoft Partner. Cerbi aligns with Azure best practices and the broader .NET ecosystem.</p>
       <div class="glass tilt reveal" style="padding:16px;display:grid;place-items:center">
-        <img src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" style="max-width:260px;height:auto">
+        <img src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" style="max-width:260px;height:auto" loading="lazy" decoding="async">
       </div>
     </section>
 
@@ -638,6 +676,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   ├─▶ Runtime:     Cerbi.MEL.Governance  →  Cerbi.Governance.Runtime  →  Cerbi.Governance.Core
   └─▶ Native logger: CerbiStream (structured, encrypted, governance-ready)
 </pre>
+        <div class="space"></div>
+        <h4 style="margin:8px 0 6px">Why it matters</h4>
+        <ul>
+          <li><strong>Concept:</strong> Treat logs as governed data products—stable, typed, safe to share.</li>
+          <li><strong>Business value:</strong> lower ingestion & storage costs, durable dashboards, audit confidence.</li>
+          <li><strong>Current state:</strong> CerbiStream + Analyzer + MEL runtime validator.</li>
+          <li><strong>Future state:</strong> CerbIQ routing + CerbiSense anomaly detection on governed features.</li>
+        </ul>
       </div>
     </section>
 
@@ -672,10 +718,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </footer>
 
-  <!-- Command palette (still opt-in; closed by default) -->
+  <!-- Command palette (closed by default) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
-      <div class="header"><span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" /></div>
+      <div class="header">
+        <span class="kbd" aria-hidden="true">⌘K</span>
+        <input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" />
+      </div>
       <div class="list" id="cmdkList"></div>
     </div>
   </div>
@@ -690,12 +739,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-  <script src="scripts/mobile-fixes.js?v=3" defer></script>
+  <script src="scripts/mobile-fixes.js?v=4" defer></script>
 
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art -->
+  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo -->
   <script>
     // Theme button
-    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
+    (function(){
+      const b=document.getElementById('themeBtn');
+      if(b&&window.CerbiTheme){ b.addEventListener('click',()=>window.CerbiTheme.toggle()); }
+    })();
 
     // CmdK palette (closed by default, no auto-open)
     (function(){
