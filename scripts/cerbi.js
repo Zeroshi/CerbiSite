@@ -3,12 +3,7 @@
   const $ = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
-  /* ---------------- Theme Glue ----------------
-   * Index boot script owns true theme state.
-   * Here we only:
-   *  - apply ?theme= overrides
-   *  - sync meta theme-color when data-theme changes
-   */
+  /* ---------------- Theme Glue ---------------- */
   (function themeGlue(){
     const VALID = new Set(['dark','light','dusk','emerald','violet']);
     const params = new URLSearchParams(location.search);
@@ -20,7 +15,7 @@
       m.setAttribute('content', q==='light' ? '#ffffff' : '#0a1224');
       try { localStorage.setItem('cerbi-theme', q); } catch {}
     }
-    // keep theme-color in sync
+    // keep theme-color in sync with attribute changes
     const sync = () => {
       const t = document.documentElement.getAttribute('data-theme') || 'dark';
       let m = document.querySelector('meta[name="theme-color"]');
@@ -73,7 +68,7 @@
     });
   })();
 
-  /* ---------------- WHY slider (dots) ---------------- */
+  /* ---------------- WHY slider (dots + autoplay) ---------------- */
   (function whySlider(){
     const wrap = $('#whySlider'); if (!wrap) return;
     const slides = $$('.slide', wrap);
@@ -86,11 +81,19 @@
       dots.forEach((d,i)=>d.classList.toggle('active', i===n));
       idx = n;
     };
-    dots.forEach((d,i)=>d.addEventListener('click', ()=>show(i)));
+    dots.forEach((d,i)=>d.addEventListener('click', ()=>{ show(i); reset(); }));
     show(idx);
+    let timer;
+    const tick = () => show((idx+1)%slides.length);
+    const start = () => { timer = setInterval(tick, 5000); };
+    const stop = () => { clearInterval(timer); };
+    const reset = () => { stop(); start(); };
+    start();
+    wrap.addEventListener('pointerenter', stop);
+    wrap.addEventListener('pointerleave', start);
   })();
 
-  /* ---------------- Dashboard slider + lightbox ---------------- */
+  /* ---------------- Dashboard slider + lightbox (bigger + autoplay) ---------------- */
   (function dashboards(){
     const slider = $('#dashSlider'); if (!slider) return;
     const slides = $$('.slide', slider);
@@ -104,8 +107,18 @@
       dots.forEach((d,idx)=>d.classList.toggle('active', idx===n));
       i = n;
     };
-    dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
+    dots.forEach((d,idx)=>d.addEventListener('click',()=>{ show(idx); reset(); }));
     show(i);
+
+    // autoplay
+    let timer;
+    const tick = () => show((i+1)%slides.length);
+    const start = () => { timer = setInterval(tick, 4500); };
+    const stop = () => { clearInterval(timer); };
+    const reset = () => { stop(); start(); };
+    start();
+    slider.addEventListener('pointerenter', stop);
+    slider.addEventListener('pointerleave', start);
 
     // swipe support
     let sx=0;
@@ -115,6 +128,7 @@
       if (Math.abs(dx) > 40) {
         const next = (i + (dx<0?1:-1) + slides.length) % slides.length;
         show(next);
+        reset();
       }
     });
 
