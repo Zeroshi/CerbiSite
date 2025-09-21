@@ -503,25 +503,69 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS -->
-    <section id="dashboards" class="container section">
-      <div class="eyebrow">See it</div>
-      <h2><span class="hl">CerbiShield</span> in Action</h2>
-      <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
+<!-- DASHBOARDS -->
+<section id="dashboards" class="container section">
+  <div class="eyebrow">See it</div>
+  <h2><span class="hl">CerbiShield</span> in Action</h2>
+  <p class="lead">Profiles, rules, and violations—everything you need to govern logging across an enterprise.</p>
 
-      <div class="glass tilt reveal" style="padding:16px">
-        <div class="glare" aria-hidden="true"></div>
-        <div class="img-frame showcase" role="group" aria-label="CerbiShield dashboard screenshots">
-          <div id="dashSlider" class="dash-slider">
-            <figure class="slide active"><img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview" loading="lazy" decoding="async"></figure>
-            <figure class="slide"><img width="1600" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg" alt="CerbiShield — Profiles" loading="lazy" decoding="async"></figure>
-            <figure class="slide"><img width="1600" height="900" src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations" loading="lazy" decoding="async"></figure>
-            <div class="dots" aria-label="slider controls"></div>
-          </div>
-        </div>
-        <div class="img-cap">One source of truth for policy and enforcement.</div>
+  <div class="glass tilt reveal" style="padding:16px">
+    <div class="glare" aria-hidden="true"></div>
+
+    <!-- Showcase frame -->
+    <div class="img-frame showcase" role="group" aria-label="CerbiShield dashboard screenshots">
+      <div id="dashSlider" class="dash-slider">
+
+        <figure class="slide active">
+          <img
+            width="1600" height="900"
+            src="assets/screenshots/cerbishield-hero-1600x900.jpg"
+            srcset="
+              assets/screenshots/cerbishield-hero-1600x900.jpg 1x,
+              assets/screenshots/cerbishield-hero-2400x1350.jpg 1.5x,
+              assets/screenshots/cerbishield-hero-3200x1800.jpg 2x
+            "
+            sizes="(max-width: 900px) 100vw, 900px"
+            alt="CerbiShield — Overview"
+            loading="lazy" decoding="async" data-zoom>
+        </figure>
+
+        <figure class="slide">
+          <img
+            width="1600" height="900"
+            src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
+            srcset="
+              assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
+              assets/screenshots/cerbishield-profiles-1800x1350.jpg 1.5x,
+              assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x
+            "
+            sizes="(max-width: 900px) 100vw, 900px"
+            alt="CerbiShield — Profiles"
+            loading="lazy" decoding="async" data-zoom>
+        </figure>
+
+        <figure class="slide">
+          <img
+            width="1600" height="900"
+            src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+            srcset="
+              assets/screenshots/cerbishield-violations-1600x1200.jpg 1x,
+              assets/screenshots/cerbishield-violations-2400x1800.jpg 1.5x,
+              assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
+            "
+            sizes="(max-width: 900px) 100vw, 900px"
+            alt="CerbiShield — Violations"
+            loading="lazy" decoding="async" data-zoom>
+        </figure>
+
+        <div class="dots" aria-label="slider controls"></div>
       </div>
-    </section>
+    </div>
+
+    <div class="img-cap">One source of truth for policy and enforcement.</div>
+  </div>
+</section>
+
 
     <!-- PACKAGES (unchanged content, safe styles above prevent overlap) -->
     <section id="packages" class="container section">
