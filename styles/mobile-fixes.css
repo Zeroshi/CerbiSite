@@ -330,3 +330,27 @@ html, body{ overflow-x: hidden; }
   margin-top: 20px !important; /* ensures buttons have separation */
 }
 
+/* ===== Hero value-rotator spacing + bullet fix (Edge/desktop + mobile) ===== */
+
+/* give the card bottom breathing room and separate it from the buttons */
+.value-rotator{
+  padding-bottom: 18px !important;   /* space inside the glass card */
+  margin-bottom: 18px !important;    /* extra space below the card */
+}
+
+/* bullet list inside the rotator */
+.value-rotator ul{
+  margin: 10px 0 16px !important;    /* space under the list before buttons */
+  padding-left: 1.25rem !important;
+  list-style: disc !important;
+  list-style-position: outside !important;
+}
+
+/* kill any theme-level custom bullets that cause double dots */
+.value-rotator li::before{ content: none !important; }
+.value-rotator li{ margin: 2px 0 !important; }
+
+/* force the button row to sit lower, overriding the inline margin */
+.value-rotator + .row{
+  margin-top: 22px !important;
+}
