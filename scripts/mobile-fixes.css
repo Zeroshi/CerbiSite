@@ -1,0 +1,61 @@
+/* ============ Cerbi mobile stability fixes (non-destructive) ============ */
+/* These rules sit LAST so they override earlier CSS without changing your design. */
+
+/* Never trap page scroll on phones due to overlays/menus */
+html, body { height: auto; overflow-y: auto; }
+
+/* Safer 100vh on mobile (address bar) */
+:root { --vh: 1svh; }
+@supports not (height: 1svh) { :root { --vh: 1vh; } }
+
+/* If your hero/sections depend on 100vh, make them stable on phones */
+[data-hero], .hero {
+  min-height: calc(var(--vh) * 100);
+}
+
+/* Performance: don’t let long sections block first scroll/paint */
+.section, [data-section] {
+  content-visibility: auto;
+  contain-intrinsic-size: 600px 800px; /* tweak if your sections are taller */
+}
+
+/* Mobile nav should never steal scroll */
+.hamburger { touch-action: manipulation; }
+nav, .nav, [data-nav] { -webkit-overflow-scrolling: touch; }
+
+/* Common off-canvas patterns: make hidden menus non-interactive until opened */
+.nav:not(.open)[aria-hidden="true"],
+[hidden][data-menu],
+[aria-hidden="true"][data-menu] {
+  pointer-events: none !important;
+}
+
+/* If some global class locks body scroll, kill it on mobile */
+@media (max-width: 980px) {
+  .no-scroll, .lock-scroll, body[style*="overflow: hidden"] {
+    overflow: auto !important;
+  }
+}
+
+/* Animations/visuals: keep taste, reduce cycles for small screens */
+@media (max-width: 640px) {
+  #stars, canvas[data-bg], [data-heavy-anim="true"] {
+    display: none !important;
+  }
+  svg#clock { display: none !important; }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  #stars, canvas[data-bg], svg#clock { display: none !important; }
+}
+
+/* Touch targets slightly larger on mobile */
+@media (max-width: 860px) {
+  a, button { -webkit-tap-highlight-color: rgba(0,0,0,0.08); }
+}
+
+/* Avoid accidental horizontal scroll from wide grids/images */
+html, body { overflow-x: hidden; }
+img, video, canvas { max-width: 100%; height: auto; }
