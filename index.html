@@ -601,12 +601,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:680px;border:0;border-radius:12px;background:rgba(255,255,255,.02)" loading="lazy"></iframe>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
-        <div class="col-5 contact-art">
-          <div class="img-frame" role="img" aria-label="Contact illustration">
-            <img src="assets/contact/contact-illustration.jpg" alt="Contact Cerbi" loading="lazy" decoding="async" />
-          </div>
-        </div>
-      </div>
+<div class="col-5 contact-art">
+  <figure class="img-frame" role="img" aria-label="Contact illustration">
+    <picture>
+      <!-- Try modern formats first (if you add them later) -->
+      <source srcset="assets/contact/contact-illustration.avif" type="image/avif">
+      <source srcset="assets/contact/contact-illustration.webp" type="image/webp">
+      <!-- JPG fallback (current file you intended) -->
+      <img
+        src="assets/contact/contact-illustration.jpg"
+        alt="Contact Cerbi"
+        loading="lazy" decoding="async"
+        data-fallback="assets/CerbiLogo.png">
+    </picture>
+  </figure>
+</div>
+
     </section>
   </main>
 
