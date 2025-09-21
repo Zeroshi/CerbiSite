@@ -607,4 +607,32 @@ body{ overflow-x: hidden; }
   .nav .nav-links { max-height: 70vh; overflow-y: auto; }
 }
 
+/* ===== Hero value card spacing & bullet cleanup ===== */
+.value-rotator{
+  padding-bottom: 18px;      /* space inside the glass */
+  margin-bottom: 22px;       /* space below the card */
+}
+
+.value-rotator .k{
+  margin: .35rem 0 .55rem;   /* subhead breathing room */
+}
+
+.value-rotator ul{
+  margin: 8px 0 16px;        /* space under bullets */
+  padding-left: 1.25rem;     /* keep markers inside card */
+  list-style: disc;
+  list-style-position: outside;
+}
+
+/* kill pseudo-bullets injected by global styles so we don't get two dots */
+.value-rotator li::before{ content: none; }
+.value-rotator li{ margin: 2px 0; }
+
+/* CTA row under the card */
+.hero-cta-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top: 28px;          /* final gap to your buttons */
+}
 
