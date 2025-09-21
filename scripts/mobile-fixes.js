@@ -104,3 +104,80 @@
     sections.forEach(s => io.observe(s));
   }
 })();
+
+/* =========================
+   Cerbi — Image Enhancements
+   (lazy safety, slider polish, and optional lightbox zoom)
+   ========================= */
+(function(){
+  const $ = (s, el=document)=>el.querySelector(s);
+  const $$ = (s, el=document)=>[...el.querySelectorAll(s)];
+
+  /* 1) Ensure all content images are lazy and decoding async (cheap wins) */
+  $$('img:not([loading])').forEach(img => img.setAttribute('loading','lazy'));
+  $$('img:not([decoding])').forEach(img => img.setAttribute('decoding','async'));
+
+  /* 2) Dashboard slider: keep dots synced; allow autoplay (paused on interaction) */
+  const slider = $('#dashSlider');
+  if (slider){
+    const slides = $$('.slide', slider);
+    const dotsBox = slider.querySelector('.dots');
+    if (dotsBox && slides.length){
+      dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+      const dots = $$('.dots button', slider);
+      let i = Math.max(0, slides.findIndex(s => s.classList.contains('active')));
+      const show = n => {
+        slides.forEach((s, idx)=> s.classList.toggle('active', idx===n));
+        dots.forEach((d, idx)=> d.classList.toggle('active', idx===n));
+        i = n;
+      };
+      dots.forEach((d, idx)=>{
+        d.addEventListener('click', ()=>{ show(idx); stop(); }, { passive:true });
+      });
+      show(i);
+
+      // optional, gentle autoplay
+      let timer;
+      const start = ()=> timer = setInterval(()=> show((i+1) % slides.length), 5000);
+      const stop  = ()=> timer && clearInterval(timer);
+      start();
+      slider.addEventListener('pointerdown', stop, { passive:true });
+      slider.addEventListener('pointerenter', stop, { passive:true });
+      slider.addEventListener('pointerleave', start, { passive:true });
+      document.addEventListener('visibilitychange', ()=> document.hidden ? stop() : start());
+    }
+  }
+
+  /* 3) Optional lightbox zoom: add data-zoom to any <img> to enable */
+  function openLightbox(src, alt){
+    const wrap = document.createElement('div');
+    wrap.className = 'lightbox';
+    wrap.innerHTML = `
+      <button class="close" aria-label="Close (Esc)">Close ✕</button>
+      <img src="${src}" alt="${alt || ''}">
+    `;
+    document.body.appendChild(wrap);
+    const close = () => { wrap.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = (e)=> (e.key === 'Escape') && close();
+    wrap.addEventListener('click', (e)=> (e.target === wrap) && close(), { passive:true });
+    wrap.querySelector('.close').addEventListener('click', close, { passive:true });
+    document.addEventListener('keydown', onKey);
+  }
+
+  $$('img[data-zoom], #dashboards .img-frame.showcase img').forEach(img=>{
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', ()=> openLightbox(img.currentSrc || img.src, img.alt), { passive:true });
+  });
+
+  /* 4) Prevent accidental layout shifts from very tall images in text flows */
+  $$('figure:not([style*="aspect-ratio"]) img').forEach(img=>{
+    if (!img.complete || img.naturalWidth === 0) return;
+    // If image is wider than tall, gently apply object-fit to avoid overflow
+    if (img.naturalWidth >= img.naturalHeight){
+      img.style.objectFit = 'cover';
+      img.style.width = '100%';
+      img.style.height = 'auto';
+    }
+  });
+})();
+
