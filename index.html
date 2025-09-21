@@ -67,6 +67,11 @@
     #bg-clock{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:0;opacity:.05;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;font-weight:700;letter-spacing:.03em;filter:blur(.6px)}
     /* Make sure background layers sit behind */
     .tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight{z-index:-2}
+      /* hero value card → add space under the list and kill double bullets */
+  .value-rotator ul{margin:10px 0 18px !important; padding-left:1.25rem !important; list-style:disc !important;}
+  .value-rotator li::before{content:none !important;}
+  /* also push the buttons even if the inline margin is edited later */
+  .value-rotator + .row{margin-top:28px !important;}
     /* Cute center-right Contact FAB */
     .contact-fab{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:8500;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
     .contact-fab img{width:52px;height:52px;border-radius:15px;box-shadow:0 6px 16px rgba(0,0,0,.35);background:var(--glass);padding:6px;border:1px solid rgba(127,148,179,.25);transition:transform .18s ease, box-shadow .18s ease}
@@ -230,10 +235,11 @@
         </div>
       </div>
 
-      <div class="row" style="display:flex;gap:10px;justify-content:center;margin-top:14px">
-        <a class="btn btn-primary" href="#governance">Explore Governance</a>
-        <a class="btn" href="#ecosystem">See Ecosystem</a>
-      </div>
+<div class="row" style="display:flex;gap:10px;justify-content:center;margin-top:32px">
+  <a class="btn btn-primary" href="#governance">Explore Governance</a>
+  <a class="btn" href="#ecosystem">See Ecosystem</a>
+</div>
+
 
       <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;padding-top:10px">
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async"/>
