@@ -317,4 +317,16 @@ html, body{ overflow-x: hidden; }
   });
 })();
 
+/* === Extra vertical breathing room below value-rotator === */
+.value-rotator {
+  margin-bottom: 22px; /* pushes away buttons */
+}
+
+.value-rotator ul {
+  margin-bottom: 14px; /* space after bullet list */
+}
+
+.hero .row {
+  margin-top: 20px !important; /* ensures buttons have separation */
+}
 
