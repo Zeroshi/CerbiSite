@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- THEME BOOT (single source of truth + guard) -->
+  <!-- THEME BOOT (single source of truth; persists; URL ?theme= override; guard) -->
   <script>
     (function () {
       const KEY = 'cerbi-theme';
       const ORDER = ['dark','light','dusk','emerald','violet'];
       const VALID = new Set(ORDER);
 
-      // migrate legacy key once, then remove it
+      const q = new URLSearchParams(location.search);
+      const qTheme = q.get('theme');
+
       try {
         if (!localStorage.getItem(KEY) && localStorage.getItem('theme')) {
           localStorage.setItem(KEY, localStorage.getItem('theme'));
@@ -22,23 +24,18 @@
 
       function apply(theme) {
         const t = VALID.has(theme) ? theme : 'dark';
-        const root = document.documentElement;
-        root.setAttribute('data-theme', t);
-        // optional helper classes in case any 3rd-party CSS relies on them
-        ORDER.forEach(x => root.classList.remove(x));
-        root.classList.add(t);
+        document.documentElement.setAttribute('data-theme', t);
         try { localStorage.setItem(KEY, t); } catch {}
-        // theme-color for mobile browser UI
         let m = document.querySelector('meta[name="theme-color"]');
         if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
         m.setAttribute('content', t === 'light' ? '#ffffff' : '#0a1224');
       }
 
       const saved = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : null; } catch { return null; }})();
-      const initial = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const initial = VALID.has(qTheme) ? qTheme : (saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
       apply(initial);
 
-      // public API for button
+      // public API
       window.CerbiTheme = {
         set: apply,
         toggle() {
@@ -48,12 +45,13 @@
         }
       };
 
-      // guard: if anything flips it later, restore user's choice
-      new MutationObserver(() => {
+      // Guard: if any script or extension flips data-theme, revert to saved
+      const guard = new MutationObserver(() => {
         const want = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : 'dark'; } catch { return 'dark'; }})();
         const cur = document.documentElement.getAttribute('data-theme') || 'dark';
         if (cur !== want) apply(want);
-      }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      });
+      guard.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     })();
   </script>
 
@@ -86,35 +84,51 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=fix-2025-09-21-1" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-fixed" />
+  <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=4" />
 
   <style>
-    /* Accessibility helper — visually hidden until focused */
-    .visually-hidden-focusable{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
-    .visually-hidden-focusable:focus{position:fixed;left:12px;top:12px;width:auto;height:auto;padding:10px 12px;background:var(--glass);border:1px solid rgba(127,148,179,.25);border-radius:10px;z-index:10000;box-shadow:var(--shadow)}
+    /* page-only tweaks that interact with the shared CSS */
 
-    /* Header layout: 3 clear zones (brand • links • actions) */
-    .nav{position:sticky;top:0;z-index:1000;backdrop-filter:saturate(180%) blur(8px)}
-    .nav .container{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
-    .brand{display:flex;align-items:center;gap:10px}
-    .nav-actions{display:flex;align-items:center;gap:10px;border-left:1px solid var(--line, rgba(127,148,179,.25));padding-left:12px}
-    @media (max-width:980px){.nav .container{grid-template-columns:1fr auto}.nav-actions{order:2}.nav-links{grid-column:1/-1}}
+    /* Keep “Skip to content” hidden until focused (stronger rule) */
+    a.visually-hidden-focusable{
+      position:absolute !important; left:-9999px !important; top:auto !important;
+      width:1px !important; height:1px !important; overflow:hidden !important;
+    }
+    a.visually-hidden-focusable:focus{
+      position:fixed !important; left:12px !important; top:12px !important;
+      width:auto !important; height:auto !important; padding:10px 12px !important;
+      background:var(--glass); border:1px solid rgba(127,148,179,.25);
+      border-radius:10px; z-index:10000; box-shadow:var(--shadow);
+    }
 
-    /* Hero spacing safety net (in case site CSS is cached separately) */
-    .value-rotator{margin-bottom:26px!important}
-    .hero-cta-row{margin-top:22px!important;margin-bottom:10px!important}
-    .logo-row{margin-top:16px!important}
+    /* NAV: ensure three clear zones; let CSS file handle visuals */
+    .nav-inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;min-height:64px}
+    @media (max-width:980px){.nav-inner{grid-template-columns:1fr auto}.nav-links{grid-column:1/-1}}
 
-    /* Center images in frames/pop-art + keep them clickable where needed */
-    .img-frame img,.showcase img{object-position:center center}
-    .sig-rotator img{object-position:center center}
+    /* Give the hero value area real breathing room */
+    .value-rotator{margin:18px auto 32px}
+    .hero-cta-row{margin-top:26px;margin-bottom:10px}
+    .logo-row{margin-top:16px}
 
-    /* Keep background clock behind content but visible */
-    #bg-clock{z-index:-1;opacity:.05}
-    .tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight{z-index:-2}
+    /* Contact FAB pinned mid-right on desktop; bottom-right on mobile */
+    .contact-fab{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:8500;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
+    .contact-fab img{width:52px;height:52px;border-radius:15px;box-shadow:0 6px 16px rgba(0,0,0,.35);background:var(--glass);padding:6px;border:1px solid rgba(127,148,179,.25);transition:transform .18s, box-shadow .18s}
+    .contact-fab .label{font-size:12px;color:var(--text);background:rgba(10,18,36,.55);padding:4px 8px;border-radius:999px;border:1px solid rgba(127,148,179,.25)}
+    .contact-fab:focus img,.contact-fab:hover img{transform:translateY(-2px) rotate(-2deg);box-shadow:0 10px 28px rgba(0,0,0,.45)}
+    @media (max-width:820px){.contact-fab{top:auto;bottom:16px;transform:none;flex-direction:row}.contact-fab .label{display:none}}
 
-    /* Contact section: keep the form full width of the card */
-    #contact .glass.tilt iframe{display:block;width:100%!important}
+    /* Keep signature art centered inside its box */
+    .sig-rotator{display:grid;place-items:center;min-height:clamp(240px,35vw,440px);aspect-ratio:16/9}
+    .sig-rotator img{max-width:100%;max-height:100%;object-fit:contain}
+
+    /* Contact: ensure the iframe card is full width and not skinny */
+    #contact .grid{grid-template-columns:1fr !important}
+    #contact .glass.tilt{grid-column:1/-1}
+
+    /* Dashboard lightbox cursor */
+    #dashboards .img-frame.showcase img{cursor:zoom-in}
   </style>
 
   <!-- Canonicalize www to apex -->
@@ -147,7 +161,7 @@
 
   <!-- Nav -->
   <header class="nav">
-    <div class="container">
+    <div class="container nav-inner">
       <div class="brand">
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high" />
         <span>CerbiSuite</span>
@@ -202,7 +216,7 @@
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
       <!-- VALUE ROTATOR -->
-      <div class="glass tilt reveal value-rotator" style="max-width:980px;margin:18px auto 40px;padding:16px 18px 22px">
+      <div class="glass tilt reveal value-rotator" style="padding:16px; max-width:980px; margin-left:auto; margin-right:auto;">
         <div class="glare" aria-hidden="true"></div>
         <div id="whySlider" class="dash-slider">
           <figure class="slide active">
@@ -229,12 +243,12 @@
         </div>
       </div>
 
-      <div class="row hero-cta-row" style="display:flex;gap:10px;justify-content:center;margin-top:22px;margin-bottom:10px">
+      <div class="row hero-cta-row">
         <a class="btn btn-primary" href="#governance">Explore Governance</a>
         <a class="btn" href="#ecosystem">See Ecosystem</a>
       </div>
 
-      <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;margin-top:16px">
+      <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center">
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
         <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85" loading="lazy" decoding="async" />
         <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72" loading="lazy" decoding="async" />
@@ -289,7 +303,7 @@
         </article>
       </div>
 
-      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
         <a class="btn btn-primary" href="#governance">See Governance in action</a>
         <a class="btn" href="#packages">Pick your packages</a>
         <a class="btn btn-ghost" href="#compare">Compare approaches</a>
@@ -621,7 +635,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  <!-- Contact FAB (fixed mid-right on desktop; bottom-right on mobile) -->
+  <!-- Contact FAB -->
   <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
     <img src="assets/contact-fab.png" alt="" loading="lazy" decoding="async" />
     <span class="label">Contact</span>
@@ -631,7 +645,109 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <div id="clock" class="clock" role="timer" aria-live="polite" title="Local time"></div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=fix-2025-09-21-1" defer></script>
-  <script src="scripts/cerbi.js?v=fix-2025-09-21-1" defer></script>
+  <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
+  <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
+  <script src="scripts/cerbi-motion.js" defer></script>
+  <script src="scripts/mobile-fixes.js?v=4" defer></script>
+
+  <!-- Clocks, slider, progress, theme, palette, lightbox -->
+  <script>
+    // Theme button
+    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
+
+    // CmdK palette (closed by default, no auto-open, no scroll jump)
+    (function(){
+      const overlay = document.getElementById('cmdkOverlay');
+      const input = document.getElementById('cmdkInput');
+      const open = () => { overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>input?.focus(), 0); };
+      const close = () => { overlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+      document.getElementById('cmdBtn')?.addEventListener('click', open);
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
+      document.addEventListener('keydown', (e)=>{
+        const k = e.key.toLowerCase();
+        if ((e.metaKey || e.ctrlKey) && k === 'k') { e.preventDefault(); (overlay.getAttribute('aria-hidden')==='true'?open:close)(); }
+        if (k === 'escape' && overlay.getAttribute('aria-hidden')==='false') close();
+      });
+      overlay.setAttribute('aria-hidden','true');
+    })();
+
+    // Big background clock
+    (function(){
+      const el=document.getElementById('bg-clock'); if(!el) return;
+      const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
+      function size(){
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+        el.style.fontSize=Math.min(Math.max(vw*0.36,96),900)+'px';
+        el.style.lineHeight='1';
+        const theme=document.documentElement.getAttribute('data-theme')||'dark';
+        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
+      }
+      function render(){const d=new Date(); el.textContent=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+      size(); render(); addEventListener('resize',size,{passive:true});
+      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+      setInterval(render,1000);
+    })();
+
+    // Badge clock
+    (function(){
+      const el=document.getElementById('clock'); if(!el) return;
+      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
+      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
+    })();
+
+    // WHY slider dots
+    (function(){
+      const slider=document.getElementById('whySlider'); if(!slider) return;
+      const slides=[...slider.querySelectorAll('.slide')];
+      const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+      const dots=[...dotsBox.querySelectorAll('button')];
+      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
+      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
+      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
+    })();
+
+    // Dashboard slider dots + LIGHTBOX popup
+    (function(){
+      const slider=document.getElementById('dashSlider'); if(!slider) return;
+      const slides=[...slider.querySelectorAll('.slide')];
+      const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+      const dots=[...dotsBox.querySelectorAll('button')];
+      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
+      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
+      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
+
+      // Lightbox
+      const lb = document.createElement('div');
+      lb.className = 'cmdk-overlay'; // reuse overlay styles
+      lb.style.background = 'rgba(0,0,0,.65)';
+      lb.setAttribute('aria-hidden','true');
+      lb.innerHTML = `<div style="max-width:min(92vw,1400px);max-height:88vh;border-radius:14px;overflow:hidden;border:1px solid rgba(127,148,179,.25);box-shadow:var(--shadow)">
+        <img alt="" style="display:block;max-width:100%;max-height:88vh;object-fit:contain;background:#0a0f1a">
+      </div>`;
+      document.body.appendChild(lb);
+      const lbImg = lb.querySelector('img');
+      function open(src, alt){
+        lbImg.src = src; lbImg.alt = alt||'';
+        lb.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+      }
+      function close(){ lb.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+      lb.addEventListener('click', e=>{ if(e.target===lb) close(); });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && lb.getAttribute('aria-hidden')==='false') close(); });
+
+      slider.querySelectorAll('img').forEach(img=>{
+        img.addEventListener('click', ()=> open(img.currentSrc || img.src, img.alt));
+      });
+    })();
+
+    // Progress bar
+    (function(){
+      const bar=document.getElementById('progress'); if(!bar) return;
+      const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
+      on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
+    })();
+
+    // Footer year
+    (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
+  </script>
 </body>
 </html>
