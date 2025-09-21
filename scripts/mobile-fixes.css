@@ -194,3 +194,48 @@ figure, .img-frame { margin-block: 16px; }
   border-radius: 10px; padding: 8px 10px; cursor: pointer;
   backdrop-filter: blur(6px);
 }
+
+/* ===== Contact FAB bounce ===== */
+@keyframes cerbi-bounce-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* base */
+.contact-fab img{
+  transition: transform .18s ease, box-shadow .18s ease;
+  will-change: transform;
+}
+
+/* hover/focus = bounce */
+@media (hover:hover){
+  .contact-fab:hover img,
+  .contact-fab:focus img,
+  .contact-fab:focus-visible img{
+    animation: cerbi-bounce-y .8s ease-in-out infinite;
+    box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  }
+}
+
+/* keyboard-accessible focus ring on the whole FAB */
+.contact-fab:focus-visible{
+  outline: 3px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: 16px;
+}
+
+/* reduce motion: stop bouncing but keep a subtle lift */
+@media (prefers-reduced-motion: reduce){
+  .contact-fab:hover img,
+  .contact-fab:focus img,
+  .contact-fab:focus-visible img{
+    animation: none;
+    transform: translateY(-2px);
+  }
+}
+
+@media (hover:hover){
+  .contact-fab:hover { transform: translateY(-1px); }
+}
+
+
