@@ -307,3 +307,14 @@ figure, .img-frame { margin-block: 16px; }
 /* prevent any horizontal scrollbars at desktop zoom levels */
 html, body{ overflow-x: hidden; }
 
+// Edge-safe image fallback so a missing asset never shows a broken icon
+(function(){
+  document.querySelectorAll('img[data-fallback]').forEach(img=>{
+    img.addEventListener('error', ()=>{
+      const fb = img.getAttribute('data-fallback');
+      if (fb && img.src !== fb) img.src = fb;
+    }, { once:true });
+  });
+})();
+
+
