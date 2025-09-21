@@ -230,4 +230,13 @@
   });
 })();
 
+// Mobile viewport + scroll safety
+(function(){
+  const setVH=()=> document.documentElement.style.setProperty('--vh', window.innerHeight*0.01+'px');
+  setVH(); addEventListener('resize', setVH, {passive:true});
+  // never trap scroll
+  const unlock=()=>{ document.documentElement.classList.remove('no-scroll','lock-scroll'); document.body.classList.remove('no-scroll','lock-scroll'); if(/hidden/.test(document.body.style.overflow||'')) document.body.style.overflow=''; };
+  unlock(); addEventListener('error', unlock, {passive:true});
+  ['touchstart','touchmove','wheel'].forEach(ev=> addEventListener(ev, ()=>{}, {passive:true}));
+})();
 
