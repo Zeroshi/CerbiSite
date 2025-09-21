@@ -1,5 +1,4 @@
-/* Mobile-specific guardrails and quick fixes */
-
+/* Mobile / utility fixes */
 section[id]{ scroll-margin-top: 72px }
 
 @media (max-width: 820px){
@@ -13,7 +12,7 @@ section[id]{ scroll-margin-top: 72px }
   display:block;
 }
 
-/* Make lightbox image fit viewport on mobile */
+/* Lightbox image fit on mobile */
 @media (max-width: 820px){
   .lightbox-inner{ width: 96vw; max-height: 92vh }
 }
@@ -25,9 +24,9 @@ section[id]{ scroll-margin-top: 72px }
   .logo-row{ margin-top: 14px }
 }
 
-/* Prevent cmdk overlay from shifting layout due to scrollbars */
+/* CmdK overlay scroll guard */
 .cmdk-overlay{ overscroll-behavior: contain }
 
-/* “Skip to content” only visible on focus (extra safety) */
+/* Skip link stronger hide until focus */
 a.visually-hidden-focusable{ clip: rect(1px,1px,1px,1px); clip-path: inset(50%) }
 a.visually-hidden-focusable:focus{ clip:auto; clip-path:none }
