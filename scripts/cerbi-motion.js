@@ -1,42 +1,32 @@
-/* Hero “signature pop-art” rotator — loads images, centers them, and auto-rotates */
+/* Hero “pop-art” rotator — auto-detects files in /assets/popart and centers them */
 (() => {
   const host = document.getElementById('sigRotator');
   if (!host) return;
 
-  // Try several likely filename patterns; use whichever actually load
-  const candidates = [
-    // Common repo paths — adjust/add if you place new files
-    'assets/hero/cerbi-pop-1.jpg',
-    'assets/hero/cerbi-pop-2.jpg',
-    'assets/hero/cerbi-pop-3.jpg',
-    'assets/hero/cerbi-pop-4.jpg',
-    'assets/hero/cerbi-pop-5.jpg',
-    'assets/hero/cerbi-pop-1.png',
-    'assets/hero/cerbi-pop-2.png',
-    'assets/hero/cerbi-pop-3.png',
-    // Fallback alt folders
-    'assets/hero-art/cerbi-pop-1.jpg',
-    'assets/hero-art/cerbi-pop-2.jpg',
-    'assets/hero-art/cerbi-pop-3.jpg'
-  ];
+  // Build a robust candidate list matching your repo: assets/popart/pop-01..20.(jpg|png|webp)
+  const nums = Array.from({length:20}, (_,i)=>String(i+1).padStart(2,'0'));
+  const exts = ['webp','jpg','png','jpeg'];
+  const candidates = [];
+  for (const n of nums) for (const ext of exts) candidates.push(`assets/popart/pop-${n}.${ext}`);
 
-  function loadImages(paths){
-    return Promise.all(paths.map(src => new Promise(resolve => {
+  function tryLoad(src){
+    return new Promise(resolve=>{
       const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => resolve(null);
+      img.onload = ()=> resolve(img);
+      img.onerror = ()=> resolve(null);
       img.decoding = 'async';
       img.loading = 'lazy';
       img.alt = 'Cerbi signature art';
       img.src = src;
       img.style.objectFit = 'contain';
       img.style.objectPosition = 'center';
-    }))).then(list => list.filter(Boolean));
+    });
   }
 
-  loadImages(candidates).then(images => {
+  Promise.all(candidates.map(tryLoad)).then(list=>{
+    const images = list.filter(Boolean);
     if (!images.length) {
-      // Hide the section if nothing loads
+      // No popart found → hide section
       const section = host.closest('section');
       if (section) section.style.display = 'none';
       return;
@@ -56,8 +46,8 @@
       if (nxt) nxt.classList.add('show');
     };
 
-    let timer = setInterval(next, 3800);
+    let timer = setInterval(next, 3600);
     host.addEventListener('pointerenter', () => clearInterval(timer));
-    host.addEventListener('pointerleave', () => { timer = setInterval(next, 3800); });
+    host.addEventListener('pointerleave', () => { timer = setInterval(next, 3600); });
   });
 })();
