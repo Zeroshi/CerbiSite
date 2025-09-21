@@ -1,0 +1,98 @@
+/* ===========================
+   Cerbi — Desktop nav + hero fixes + clock glow
+   =========================== */
+
+/* NAV LAYOUT (desktop-first, graceful overflow on narrower viewports) */
+.nav { position: sticky; top: 0; z-index: 40; }
+.nav-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; color: var(--text-strong); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: nowrap;
+  overflow-x: auto;          /* if there’s not enough width, allow gentle scroll */
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a { white-space: nowrap; padding: 6px 2px; border-radius: 8px; }
+.nav-links a:hover { background: color-mix(in oklab, var(--panel) 60%, transparent); text-decoration: none; }
+
+.nav-actions {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.nav-toggle { display: none; }
+
+/* collapse behavior for narrower screens, without touching your mobile CSS */
+@media (max-width: 980px){
+  .nav-inner { grid-template-columns: auto auto 1fr; }
+  .nav-toggle { display: inline-flex; align-items:center; justify-content:center;
+    width:40px;height:40px;border-radius:10px;background:var(--panel);
+    border:1px solid color-mix(in oklab, var(--panel-2) 60%, transparent);
+  }
+  .nav-links { position: fixed; left: 12px; right: 12px; top: 64px;
+    display: grid; gap: 8px; padding: 10px; background: var(--panel); border-radius: 14px;
+    border: 1px solid color-mix(in oklab, var(--panel-2) 60%, transparent);
+    transform: translateY(-16px); opacity: 0; pointer-events: none; transition: .18s transform, .18s opacity;
+  }
+  .nav-links.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+}
+
+/* HERO VALUE CARD — spacing & bullet cleanup (desktop + mobile) */
+.value-rotator{ padding-bottom:18px; margin-bottom:22px; }
+.value-rotator .k{ margin:.35rem 0 .55rem; }
+.value-rotator ul{
+  margin:8px 0 16px; padding-left:1.25rem;
+  list-style: disc; list-style-position: outside;
+}
+.value-rotator li{ margin:2px 0; }
+.value-rotator li::before{ content:none; } /* remove any pseudo-bullets */
+
+/* CTA row beneath the value card */
+.hero-cta-row{ margin-top:28px; }
+
+/* CONTACT FAB fun: bounce on hover (desktop only; respects reduced motion) */
+@keyframes cerbi-bounce-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.contact-fab img{ transition: transform .18s ease, box-shadow .18s ease; will-change: transform; }
+@media (hover:hover){
+  .contact-fab:hover img, .contact-fab:focus img, .contact-fab:focus-visible img{
+    animation: cerbi-bounce-y .8s ease-in-out infinite;
+    box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  }
+}
+.contact-fab:focus-visible{ outline:3px solid var(--ring); outline-offset:4px; border-radius:16px; }
+@media (prefers-reduced-motion: reduce){
+  .contact-fab:hover img, .contact-fab:focus img, .contact-fab:focus-visible img{ animation:none; transform:translateY(-2px); }
+}
+
+/* Small clock — animated glow background (GPU-cheap, no extra markup) */
+@keyframes cerbi-spin { to { transform: rotate(360deg); } }
+@keyframes cerbi-pulse { 0%,100% { opacity:.18; transform: scale(0.98);} 50% { opacity:.32; transform: scale(1.02);} }
+
+.clock{ isolation:isolate; overflow:visible; }
+.clock::after{
+  content:""; position:absolute; inset:-34px; z-index:-2; border-radius:999px;
+  background: conic-gradient(from 0deg,
+    rgba(255,77,0,.35),
+    rgba(255,146,54,.15),
+    rgba(127,148,179,.10),
+    rgba(255,77,0,.35));
+  filter: blur(22px); animation: cerbi-spin 14s linear infinite; opacity:.35; pointer-events:none;
+}
+.clock::before{
+  content:""; position:absolute; inset:-12px; z-index:-1; border-radius:16px;
+  background:
+    radial-gradient(60% 60% at 65% 35%, rgba(255,77,0,.30), transparent 70%),
+    radial-gradient(50% 50% at 20% 80%, rgba(255,146,54,.25), transparent 70%);
+  filter: blur(14px); animation: cerbi-pulse 3.6s ease-in-out infinite; pointer-events:none;
+}
+:root[data-theme="light"] .clock::after{ opacity:.25; }
+:root[data-theme="light"] .clock::before{ filter: blur(12px); }
+@media (prefers-reduced-motion: reduce){ .clock::before, .clock::after{ animation:none; } }
