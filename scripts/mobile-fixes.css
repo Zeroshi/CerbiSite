@@ -238,4 +238,91 @@ figure, .img-frame { margin-block: 16px; }
   .contact-fab:hover { transform: translateY(-1px); }
 }
 
+/* ==== Desktop hero spacing & bullet cleanup ==== */
+@media (min-width: 1024px){
+  /* breathing room inside the glass card and below it */
+  .value-rotator{ padding-bottom:18px !important; margin-bottom:22px !important; }
+
+  /* headline copy under the h3 */
+  .value-rotator .k{ margin:.35rem 0 .5rem !important; }
+
+  /* bullet list -> proper margin + real bullets only */
+  .value-rotator ul{
+    margin:8px 0 18px !important;
+    padding-left:1.25rem !important;
+    list-style:disc !important;
+    list-style-position: outside !important;
+  }
+  .value-rotator li{ margin:2px 0 !important; }
+  .value-rotator li::before{ content:none !important; } /* kill theme pseudo-bullets */
+
+  /* the buttons row immediately after the card */
+  .value-rotator + .row{ margin-top:26px !important; }
+}
+
+/* ==== Animated background behind the small .clock badge ==== */
+@keyframes cerbi-spin { to { transform: rotate(360deg); } }
+@keyframes cerbi-pulse {
+  0%,100% { opacity:.18; transform: scale(0.98); }
+  50%     { opacity:.32; transform: scale(1.02); }
+}
+
+.clock{
+  position: fixed; /* you already have this */
+  overflow: visible; /* allow glow to render outside the badge */
+  isolation: isolate; /* keep effects scoped */
+}
+
+/* soft tinted ring that slowly spins */
+.clock::after{
+  content:"";
+  position:absolute; inset:-34px;
+  z-index:-2; border-radius: 999px;
+  background:
+    conic-gradient(from 0deg,
+      rgba(255,77,0,.35),
+      rgba(255,146,54,.15),
+      rgba(127,148,179,.10),
+      rgba(255,77,0,.35));
+  filter: blur(22px);
+  animation: cerbi-spin 14s linear infinite;
+  opacity:.35;
+  pointer-events:none;
+}
+
+/* inner radial glow that gently pulses */
+.clock::before{
+  content:"";
+  position:absolute; inset:-12px;
+  z-index:-1; border-radius: 16px;
+  background:
+    radial-gradient(60% 60% at 65% 35%, rgba(255,77,0,.30), transparent 70%),
+    radial-gradient(50% 50% at 20% 80%, rgba(255,146,54,.25), transparent 70%);
+  filter: blur(14px);
+  animation: cerbi-pulse 3.6s ease-in-out infinite;
+  pointer-events:none;
+}
+
+/* toned appropriately in light theme */
+:root[data-theme="light"] .clock::after{ opacity:.25; }
+:root[data-theme="light"] .clock::before{ filter: blur(12px); }
+
+/* respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce){
+  .clock::before, .clock::after{ animation: none; }
+}
+
+
+/* Optional: ambient wash behind the BIG #bg-clock */
+#bg-clock{
+  position: fixed; inset:0; pointer-events:none;
+}
+#bg-clock::before{
+  content:"";
+  position:absolute; inset:0; z-index:-1;
+  background:
+    radial-gradient(40% 40% at 65% 15%, rgba(255,77,0,.10), transparent 60%),
+    radial-gradient(35% 35% at 20% 70%, rgba(127,148,179,.10), transparent 60%);
+  animation: cerbi-pulse 6s ease-in-out infinite;
+}
 
