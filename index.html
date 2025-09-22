@@ -4,9 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
-  
+
+  <!-- Apply persisted theme early so CSS uses the correct variables -->
+  <script>
+    (function(){
+      try{
+        var saved = localStorage.getItem('theme') || localStorage.getItem('cerbi-theme');
+        if(saved) document.documentElement.setAttribute('data-theme', saved);
+        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme','light');
+      }catch(e){ /* ignore */ }
+    })();
+  </script>
+
   <!-- Styles order preserved, cache-busted -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.11" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.12" />
   <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.11" />
@@ -18,34 +29,29 @@
     .spotlight{ opacity:.95; }
     /* Background clock: ensure visibility */
     #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
-    /* Microsoft Partner smaller in footer */
-    .footer .partner-mini{ height:14px; width:auto; opacity:.9; }
-    /* FAB icon only on right */
-    .contact-fab{ right:max(18px,calc(env(safe-area-inset-right) + 12px)); left:auto; transform:none; }
-    .contact-fab .label{ display:none !important; }
-    /* Hide lightbox when closed */
-    #lightbox[aria-hidden="true"]{ display:none; }
+    /* Microsoft Partner slightly larger in footer */
+    .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+    /* Contact iframe wider on desktop */
+    @media (min-width:900px){ #contact iframe{ width:100%; max-width:1100px; margin:0 auto; display:block } }
+    /* Dynamic background container */
+    #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
+    #dynamic-bg canvas{ width:100%; height:100%; display:block }
+    /* Theme diagnostic badge (non-intrusive) */
+    #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
+    #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
   </style>
 </head>
 <body>
-  <!-- Background layers: stars + veil + spotlight + clock (single set) -->
+  <!-- Dynamic background layer (canvas) -->
+  <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
+
+  <!-- Background layers: tiles + sky + veil + spotlight + clock -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
   <div id="bg-clock" aria-hidden="true" class="mode-time">
     <div class="scan"></div>
-  </div>
-
-  <!-- Clock controls -->
-  <div id="bg-clock-controls" aria-hidden="false" role="toolbar" aria-label="Background clock controls">
-    <button data-mode="time" class="active" title="Show HH:MM">Time</button>
-    <button data-mode="glitch" title="Glitch bursts">Glitch</button>
-    <button data-mode="words" title="Show phrases">Words</button>
-    <div class="size-adjust">
-      <button id="size-sm" title="Smaller">A-</button>
-      <button id="size-lg" title="Larger">A+</button>
-    </div>
   </div>
 
   <!-- Ribbon -->
@@ -567,7 +573,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 glass tilt" style="padding:16px">
           <div class="glare"></div>
-          <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:720px;border:0;border-radius:12px;background:rgba(255,255,255,.02)"></iframe>
+          <iframe title="Contact Cerbi" id="contact-iframe" src="https://form.jotform.com/252385904589067" style="width:100%;height:720px;border:0;border-radius:12px;background:rgba(255,255,255,.02)"></iframe>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
       </div>
@@ -609,14 +615,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts: load app.js early so theme is initialized -->
+  <script src="scripts/app.js?v=2025-09-22.13" defer></script>
   <script>
     // Fallback to ensure the background clock is visible immediately (Edge safe)
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
-      el.style.zIndex='-1'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
-      el.style.mixBlendMode='screen';
+      el.style.zIndex='900'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
+      el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
       if(!el.textContent || el.textContent.trim()===''){
         var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
         el.textContent=t;
@@ -627,10 +634,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=6" defer></script>
-  
+  <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
+
   <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
-    // Theme button
+    // Theme button wiring (fallback)
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
 
     // CmdK palette
@@ -668,7 +676,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Compute dynamic heights (kill top gap, good anchor offset)
+    // Compute dynamic heights
     (function(){
       const nav = document.getElementById('siteNav');
       const ribbon = document.getElementById('topRibbon');
@@ -685,11 +693,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
 
       // Brand → smooth-scroll to top
-      document.querySelector('.brand')?.addEventListener('click', (e)=>{
-        // let hash handle, but ensure smooth & no weird gaps
-        // (browser will already jump; we'll also scroll smoothly)
-        e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'});
-      });
+      document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
     })();
 
     // Badge clock
@@ -730,7 +734,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       setInterval(render,1000);
     })();
 
-    // WHY slider dots + control (no auto-play)
+    // WHY slider dots + control
     (function(){
       const slider=document.getElementById('whySlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -857,28 +861,20 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       render();
     })();
 
-
-      (function(){
-    const root = document.documentElement;
-    // Choose where you want the fixed glow to sit:
-    root.style.setProperty('--spot-x','82%');
-    root.style.setProperty('--spot-y','16%');
-
-    // If any legacy mouse tracker is updating --mx/--my, we ignore it by
-    // not using those vars anymore in .spotlight (see CSS above).
-    // Optional: if you want it left/center, try: 18% / 22% or 50% / 12%.
-  })();
+    (function(){
+      const root = document.documentElement;
+      root.style.setProperty('--spot-x','82%');
+      root.style.setProperty('--spot-y','16%');
+    })();
   </script>
 
-  <!-- Scripts: clock interactivity -->
+  <!-- Clock interactivity & words mode (Love Death & Robots style) -->
   <script>
     (function(){
       const el = document.getElementById('bg-clock');
       if(!el) return;
 
-      const PHRASES = [
-        'LOVE', 'DEATH', 'ROBOTS', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE'
-      ];
+      const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
       let mode = 'time';
       let baseScale = 1.0;
 
@@ -895,7 +891,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           el.dataset.text = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
           el.textContent = el.dataset.text;
         } else if(mode==='glitch'){
-          // random glyph burst
           const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°•◦○●◎◆◢◣◤◥▄▀';
           const d=new Date(); const t = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
           if(Math.random() < 0.15){
@@ -907,27 +902,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             el.textContent = t;
           }
         } else if(mode==='words'){
-          // Cycle bold short phrases like 'LOVE', 'DEATH', 'ROBOTS'
           const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
           el.dataset.text = choice;
           el.textContent = choice;
         }
       }
 
-      // Size adjust
-      function adjustSize(delta){
-        baseScale = Math.min(3, Math.max(0.6, baseScale + delta));
-        el.style.transform = `scale(${baseScale})`;
-      }
+      function adjustSize(delta){ baseScale = Math.min(3, Math.max(0.6, baseScale + delta)); el.style.transform = `scale(${baseScale})`; }
 
-      // Controls
-      document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(btn=>{
-        btn.addEventListener('click', ()=> setMode(btn.getAttribute('data-mode')));
-      });
+      document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(btn=>{ btn.addEventListener('click', ()=> setMode(btn.getAttribute('data-mode'))); });
       document.getElementById('size-sm').addEventListener('click', ()=> adjustSize(-0.08));
       document.getElementById('size-lg').addEventListener('click', ()=> adjustSize(0.12));
 
-      // Keyboard shortcuts: T (time), G (glitch), W (words)
       document.addEventListener('keydown', (e)=>{
         if(e.key.toLowerCase()==='t') setMode('time');
         if(e.key.toLowerCase()==='g') setMode('glitch');
@@ -936,12 +922,59 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         if(e.key === '-') adjustSize(-0.08);
       });
 
-      // Boot
-      setMode('time'); tick();
-      setInterval(tick, 900);
+      setMode('time'); tick(); setInterval(tick, 900);
+      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);}
+    })();
+  </script>
 
-      // Keep glare scan visible
-      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);}    
+  <!-- Dynamic background script (subtle moving color orbs) -->
+  <script>
+    (function(){
+      const canvas = document.getElementById('bgCanvas'); if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+      function resize(){ canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+      resize(); window.addEventListener('resize', resize, {passive:true});
+
+      const circles = [];
+      const count = Math.max(12, Math.floor((innerWidth*innerHeight)/180000));
+      for(let i=0;i<count;i++){
+        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 200 + Math.random()*80 });
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+        ctx.fillStyle = 'rgba(6,10,20,0.6)'; ctx.fillRect(0,0,innerWidth,innerHeight);
+        for(const c of circles){
+          c.x += c.vx; c.y += c.vy;
+          if(c.x < -200) c.x = innerWidth + 200; if(c.x > innerWidth + 200) c.x = -200;
+          if(c.y < -200) c.y = innerHeight + 200; if(c.y > innerHeight + 200) c.y = -200;
+          const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.r*3);
+          g.addColorStop(0, `hsla(${c.hue},80%,60%,0.12)`);
+          g.addColorStop(1, `hsla(${c.hue},60%,8%,0)`);
+          ctx.beginPath(); ctx.fillStyle = g; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    })();
+  </script>
+
+  <!-- Theme diagnostic badge (debug) -->
+  <div id="theme-diag" aria-hidden="false">
+    <span id="theme-name">Theme: …</span>
+    <button id="theme-cycle" title="Cycle theme">Cycle</button>
+  </div>
+  <script>
+    (function(){
+      const el = document.getElementById('theme-name');
+      const btn = document.getElementById('theme-cycle');
+      function refresh(){
+        const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'dark';
+        el.textContent = 'Theme: ' + t;
+      }
+      btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.toggle){ window.CerbiTheme.toggle(); setTimeout(refresh,80); } });
+      window.addEventListener('theme-changed', refresh);
+      setTimeout(refresh,250);
     })();
   </script>
 </body>
