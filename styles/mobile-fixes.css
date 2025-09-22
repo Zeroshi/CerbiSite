@@ -13,7 +13,7 @@
 
 /* Make sure any iframes (Jotform) stay full-width in cards */
 #contact .grid, #contact .col-12{ min-width: 0; }
-#contact iframe{ width: 100% !important; max-width: 100% !important; display: block; }
+#contact iframe{ width: 100% !important; max-width: 100% !important; display: block; height: min(86vh, 860px); }
 
 /* Keep hero art centered in its frame on small screens */
 .sig-rotator img{ object-position: center center; }
@@ -21,4 +21,10 @@
 /* FAB on right on mobile too */
 @media (max-width: 520px){
   .contact-fab{ right: 18px; left: auto; transform: none; }
+}
+
+/* Ecosystem table: allow cells to wrap nicely */
+@media (max-width: 820px){
+  .table tbody td{ white-space: normal; }
+  .table{ display:block; overflow-x:auto; }
 }
