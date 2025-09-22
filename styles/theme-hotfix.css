@@ -48,7 +48,6 @@
 /* ---- Vertical rhythm: give sections breathing room & avoid collisions ---- */
 .container.section { position:relative; z-index:1; }
 .hero { position:relative; z-index:1; }
-.tiles,.sky,.veil,.bg-orbs,#bg-illustration,.spotlight{ z-index:0; } /* backgrounds behind content */
 
 /* ensure value rotator + buttons + logos have clean separation */
 .value-rotator{ margin-bottom: 24px !important; }
