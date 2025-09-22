@@ -3,7 +3,7 @@
    =========================== */
 
 /* NAV LAYOUT (desktop-first, graceful overflow on narrower viewports) */
-.nav { position: sticky; top: 0; z-index: 40; }
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
 .nav-inner {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -68,8 +68,7 @@
   }
 }
 .contact-fab:focus-visible{ outline:3px solid var(--ring); outline-offset:4px; border-radius:16px; }
-@media (prefers-reduced-motion: reduce){
-  .contact-fab:hover img, .contact-fab:focus img, .contact-fab:focus-visible img{ animation:none; transform:translateY(-2px); }
+@media (prefers-reduced-motion: reduce){ .contact-fab:hover img, .contact-fab:focus img, .contact-fab:focus-visible img{ animation:none; transform:translateY(-2px); }
 }
 
 /* Small clock — animated glow background (GPU-cheap, no extra markup) */
