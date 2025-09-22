@@ -7,24 +7,24 @@
    - A11Y + reduced-motion friendly
    ========================================================================== */
 
-/* Keep decorative layers behind content and non-interactive */
-.tiles,
-.sky,
-.veil,
-.bg-orbs,
-#bg-illustration,
-.spotlight,
-#bg-clock {
+/* Keep decorative layers fixed and non-interactive with proper z-order */
+.tiles, .sky, .veil, #bg-illustration, .spotlight, #bg-clock {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -1;
 }
+.tiles{ z-index:-5; }
+.sky{ z-index:-4; }
+.veil{ z-index:-3; }
+/* Illustration and spotlight live behind the clock */
+#bg-illustration{ z-index:-2; }
+.spotlight{ z-index:-2; }
+/* Clock sits on top of background layers, below all UI */
+#bg-clock{ z-index:-1; }
 
-/* Ensure content always stacks above decorative layers */
+/* Ensure content stacks above decorative layers (do not override nav/ribbon) */
 header, main, footer,
-.nav, .ribbon, .container, .section,
-.hero, .glass, .card {
+.container, .section, .hero, .glass, .card {
   position: relative;
   z-index: 0;
   isolation: isolate;
@@ -40,32 +40,17 @@ html, body { overflow-x: hidden; }
 .glass, .card { overflow: hidden; }
 
 /* Text safety in tight cards */
-h1, h2, h3, p, .lead, .k, .sub {
-  overflow-wrap: anywhere;
-  word-wrap: break-word;
-}
+h1, h2, h3, p, .lead, .k, .sub { overflow-wrap: anywhere; word-wrap: break-word; }
 
 /* Grid breathing room (especially on tablet) */
 .grid { row-gap: 16px; }
 
 /* --- Image & slider containment ---------------------------------------- */
-.img-frame,
-.showcase,
-#dashSlider {
-  position: relative;
-  overflow: hidden;     /* clip tall or odd-ratio images */
-}
+.img-frame, .showcase, #dashSlider { position: relative; overflow: hidden; }
 
 /* Constrain images everywhere */
-.showcase .slide img,
-#dashSlider .slide img,
-.card img,
-.contact-art .img-frame img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-width: 100%;
-  object-fit: contain;
+.showcase .slide img, #dashSlider .slide img, .card img, .contact-art .img-frame img {
+  display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain;
 }
 
 /* Optional aspect–ratio hint the JS sets (falls back safely) */
@@ -77,65 +62,28 @@ h1, h2, h3, p, .lead, .k, .sub {
 /* --- Cute, centered CONTACT FAB ---------------------------------------- */
 .contact-fab {
   position: fixed !important;
-  left: 50%;
-  right: auto;
-  bottom: 22px;
-  transform: translateX(-50%);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 999px;
+  left: 50%; right: auto; bottom: 22px; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 999px;
   background: rgba(10,18,36,.72);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(127,148,179,.25);
-  text-decoration: none;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid rgba(127,148,179,.25); text-decoration: none;
   box-shadow: 0 10px 24px rgba(0,0,0,.25), 0 2px 0 rgba(255,255,255,.06) inset;
   z-index: 1100;
 }
-
-:root[data-theme="light"] .contact-fab {
-  background: rgba(255,255,255,.84);
-  border-color: rgba(0,0,0,.10);
-}
-
-.contact-fab img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: block;
-}
-
-.contact-fab .label {
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: .2px;
-}
-
-/* Hover boop */
-@media (hover:hover) {
-  .contact-fab:hover { transform: translateX(-50%) translateY(-2px) scale(1.02); }
-}
-
-/* Mobile spacing */
-@media (max-width: 520px) {
-  .contact-fab { bottom: 14px; padding: 9px 12px; gap: 8px; }
-  .contact-fab .label { font-size: 13px; }
-}
+:root[data-theme="light"] .contact-fab { background: rgba(255,255,255,.84); border-color: rgba(0,0,0,.10); }
+.contact-fab img { width: 28px; height: 28px; border-radius: 50%; display: block; }
+.contact-fab .label { font-weight: 700; font-size: 14px; letter-spacing: .2px; }
+@media (hover:hover){ .contact-fab:hover { transform: translateX(-50%) translateY(-2px) scale(1.02); } }
+@media (max-width: 520px) { .contact-fab { bottom: 14px; padding: 9px 12px; gap: 8px; } .contact-fab .label { font-size: 13px; } }
 
 /* --- Big background HH:MM clock --------------------------------------- */
 #bg-clock {
-  display: grid;
-  place-items: center;
+  display: grid; place-items: center;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  font-weight: 700;
-  letter-spacing: .03em;
-  opacity: .05;               /* very subtle */
-  filter: blur(.5px);
+  font-weight: 700; letter-spacing: .03em; line-height: 1; user-select: none;
+  opacity: var(--clock-opacity, .18);
   color: var(--muted, #a7b4cf);
-  line-height: 1;
-  user-select: none;
+  mix-blend-mode: screen;
 }
 
 /* Fluid size: ~36% vw, clamped for extremes */
@@ -145,21 +93,9 @@ h1, h2, h3, p, .lead, .k, .sub {
 #progress, .clock { position: fixed; z-index: 1100; }
 
 /* --- Button sparkle accent (used by extras.js, gentle) ----------------- */
-.btn-sparkle {
-  position: relative;
-  isolation: isolate;
+.btn-sparkle { position: relative; isolation: isolate; }
+.btn-sparkle::after{
+  content: ""; position: absolute; inset: -2px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s ease;
+  box-shadow: 0 0 20px rgba(255, 255, 255, .25), 0 0 40px var(--accent, #ff4d00);
 }
-.btn-sparkle::after {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .25s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, .25),
-              0 0 40px var(--accent, #ff4d00);
-}
-@media (hover:hover) {
-  .btn-sparkle:hover::after { opacity: .55; }
-}
+@media (hover:hover){ .btn-sparkle:hover::after { opacity: .55; } }
