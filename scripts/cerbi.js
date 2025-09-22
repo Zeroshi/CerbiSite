@@ -491,3 +491,14 @@
   new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
 })();
 
+// Logo → scroll to top
+(function(){
+  const brand = document.querySelector('.brand');
+  if (!brand) return;
+  brand.style.cursor = 'pointer';
+  brand.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
