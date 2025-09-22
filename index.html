@@ -57,49 +57,18 @@
   <meta name="theme-color" content="#0a1224" />
 
   <!-- Styles (order matters: base → hotfix → component → fixes → motion/mobile) -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.2" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.2" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.2" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.2" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.3" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.3" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.3" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.3" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css?v=4" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=5" />
 
-  <!-- Inline fixes (only what’s unique to this page) -->
   <style>
-    :root{ --img-radius:16px; --ease: cubic-bezier(.22,.61,.36,1); }
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-    /* Full-bleed helper */
-    .full-bleed-wrap{position:relative}
-    .full-bleed{width:100vw;margin-left:calc(50% - 50vw)}
-
-    /* Lightbox */
-    .lightbox{position:fixed;inset:0;background:rgba(2,6,16,.85);display:grid;place-items:center;padding:24px;z-index:9001;transition:opacity .25s var(--ease),visibility .25s var(--ease)}
-    .lightbox[aria-hidden="true"]{opacity:0;visibility:hidden}
-    .lightbox img{max-width:96vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-    .lightbox .close{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.06);border:1px solid rgba(127,148,179,.25);padding:8px 10px;border-radius:10px;cursor:pointer}
-
-    /* Background clock: fixed, in front of stars, behind all UI */
-    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:-1;opacity:var(--clock-opacity,.18);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:screen}
-
-    /* Keep spotlight visible while scrolling; place it below the clock */
-    .spotlight{position:fixed;inset:0;pointer-events:none;z-index:-2;
-      background:radial-gradient(600px 600px at var(--spot-x,82%) var(--spot-y,16%), rgba(255,255,255,.10), rgba(255,255,255,0) 65%);
-      filter:blur(24px)
-    }
-    [data-theme="light"] .spotlight{
-      background:radial-gradient(600px 600px at var(--spot-x,82%) var(--spot-y,16%), rgba(0,0,0,.06), rgba(0,0,0,0) 65%);
-    }
-
-    /* Hero spacing and stacking to prevent overlap */
-    .hero .value-rotator{margin-top:16px;margin-bottom:34px}
-    .hero-cta-row{margin-top:26px;position:relative;z-index:2}
-    .orbit{position:relative;z-index:1}
-    .hero h1{margin-top:8px}
-    .hero .sub{margin-top:8px;margin-bottom:0}
-
-    /* Ensure the small clock is visible */
-    .clock{position:fixed;top:10px;right:12px;z-index:9999;background:rgba(10,18,36,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:6px 8px;border-radius:10px;border:1px solid rgba(127,148,179,.25);font-variant-numeric:tabular-nums}
+    /* page-specific small tweaks only */
+    #bg-clock{ mix-blend-mode: screen; opacity: var(--clock-opacity,.2); }
+    #contact iframe{ width:100% !important; max-width:100%; display:block; }
+    .footer .partner-mini{ height:24px; width:auto; opacity:.9; filter:drop-shadow(0,0,0,.15); }
   </style>
 
   <!-- Canonicalize www to apex -->
@@ -630,39 +599,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- PARTNERS -->
-    <section id="partners" class="container section">
-      <div class="eyebrow">Ecosystem</div>
-      <h2>Trusted with <span class="hl">Microsoft</span></h2>
-      <p class="lead">We’re proud to be a Microsoft Partner. Cerbi aligns with Azure best practices and the broader .NET ecosystem.</p>
-      <div class="glass tilt reveal" style="padding:16px;display:grid;place-items:center">
-        <img src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" style="max-width:260px;height:auto" loading="lazy" decoding="async">
-      </div>
-    </section>
-
-    <!-- PACKAGES -->
-    <section id="packages" class="container section">
-      <h2>NuGet <span class="hl">Packages</span> & How They Fit</h2>
-      <p class="lead">Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.</p>
-
-      <div class="glass reveal" style="padding:16px">
-        <h3 style="margin:4px 0 10px">How packages relate</h3>
-<pre class="kbd" style="white-space:pre-wrap;margin:0">Apps (Serilog / MEL / NLog / CerbiStream)
-  ├─▶ Build-time:  CerbiStream.GovernanceAnalyzer  ·  Cerbi.Serilog.GovernanceAnalyzer
-  ├─▶ Runtime:     Cerbi.MEL.Governance  →  Cerbi.Governance.Runtime  →  Cerbi.Governance.Core
-  └─▶ Native logger: CerbiStream (structured, encrypted, governance-ready)
-</pre>
-        <div class="space"></div>
-        <h4 style="margin:8px 0 6px">Why it matters</h4>
-        <ul>
-          <li><strong>Concept:</strong> Treat logs as governed data products—stable, typed, safe to share.</li>
-          <li><strong>Business value:</strong> lower ingestion & storage costs, durable dashboards, audit confidence.</li>
-          <li><strong>Current state:</strong> CerbiStream + Analyzer + MEL runtime validator.</li>
-          <li><strong>Future state:</strong> CerbIQ routing + CerbiSense anomaly detection on governed features.</li>
-        </ul>
-      </div>
-    </section>
-
     <!-- CONTACT -->
     <section id="contact" class="container section">
       <div class="eyebrow">Let’s talk</div>
@@ -672,7 +608,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 glass tilt" style="padding:16px">
           <div class="glare"></div>
-          <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:680px;border:0;border-radius:12px;background:rgba(255,255,255,.02)" loading="lazy"></iframe>
+          <iframe title="Contact Cerbi" src="https://form.jotform.com/252385904589067" style="width:100%;height:720px;border:0;border-radius:12px;background:rgba(255,255,255,.02)"></iframe>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
       </div>
@@ -686,10 +622,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:28px;width:auto;border-radius:6px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
         <span class="k">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
+        <img class="partner-mini" src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" loading="lazy" decoding="async" />
       </div>
     </div>
   </footer>
@@ -722,9 +659,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-  <script src="scripts/mobile-fixes.js?v=4" defer></script>
+  <script src="scripts/mobile-fixes.js?v=5" defer></script>
   
-
   <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
     // Theme button
