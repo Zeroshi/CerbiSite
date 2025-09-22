@@ -70,6 +70,14 @@
       el.appendChild(scan);
     }
 
+    // Ensure visibility immediately (inline style to beat any race/caching issues)
+    try {
+      el.style.opacity = getComputedStyle(root).getPropertyValue('--clock-opacity') || '0.36';
+      el.style.mixBlendMode = 'screen';
+      // Add a body-level class we can target from CSS to force visibility in stubborn browsers
+      document.body.classList.add('show-clock');
+    } catch (e) { /* ignore */ }
+
     const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
     const randGlyph = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
     const timeHM = () => {
@@ -97,7 +105,9 @@
       const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
       const sc=(h.scrollTop||document.body.scrollTop);
       const t = Math.min(1, max ? sc/(max*0.35) : 0);
-      root.style.setProperty('--clock-opacity', (0.06 + t*0.25).toFixed(3));
+      root.style.setProperty('--clock-opacity', (0.20 + t*0.25).toFixed(3));
+      // reflect to inline style so browsers rendering old CSS still see it
+      el.style.opacity = getComputedStyle(root).getPropertyValue('--clock-opacity') || el.style.opacity;
 
       if (!el.classList.contains('bursting')) setClockText(timeHM());
     }
