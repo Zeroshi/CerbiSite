@@ -224,68 +224,40 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   );}
 }
 
-/* Large background clock (LDR style layers are added by JS) */
+/* Ensure glyph clock is visible above content but below nav/ribbon */
 #bg-clock{
   position:fixed; inset:0; display:grid; place-items:center;
-  pointer-events:none; user-select:none; z-index:-1;
-  opacity: var(--clock-opacity,.14); line-height:1;
-  font-weight:800; letter-spacing:.02em; text-transform:uppercase;
-  filter:drop-shadow(0 10px 30px rgba(0,0,0,.35));
-  mix-blend-mode:screen;
-}
-@media (max-width:600px){ #bg-clock{ opacity:calc(var(--clock-opacity) * .7); } }
-#bg-clock.glitch,
-#bg-clock.glitch::before,
-#bg-clock.glitch::after{ position:relative; color:var(--muted); text-shadow:none }
-#bg-clock.glitch::before,
-#bg-clock.glitch::after{
-  content:attr(data-text); position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen;
-  will-change:transform,clip-path,opacity; opacity:.25;
-}
-#bg-clock.glitch::before{ color:#ff3b00; transform:translate(-1.5px,0); animation:glitch-shift 3.8s steps(60) infinite }
-#bg-clock.glitch::after{ color:#2bd3ff; transform:translate(1.5px,0);  animation:glitch-shift 4.1s steps(55) infinite reverse }
-#bg-clock.glitch > .scan{
-  position:absolute; inset:0; pointer-events:none; opacity:.08;
-  background:repeating-linear-gradient(to bottom, rgba(255,255,255,.25) 0 1px, transparent 2px 4px);
-  mix-blend-mode:overlay;
-}
-@keyframes glitch-shift{
-  0%{clip-path:inset(0 0 0 0)} 10%{clip-path:inset(10% 0 65% 0)} 20%{clip-path:inset(80% 0 5% 0)}
-  30%{clip-path:inset(40% 0 40% 0)} 40%{clip-path:inset(20% 0 60% 0)} 50%{clip-path:inset(60% 0 20% 0)}
-  60%{clip-path:inset(5% 0 80% 0)} 70%{clip-path:inset(55% 0 25% 0)} 80%{clip-path:inset(35% 0 45% 0)}
-  90%{clip-path:inset(75% 0 10% 0)} 100%{clip-path:inset(0 0 0 0)}
+  pointer-events:none; user-select:none;
+  z-index:900; /* above content but below nav */
+  mix-blend-mode: normal;
+  color: var(--muted,#ffffff);
+  font-weight:900; letter-spacing:.02em; text-transform:uppercase;
+  line-height:1; white-space:nowrap;
+  transition:opacity .25s ease, transform .25s ease;
+  text-align:center;
+  padding: 10px;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.55));
 }
 
-/* Random bottom illustration */
-.bg-illustration{
-  position:fixed; left:0; right:0; bottom:0; height:min(55vh,720px);
-  background:var(--bg-illustration,none) bottom center / cover no-repeat;
-  pointer-events:none; z-index:-2; opacity:0; transition:opacity .6s var(--easing);
-}
-.bg-illustration.show{ opacity:.9 }
-:root[data-theme="light"] .bg-illustration{ opacity:.75 }
+#bg-clock.mode-time{ font-size: clamp(140px, 28vw, 680px); }
+#bg-clock.mode-words{ font-size: clamp(120px, 34vw, 760px); letter-spacing: .06em; }
+#bg-clock.mode-glitch{ font-size: clamp(120px, 30vw, 700px); letter-spacing: .02em; }
 
-/* Spotlight — fixed, theme-aware, zero mouse-follow */
-.spotlight{
-  position:fixed; inset:0; pointer-events:none; z-index:-2;
-  background:
-    radial-gradient(520px 520px at var(--spot-x) var(--spot-y), var(--spot-core), transparent 62%),
-    radial-gradient(900px 900px at var(--spot-x) var(--spot-y), color-mix(in oklab, var(--spot-core) 35%, transparent), transparent 72%);
-  background-attachment: fixed;
+#bg-clock.glitch::before, #bg-clock.glitch::after{ content: attr(data-text); position:absolute; inset:0; pointer-events:none; mix-blend-mode:screen; opacity:.22 }
+#bg-clock.glitch::before{ color:#ff3b00; transform:translate(-6px,0); filter:blur(.6px); }
+#bg-clock.glitch::after{ color:#2bd3ff; transform:translate(6px,0); filter:blur(.6px); }
+#bg-clock > .scan{ position:absolute; inset:0; pointer-events:none; opacity:.06; background:repeating-linear-gradient(to bottom, rgba(255,255,255,.12) 0 1px, transparent 2px 4px); mix-blend-mode:overlay }
+
+/* Controls - small floating UI */
+#bg-clock-controls{ position:fixed; right:18px; bottom:18px; z-index:1200; display:flex; gap:8px; align-items:center; background:rgba(6,12,22,.6); color:#fff; padding:8px; border-radius:10px; backdrop-filter:blur(8px); }
+#bg-clock-controls button{ background:transparent; border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer; font-weight:700 }
+#bg-clock-controls button.active{ background:linear-gradient(90deg, rgba(255,77,0,.16), rgba(255,138,0,.08)); box-shadow:0 6px 18px rgba(255,77,0,.08) }
+#bg-clock-controls .size-adjust{ display:flex; gap:6px }
+
+@media (max-width:600px){
+  #bg-clock{ padding:6px }
+  #bg-clock-controls{ right:10px; bottom:10px }
 }
-.spotlight::after{
-  content:""; position:absolute; inset:0; pointer-events:none;
-  background: conic-gradient(from 0deg at var(--spot-x) var(--spot-y),
-    color-mix(in oklab, var(--spot-ring) 65%, transparent) 0deg,
-    transparent 120deg,
-    color-mix(in oklab, var(--spot-ring) 40%, transparent) 200deg,
-    transparent 360deg);
-  opacity:.18; mix-blend-mode:screen;
-  animation: cerbi-spot-spin 28s linear infinite;
-}
-:root[data-theme="light"] .spotlight::after{ opacity:.12 }
-@media (prefers-reduced-motion: reduce){ .spotlight::after{ animation:none } }
-@keyframes cerbi-spot-spin { to { transform: rotate(360deg); } }
 
 /* ===================== Components ===================== */
 .glass{background:var(--glass);border:1px solid rgba(127,148,179,.18);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -525,3 +497,16 @@ body{ overflow-x:hidden }
   border-color: var(--glass-border);
   backdrop-filter: blur(6px);
 }
+
+/* Force clock visible and make stars more visible in stubborn browsers */
+.sky{ opacity:1 !important; }
+.veil{ opacity:.35 !important; }
+#bg-clock{
+  mix-blend-mode: normal !important; /* ensure glyph is not blended away */
+  opacity: .9 !important; /* make clock clearly visible */
+  color: var(--muted,#ffffff) !important;
+  z-index: -1 !important;
+}
+.spotlight{ z-index: -2 !important; }
+.sky{ z-index: -4 !important; }
+.tiles{ z-index: -5 !important; }
