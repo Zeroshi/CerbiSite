@@ -6,12 +6,12 @@
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
   
   <!-- Styles order preserved, cache-busted -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.6" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.7" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.7" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.7" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.7" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css?v=7" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=8" />
 
   <style>
     /* Lift spotlight opacity a touch so it’s visible */
@@ -597,12 +597,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   </div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
-  <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
+  <script src="scripts/cerbi-sky.js?v=2025-09-22.7" defer></script>
+  <script src="scripts/cerbi.js?v=2025-09-22.7" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-  <script src="scripts/mobile-fixes.js?v=6" defer></script>
+  <script src="scripts/mobile-fixes.js?v=8" defer></script>
   
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
+  <!-- Page JS: palette, progress, year, reveals, header offset, slider, lightbox, demo, pop-art -->
   <script>
     // Theme button
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
@@ -660,48 +660,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
       // Brand → smooth-scroll to top
       document.querySelector('.brand')?.addEventListener('click', (e)=>{
-        // let hash handle, but ensure smooth & no weird gaps
-        // (browser will already jump; we'll also scroll smoothly)
         e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'});
       });
-    })();
-
-    // Badge clock
-    (function(){
-      const el=document.getElementById('clock'); if(!el) return;
-      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
-      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
-    })();
-
-    // Big background glyph clock (fixed + glitch)
-    (function(){
-      const el=document.getElementById('bg-clock'); if(!el) return;
-      const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
-      const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
-      function size(){
-        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        el.style.fontSize=Math.min(Math.max(vw*0.34,96),900)+'px';
-        el.style.lineHeight='1';
-        const theme=document.documentElement.getAttribute('data-theme')||'dark';
-        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
-      }
-      function render(){
-        const d=new Date();
-        const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        const showGlyph = Math.floor(d.getSeconds()/7)%2===1;
-        el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
-      }
-      function fade(){
-        const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
-        const sc = (h.scrollTop||document.body.scrollTop);
-        const t = Math.min(1, sc / (max*0.35));
-        document.documentElement.style.setProperty('--clock-opacity', (0.14 + t*0.26).toFixed(3));
-      }
-      size(); render(); fade();
-      addEventListener('resize',size,{passive:true});
-      addEventListener('scroll',fade,{passive:true});
-      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-      setInterval(render,1000);
     })();
 
     // WHY slider dots + control (no auto-play)
