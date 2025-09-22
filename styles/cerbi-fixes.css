@@ -1,34 +1,6 @@
 /* ==========================================================================
    Cerbi site hardening & polish
-   - Restores big background clock
-   - Prevents any image/text overlap
-   - Centers & “cutes” the Contact FAB
-   - Safer full-bleed art + sliders
-   - A11Y + reduced-motion friendly
    ========================================================================== */
-
-/* Keep decorative layers fixed and non-interactive with proper z-order */
-.tiles, .sky, .veil, #bg-illustration, .spotlight, #bg-clock {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-}
-.tiles{ z-index:-5; }
-.sky{ z-index:-4; }
-.veil{ z-index:-3; }
-/* Illustration and spotlight live behind the clock */
-#bg-illustration{ z-index:-2; }
-.spotlight{ z-index:-2; }
-/* Clock sits on top of background layers, below all UI */
-#bg-clock{ z-index:-1; }
-
-/* Ensure content stacks above decorative layers (do not override nav/ribbon) */
-header, main, footer,
-.container, .section, .hero, .glass, .card {
-  position: relative;
-  z-index: 0;
-  isolation: isolate;
-}
 
 /* Prevent any horizontal overflow from 100vw, etc. */
 html, body { overflow-x: hidden; }
@@ -77,25 +49,7 @@ h1, h2, h3, p, .lead, .k, .sub { overflow-wrap: anywhere; word-wrap: break-word;
 @media (max-width: 520px) { .contact-fab { bottom: 14px; padding: 9px 12px; gap: 8px; } .contact-fab .label { font-size: 13px; } }
 
 /* --- Big background HH:MM clock --------------------------------------- */
-#bg-clock {
-  display: grid; place-items: center;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  font-weight: 700; letter-spacing: .03em; line-height: 1; user-select: none;
-  opacity: var(--clock-opacity, .18);
-  color: var(--muted, #a7b4cf);
-  mix-blend-mode: screen;
-}
-
-/* Fluid size: ~36% vw, clamped for extremes */
-#bg-clock { font-size: clamp(96px, 36vw, 900px); }
+#bg-clock { font-size: clamp(96px, 36vw, 900px); mix-blend-mode: screen; opacity: var(--clock-opacity,.18); }
 
 /* The small top-right clock + progress should stay above */
 #progress, .clock { position: fixed; z-index: 1100; }
-
-/* --- Button sparkle accent (used by extras.js, gentle) ----------------- */
-.btn-sparkle { position: relative; isolation: isolate; }
-.btn-sparkle::after{
-  content: ""; position: absolute; inset: -2px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s ease;
-  box-shadow: 0 0 20px rgba(255, 255, 255, .25), 0 0 40px var(--accent, #ff4d00);
-}
-@media (hover:hover){ .btn-sparkle:hover::after { opacity: .55; } }
