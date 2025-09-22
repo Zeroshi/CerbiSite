@@ -42,6 +42,42 @@
 })();
 
 
+/* Header spacer manager: removes top gap while keeping full-width fixed nav */
+(() => {
+  const root = document.documentElement;
+  const spacer = document.getElementById('headerSpacer');
+  const ribbon = document.querySelector('.ribbon');
+  const nav = document.querySelector('.nav');
+  if (!spacer || !nav) return;
+
+  function ribbonVisible() {
+    if (!ribbon) return false;
+    const r = ribbon.getBoundingClientRect();
+    // Consider ribbon "visible" when its bottom is still within or touching the viewport
+    return r.bottom > 0;
+  }
+
+  function layout() {
+    const navH = nav.offsetHeight || 64;
+    const rbH  = ribbonVisible() ? (ribbon?.offsetHeight || 0) : 0;
+    const total = navH + rbH;
+    root.style.setProperty('--header-total', total + 'px');
+  }
+
+  // Update on load, resize, and scroll (throttled via rAF)
+  let raf = null;
+  function onScrollOrResize(){
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = null; layout(); });
+  }
+  window.addEventListener('load', layout, { once:true });
+  window.addEventListener('resize', onScrollOrResize, { passive:true });
+  window.addEventListener('scroll', onScrollOrResize, { passive:true });
+
+  layout();
+})();
+
+
 /* ===== LDR GLITCH CLOCK (glyph bursts + RGB split + scanlines) ===== */
 (() => {
   const root = document.documentElement;
@@ -320,4 +356,5 @@
   },{root:null, rootMargin:'0px 0px -10% 0px', threshold:.15});
   els.forEach(el=>io.observe(el));
 })();
+
 
