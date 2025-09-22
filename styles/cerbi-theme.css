@@ -27,6 +27,13 @@
   --clock-opacity: .05;
 }
 
+
+/* Header/ribbon-aware anchor offset & hero spacing */
+html{ scroll-padding-top: calc(var(--nav-h, 64px) + var(--ribbon-h, 0px) + 12px); }
+
+/* Tighter hero top padding so headline sits naturally below the nav */
+.hero{ padding-top: clamp(28px, 6vh, 56px); }
+
 /* ===================== Light Theme (clean contrast) ===================== */
 :root[data-theme="light"]{
   --bg: #f7fafc;
