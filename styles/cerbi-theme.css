@@ -40,6 +40,12 @@
 html{ scroll-padding-top: calc(var(--nav-h) + 10px); }
 body{ padding-top: var(--nav-h); }
 
+:root{
+  /* stronger default visibility for spotlight and clock */
+  --spot-core: rgba(128,168,255,.22);
+  --clock-opacity:.20;
+}
+
 /* ===================== Light Theme ===================== */
 :root[data-theme="light"]{
   --bg:#f7fafc;
