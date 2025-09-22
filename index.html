@@ -80,8 +80,8 @@
     .lightbox img{max-width:96vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
     .lightbox .close{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.06);border:1px solid rgba(127,148,179,.25);padding:8px 10px;border-radius:10px;cursor:pointer}
 
-    /* Background clock should not affect layout and must stay visible */
-    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:0;opacity:var(--clock-opacity,.08);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:soft-light}
+    /* Background clock: fixed, above stars, below everything else */
+    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:0;opacity:var(--clock-opacity,.12);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:soft-light}
 
     /* Keep spotlight visible while scrolling; make it light and subtle */
     .spotlight{position:fixed;inset:0;pointer-events:none;z-index:1;
@@ -115,10 +115,11 @@
   <div class="veil" aria-hidden="true"></div>
   <div class="bg-orbs" aria-hidden="true"></div>
   <div id="bg-illustration" class="bg-illustration" aria-hidden="true"></div>
-  <div class="spotlight" aria-hidden="true"></div>
-
-  <!-- Large Background Clock / Glyphs -->
+  
+  <!-- Fixed background clock placed above starfield, below spotlight/content -->
   <div id="bg-clock" aria-hidden="true"></div>
+
+  <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
   <div id="topRibbon" class="ribbon ribbon-beta" role="status">
@@ -795,10 +796,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
     })();
 
-    // Big background glyph clock (Love, Death & Robots vibe)
+    // Big background glyph clock (fixed + glitch)
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
-      const glyphs = ['❤','☠','🤖','❤','☠','🤖']; // cycles subtly between time and glyphs
+      const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
       const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
       function size(){
         const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
@@ -810,7 +811,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       function render(){
         const d=new Date();
         const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        // flip to glyph briefly every ~7 seconds for a glitchy vibe
         const showGlyph = Math.floor(d.getSeconds()/7)%2===1;
         el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
       }
@@ -818,7 +818,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        document.documentElement.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
+        document.documentElement.style.setProperty('--clock-opacity', (0.12 + t*0.28).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
@@ -827,7 +827,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       setInterval(render,1000);
     })();
 
-    // WHY slider dots + control (no auto-play to avoid motion complaints)
+    // WHY slider dots + control (no auto-play)
     (function(){
       const slider=document.getElementById('whySlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -838,7 +838,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
     })();
 
-    // Dash slider + lightbox (autoplay + keyboard + swipe) — NO CROPPING
+    // Dash slider + lightbox (autoplay + keyboard + swipe)
     (function(){
       const slider=document.getElementById('dashSlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -862,7 +862,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       nextBtn?.addEventListener('click', ()=>show(i+1));
       show(i,false);
 
-      // autoplay (pause on hover/focus, respect reduced motion)
       const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       let timer=null;
       const start=()=>{ if(prefersReduced) return; stop(); timer=setInterval(()=>show(i+1,false),5000); };
@@ -873,10 +872,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       slider.addEventListener('focusout', start);
       start();
 
-      // keyboard arrows
       slider.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);} if(e.key==='ArrowRight'){e.preventDefault();show(i+1);} });
 
-      // swipe
       let x0=null;
       slider.addEventListener('touchstart', e=>{x0=e.touches[0].clientX;},{passive:true});
       slider.addEventListener('touchend', e=>{
@@ -886,7 +883,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         x0=null;
       },{passive:true});
 
-      // Lightbox
       const overlay=document.getElementById('lightbox');
       const big=document.getElementById('lightboxImg');
       const open=(src)=>{ big.src=src; overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; };
@@ -897,7 +893,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
       slider.querySelectorAll('img').forEach(img=>{
         img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src));
-        // make sure images never crop:
         img.style.objectFit = 'contain';
       });
     })();
