@@ -338,7 +338,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 .enterprise-item:hover img, .enterprise-item:focus-visible img{ transform:scale(1.08); opacity:1; filter:contrast(1.08) saturate(1.05) brightness(1.0); }
 @media (max-width:900px){ .enterprise-strip{ grid-template-columns:1fr 1fr } }
 
-/* ---------- Slider ---------- */
+/* ---------- Slider (base) ---------- */
 .dash-slider{ position: relative; min-height: 120px;}
 .dash-slider .slide{ position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .3s ease; }
 .dash-slider .slide.active{ opacity: 1; visibility: visible; pointer-events: auto; }
@@ -493,30 +493,114 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 /* Prevent accidental horizontal overflow */
 body{ overflow-x: hidden; }
 
-/* ===== Cipher Clock modes ===== */
-#bg-clock {
-  letter-spacing: .04em;
+/* ===================================================================== */
+/* ===================  LDR GLITCH CLOCK & SLIDER OVERRIDES  =================== */
+/* ===================================================================== */
+
+/* ===== LDR GLITCH CLOCK ===== */
+#bg-clock{
   filter: drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  will-change: transform, opacity;
 }
-.clock-mode-cipher #bg-clock { font-variant-numeric: normal; }
-.clock-mode-braille #bg-clock { font-family: "Segoe UI Symbol", system-ui, sans-serif; font-size: clamp(80px, 36vw, 900px); }
-.clock-mode-morse #bg-clock { letter-spacing: .18em; font-size: clamp(72px, 32vw, 860px); }
+#bg-clock.glitch,
+#bg-clock.glitch::before,
+#bg-clock.glitch::after{
+  position: relative;
+  color: var(--muted);
+  text-shadow: none;
+}
+#bg-clock.glitch::before,
+#bg-clock.glitch::after{
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform, clip-path, opacity;
+}
+#bg-clock.glitch::before{
+  color:#ff3b00;       /* red */
+  transform: translate(-1.5px, 0);
+  opacity:.25;
+  animation: glitch-shift 3.8s steps(60) infinite;
+}
+#bg-clock.glitch::after{
+  color:#2bd3ff;       /* cyan */
+  transform: translate(1.5px, 0);
+  opacity:.25;
+  animation: glitch-shift 4.1s steps(55) infinite reverse;
+}
+#bg-clock.glitch > .scan {
+  position: absolute; inset: 0; pointer-events: none; opacity:.08;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.25) 0px,
+      rgba(255,255,255,.25) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+  mix-blend-mode: overlay;
+}
+@keyframes glitch-shift{
+  0%{ clip-path: inset(0 0 0 0) }
+  10%{ clip-path: inset(10% 0 65% 0) }
+  20%{ clip-path: inset(80% 0 5% 0) }
+  30%{ clip-path: inset(40% 0 40% 0) }
+  40%{ clip-path: inset(20% 0 60% 0) }
+  50%{ clip-path: inset(60% 0 20% 0) }
+  60%{ clip-path: inset(5% 0 80% 0) }
+  70%{ clip-path: inset(55% 0 25% 0) }
+  80%{ clip-path: inset(35% 0 45% 0) }
+  90%{ clip-path: inset(75% 0 10% 0) }
+  100%{ clip-path: inset(0 0 0 0) }
+}
+:root[data-theme="light"] #bg-clock.glitch::before,
+:root[data-theme="light"] #bg-clock.glitch::after{ opacity:.32 }
 
-/* subtler look in morse mode so dots/dashes don’t overpower */
-.clock-mode-morse #bg-clock {
-  opacity: calc(var(--clock-opacity) * .9);
+/* ===== DASHBOARD SLIDER: full-bleed, guaranteed height, crossfade ===== */
+#dashboards .img-frame.showcase{
+  --ar: 16/9;
+  border-radius: 0; background: #0a0f1a; border: 0;
+}
+#dashboards .showcase-inner{ width:100vw; margin-left:calc(50% - 50vw); position:relative; }
+#dashboards .showcase-viewport{
+  width:100%;
+  aspect-ratio: var(--ar, 16/9);
+  height: clamp(360px, 72vh, 980px);
+  max-height: 86vh;
+  overflow: hidden;
+  position: relative;
+}
+.dash-slider .slide{
+  position: absolute; inset: 0;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .5s cubic-bezier(.22,.61,.36,1), visibility .5s;
+}
+.dash-slider .slide.active{
+  opacity: 1; visibility: visible; pointer-events: auto;
+}
+.dash-slider .slide img{
+  width:100%; height:100%; object-fit: cover;
+  background:#0a0f1a; cursor: zoom-in;
+  transform: translateZ(0);
+  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+}
+.dash-slider .slide img:hover{ transform: scale(1.01) }
+.dash-slider .dots{ display:flex; gap:10px; justify-content:center; margin:12px 0 }
+.dash-slider .dots button{
+  width:10px; height:10px; border-radius:999px; border:0;
+  background:rgba(255,255,255,.32); cursor:pointer;
+  transition: transform .18s ease, background .18s ease;
+}
+.dash-slider .dots button.active{
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(255,77,0,.35);
+  transform: scale(1.15);
 }
 
-/* hidden live label for a11y (real time) */
-.sr-time {
-  position: absolute; width:1px; height:1px; margin:-1px; padding:0;
-  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
-}
-
-/* tiny hint when you hover/click the clock (opt-in visual affordance) */
-#bg-clock[data-hint="true"]::after{
-  content:"toggle clock mode (⌥C)"; 
-  position:absolute; bottom:5%; right:6%; 
-  font-size:14px; letter-spacing:.08em; 
-  opacity:.35; color:var(--muted);
-}
+/* keep sticky nav above full-bleed */
+.nav{ z-index: 1000 }
