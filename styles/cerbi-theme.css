@@ -673,3 +673,58 @@ body[data-at-top="0"] .hero{
 /* ensure the spacer is the only thing reserving top space */
 #headerSpacer{ height: var(--header-total, 0px); }
 
+/* ===== Header spacer + hero pad manager ===== */
+(() => {
+  const root = document.documentElement;
+  const body = document.body;
+  const spacer = document.getElementById('headerSpacer') || (() => {
+    const d = document.createElement('div');
+    d.id = 'headerSpacer'; d.setAttribute('aria-hidden','true');
+    (document.querySelector('header.nav')?.after(d)) || document.body.insertBefore(d, document.body.firstChild);
+    return d;
+  })();
+  const ribbon = document.querySelector('.ribbon');
+  const nav = document.querySelector('.nav');
+
+  if (!nav) return;
+
+  const atTop = () => (window.scrollY || document.documentElement.scrollTop || 0) < 2;
+
+  function ribbonVisible() {
+    if (!ribbon) return false;
+    const r = ribbon.getBoundingClientRect();
+    // visible if any of it is in the viewport
+    return r.bottom > 0 && r.top < (window.innerHeight || document.documentElement.clientHeight);
+  }
+
+  function layout() {
+    const navH = nav.offsetHeight || 64;
+    const rbH  = ribbon && ribbonVisible() ? (ribbon.offsetHeight || 0) : 0;
+    const total = navH + rbH;
+    root.style.setProperty('--header-total', total + 'px');
+    // tag whether we’re at the very top (affects hero padding)
+    body.setAttribute('data-at-top', atTop() ? '1' : '0');
+  }
+
+  // rAF-throttled listeners
+  let raf = null;
+  const onScrollOrResize = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = null; layout(); });
+  };
+
+  window.addEventListener('load', layout, { once:true });
+  window.addEventListener('resize', onScrollOrResize, { passive:true });
+  window.addEventListener('scroll', onScrollOrResize, { passive:true });
+
+  // ensure menu is fixed and full width (your preferred setup)
+  nav.style.position = 'fixed';
+  nav.style.top = '0';
+  nav.style.left = '0';
+  nav.style.right = '0';
+  nav.style.zIndex = '1000';
+
+  layout();
+})();
+
+
