@@ -20,31 +20,56 @@
   overlay.setAttribute('aria-hidden','true');
 })();
 
+/* ===== Header height manager (nav fixed + ribbon-aware) ===== */
+(() => {
+  const root = document.documentElement;
+  const ribbon = document.querySelector('.ribbon');
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  function layout(){
+    const rb = ribbon && ribbon.offsetParent !== null ? ribbon.offsetHeight : 0;
+    const nv = nav.offsetHeight || 64;
+    root.style.setProperty('--ribbon-h', rb + 'px');
+    root.style.setProperty('--nav-h', nv + 'px');
+    document.body.classList.toggle('no-ribbon', rb === 0);
+  }
+
+  // run on boot and on resize; also after fonts settle
+  window.addEventListener('resize', layout, {passive:true});
+  window.addEventListener('load', layout, {once:true});
+  layout();
+})();
+
+
 /* ===== LDR GLITCH CLOCK (glyph bursts + RGB split + scanlines) ===== */
 (() => {
   const root = document.documentElement;
   const el = document.getElementById('bg-clock');
   if (!el) return;
 
+  // ensure chromatic layers style is active even when idle
+  el.classList.add('glitch');
+
   // internal state
   let tId, burstId, nextBurstAt = Date.now() + 3000;
 
-  // add scanlines layer
-  const scan = document.createElement('div');
-  scan.className = 'scan';
-  el.appendChild(scan);
+  // add scanlines layer once
+  if (!el.querySelector('.scan')){
+    const scan = document.createElement('div');
+    scan.className = 'scan';
+    el.appendChild(scan);
+  }
+
+  const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
+  const randGlyph = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
 
   function timeHM(){
     const d = new Date();
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
   }
-
-  // glitch alphabet (LD&R vibe)
-  const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
-  const randGlyph = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
-
   function setClockText(s){
-    el.dataset.text = s;   // used by ::before/::after chromatic layers
+    el.dataset.text = s;   // used by ::before/::after layers
     el.textContent = s;
     el.setAttribute('aria-label', `Current time ${s}`);
   }
@@ -60,10 +85,7 @@
       ? (cs.getPropertyValue('--text').trim() || '#0b1530')
       : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
 
-    // idle state = real time; bursts override text briefly
-    if (!el.classList.contains('bursting')) {
-      setClockText(timeHM());
-    }
+    if (!el.classList.contains('bursting')) setClockText(timeHM());
   }
 
   function tick(){
@@ -80,15 +102,9 @@
     if (Date.now() >= nextBurstAt) burst();
   }
 
-  function startTicks(){
-    clearInterval(tId);
-    tId = setInterval(tick, 1000);
-    tick();
-  }
-
   function burst(){
     // 350–700ms chaos then snap back
-    el.classList.add('glitch', 'bursting');
+    el.classList.add('bursting');
     const duration = 350 + Math.random()*400;
     const start = performance.now();
 
@@ -102,7 +118,6 @@
         return;
       }
       const base = timeHM().split('');
-      // swap 2–5 random positions to glyphs (skip colon)
       const swaps = 2 + Math.floor(Math.random()*4);
       for (let i=0;i<swaps;i++){
         const idx = Math.floor(Math.random()*base.length);
@@ -116,13 +131,17 @@
   }
 
   // interactions
-  el.addEventListener('click', () => burst()); // force burst on click
+  el.addEventListener('click', () => burst());
   addEventListener('resize', render, {passive:true});
   new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
 
-  // boot
-  startTicks();
+  // boot: render immediately so the clock is never “blank”
+  render();
+  tick();
+  clearInterval(tId);
+  tId = setInterval(tick, 1000);
 })();
+
 
 /* Small badge clock (top-right mini clock) */
 (() => {
@@ -301,3 +320,4 @@
   },{root:null, rootMargin:'0px 0px -10% 0px', threshold:.15});
   els.forEach(el=>io.observe(el));
 })();
+
