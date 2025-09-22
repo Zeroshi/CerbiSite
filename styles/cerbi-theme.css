@@ -626,3 +626,23 @@ body.no-ribbon{ --ribbon-h: 0px; }
   min-height: clamp(360px, 72vh, 980px);
 }
 
+/* Header spacer prevents top gaps with fixed nav + ribbon */
+#headerSpacer{ height: var(--header-total, 0px); }
+
+/* Keep your full-width fixed nav */
+.nav{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+}
+
+/* Ribbon stays sticky at the very top (shows only near top of page) */
+.ribbon{
+  position: sticky;
+  top: 0;
+  z-index: 1100;            /* above nav so it appears above it at the very top */
+}
+
+/* Remove any main padding hacks if present */
+main{ padding-top: 0 !important; }
+
