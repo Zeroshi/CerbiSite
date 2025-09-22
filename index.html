@@ -6,10 +6,10 @@
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
   
   <!-- Styles order preserved, cache-busted -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.7" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.7" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.7" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.7" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.8" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.8" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.8" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.8" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=8" />
 
@@ -17,7 +17,7 @@
     /* Lift spotlight opacity a touch so it’s visible */
     .spotlight{ opacity:.95; }
     /* Background clock: ensure visibility */
-    #bg-clock{ opacity: var(--clock-opacity,.26); mix-blend-mode: screen; }
+    #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
     /* Microsoft Partner smaller in footer */
     .footer .partner-mini{ height:14px; width:auto; opacity:.9; }
     /* FAB icon only on right */
@@ -597,8 +597,21 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   </div>
 
   <!-- Scripts -->
-  <script src="scripts/cerbi-sky.js?v=2025-09-22.7" defer></script>
-  <script src="scripts/cerbi.js?v=2025-09-22.7" defer></script>
+  <script>
+    // Fallback to ensure the background clock is visible immediately (Edge safe)
+    (function(){
+      var el = document.getElementById('bg-clock'); if(!el) return;
+      el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
+      el.style.zIndex='-1'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
+      el.style.mixBlendMode='screen';
+      if(!el.textContent || el.textContent.trim()===''){
+        var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
+        el.textContent=t;
+      }
+    })();
+  </script>
+  <script src="scripts/cerbi-sky.js?v=2025-09-22.8" defer></script>
+  <script src="scripts/cerbi.js?v=2025-09-22.8" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=8" defer></script>
   
