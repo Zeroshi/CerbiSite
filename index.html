@@ -607,22 +607,32 @@ dotnet add package CerbiStream.GovernanceAnalyzer
 
   <!-- Page JS: header sizing, clocks, slider, palette, lightbox, pop-art, demo, reveals -->
   <script>
-    // Compute dynamic heights so anchors don't hide & hero sits tight under nav
-    (function(){
-      const nav=document.getElementById('siteNav');
-      const ribbon=document.getElementById('topRibbon');
-      function setHeights(){
-        const nh = nav?.offsetHeight || 64;
-        const rh = ribbon?.offsetHeight || 0;
-        document.documentElement.style.setProperty('--nav-h', nh + 'px');
-        document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
-      }
-      setHeights();
-      addEventListener('resize', setHeights, {passive:true});
-      new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
-      // Smooth-scroll to top on brand click (also works if JS disables hash behavior)
-      document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); scrollTo({top:0, behavior:'smooth'}); history.replaceState(null,'','#top'); });
-    })();
+  // Compute dynamic heights so anchors don't hide & hero sits tight under nav
+  (function(){
+    const nav = document.getElementById('siteNav');
+    const ribbon = document.getElementById('topRibbon');
+    function setHeights(){
+      const nh = nav?.offsetHeight || 64;
+      const rh = ribbon?.offsetHeight || 0;
+      document.documentElement.style.setProperty('--nav-h', nh + 'px');
+      document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
+    }
+    const ready = () => { setHeights(); requestAnimationFrame(setHeights); };
+
+    ready();
+    addEventListener('resize', setHeights, {passive:true});
+    new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
+
+    // Recalculate after fonts load (prevents “growing” header causing a gap)
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(setHeights).catch(()=>{});
+    }
+
+    // Brand → smooth-scroll to top, no leftover hash jumps
+    document.querySelector('.brand')?.addEventListener('click', (e)=>{
+      e.preventDefault(); scrollTo({top:0, behavior:'smooth'}); history.replaceState(null,'','#top');
+    });
+  })();
 
     // Theme button
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
