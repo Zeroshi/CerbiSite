@@ -445,6 +445,9 @@ body.scrolled .ribbon{ transform: translateY(calc(-1 * var(--ribbon-h))); }
 /* Footer */
 .footer{padding:40px 0;color:var(--muted);font-size:14px;border-top:1px solid rgba(127,148,179,.18);margin-top:32px}
 
+/* Microsoft Partner smaller in footer */
+.footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
+
 /* Reveal */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--easing), transform .6s var(--easing)}
 .reveal.in{opacity:1;transform:none}
@@ -497,16 +500,3 @@ body{ overflow-x:hidden }
   border-color: var(--glass-border);
   backdrop-filter: blur(6px);
 }
-
-/* Force clock visible and make stars more visible in stubborn browsers */
-.sky{ opacity:1 !important; }
-.veil{ opacity:.35 !important; }
-#bg-clock{
-  mix-blend-mode: normal !important; /* ensure glyph is not blended away */
-  opacity: .9 !important; /* make clock clearly visible */
-  color: var(--muted,#ffffff) !important;
-  z-index: -1 !important;
-}
-.spotlight{ z-index: -2 !important; }
-.sky{ z-index: -4 !important; }
-.tiles{ z-index: -5 !important; }
