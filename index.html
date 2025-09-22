@@ -933,6 +933,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
       render();
     })();
+
+
+      (function(){
+    const root = document.documentElement;
+    // Choose where you want the fixed glow to sit:
+    root.style.setProperty('--spot-x','82%');
+    root.style.setProperty('--spot-y','16%');
+
+    // If any legacy mouse tracker is updating --mx/--my, we ignore it by
+    // not using those vars anymore in .spotlight (see CSS above).
+    // Optional: if you want it left/center, try: 18% / 22% or 50% / 12%.
+  })();
   </script>
 </body>
 </html>
