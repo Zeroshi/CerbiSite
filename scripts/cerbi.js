@@ -358,3 +358,136 @@
 })();
 
 
+/* ===== Layout + interactions bootstrap ===== */
+(() => {
+  const root  = document.documentElement;
+  const body  = document.body;
+  const nav   = document.querySelector('.nav');
+  const spacer= document.getElementById('headerSpacer');
+  const ribbon= document.querySelector('.ribbon');
+  const home  = document.getElementById('homeLink');
+
+  function setNavHeight(){
+    const h = (nav?.offsetHeight || 64);
+    root.style.setProperty('--nav-h', h + 'px');
+  }
+
+  // mark scrolled state (for ribbon slide-out)
+  function onScroll(){
+    const sc = (window.scrollY || document.documentElement.scrollTop || 0);
+    if (sc > 6) body.classList.add('scrolled');
+    else        body.classList.remove('scrolled');
+  }
+
+  // smooth scroll to very top on logo click
+  home?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ensure spacer exists even if not in HTML (safety)
+  if (!spacer && nav) {
+    const d = document.createElement('div');
+    d.id = 'headerSpacer'; d.setAttribute('aria-hidden','true');
+    nav.after(d);
+  }
+
+  // initialize and keep it current
+  setNavHeight();
+  window.addEventListener('load', setNavHeight, { once:true });
+  window.addEventListener('resize', () => requestAnimationFrame(setNavHeight), { passive:true });
+  window.addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive:true });
+  onScroll();
+})();
+
+/* ===== Love, Death & Robots glitch clock ===== */
+(() => {
+  const root = document.documentElement;
+  const el = document.getElementById('bg-clock');
+  if (!el) return;
+
+  // Activate RGB-split layers even when idle
+  el.classList.add('glitch');
+
+  // Add scanlines once
+  if (!el.querySelector('.scan')){
+    const scan = document.createElement('div');
+    scan.className = 'scan';
+    el.appendChild(scan);
+  }
+
+  const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
+  const g = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+  const timeHM = () => {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  };
+  const setText = (s) => {
+    el.dataset.text = s;
+    el.textContent  = s;
+    el.setAttribute('aria-label', `Current time ${s}`);
+  };
+
+  let burstId, nextBurstAt = Date.now() + 2500;
+
+  function render(){
+    // size + tint
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+    el.style.fontSize = Math.min(Math.max(vw*0.36,96),900) + 'px';
+    el.style.lineHeight = '1';
+    const cs = getComputedStyle(root);
+    el.style.color = (root.getAttribute('data-theme') || 'dark') === 'light'
+      ? (cs.getPropertyValue('--text').trim() || '#0b1530')
+      : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
+
+    // opacity ramps with scroll
+    const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+    const sc=(h.scrollTop||document.body.scrollTop);
+    const t = Math.min(1, max ? sc/(max*0.35) : 0);
+    root.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
+
+    // default: show real time
+    if (!el.classList.contains('bursting')) setText(timeHM());
+  }
+
+  function burst(){
+    el.classList.add('bursting');
+    const start = performance.now();
+    const dur = 350 + Math.random()*400;
+
+    cancelAnimationFrame(burstId);
+    const step = (now) => {
+      const p = (now - start) / dur;
+      if (p >= 1){
+        el.classList.remove('bursting');
+        setText(timeHM());
+        nextBurstAt = Date.now() + (2500 + Math.random()*5500);
+        return;
+      }
+      // scramble 2–5 positions (skip colon)
+      const arr = timeHM().split('');
+      const swaps = 2 + Math.floor(Math.random()*4);
+      for (let i=0;i<swaps;i++){
+        const idx = Math.floor(Math.random()*arr.length);
+        if (arr[idx] === ':') continue;
+        arr[idx] = g();
+      }
+      setText(arr.join(''));
+      burstId = requestAnimationFrame(step);
+    };
+    burstId = requestAnimationFrame(step);
+  }
+
+  // timers
+  render(); setText(timeHM());
+  setInterval(() => {
+    render();
+    if (Date.now() >= nextBurstAt) burst();
+  }, 1000);
+
+  // interactions + theme changes
+  el.addEventListener('click', burst);
+  addEventListener('resize', render, {passive:true});
+  new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
+})();
+
