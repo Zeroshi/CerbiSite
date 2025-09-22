@@ -604,3 +604,19 @@ body{ overflow-x: hidden; }
 
 /* keep sticky nav above full-bleed */
 .nav{ z-index: 1000 }
+
+/* ===== Header layout lock (prevents top gap when scrolling back up) ===== */
+:root{ --nav-h: 64px; --ribbon-h: 0px; }
+
+.nav{
+  position: fixed;
+  top: var(--ribbon-h);
+  left: 0; right: 0;
+  z-index: 1000; /* keep above full-bleed sections */
+}
+
+/* Push page content below ribbon + nav */
+main{ padding-top: calc(var(--ribbon-h) + var(--nav-h)); }
+
+/* If you ever hide the ribbon, this keeps things aligned */
+body.no-ribbon{ --ribbon-h: 0px; }
