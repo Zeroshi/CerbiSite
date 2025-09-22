@@ -34,11 +34,14 @@
 
   /* big clock opacity (JS animates) */
   --clock-opacity:.05;
+  --clock-opacity:.14;
 }
 
 /* Anchor offset & live header offset (no gaps, no collisions) */
 html{ scroll-padding-top: calc(var(--nav-h) + (var(--ribbon-visible) * var(--ribbon-h)) + 10px); }
 body{ padding-top: calc(var(--nav-h) + (var(--ribbon-visible) * var(--ribbon-h))); }
+html{ scroll-padding-top: calc(var(--nav-h) + 10px); }
+body{ padding-top: var(--nav-h); }
 
 /* ===================== Light Theme ===================== */
 :root[data-theme="light"]{
@@ -64,6 +67,7 @@ body{ padding-top: calc(var(--nav-h) + (var(--ribbon-visible) * var(--ribbon-h))
   --bg-start:#ffffff; --bg-end:#f6f8fc;
   --tile-opacity:.04;
   --clock-opacity:.06;
+  --clock-opacity:.10;
 
   --spot-core: rgba(16,24,40,.12);
   --spot-ring: rgba(255,77,0,.08);
@@ -180,6 +184,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   opacity:var(--clock-opacity); line-height:1;
   font-weight:800; letter-spacing:.02em; text-transform:uppercase;
   filter:drop-shadow(0 10px 30px rgba(0,0,0,.35));
+  mix-blend-mode:screen;
 }
 @media (max-width:600px){ #bg-clock{ opacity:calc(var(--clock-opacity) * .7); } }
 #bg-clock.glitch,
