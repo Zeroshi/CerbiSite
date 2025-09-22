@@ -425,3 +425,37 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 
 /* Safety: prevent accidental horizontal scroll */
 body{ overflow-x:hidden }
+
+/* === HERO LEGIBILITY HOTFIX ========================================= */
+
+/* Give the headline + sub real breathing room */
+.hero h1{ margin-top: 6px; margin-bottom: clamp(10px, 1.8vh, 16px); }
+.sub{ margin-bottom: clamp(12px, 1.8vh, 18px); }
+
+/* Push the value card down a bit */
+.value-rotator{ margin-top: clamp(18px, 3.2vh, 28px); }
+
+/* Make the glass card more opaque + blurred for readability */
+.value-rotator.glass{
+  background: linear-gradient(180deg, rgba(12,18,36,.80), rgba(12,18,36,.62));
+  border-color: rgba(127,148,179,.28);
+  backdrop-filter: saturate(140%) blur(8px);
+  box-shadow: 0 12px 36px rgba(0,0,0,.35);
+}
+
+/* Tighten internal spacing a touch */
+.value-rotator h3{ margin: 0 0 6px; }
+.value-rotator .k{ margin: .35rem 0 .55rem; }
+
+/* Ensure the dots/CTAs don’t collide with content */
+.value-rotator .dots{ margin-top: 12px; }
+.hero-cta-row{ margin-top: clamp(14px, 2.4vh, 22px); }
+.logo-row{ margin-top: 14px; }
+
+/* Light theme: keep contrast clean without heavy glass */
+:root[data-theme="light"] .value-rotator.glass{
+  background: rgba(255,255,255,.94);
+  border-color: var(--glass-border);
+  backdrop-filter: blur(6px);
+}
+
