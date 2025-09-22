@@ -154,7 +154,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   background-position:70% 20%;
   mix-blend-mode:screen;
   filter:contrast(1.1) saturate(1.05) brightness(0.95);
-  opacity:.8;
+  opacity:.6;
 }
 :root[data-theme="light"] .veil{ opacity:.06; mix-blend-mode:normal; filter:none }
 @supports (background-image: image-set(url("x") 1x)){
@@ -238,7 +238,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 :root[data-theme="light"] .btn.btn-ghost{ background:#fff; border-color:var(--glass-border) }
 
 .chip{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(127,148,179,.25);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));font-size:13px}
-.pill{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;line-height:1.2;white-space:nowrap;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em}
 .pill.ok{background:rgba(34,197,94,.14);color:#4ade80;border:1px solid rgba(34,197,94,.35)}
 .pill.beta{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.35)}
 .pill.planned{background:rgba(100,160,255,.14);color:#b3ceff;border:1px solid rgba(100,160,255,.35)}
@@ -384,9 +384,9 @@ body.scrolled .ribbon{ transform: translateY(calc(-1 * var(--ribbon-h))); }
 
 /* Tables */
 .table{width:100%;border-collapse:separate;border-spacing:0 8px}
-.table thead th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 10px}
+.table thead th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 14px}
 .table tbody tr{background:rgba(255,255,255,.04);border:1px solid rgba(127,148,179,.18)}
-.table tbody td{padding:10px 12px;border-bottom:1px solid rgba(127,148,179,.12)}
+.table tbody td{padding:14px 16px;border-bottom:1px solid rgba(127,148,179,.12)}
 :root[data-theme="light"] .table tbody tr{background:rgba(0,0,0,.03)}
 
 /* Governance demo */
