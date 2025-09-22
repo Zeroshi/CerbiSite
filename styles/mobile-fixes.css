@@ -12,7 +12,13 @@
 .ribbon{ z-index: 900 !important; }
 
 /* Make sure any iframes (Jotform) stay full-width in cards */
-iframe{ max-width: 100%; width: 100%; }
+#contact .grid, #contact .col-12{ min-width: 0; }
+#contact iframe{ width: 100% !important; max-width: 100% !important; display: block; }
 
 /* Keep hero art centered in its frame on small screens */
 .sig-rotator img{ object-position: center center; }
+
+/* FAB on right on mobile too */
+@media (max-width: 520px){
+  .contact-fab{ right: 18px; left: auto; transform: none; }
+}
