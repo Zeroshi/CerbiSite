@@ -15,21 +15,162 @@
     root.style.setProperty('--my', e.clientY + 'px');
   }, {passive:true});
 
-  // ---- Progressive background clock opacity on scroll
-  const clockEl = document.getElementById('bg-clock');
-  if (clockEl){
-    const updateClockOpacity = () => {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      const ratio = max > 0 ? (h.scrollTop || document.body.scrollTop) / max : 0;
-      // base 0.05 up to 0.14 as you scroll
-      const op = Math.min(0.14, 0.05 + ratio * 0.09);
-      root.style.setProperty('--clock-opacity', op.toFixed(3));
-    };
-    updateClockOpacity();
-    addEventListener('scroll', updateClockOpacity, {passive:true});
-    addEventListener('resize', updateClockOpacity, {passive:true});
+/* Background clock — time, cipher, braille, morse + easter egg */
+(() => {
+  const root = document.documentElement;
+  const el = document.getElementById('bg-clock');
+  if (!el) return;
+
+  // a11y label (real time) so screen readers aren't confused by glyphs
+  const sr = document.createElement('span');
+  sr.className = 'sr-time';
+  el.appendChild(sr);
+
+  // modes
+  const MODES = ['time','cipher','braille','morse'];
+  const MODE_KEY = 'cerbi-clock-mode';
+
+  // cute easter egg trigger (Konami), also Alt/Option+C cycles modes, and clicking the clock toggles
+  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let kBuf = [];
+
+  // glyph sets
+  const CIPHER = new Map(Object.entries({
+    '0':'ϴ','1':'ι','2':'Ƨ','3':'ϟ','4':'҂','5':'۵','6':'Ϭ','7':'𐌚','8':'∞','9':'ϡ',':':'∷'
+  }));
+  // braille digits (⠁..⠉ for 1..9, ⠚ for 0), colon ≈ ⠒
+  const BRAILLE = new Map(Object.entries({
+    '1':'⠁','2':'⠃','3':'⠉','4':'⠙','5':'⠑','6':'⠋','7':'⠛','8':'⠓','9':'⠊','0':'⠚',':':'⠒'
+  }));
+  // morse helpers
+  const MORSE_DIGIT = {
+    '0':'-----','1':'.----','2':'..---','3':'...--','4':'....-',
+    '5':'.....','6':'-....','7':'--...','8':'---..','9':'----.'
+  };
+  const DOT = '•', DASH = '—', SEP = ' '; // thin space
+
+  function getMode(){
+    try { const v = localStorage.getItem(MODE_KEY); if (MODES.includes(v)) return v; } catch {}
+    return 'cipher'; // default fun mode
   }
+  function setMode(m){
+    const mode = MODES.includes(m) ? m : 'time';
+    MODES.forEach(mm => root.classList.toggle('clock-mode-'+mm, mm===mode));
+    try { localStorage.setItem(MODE_KEY, mode); } catch {}
+    // show tiny hint once
+    el.setAttribute('data-hint','true');
+    setTimeout(()=>el.removeAttribute('data-hint'), 2500);
+  }
+
+  function fmtTime(){
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    return `${hh}:${mm}`;
+  }
+
+  function toCipher(s, map){
+    let out = '';
+    for (const ch of s) out += (map.get(ch) || ch);
+    return out;
+  }
+
+  function toMorse(s){
+    // HH:MM (ignore colon visually, keep spacing)
+    return s.split('').map(ch=>{
+      if (ch === ':') return SEP.repeat(2);
+      const pat = MORSE_DIGIT[ch] || '';
+      return [...pat].map(c=> c==='.'?DOT:DASH).join(SEP);
+    }).join(SEP.repeat(3));
+  }
+
+  function render(){
+    const t = fmtTime();
+    const mode = getMode();
+
+    // a11y label always has true time
+    sr.textContent = `Current time ${t}`;
+
+    // hidden nod: on 13:37 show CERBI in runes for 10s (after render tick)
+    const now = new Date();
+    const easter = now.getHours()===13 && now.getMinutes()===37 && now.getSeconds()<10;
+
+    // pick display
+    let display;
+    if (easter){
+      // Elder Futhark-ish runes spelling CERBI (stylized)
+      display = 'ᚳᛖᚱᛒᛁ';
+    } else if (mode === 'cipher'){
+      display = toCipher(t, CIPHER);
+    } else if (mode === 'braille'){
+      display = toCipher(t, BRAILLE);
+    } else if (mode === 'morse'){
+      display = toMorse(t);
+    } else {
+      display = t;
+    }
+
+    // responsive size + theme-aware color
+    const read=(n,f)=>getComputedStyle(root).getPropertyValue(n).trim()||f;
+    const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+    el.style.fontSize = Math.min(Math.max(vw*0.36,96),900)+'px';
+    el.style.lineHeight='1';
+    const theme=root.getAttribute('data-theme')||'dark';
+    el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
+
+    // render
+    el.firstChild && (el.firstChild.nodeType===Node.TEXT_NODE) ? (el.firstChild.nodeValue = '') : null;
+    // keep sr label as child #last, so set textContent on element minus last child
+    // simple approach: set innerHTML to display + sr span outerHTML
+    el.innerHTML = display + sr.outerHTML;
+  }
+
+  // init
+  setMode(getMode());
+  render();
+  const clockTick = setInterval(render, 1000);
+
+  // grow opacity with scroll (unchanged from your version)
+  function fade(){
+    const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
+    const sc = (h.scrollTop||document.body.scrollTop);
+    const t = Math.min(1, sc / (max*0.35));
+    root.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
+  }
+  addEventListener('scroll',fade,{passive:true});
+  addEventListener('resize',render,{passive:true});
+  new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+
+  // interactions: Alt/Option + C cycles; click to toggle; Konami → "runes" burst then back to cipher
+  function cycle(dir=1){
+    const cur = getMode();
+    const i = MODES.indexOf(cur);
+    const next = MODES[(i + dir + MODES.length) % MODES.length];
+    setMode(next); render();
+  }
+  document.addEventListener('keydown', (e)=>{
+    // buffer for konami
+    kBuf.push(e.key);
+    if (kBuf.length > KONAMI.length) kBuf.shift();
+    if (KONAMI.every((v,idx)=>kBuf[idx]===v)){
+      // flash easter egg immediately for a few seconds by faking time 13:37:00..09
+      let n=0;
+      const fake = setInterval(()=>{
+        const theme=root.getAttribute('data-theme')||'dark';
+        el.style.color = theme==='light' ? '#0b1530' : '#a7b4cf';
+        el.innerHTML = 'ᚳᛖᚱᛒᛁ' + sr.outerHTML;
+        if(++n>10){ clearInterval(fake); kBuf=[]; setMode('cipher'); render(); }
+      }, 350);
+      return;
+    }
+    // Alt/Option + C to cycle
+    if ((e.altKey || e.metaKey) && (e.key.toLowerCase()==='c')) {
+      e.preventDefault(); cycle(1);
+    }
+  });
+  el.addEventListener('click', ()=> cycle(1));
+})();
+
 
   // ---- Reveal on scroll
   const revealEls = document.querySelectorAll('.reveal');
@@ -243,3 +384,4 @@
   })();
 
 })();
+
