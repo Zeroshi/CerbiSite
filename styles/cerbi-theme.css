@@ -620,3 +620,9 @@ main{ padding-top: calc(var(--ribbon-h) + var(--nav-h)); }
 
 /* If you ever hide the ribbon, this keeps things aligned */
 body.no-ribbon{ --ribbon-h: 0px; }
+
+/* Extra guard so the screenshots area never collapses */
+#dashboards .img-frame.showcase{
+  min-height: clamp(360px, 72vh, 980px);
+}
+
