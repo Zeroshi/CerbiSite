@@ -79,3 +79,6 @@
 
 /* ---- Safety: avoid accidental horizontal scrollbars ---- */
 html, body { overflow-x: hidden; }
+/* Remove ribbon from top padding to kill top gap */
+html{ scroll-padding-top: calc(var(--nav-h) + 8px) !important; }
+body{ padding-top: var(--nav-h) !important; }
