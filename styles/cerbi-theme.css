@@ -36,9 +36,9 @@
   --clock-opacity:.14;
 }
 
-/* Anchor offset & live header offset (no gaps, no collisions) */
-html{ scroll-padding-top: calc(var(--nav-h) + 10px); }
-body{ padding-top: var(--nav-h); }
+/* Anchor offset & live header offset (no gap) */
+html{ scroll-padding-top: calc(var(--nav-h) + 8px) !important; }
+body{ padding-top: var(--nav-h) !important; }
 
 :root{
   /* stronger default visibility for spotlight and clock */
@@ -154,7 +154,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   background-position:70% 20%;
   mix-blend-mode:screen;
   filter:contrast(1.1) saturate(1.05) brightness(0.95);
-  opacity:.6;
+  opacity:.65;
 }
 :root[data-theme="light"] .veil{ opacity:.06; mix-blend-mode:normal; filter:none }
 @supports (background-image: image-set(url("x") 1x)){
