@@ -8,22 +8,27 @@
   <!-- THEME BOOT -->
   <script>
     (function () {
-      const KEY='cerbi-theme';
-      const ORDER=['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
-      const VALID=new Set(ORDER);
-      try{ if(!localStorage.getItem(KEY)&&localStorage.getItem('theme')){localStorage.setItem(KEY,localStorage.getItem('theme'));} localStorage.removeItem('theme'); }catch{}
-      function apply(theme){
-        const t=VALID.has(theme)?theme:'dark';
-        document.documentElement.setAttribute('data-theme',t);
-        try{localStorage.setItem(KEY,t);}catch{}
-        let m=document.querySelector('meta[name="theme-color"]');
-        if(!m){m=document.createElement('meta');m.name='theme-color';document.head.appendChild(m);}
-        m.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224');
+      const KEY = 'cerbi-theme';
+      const ORDER = ['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
+      const VALID = new Set(ORDER);
+      try {
+        if (!localStorage.getItem(KEY) && localStorage.getItem('theme')) {
+          localStorage.setItem(KEY, localStorage.getItem('theme'));
+        }
+        localStorage.removeItem('theme');
+      } catch {}
+      function apply(theme) {
+        const t = VALID.has(theme) ? theme : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        try { localStorage.setItem(KEY, t); } catch {}
+        let m = document.querySelector('meta[name="theme-color"]');
+        if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
+        m.setAttribute('content', t === 'light' ? '#ffffff' : '#0a1224');
       }
-      const saved=(()=>{try{const v=localStorage.getItem(KEY);return VALID.has(v)?v:null;}catch{return null;}})();
-      const initial=saved||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      const saved = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : null; } catch { return null; }})();
+      const initial = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       apply(initial);
-      window.CerbiTheme={ set:apply, toggle(){ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length]; apply(next);} };
+      window.CerbiTheme = { set: apply, toggle(){ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length]; apply(next);} };
     })();
   </script>
 
@@ -56,33 +61,18 @@
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full-fixed" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=4" />
 
-  <!-- Inline, targeted fixes -->
+  <!-- Inline fixes (only what’s unique to this page) -->
   <style>
-    :root{ --img-radius:16px; --ease:cubic-bezier(.22,.61,.36,1); --nav-h:64px; --ribbon-h:0px; }
+    :root{ --img-radius:16px; --ease: cubic-bezier(.22,.61,.36,1); }
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
-    /* Don’t use fake spacers; let anchors respect sticky header + ribbon */
-    html{ scroll-padding-top: calc(var(--nav-h) + var(--ribbon-h) + 12px); }
-
-    /* Progress */
-    #progress{position:fixed;left:0;top:0;height:3px;width:var(--progress,0%);background:linear-gradient(90deg,var(--accent),#ff9a57);z-index:9000;transition:width .25s var(--ease)}
-
-    /* Smooth reveal */
-    .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .6s var(--ease)}
-    .reveal.is-visible{opacity:1;transform:none}
-
-    /* Hero spacing tightened: sits right under the nav (plus ribbon when present) */
-    .hero{ padding: clamp(28px, 6vh, 56px) 0 24px; }
-
-    /* Full-bleed helpers (pop-art + dashboards) */
+    /* Full-bleed helper */
     .full-bleed-wrap{position:relative}
     .full-bleed{width:100vw;margin-left:calc(50% - 50vw)}
-    #dashboards .img-frame.showcase{border-radius:0;background:#0a0f1a}
-    #dashboards .dash-slider img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
 
     /* Lightbox */
     .lightbox{position:fixed;inset:0;background:rgba(2,6,16,.85);display:grid;place-items:center;padding:24px;z-index:9001;transition:opacity .25s var(--ease),visibility .25s var(--ease)}
@@ -94,11 +84,10 @@
   <!-- Canonicalize www to apex -->
   <script>(function(){try{if(location.hostname.toLowerCase()==='www.cerbi.io'){location.replace('https://cerbi.io'+location.pathname+location.search+location.hash);}}catch{}})();</script>
 </head>
-<body>
-  <a id="top" class="sr-only" aria-hidden="true"></a>
-  <a href="#main" class="skip-link">Skip to content</a>
+<body id="top">
+  <a href="#main" class="visually-hidden-focusable">Skip to content</a>
 
-  <!-- Background layers (from theme css) -->
+  <!-- Background layers -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
@@ -106,11 +95,11 @@
   <div id="bg-illustration" class="bg-illustration" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
 
-  <!-- Large Background Clock / word cycle -->
+  <!-- Large Background Clock / Glyphs -->
   <div id="bg-clock" aria-hidden="true"></div>
 
   <!-- Ribbon -->
-  <div class="ribbon ribbon-beta" id="topRibbon" role="status">
+  <div id="topRibbon" class="ribbon ribbon-beta" role="status">
     <div class="container ribbon-inner">
       <div class="rb-copy"><strong>CerbiShield Dashboard</strong> — Beta preview available.</div>
       <div class="rb-ctas">
@@ -121,10 +110,11 @@
   </div>
 
   <!-- Nav -->
-  <header class="nav" id="siteNav">
+  <header id="siteNav" class="nav">
     <div class="container nav-inner">
-      <a class="brand" href="#top" aria-label="Back to top">
-        <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high" />
+      <!-- Brand: always scroll to top -->
+      <a href="#top" class="brand" aria-label="Cerbi — back to top">
+        <img src="assets/CerbiLogo.png" alt="" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high" />
         <span>CerbiSuite</span>
       </a>
 
@@ -175,6 +165,7 @@
         <span class="chip">Hybrid-Ready</span><span class="chip">ML-Friendly</span>
       </div>
       <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
+      <div class="orbit" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
       <!-- WHY VALUE ROTATOR -->
@@ -269,12 +260,18 @@
 
       <div class="glass reveal" style="padding:16px;margin-top:16px">
         <h3 style="margin:0 0 6px">Business Use Case — Claims Platform (Regulated)</h3>
-        <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules)...</p>
+        <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules). Developers see IDE diagnostics for forbidden fields; runtime applies redaction and flags violations instead of dropping events. Splunk dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
         <ul style="margin-top:8px">
           <li><strong>Why it helps:</strong> lower ingestion cost, faster incident triage, audit-ready evidence.</li>
           <li><strong>How to roll out:</strong> enable analyzer in CI; deploy runtime validators in relax-mode; tighten over 2 sprints.</li>
           <li><strong>Future state:</strong> CerbIQ normalizes cross-domain tags; CerbiSense flags anomalies on governed features.</li>
         </ul>
+      </div>
+
+      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;justify-content:center">
+        <a class="btn btn-primary" href="#governance">See Governance in action</a>
+        <a class="btn" href="#packages">Pick your packages</a>
+        <a class="btn btn-ghost" href="#compare">Compare approaches</a>
       </div>
     </section>
 
@@ -282,7 +279,7 @@
     <section id="why" class="container section">
       <p class="k" style="letter-spacing:.12em;margin:0 0 6px">THE PROBLEM</p>
       <h2>Why <span class="hl">CerbiStream</span> Exists</h2>
-      <p class="lead">As organizations scale..., Cerbi turns logs into governed, reliable <em>data products</em>.</p>
+      <p class="lead">As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.</p>
 
       <div class="grid" style="margin-top:16px">
         <article class="col-4 card tilt reveal"><div class="glare"></div>
@@ -317,6 +314,38 @@
           </ul>
         </article>
       </div>
+
+      <div class="space"></div>
+      <div class="grid">
+        <div class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">Before (inconsistent + risky)</h3>
+<pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+  "user_id": "7",
+  "email": "jane@ex.com",
+  "when": "2025-08-27",
+  "sev": "info"
+}</code></pre>
+        </div>
+        <div class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3 style="margin-top:4px">After (governed profile)</h3>
+<pre class="kbd" style="margin:0;max-height:260px;overflow:auto"><code class="language-json">{
+  "timestamp": "2025-08-27T14:33:12.120Z",
+  "level": "Information",
+  "user": { "id": "7" },
+  "action": "UserLoggedIn",
+  "app": "identity-api",
+  "env": "prod",
+  "traceId": "a1b2c3",
+  "tags": ["auth", "success"]
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="space"></div>
+      <article class="glass reveal" style="padding:16px">
+        <h3 style="margin-top:0">Not another logging tool</h3>
+        <p class="k">Cerbi doesn’t replace Splunk, ELK, Datadog, or your sinks. We improve what you send to them: cleaner data (lower cost), stable fields (fewer broken dashboards), and governed, PII-aware logs (easier audits).</p>
+      </article>
     </section>
 
     <!-- QUICK START -->
@@ -328,14 +357,37 @@
       <div class="glass tilt reveal" style="padding:18px;position:relative">
         <div class="glare"></div>
 <pre class="codeblock"><code>// 1) Install
+// Choose the integration that fits your stack
+// Core structured logger (native)
 dotnet add package CerbiStream
+
+// MEL runtime governance (Microsoft.Extensions.Logging)
 dotnet add package Cerbi.MEL.Governance
+
+// Build-time analyzer (Roslyn)
 dotnet add package CerbiStream.GovernanceAnalyzer
 
-// 2) Configure...
+// 2) Configure in Program.cs (MEL)
+using CerbiStream;
+
+var logger = LoggerFactory.Create(builder =>
+{
+  builder.AddCerbiStream(options =>
+  {
+    options.WithFileFallback();                     // resilient logging
+    options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
+  });
+}).CreateLogger&lt;Program&gt;();
+
+// 3) Log safely with governance validation
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </code></pre>
         <button class="btn" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
       </div>
+
+      <p style="margin-top:14px">
+        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View full docs on GitHub →</a>
+      </p>
     </section>
 
     <!-- ECOSYSTEM -->
@@ -348,12 +400,30 @@ dotnet add package CerbiStream.GovernanceAnalyzer
         <table aria-label="Cerbi components matrix" class="table">
           <thead><tr><th>Component</th><th>Status</th><th>Purpose</th></tr></thead>
           <tbody>
-            <tr><td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td><td>Core .NET logger...</td></tr>
-            <tr><td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td><td>Roslyn analyzer...</td></tr>
-            <tr><td><strong>Cerbi.MEL.Governance</strong></td><td><span class="pill ok">GA</span></td><td>Runtime governance...</td></tr>
-            <tr><td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta</span></td><td>Governance dashboard & APIs...</td></tr>
-            <tr><td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2</span></td><td>Routing, normalization...</td></tr>
-            <tr><td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2</span></td><td>ML-driven anomaly detection...</td></tr>
+            <tr>
+              <td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td>
+              <td>Core .NET logger with structured output and optional encryption. Works with governance analyzers (build-time) and runtime validators.</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td>
+              <td>Roslyn analyzer that flags governance issues during build (IDE/CI). Reads project governance profiles.</td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi.MEL.Governance</strong></td><td><span class="pill ok">GA</span></td>
+              <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines; applies redaction/flagging based on profiles.</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td>
+              <td>Governance dashboard & APIs. Profile authoring, RBAC, audit history, environment-aware deployments, and profile versioning.</td>
+            </tr>
+            <tr>
+              <td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2 Planned</span></td>
+              <td>Routing, normalization, rollups, fan-out, and app grouping. Turns disparate streams into consistent, analytics-ready datasets.</td>
+            </tr>
+            <tr>
+              <td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td>
+              <td>ML-driven anomaly detection and trend forecasting on governed logs. Risk scoring and proactive alerting with explainability.</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -363,11 +433,11 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     <section id="governance" class="container section">
       <div class="eyebrow">Policy, then telemetry</div>
       <h2><span class="hl">Governance</span> That Meets Teams Where They Are</h2>
-      <p class="lead">Keep Serilog/NLog/MEL—add Cerbi governance today...</p>
+      <p class="lead">Keep Serilog/NLog/MEL—add Cerbi governance today. Or go all-in with CerbiStream. Either way, the <strong>same governance profiles</strong> power build-time diagnostics and runtime enforcement.</p>
       <div class="grid">
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer...</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p class="muted">Validators ensure...</p></div>
-        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned...</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer flags violations in IDE/CI with precise messages—before code ships.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p class="muted">Validators ensure emitted logs comply with your profiles. Redaction & relax-mode keep visibility while preventing leaks.</p></div>
+        <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
       </div>
 
       <!-- Demo -->
@@ -383,62 +453,64 @@ dotnet add package CerbiStream.GovernanceAnalyzer
           <div class="pane"><strong>Input Log</strong><pre><code id="inputJson" class="kbd" aria-live="polite"></code></pre></div>
           <div class="pane"><strong>Evaluation</strong><pre><code id="evalJson" class="kbd" aria-live="polite"></code></pre></div>
         </div>
-        <p class="k" style="margin-top:10px">This demo mirrors Cerbi’s behavior...</p>
+        <p class="k" style="margin-top:10px">This demo mirrors Cerbi’s behavior: <em>keep the event</em>, redact sensitive values, and tag violations with metadata for downstream scoring and audit.</p>
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL -->
+    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
 
-        <div id="dashSlider" class="dash-slider" aria-roledescription="carousel" tabindex="0">
+        <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
           <div class="sr-only" aria-live="polite"></div>
 
-          <figure class="slide active">
-            <img
-              width="1600" height="900"
-              src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-              srcset="
-                assets/screenshots/cerbishield-hero-1600x900.jpg 1x,
-                assets/screenshots/cerbishield-hero-3200x1800.jpg 2x
-              "
-              sizes="100vw"
-              alt="CerbiShield — Overview"
-              data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
-              loading="eager" decoding="async">
-          </figure>
+          <div class="showcase-viewport">
+            <figure class="slide active">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-hero-1600x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-hero-1600x900.jpg 1x,
+                  assets/screenshots/cerbishield-hero-3200x1800.jpg 2x
+                "
+                sizes="100vw"
+                alt="CerbiShield — Overview"
+                data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
+                loading="eager" decoding="async">
+            </figure>
 
-          <figure class="slide">
-            <img
-              width="1600" height="900"
-              src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-              srcset="
-                assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
-                assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x
-              "
-              sizes="100vw"
-              alt="CerbiShield — Profiles"
-              data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
-              loading="lazy" decoding="async">
-          </figure>
+            <figure class="slide">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
+                  assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x
+                "
+                sizes="100vw"
+                alt="CerbiShield — Profiles"
+                data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
+                loading="lazy" decoding="async">
+            </figure>
 
-          <figure class="slide">
-            <img
-              width="1600" height="1200"
-              src="assets/screenshots/cerbishield-violations-1600x1200.jpg"
-              srcset="
-                assets/screenshots/cerbishield-violations-1600x1200.jpg 1x,
-                assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
-              "
-              sizes="100vw"
-              alt="CerbiShield — Violations"
-              data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
-              loading="lazy" decoding="async">
-          </figure>
+            <figure class="slide">
+              <img
+                width="1600" height="1200"
+                src="assets/screenshots/cerbishield-violations-1600x1200.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-violations-1600x1200.jpg 1x,
+                  assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
+                "
+                sizes="100vw"
+                alt="CerbiShield — Violations"
+                data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
+                loading="lazy" decoding="async">
+            </figure>
+          </div>
 
           <div class="dots" aria-label="Slide controls"></div>
-          <div class="dash-arrows" style="display:flex;justify-content:space-between;margin-top:8px">
+          <div class="dash-arrows">
             <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
             <button class="btn btn-ghost" type="button" data-next>Next →</button>
           </div>
@@ -452,20 +524,29 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     <section id="architecture" class="container section">
       <div class="eyebrow">How it fits</div>
       <h2>Reference <span class="hl">Architecture</span></h2>
-      <p class="lead">Cerbi governs telemetry...</p>
+      <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
       <div class="grid" style="align-items:start;gap:18px">
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Flow</h3>
           <ul>
             <li>Apps & services emit events</li>
             <li>Build-time analyzers catch schema/PII violations pre-merge</li>
-            <li>Runtime validators redact/flag...</li>
+            <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
+            <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
+            <li>Downstream sinks (Splunk/ELK/Datadog/etc.) receive clean, consistent data</li>
+          </ul>
+          <h4 style="margin-top:10px">Implementation notes</h4>
+          <ul>
+            <li><strong>Profiles:</strong> JSON stored and versioned; schema-backed for Monaco in the dashboard.</li>
+            <li><strong>Build:</strong> <code>CerbiStream.GovernanceAnalyzer</code> adds IDE/CI diagnostics.</li>
+            <li><strong>Runtime:</strong> <code>Cerbi.MEL.Governance</code> enforces redaction/flagging, honors <em>Relax()</em>.</li>
+            <li><strong>Encryption:</strong> AES/Base64/NoOp via <code>IEncryption</code>; file-fallback with rotation.</li>
           </ul>
         </article>
         <figure class="col-6 img-frame arch-diagram reveal">
           <img
             src="assets/architecture/cerbisuite-architecture-1600x900.png"
-            srcset="assets/architecture/cerbisuite-architecture-1600x900.png 1x, assets/architecture/cerbisuite-architecture-1600x900.png 2x"
+            srcset="assets/architecture/cerbisuite-architecture-1600x900.png 1x, assets/architecture/cerbisuite-architecture-1600x900.png 1.5x, assets/architecture/cerbisuite-architecture-1600x900.png 2x"
             sizes="(max-width: 900px) 100vw, 900px"
             alt="Cerbi reference architecture diagram"
             loading="lazy"
@@ -491,15 +572,16 @@ dotnet add package CerbiStream.GovernanceAnalyzer
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Keep your sinks</h3>
           <ul>
-            <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data...</li>
+            <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data with tags, enums, and stable schema.</li>
             <li><strong>Durable dashboards:</strong> governed field names/types avoid chart breakage across releases.</li>
             <li><strong>ML-ready:</strong> consistent, PII-safe features feed analytics/LLMs with less wrangling.</li>
           </ul>
         </article>
       </div>
+      <p class="k" style="margin-top:10px">Bottom line: your teams keep familiar tools; leadership gets cost control, auditability, and faster incident response.</p>
     </section>
 
-    <!-- ROADMAP / PHASES -->
+    <!-- ROADMAP -->
     <section id="roadmap" class="container section">
       <div class="eyebrow">What’s shipping</div>
       <h2>Current <span class="hl">Phase</span> & What’s Next</h2>
@@ -528,6 +610,7 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     <section id="partners" class="container section">
       <div class="eyebrow">Ecosystem</div>
       <h2>Trusted with <span class="hl">Microsoft</span></h2>
+      <p class="lead">We’re proud to be a Microsoft Partner. Cerbi aligns with Azure best practices and the broader .NET ecosystem.</p>
       <div class="glass tilt reveal" style="padding:16px;display:grid;place-items:center">
         <img src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" style="max-width:260px;height:auto" loading="lazy" decoding="async">
       </div>
@@ -536,7 +619,7 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     <!-- PACKAGES -->
     <section id="packages" class="container section">
       <h2>NuGet <span class="hl">Packages</span> & How They Fit</h2>
-      <p class="lead">Cerbi is a set of small, focused packages...</p>
+      <p class="lead">Cerbi is a set of small, focused packages. Use them à la carte or together. We don’t replace Splunk/ELK/Datadog—we make the data you send to them <em>clean, governed, and auditable</em>.</p>
 
       <div class="glass reveal" style="padding:16px">
         <h3 style="margin:4px 0 10px">How packages relate</h3>
@@ -545,6 +628,14 @@ dotnet add package CerbiStream.GovernanceAnalyzer
   ├─▶ Runtime:     Cerbi.MEL.Governance  →  Cerbi.Governance.Runtime  →  Cerbi.Governance.Core
   └─▶ Native logger: CerbiStream (structured, encrypted, governance-ready)
 </pre>
+        <div class="space"></div>
+        <h4 style="margin:8px 0 6px">Why it matters</h4>
+        <ul>
+          <li><strong>Concept:</strong> Treat logs as governed data products—stable, typed, safe to share.</li>
+          <li><strong>Business value:</strong> lower ingestion & storage costs, durable dashboards, audit confidence.</li>
+          <li><strong>Current state:</strong> CerbiStream + Analyzer + MEL runtime validator.</li>
+          <li><strong>Future state:</strong> CerbIQ routing + CerbiSense anomaly detection on governed features.</li>
+        </ul>
       </div>
     </section>
 
@@ -579,7 +670,7 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     </div>
   </footer>
 
-  <!-- Command palette -->
+  <!-- Command palette (closed by default) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header"><span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" /></div>
@@ -587,13 +678,16 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     </div>
   </div>
 
-  <!-- Contact FAB -->
-  <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">✉️</a>
+  <!-- Contact FAB (png) -->
+  <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
+    <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
+    <span class="sr-only">Contact Cerbi</span>
+  </a>
 
   <!-- Small top-right clock -->
   <div id="clock" class="clock" role="timer" aria-live="polite" title="Local time"></div>
 
-  <!-- LIGHTBOX (single instance) -->
+  <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="Full-size preview" />
@@ -605,108 +699,34 @@ dotnet add package CerbiStream.GovernanceAnalyzer
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=4" defer></script>
 
-  <!-- Page JS: header sizing, clocks, slider, palette, lightbox, pop-art, demo, reveals -->
+  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
-  // Compute dynamic heights so anchors don't hide & hero sits tight under nav
-  (function(){
-    const nav = document.getElementById('siteNav');
-    const ribbon = document.getElementById('topRibbon');
-    function setHeights(){
-      const nh = nav?.offsetHeight || 64;
-      const rh = ribbon?.offsetHeight || 0;
-      document.documentElement.style.setProperty('--nav-h', nh + 'px');
-      document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
-    }
-    const ready = () => { setHeights(); requestAnimationFrame(setHeights); };
-
-    ready();
-    addEventListener('resize', setHeights, {passive:true});
-    new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
-
-    // Recalculate after fonts load (prevents “growing” header causing a gap)
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(setHeights).catch(()=>{});
-    }
-
-    // Brand → smooth-scroll to top, no leftover hash jumps
-    document.querySelector('.brand')?.addEventListener('click', (e)=>{
-      e.preventDefault(); scrollTo({top:0, behavior:'smooth'}); history.replaceState(null,'','#top');
-    });
-  })();
-
     // Theme button
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
 
-    // CmdK palette (closed by default)
+    // CmdK palette
     (function(){
-      const overlay=document.getElementById('cmdkOverlay');
-      const input=document.getElementById('cmdkInput');
-      const open=()=>{overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>input?.focus(),0);};
-      const close=()=>{overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';};
-      document.getElementById('cmdBtn')?.addEventListener('click',open);
-      overlay.addEventListener('click',(e)=>{if(e.target===overlay)close();});
-      overlay.querySelector('.cmdk')?.addEventListener('keydown',(e)=>{if(e.key==='Escape')close();});
-      document.addEventListener('keydown',(e)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();(overlay.getAttribute('aria-hidden')==='true'?open:close)();}});
+      const overlay = document.getElementById('cmdkOverlay');
+      const input = document.getElementById('cmdkInput');
+      const open = () => { overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>input?.focus(), 0); };
+      const close = () => { overlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+      document.getElementById('cmdBtn')?.addEventListener('click', open);
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
+      overlay.querySelector('.cmdk')?.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      document.addEventListener('keydown', (e)=>{ if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); (overlay.getAttribute('aria-hidden')==='true'?open:close)(); } });
       overlay.setAttribute('aria-hidden','true');
     })();
 
-    // Reveal on scroll
+    // Intersection reveal
     (function(){
       const els=[...document.querySelectorAll('.reveal')];
-      if(!('IntersectionObserver' in window)||!els.length){els.forEach(e=>e.classList.add('is-visible'));return;}
-      const io=new IntersectionObserver((entries)=>entries.forEach(ent=>{ if(ent.isIntersecting){ent.target.classList.add('is-visible');io.unobserve(ent.target);} }),{root:null,rootMargin:'0px 0px -10% 0px',threshold:.15});
+      if (!('IntersectionObserver' in window) || els.length===0){ els.forEach(e=>e.classList.add('in')); return; }
+      const io=new IntersectionObserver((entries)=>{
+        entries.forEach(ent=>{
+          if(ent.isIntersecting){ ent.target.classList.add('in'); io.unobserve(ent.target); }
+        });
+      },{root:null, rootMargin:'0px 0px -10% 0px', threshold:.15});
       els.forEach(el=>io.observe(el));
-    })();
-
-    // Background clock / word cycle (simple, non-glitchy so it won't "jump")
-    (function(){
-      const el=document.getElementById('bg-clock'); if(!el) return;
-      const words = ['LOVE','DEATH','ROBOT✶']; // subtle nod
-      let w = 0, toggle=0;
-      function size(){
-        const vw=Math.max(document.documentElement.clientWidth, innerWidth||0);
-        el.style.fontSize=Math.min(Math.max(vw*0.36,96),900)+'px';
-        el.style.lineHeight='1';
-        const theme=document.documentElement.getAttribute('data-theme')||'dark';
-        el.style.color = theme==='light'
-          ? getComputedStyle(document.documentElement).getPropertyValue('--text')
-          : getComputedStyle(document.documentElement).getPropertyValue('--muted');
-      }
-      function render(){
-        // Alternate between time and hidden-meaning words
-        if (++toggle % 8 === 0) { el.textContent = words[w=(w+1)%words.length]; }
-        else {
-          const d=new Date(); el.textContent=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        }
-      }
-      function fade(){
-        const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
-        const sc = (h.scrollTop||document.body.scrollTop);
-        const t = Math.min(1, sc / (max*0.35));
-        document.documentElement.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
-      }
-      size(); render(); fade();
-      addEventListener('resize',size,{passive:true}); addEventListener('scroll',fade,{passive:true});
-      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-      setInterval(render,1000);
-    })();
-
-    // Badge clock
-    (function(){
-      const el=document.getElementById('clock'); if(!el) return;
-      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
-      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
-    })();
-
-    // WHY slider
-    (function(){
-      const slider=document.getElementById('whySlider'); if(!slider) return;
-      const slides=[...slider.querySelectorAll('.slide')];
-      const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
-      const dots=[...dotsBox.querySelectorAll('button')];
-      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
-      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
     })();
 
     // Progress bar
@@ -719,7 +739,81 @@ dotnet add package CerbiStream.GovernanceAnalyzer
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Dash slider + lightbox (keyboard + swipe)
+    // Compute dynamic heights (kill top gap, good anchor offset)
+    (function(){
+      const nav = document.getElementById('siteNav');
+      const ribbon = document.getElementById('topRibbon');
+      function setHeights(){
+        const nh = nav?.offsetHeight || 64;
+        const rh = ribbon?.offsetHeight || 0;
+        document.documentElement.style.setProperty('--nav-h', nh + 'px');
+        document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
+      }
+      const ready = () => { setHeights(); requestAnimationFrame(setHeights); };
+      ready();
+      addEventListener('resize', setHeights, {passive:true});
+      new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
+
+      // Brand → smooth-scroll to top
+      document.querySelector('.brand')?.addEventListener('click', (e)=>{
+        // let hash handle, but ensure smooth & no weird gaps
+        // (browser will already jump; we'll also scroll smoothly)
+        e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'});
+      });
+    })();
+
+    // Badge clock
+    (function(){
+      const el=document.getElementById('clock'); if(!el) return;
+      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
+      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
+    })();
+
+    // Big background glyph clock (Love, Death & Robots vibe)
+    (function(){
+      const el=document.getElementById('bg-clock'); if(!el) return;
+      const glyphs = ['❤','☠','🤖','❤','☠','🤖']; // cycles subtly between time and glyphs
+      const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
+      function size(){
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+        el.style.fontSize=Math.min(Math.max(vw*0.34,96),900)+'px';
+        el.style.lineHeight='1';
+        const theme=document.documentElement.getAttribute('data-theme')||'dark';
+        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
+      }
+      function render(){
+        const d=new Date();
+        const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        // flip to glyph briefly every ~7 seconds for a glitchy vibe
+        const showGlyph = Math.floor(d.getSeconds()/7)%2===1;
+        el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
+      }
+      function fade(){
+        const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
+        const sc = (h.scrollTop||document.body.scrollTop);
+        const t = Math.min(1, sc / (max*0.35));
+        document.documentElement.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
+      }
+      size(); render(); fade();
+      addEventListener('resize',size,{passive:true});
+      addEventListener('scroll',fade,{passive:true});
+      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+      setInterval(render,1000);
+    })();
+
+    // WHY slider dots + control (no auto-play to avoid motion complaints)
+    (function(){
+      const slider=document.getElementById('whySlider'); if(!slider) return;
+      const slides=[...slider.querySelectorAll('.slide')];
+      const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+      const dots=[...dotsBox.querySelectorAll('button')];
+      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
+      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
+      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
+    })();
+
+    // Dash slider + lightbox (autoplay + keyboard + swipe) — NO CROPPING
     (function(){
       const slider=document.getElementById('dashSlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -775,39 +869,44 @@ dotnet add package CerbiStream.GovernanceAnalyzer
       overlay.querySelector('.close')?.addEventListener('click', close);
       overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && overlay.getAttribute('aria-hidden')==='false') close(); });
-      slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=>open(img.dataset.full || img.currentSrc || img.src)));
+
+      slider.querySelectorAll('img').forEach(img=>{
+        img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src));
+        // make sure images never crop:
+        img.style.objectFit = 'contain';
+      });
     })();
 
-<script>
-  // POP-ART rotator — full-bleed, one image at a time
-  (function(){
-    const el = document.getElementById('sigRotator'); if(!el) return;
-
-    const sources = [
-      'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
-      'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
-      'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
-      'assets/popart/popart-10.png'
-    ];
-
-    el.innerHTML = '';                        // ensure no stray nodes
-    const imgs = sources.map((src,idx) => {
-      const im = new Image();
-      im.src = src; im.alt = 'Cerbi pop-art ' + (idx+1);
-      if(idx === 0) im.className = 'is-active';
-      el.appendChild(im);
-      return im;
-    });
-
-    let i = 0;
-    setInterval(() => {
-      imgs[i].classList.remove('is-active');
-      i = (i + 1) % imgs.length;
-      imgs[i].classList.add('is-active');
-    }, 3500);
-  })();
-</script>
-
+    // POP-ART rotator — full-bleed, one image at a time
+    (function(){
+      const el = document.getElementById('sigRotator'); if(!el) return;
+      const sources = [
+        'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
+        'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
+        'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
+        'assets/popart/popart-10.png'
+      ];
+      el.innerHTML = '';
+      const imgs = sources.map((src, idx) => {
+        const im = new Image();
+        im.decoding = 'async';
+        im.loading = idx === 0 ? 'eager' : 'lazy';
+        im.src = src;
+        im.alt = 'Cerbi pop-art ' + (idx+1);
+        if (idx === 0) im.className = 'is-active';
+        el.appendChild(im);
+        return im;
+      });
+      let i = 0;
+      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced && imgs.length > 1) {
+        setInterval(() => {
+          imgs[i].classList.remove('is-active');
+          i = (i + 1) % imgs.length;
+          imgs[i].classList.add('is-active');
+        }, 3500);
+      }
+    })();
 
     // Live governance demo
     (function(){
@@ -817,10 +916,20 @@ dotnet add package CerbiStream.GovernanceAnalyzer
       if(!btn||!input||!evalEl) return;
       function render(){
         const on=btn.getAttribute('aria-pressed')==='true';
-        input.textContent=JSON.stringify({ timestamp:new Date().toISOString(), action:'UserLoggedIn', user: on ? { id:'123', email:'jane@example.com' } : { id:'123' } }, null, 2);
-        evalEl.textContent = on ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }' : '{ "status":"ok", "policyVersion":"v1.3.2" }';
+        input.textContent=JSON.stringify({
+          timestamp:new Date().toISOString(),
+          action:'UserLoggedIn',
+          user: on ? { id:'123', email:'jane@example.com' } : { id:'123' }
+        }, null, 2);
+        evalEl.textContent = on
+          ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }'
+          : '{ "status":"ok", "policyVersion":"v1.3.2" }';
       }
-      btn.addEventListener('click', ()=>{ const now=btn.getAttribute('aria-pressed')==='true'; btn.setAttribute('aria-pressed', now?'false':'true'); render(); });
+      btn.addEventListener('click', ()=>{
+        const now=btn.getAttribute('aria-pressed')==='true';
+        btn.setAttribute('aria-pressed', now?'false':'true');
+        render();
+      });
       btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
       render();
     })();
