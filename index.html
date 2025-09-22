@@ -6,10 +6,10 @@
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
   
   <!-- Styles order preserved, cache-busted -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.5" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.5" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.5" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.5" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.6" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.6" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.6" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.6" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=7" />
 
@@ -17,26 +17,23 @@
     /* Lift spotlight opacity a touch so it’s visible */
     .spotlight{ opacity:.95; }
     /* Background clock: ensure visibility */
-    #bg-clock{ opacity: var(--clock-opacity,.22); mix-blend-mode: screen; }
+    #bg-clock{ opacity: var(--clock-opacity,.26); mix-blend-mode: screen; }
     /* Microsoft Partner smaller in footer */
-    .footer .partner-mini{ height:18px; width:auto; opacity:.9; }
+    .footer .partner-mini{ height:14px; width:auto; opacity:.9; }
     /* FAB icon only on right */
     .contact-fab{ right:max(18px,calc(env(safe-area-inset-right) + 12px)); left:auto; transform:none; }
     .contact-fab .label{ display:none !important; }
+    /* Hide lightbox when closed */
+    #lightbox[aria-hidden="true"]{ display:none; }
   </style>
 </head>
 <body>
-  <!-- Background layers: stars + veil + spotlight + clock -->
+  <!-- Background layers: stars + veil + spotlight + clock (single set) -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
   <div id="bg-clock" aria-hidden="true"></div>
-
-  <!-- Fixed background clock placed above starfield, below spotlight/content -->
-  <div id="bg-clock" aria-hidden="true"></div>
-
-  <div class="spotlight" aria-hidden="true"></div>
 
   <!-- Ribbon -->
   <div id="topRibbon" class="ribbon ribbon-beta" role="status">
@@ -318,7 +315,7 @@ var logger = LoggerFactory.Create(builder =>
     options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
   });
 }).CreateLogger&lt;Program&gt;();
-
+    
 
 
 // 3) Log safely with governance validation
