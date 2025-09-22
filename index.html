@@ -79,6 +79,28 @@
     .lightbox[aria-hidden="true"]{opacity:0;visibility:hidden}
     .lightbox img{max-width:96vw;max-height:92vh;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
     .lightbox .close{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.06);border:1px solid rgba(127,148,179,.25);padding:8px 10px;border-radius:10px;cursor:pointer}
+
+    /* Background clock should not affect layout and must stay visible */
+    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:0;opacity:var(--clock-opacity,.08);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:soft-light}
+
+    /* Keep spotlight visible while scrolling; make it light and subtle */
+    .spotlight{position:fixed;inset:0;pointer-events:none;z-index:1;
+      background:radial-gradient(600px 600px at var(--spot-x,82%) var(--spot-y,16%), rgba(255,255,255,.10), rgba(255,255,255,0) 65%);
+      filter:blur(24px)
+    }
+    [data-theme="light"] .spotlight{
+      background:radial-gradient(600px 600px at var(--spot-x,82%) var(--spot-y,16%), rgba(0,0,0,.06), rgba(0,0,0,0) 65%);
+    }
+
+    /* Hero spacing and stacking to prevent overlap */
+    .hero .value-rotator{margin-top:16px;margin-bottom:20px}
+    .hero-cta-row{margin-top:16px;position:relative;z-index:2}
+    .orbit{position:relative;z-index:1}
+    .hero h1{margin-top:8px}
+    .hero .sub{margin-top:8px;margin-bottom:0}
+
+    /* Ensure the small clock is visible */
+    .clock{position:fixed;top:10px;right:12px;z-index:9999;background:rgba(10,18,36,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:6px 8px;border-radius:10px;border:1px solid rgba(127,148,179,.25);font-variant-numeric:tabular-nums}
   </style>
 
   <!-- Canonicalize www to apex -->
@@ -379,6 +401,7 @@ var logger = LoggerFactory.Create(builder =>
   });
 }).CreateLogger&lt;Program&gt;();
 
+
 // 3) Log safely with governance validation
 logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </code></pre>
@@ -678,8 +701,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-<div id="bg-clock" aria-hidden="true"></div>
-
   
   <!-- Contact FAB (png) -->
   <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
@@ -701,9 +722,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=4" defer></script>
-  <!-- in index.html (or layout) -->
-  <script src="scripts/cerbi.js" defer></script>
-
+  
 
   <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
