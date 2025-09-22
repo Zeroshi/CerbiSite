@@ -646,3 +646,30 @@ body.no-ribbon{ --ribbon-h: 0px; }
 /* Remove any main padding hacks if present */
 main{ padding-top: 0 !important; }
 
+/* ===== Dynamic hero padding so headline always sits right under the menu ===== */
+:root{
+  /* JS will set --header-total; we keep a small breathing room under the menu */
+  --hero-gap: 18px;
+  --header-total: 0px; /* computed in JS */
+}
+
+/* default (in case JS hasn’t run yet) */
+.hero{ padding-top: clamp(24px, 4vh, 56px) !important; }
+
+/* when we’re at the very top and the ribbon/nav are visible, reduce padding */
+body[data-at-top="1"] .hero{
+  /* menu stack is already pushing content via #headerSpacer; keep a tight gap */
+  padding-top: calc(var(--hero-gap)) !important;
+}
+
+/* once we scroll past the ribbon (or down the page), give the hero more air */
+body[data-at-top="0"] .hero{
+  padding-top: clamp(54px, 8vh, 82px) !important;
+}
+
+/* make sure the backdrop SVG doesn’t create perceived extra space */
+.hero .hero-bg{ top: 0; }
+
+/* ensure the spacer is the only thing reserving top space */
+#headerSpacer{ height: var(--header-total, 0px); }
+
