@@ -786,3 +786,18 @@ body.scrolled .ribbon{ transform: translateY(-100%); }
 }
 .sig-rotator img.is-active{ opacity:1; visibility:visible; pointer-events:auto; }
 
+  /* Kill any legacy spacer that leaves a phantom gap */
+#headerSpacer{ display:none !important; height:0 !important; }
+
+/* Make anchors land correctly without needing fake spacers */
+html{ scroll-padding-top: calc(var(--nav-h,64px) + var(--ribbon-h,0px) + 8px) !important; }
+
+/* Tighten hero so headline tucks under nav/ribbon */
+.hero{ padding-top: clamp(8px, 2vh, 20px) !important; }
+
+/* Ensure ribbon/nav don’t add extra margins */
+.ribbon{ margin:0 !important; }
+.nav-inner{ padding:10px 0 !important; }
+main{ margin-top:0 !important; }
+
+
