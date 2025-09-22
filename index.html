@@ -4,86 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
-
-  <!-- THEME BOOT -->
-  <script>
-    (function () {
-      const KEY = 'cerbi-theme';
-      const ORDER = ['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
-      const VALID = new Set(ORDER);
-      try {
-        if (!localStorage.getItem(KEY) && localStorage.getItem('theme')) {
-          localStorage.setItem(KEY, localStorage.getItem('theme'));
-        }
-        localStorage.removeItem('theme');
-      } catch {}
-      function apply(theme) {
-        const t = VALID.has(theme) ? theme : 'dark';
-        document.documentElement.setAttribute('data-theme', t);
-        try { localStorage.setItem(KEY, t); } catch {}
-        let m = document.querySelector('meta[name="theme-color"]');
-        if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
-        m.setAttribute('content', t === 'light' ? '#ffffff' : '#0a1224');
-      }
-      const saved = (() => { try { const v = localStorage.getItem(KEY); return VALID.has(v) ? v : null; } catch { return null; }})();
-      const initial = saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      apply(initial);
-      window.CerbiTheme = { set: apply, toggle(){ const cur=document.documentElement.getAttribute('data-theme')||'dark'; const next=ORDER[(ORDER.indexOf(cur)+1)%ORDER.length]; apply(next);} };
-    })();
-  </script>
-
-  <!-- SEO/A11Y -->
-  <meta name="robots" content="index,follow" />
-  <meta name="color-scheme" content="dark light" />
-  <link rel="canonical" href="https://cerbi.io/" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="preconnect" href="https://form.jotform.com" crossorigin />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-
-  <!-- Social -->
-  <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
-  <meta property="og:description" content="Structured logging, developer-first observability, and governance—without lock-in." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cerbi.io/" />
-  <meta property="og:site_name" content="CerbiSuite" />
-  <meta property="og:image" content="https://cerbi.io/assets/og/cerbi-1200x630.jpg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="CerbiSuite hero with product marks" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
-  <meta name="twitter:description" content="Structure, governance, observability—without lock-in." />
-  <meta name="twitter:image" content="https://cerbi.io/assets/og/cerbi-1200x630.jpg" />
-  <meta name="theme-color" content="#0a1224" />
-
-  <!-- Styles (order matters: base → hotfix → component → fixes → motion/mobile) -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.3" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.3" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.3" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.3" />
+  
+  <!-- Styles order preserved -->
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.4" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.4" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.4" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.4" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css?v=5" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=6" />
 
   <style>
-    /* page-specific small tweaks only */
-    #bg-clock{ mix-blend-mode: screen; opacity: var(--clock-opacity,.2); }
-    #contact iframe{ width:100% !important; max-width:100%; display:block; }
-    .footer .partner-mini{ height:24px; width:auto; opacity:.9; filter:drop-shadow(0,0,0,.15); }
+    /* Spotlight and clock visibility tweaks (page-specific) */
+    .spotlight{ opacity: .95; }
+    #bg-clock{ opacity: var(--clock-opacity,.22); mix-blend-mode: screen; }
+    /* FAB: right side, icon only */
+    .contact-fab{ right:max(18px,calc(env(safe-area-inset-right) + 12px)); left:auto; transform:none; }
+    .contact-fab .label{ display:none !important; }
+    /* Contact form: ensure full width inside card */
+    #contact iframe{ width:100% !important; max-width:100% !important; display:block; }
+    /* Hide lightbox overlay by default (no broken image placeholder) */
+    #lightbox[aria-hidden="true"]{ display:none; }
   </style>
-
-  <!-- Canonicalize www to apex -->
-  <script>(function(){try{if(location.hostname.toLowerCase()==='www.cerbi.io'){location.replace('https://cerbi.io'+location.pathname+location.search+location.hash);}}catch{}})();</script>
 </head>
-<body id="top">
-  <a href="#main" class="visually-hidden-focusable">Skip to content</a>
-
+<body>
   <!-- Background layers -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
-  <div class="bg-orbs" aria-hidden="true"></div>
-  <div id="bg-illustration" class="bg-illustration" aria-hidden="true"></div>
-  
+  <div class="spotlight" aria-hidden="true"></div>
+  <div id="bg-clock" aria-hidden="true"></div>
+
   <!-- Fixed background clock placed above starfield, below spotlight/content -->
   <div id="bg-clock" aria-hidden="true"></div>
 
@@ -639,27 +589,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  
-  <!-- Contact FAB (png) -->
-  <a href="#contact" class="contact-fab" aria-label="Contact Cerbi">
+  <!-- Contact FAB: icon only -->
+  <a href="#contact" class="contact-fab" aria-label="Contact">
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
-    <span class="sr-only">Contact Cerbi</span>
   </a>
 
-  <!-- Small top-right clock -->
-  <div id="clock" class="clock" role="timer" aria-live="polite" title="Local time"></div>
-
-  <!-- LIGHTBOX -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
+  <!-- LIGHTBOX: hidden by default, no broken img -->
+  <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
-    <img id="lightboxImg" alt="Full-size preview" />
+    <img id="lightboxImg" alt="" />
   </div>
 
   <!-- Scripts -->
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
-  <script src="scripts/mobile-fixes.js?v=5" defer></script>
+  <script src="scripts/mobile-fixes.js?v=6" defer></script>
   
   <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
