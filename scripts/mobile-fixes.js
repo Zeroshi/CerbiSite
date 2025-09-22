@@ -1,20 +1,30 @@
-/* Mobile nav toggle + small safe tweaks */
-(function(){
-  const nav = document.getElementById('primaryNav');
-  const toggle = document.getElementById('navToggle'); // if you add a hamburger later
-  if(toggle && nav){
-    toggle.addEventListener('click', ()=>{
-      nav.classList.toggle('open');
-    });
-  }
+/* Mobile-specific tweaks and bug fixes */
+@media (max-width: 980px){
+  .nav-inner{ grid-template-columns: 1fr auto !important; }
+  .nav-links{ grid-column: 1 / -1; justify-content:flex-start; }
+}
+@media (max-width: 820px){
+  .img-frame.showcase{ aspect-ratio: auto; }
+}
 
-  // Ensure contact iframe stays full width on some mobile browsers
-  const fixIframes = ()=>{
-    document.querySelectorAll('iframe').forEach(f=>{
-      f.style.maxWidth = '100%';
-      f.style.width = '100%';
-    });
-  };
-  fixIframes();
-  window.addEventListener('resize', fixIframes, {passive:true});
-})();
+/* Ensure sticky header never hides behind the ribbon on any viewport */
+.nav{ z-index: 1000 !important; }
+.ribbon{ z-index: 900 !important; }
+
+/* Make sure any iframes (Jotform) stay full-width in cards */
+#contact .grid, #contact .col-12{ min-width: 0; }
+#contact iframe{ width: 100% !important; max-width: 100% !important; display: block; height: min(86vh, 860px); }
+
+/* Keep hero art centered in its frame on small screens */
+.sig-rotator img{ object-position: center center; }
+
+/* FAB on right on mobile too */
+@media (max-width: 520px){
+  .contact-fab{ right: 18px; left: auto; transform: none; }
+}
+
+/* Ecosystem table: allow cells to wrap nicely */
+@media (max-width: 820px){
+  .table tbody td{ white-space: normal; }
+  .table{ display:block; overflow-x:auto; }
+}
