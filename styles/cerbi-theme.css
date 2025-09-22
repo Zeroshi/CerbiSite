@@ -224,11 +224,11 @@ h3{font-size:clamp(18px,2.2vw,22px)}
   );}
 }
 
-/* Ensure glyph clock is visible above content but below nav/ribbon */
+/* Ensure glyph clock is visible above background layers but behind main content */
 #bg-clock{
   position:fixed; inset:0; display:grid; place-items:center;
   pointer-events:none; user-select:none;
-  z-index:900; /* above content but below nav */
+  z-index:-1; /* place behind modules/content but above background layers */
   mix-blend-mode: normal;
   color: var(--muted,#ffffff);
   font-weight:900; letter-spacing:.02em; text-transform:uppercase;
