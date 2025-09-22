@@ -6,18 +6,18 @@
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
   
   <!-- Styles order preserved, cache-busted -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.6" />
-  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.6" />
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.11" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.11" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
-  <link rel="stylesheet" href="styles/mobile-fixes.css?v=7" />
+  <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
   <style>
     /* Lift spotlight opacity a touch so it’s visible */
     .spotlight{ opacity:.95; }
     /* Background clock: ensure visibility */
-    #bg-clock{ opacity: var(--clock-opacity,.26); mix-blend-mode: screen; }
+    #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
     /* Microsoft Partner smaller in footer */
     .footer .partner-mini{ height:14px; width:auto; opacity:.9; }
     /* FAB icon only on right */
@@ -33,7 +33,20 @@
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
-  <div id="bg-clock" aria-hidden="true"></div>
+  <div id="bg-clock" aria-hidden="true" class="mode-time">
+    <div class="scan"></div>
+  </div>
+
+  <!-- Clock controls -->
+  <div id="bg-clock-controls" aria-hidden="false" role="toolbar" aria-label="Background clock controls">
+    <button data-mode="time" class="active" title="Show HH:MM">Time</button>
+    <button data-mode="glitch" title="Glitch bursts">Glitch</button>
+    <button data-mode="words" title="Show phrases">Words</button>
+    <div class="size-adjust">
+      <button id="size-sm" title="Smaller">A-</button>
+      <button id="size-lg" title="Larger">A+</button>
+    </div>
+  </div>
 
   <!-- Ribbon -->
   <div id="topRibbon" class="ribbon ribbon-beta" role="status">
@@ -855,6 +868,81 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // not using those vars anymore in .spotlight (see CSS above).
     // Optional: if you want it left/center, try: 18% / 22% or 50% / 12%.
   })();
+  </script>
+
+  <!-- Scripts: clock interactivity -->
+  <script>
+    (function(){
+      const el = document.getElementById('bg-clock');
+      if(!el) return;
+
+      const PHRASES = [
+        'LOVE', 'DEATH', 'ROBOTS', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE'
+      ];
+      let mode = 'time';
+      let baseScale = 1.0;
+
+      function setMode(m){
+        mode = m;
+        el.classList.remove('mode-time','mode-glitch','mode-words');
+        el.classList.add('mode-' + m);
+        document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-mode')===m));
+      }
+
+      function tick(){
+        if(mode==='time'){
+          const d = new Date();
+          el.dataset.text = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+          el.textContent = el.dataset.text;
+        } else if(mode==='glitch'){
+          // random glyph burst
+          const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°•◦○●◎◆◢◣◤◥▄▀';
+          const d=new Date(); const t = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+          if(Math.random() < 0.15){
+            const g = GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+            el.dataset.text = g.repeat(4);
+            el.textContent = el.dataset.text;
+          } else {
+            el.dataset.text = t;
+            el.textContent = t;
+          }
+        } else if(mode==='words'){
+          // Cycle bold short phrases like 'LOVE', 'DEATH', 'ROBOTS'
+          const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+          el.dataset.text = choice;
+          el.textContent = choice;
+        }
+      }
+
+      // Size adjust
+      function adjustSize(delta){
+        baseScale = Math.min(3, Math.max(0.6, baseScale + delta));
+        el.style.transform = `scale(${baseScale})`;
+      }
+
+      // Controls
+      document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(btn=>{
+        btn.addEventListener('click', ()=> setMode(btn.getAttribute('data-mode')));
+      });
+      document.getElementById('size-sm').addEventListener('click', ()=> adjustSize(-0.08));
+      document.getElementById('size-lg').addEventListener('click', ()=> adjustSize(0.12));
+
+      // Keyboard shortcuts: T (time), G (glitch), W (words)
+      document.addEventListener('keydown', (e)=>{
+        if(e.key.toLowerCase()==='t') setMode('time');
+        if(e.key.toLowerCase()==='g') setMode('glitch');
+        if(e.key.toLowerCase()==='w') setMode('words');
+        if(e.key === '+') adjustSize(0.12);
+        if(e.key === '-') adjustSize(-0.08);
+      });
+
+      // Boot
+      setMode('time'); tick();
+      setInterval(tick, 900);
+
+      // Keep glare scan visible
+      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);}    
+    })();
   </script>
 </body>
 </html>
