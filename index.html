@@ -56,12 +56,11 @@
   <meta name="twitter:image" content="https://cerbi.io/assets/og/cerbi-1200x630.jpg" />
   <meta name="theme-color" content="#0a1224" />
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-pro-full-fixed" />
+  <!-- Styles (order matters: base → hotfix → component → fixes → motion/mobile) -->
+  <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.2" />
+  <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.2" />
+  <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.2" />
+  <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-22.2" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=4" />
 
@@ -81,7 +80,7 @@
     .lightbox .close{position:absolute;top:16px;right:18px;background:rgba(255,255,255,.06);border:1px solid rgba(127,148,179,.25);padding:8px 10px;border-radius:10px;cursor:pointer}
 
     /* Background clock: fixed, in front of stars, behind all UI */
-    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:-1;opacity:var(--clock-opacity,.14);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:soft-light}
+    #bg-clock{position:fixed;inset:0;display:grid;place-items:center;z-index:-1;opacity:var(--clock-opacity,.18);pointer-events:none;user-select:none;font-weight:800;mix-blend-mode:screen}
 
     /* Keep spotlight visible while scrolling; place it below the clock */
     .spotlight{position:fixed;inset:0;pointer-events:none;z-index:-2;
@@ -401,6 +400,7 @@ var logger = LoggerFactory.Create(builder =>
     options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
   });
 }).CreateLogger&lt;Program&gt;();
+
 
 
 // 3) Log safely with governance validation
