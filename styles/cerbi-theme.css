@@ -728,3 +728,30 @@ body[data-at-top="0"] .hero{
 })();
 
 
+/* ===== Fix top gap: make nav fixed and reserve a constant space ===== */
+:root{ --nav-h: 64px; }
+
+.nav{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+}
+
+#headerSpacer{ height: var(--nav-h); }
+
+/* Ribbon floats independently and never pushes content (no layout jumps) */
+.ribbon{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1100;                     /* render above nav at very top */
+  transform: translateY(0);
+  transition: transform .22s ease;
+  pointer-events: none;               /* let clicks go through by default */
+}
+.ribbon .rb-ctas, .ribbon .rb-copy{ pointer-events: auto; } /* keep buttons clickable */
+
+/* Once you scroll, hide the ribbon off-canvas without affecting layout */
+body.scrolled .ribbon{ transform: translateY(-100%); }
+
+/* Hero should NOT try to add its own top padding anymore */
+.hero{ padding-top: clamp(12px, 2vh, 24px) !important; }
