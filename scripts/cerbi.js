@@ -48,82 +48,103 @@
   addEventListener('scroll', () => requestAnimationFrame(onScroll), {passive:true});
 })();
 
-/* ===== LDR GLITCH CLOCK (Love, Death & Robots vibe) ===== */
+/* ===== LDR GLITCH CLOCK (safe boot + autocreate) ===== */
 (() => {
-  const root = document.documentElement;
-  const el = document.getElementById('bg-clock');
-  if (!el) return;
+  function bootClock(){
+    const root = document.documentElement;
 
-  el.classList.add('glitch');
-  if (!el.querySelector('.scan')){
-    const scan = document.createElement('div'); scan.className = 'scan'; el.appendChild(scan);
-  }
+    // Ensure node exists even if HTML forgot it
+    let el = document.getElementById('bg-clock');
+    if (!el){
+      el = document.createElement('div');
+      el.id = 'bg-clock';
+      el.setAttribute('aria-hidden','true');
+      document.body.appendChild(el);
+    }
 
-  const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
-  const randGlyph = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
-  const timeHM = () => {
-    const d = new Date();
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-  };
-  const setClockText = (s) => {
-    el.dataset.text = s;
-    el.textContent  = s;
-    el.setAttribute('aria-label', `Current time ${s}`);
-  };
+    // Activate RGB-split layers even when idle
+    el.classList.add('glitch');
+    if (!el.querySelector('.scan')){
+      const scan = document.createElement('div');
+      scan.className = 'scan';
+      el.appendChild(scan);
+    }
 
-  let burstId, nextBurstAt = Date.now() + 2500;
-
-  function render(){
-    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-    el.style.fontSize = Math.min(Math.max(vw*0.36,96),900) + 'px';
-    el.style.lineHeight = '1';
-    const cs = getComputedStyle(root);
-    el.style.color = (root.getAttribute('data-theme') || 'dark') === 'light'
-      ? (cs.getPropertyValue('--text').trim() || '#0b1530')
-      : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
-
-    // opacity ramps with scroll
-    const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
-    const sc=(h.scrollTop||document.body.scrollTop);
-    const t = Math.min(1, max ? sc/(max*0.35) : 0);
-    root.style.setProperty('--clock-opacity', (0.05 + t*0.25).toFixed(3));
-
-    if (!el.classList.contains('bursting')) setClockText(timeHM());
-  }
-
-  function burst(){
-    el.classList.add('bursting');
-    const start = performance.now();
-    const dur = 350 + Math.random()*400;
-
-    cancelAnimationFrame(burstId);
-    const step = (now) => {
-      const p = (now - start) / dur;
-      if (p >= 1){
-        el.classList.remove('bursting');
-        setClockText(timeHM());
-        nextBurstAt = Date.now() + (2500 + Math.random()*5500);
-        return;
-      }
-      const arr = timeHM().split('');
-      const swaps = 2 + Math.floor(Math.random()*4);
-      for (let i=0;i<swaps;i++){
-        const idx = Math.floor(Math.random()*arr.length);
-        if (arr[idx] === ':') continue;
-        arr[idx] = randGlyph();
-      }
-      setClockText(arr.join(''));
-      burstId = requestAnimationFrame(step);
+    const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°˙•◦·○●◯◎◇◆△▲▽▼▣▤▥▦▧▨▩◢◣◤◥▰▱▄▀▗▖▝▘╳╱╲│┃─━┼┤┘┐┌└┴┬├╭╮╯╰◤◥◣◢';
+    const randGlyph = () => GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+    const timeHM = () => {
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     };
-    burstId = requestAnimationFrame(step);
+    const setClockText = (s) => {
+      el.dataset.text = s;
+      el.textContent  = s;
+      el.setAttribute('aria-label', `Current time ${s}`);
+    };
+
+    let burstId, nextBurstAt = Date.now() + 2500;
+
+    function render(){
+      const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+      el.style.fontSize = Math.min(Math.max(vw*0.36,96),900) + 'px';
+      el.style.lineHeight = '1';
+      const cs = getComputedStyle(root);
+      el.style.color = (root.getAttribute('data-theme') || 'dark') === 'light'
+        ? (cs.getPropertyValue('--text').trim() || '#0b1530')
+        : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
+
+      // opacity ramps with scroll (fallback keeps it visible)
+      const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+      const sc=(h.scrollTop||document.body.scrollTop);
+      const t = Math.min(1, max ? sc/(max*0.35) : 0);
+      root.style.setProperty('--clock-opacity', (0.06 + t*0.25).toFixed(3));
+
+      if (!el.classList.contains('bursting')) setClockText(timeHM());
+    }
+
+    function burst(){
+      el.classList.add('bursting');
+      const start = performance.now();
+      const dur = 350 + Math.random()*400;
+
+      cancelAnimationFrame(burstId);
+      const step = (now) => {
+        const p = (now - start) / dur;
+        if (p >= 1){
+          el.classList.remove('bursting');
+          setClockText(timeHM());
+          nextBurstAt = Date.now() + (2500 + Math.random()*5500);
+          return;
+        }
+        const arr = timeHM().split('');
+        const swaps = 2 + Math.floor(Math.random()*4);
+        for (let i=0;i<swaps;i++){
+          const idx = Math.floor(Math.random()*arr.length);
+          if (arr[idx] === ':') continue;
+          arr[idx] = randGlyph();
+        }
+        setClockText(arr.join(''));
+        burstId = requestAnimationFrame(step);
+      };
+      burstId = requestAnimationFrame(step);
+    }
+
+    render(); setClockText(timeHM());
+    setInterval(() => { render(); if (Date.now() >= nextBurstAt) burst(); }, 1000);
+    el.addEventListener('click', burst);
+    addEventListener('resize', render, {passive:true});
+    new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
   }
 
-  render(); setClockText(timeHM());
-  setInterval(() => { render(); if (Date.now() >= nextBurstAt) burst(); }, 1000);
-  el.addEventListener('click', burst);
-  addEventListener('resize', render, {passive:true});
-  new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
+  // Safe boot regardless of where the script is loaded
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bootClock, {once:true});
+  } else {
+    // If DOM is already ready, run ASAP on next frame
+    requestAnimationFrame(bootClock);
+  }
 })();
+
 
 /* Small badge clock (top-right mini clock) */
 (() => {
@@ -268,3 +289,4 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
+
