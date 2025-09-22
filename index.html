@@ -768,18 +768,36 @@ dotnet add package CerbiStream.GovernanceAnalyzer
       slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=>open(img.dataset.full || img.currentSrc || img.src)));
     })();
 
-    // POP-ART rotator — full-bleed
-    (function(){
-      const el=document.getElementById('sigRotator'); if(!el) return;
-      const images=[
-        'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
-        'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
-        'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
-        'assets/popart/popart-10.png'
-      ];
-      images.forEach((src,idx)=>{ const img=new Image(); img.src=src; img.alt='Cerbi pop-art '+(idx+1); if(idx===0) img.className='show'; el.appendChild(img);});
-      let i=0; setInterval(()=>{ const imgs=[...el.querySelectorAll('img')]; imgs.forEach((im,idx)=>im.classList.toggle('show', idx===i)); i=(i+1)%imgs.length; }, 3500);
-    })();
+<script>
+  // POP-ART rotator — full-bleed, one image at a time
+  (function(){
+    const el = document.getElementById('sigRotator'); if(!el) return;
+
+    const sources = [
+      'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
+      'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
+      'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
+      'assets/popart/popart-10.png'
+    ];
+
+    el.innerHTML = '';                        // ensure no stray nodes
+    const imgs = sources.map((src,idx) => {
+      const im = new Image();
+      im.src = src; im.alt = 'Cerbi pop-art ' + (idx+1);
+      if(idx === 0) im.className = 'is-active';
+      el.appendChild(im);
+      return im;
+    });
+
+    let i = 0;
+    setInterval(() => {
+      imgs[i].classList.remove('is-active');
+      i = (i + 1) % imgs.length;
+      imgs[i].classList.add('is-active');
+    }, 3500);
+  })();
+</script>
+
 
     // Live governance demo
     (function(){
