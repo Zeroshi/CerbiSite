@@ -404,6 +404,7 @@ body.scrolled .ribbon{ transform: translateY(calc(-1 * var(--ribbon-h))); }
 .sig-rotator{
   position:relative; width:100vw; margin-left:calc(50% - 50vw);
   height:clamp(280px,58vw,720px); overflow:hidden;
+  z-index: 0; /* ensure pop-art sits above background clock (which uses negative z-index) */
 }
 .sig-rotator img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
