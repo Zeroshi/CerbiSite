@@ -885,6 +885,26 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       let spellIndex = 0;
       let spellTicks = 0; // small delay between letters
 
+      // Start a spell-out animation programmatically
+      function startSpell(){
+        if(spellActive) return;
+        spellActive = true; spellIndex = 0; spellTicks = 0;
+        setMode('words');
+        // briefly boost size/opacity for emphasis
+        const prevScale = baseScale;
+        baseScale = Math.min(2, Math.max(0.8, baseScale * 1.12));
+        el.style.transition = 'transform .28s ease, opacity .28s ease';
+        el.style.transform = `scale(${baseScale})`;
+        const prevOpacity = el.style.opacity || getComputedStyle(el).opacity;
+        el.style.opacity = Math.max(0.85, parseFloat(prevOpacity) || 0.9);
+        // after spell completes, restore size/opacity gradually
+        setTimeout(()=>{
+          baseScale = prevScale;
+          el.style.transform = `scale(${baseScale})`;
+          el.style.opacity = '';
+        }, 5200);
+      }
+
       function setMode(m){
         mode = m;
         el.classList.remove('mode-time','mode-glitch','mode-words');
@@ -950,6 +970,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
 
       setMode('time'); tick(); setInterval(tick, 900);
+      // Auto-schedule occasional CERBI spell-outs (randomized interval)
+      (function scheduleSpell(){
+        const delay = 18000 + Math.floor(Math.random()*22000); // 18–40s
+        setTimeout(()=>{
+          if(document.hidden) { scheduleSpell(); return; }
+          startSpell();
+          // return to time mode after the spell finishes (approx)
+          setTimeout(()=>{ if(mode==='words') setMode('time'); spellActive=false; }, 5200);
+          scheduleSpell();
+        }, delay);
+      })();
       if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);} 
     })();
   </script>
