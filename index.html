@@ -2,14 +2,19 @@
 <html lang="en" data-theme="dark">
 <head>
   <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag(){ dataLayer.push(arguments); }
   gtag('js', new Date());
 
-  gtag('config', 'G-HQ6M9SCWYH');
+  // Send page_view automatically; set debug via URL ?debug_mode=1
+  gtag('config', 'G-HQ6M9SCWYH', {
+    send_page_view: true
+  });
 </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
@@ -644,6 +649,41 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               window.addEventListener('message', onMsg, false);
             })();
           </script>
+          <script>
+(function(){
+  // Try to read GA4 client_id from the _ga cookie (works for most cases)
+  function getGaClientId(){
+    const c = document.cookie.split('; ').find(x=>x.startsWith('_ga='));
+    if(!c) return null;
+    const v = decodeURIComponent(c.split('=')[1] || '');
+    // Formats vary: GA1.2.XXXXXXXXX.YYYYYYYYY
+    const parts = v.split('.');
+    return parts.length >= 4 ? (parts[2] + '.' + parts[3]) : null;
+  }
+
+  // Append client_id to JotForm iframe URL for server-side webhook/MP use later
+  const ifr = document.getElementById('contact-iframe');
+  if (ifr){
+    const cid = getGaClientId();
+    if (cid){
+      try{
+        const u = new URL(ifr.src);
+        u.searchParams.set('client_id', cid);
+        ifr.src = u.toString();
+      }catch(e){}
+    }
+  }
+
+  // Optional: if JotForm redirects to your site with #thanks, treat as submit
+  if (location.hash === '#thanks'){
+    try{
+      gtag('event','request_access_submit',{method:'jotform'});
+      gtag('event','generate_lead'); // GA4 standard event (mark as conversion if you want)
+    }catch(e){}
+  }
+})();
+</script>
+
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
       </div>
@@ -1123,5 +1163,68 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       setTimeout(refresh,250);
     })();
   </script>
+
+  <script>
+(function(){
+  // --- helpers ---
+  function fire(name, params){ try{ gtag('event', name, params||{}); }catch(e){} }
+
+  // Theme as a user property (shows up after next event)
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  gtag('set', 'user_properties', { ui_theme: theme });
+
+  // Ribbon → Request Access (Jotform link)
+  document.querySelectorAll('a[href*="jotform.com/252385904589067"]').forEach(a=>{
+    a.addEventListener('click', ()=> fire('request_access_click', {location:'ribbon'}));
+  });
+
+  // Contact (FAB or links to #contact)
+  document.querySelectorAll('a[href^="#contact"]').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      fire('contact_open', {source: a.classList.contains('contact-fab') ? 'fab' : 'link'});
+    });
+  });
+
+  // GitHub CTA
+  document.querySelectorAll('a[href*="github.com/Zeroshi/Cerbi-CerbiStream"]').forEach(a=>{
+    a.addEventListener('click', ()=> fire('github_click', {area:'nav_or_cta'}));
+  });
+
+  // Governance demo PII toggle
+  const pii = document.getElementById('piiSwitch');
+  if (pii){
+    pii.addEventListener('click', ()=>{
+      const on = pii.getAttribute('aria-pressed') === 'true';
+      fire('demo_toggle_pii', {enabled: !on});
+    });
+  }
+
+  // Dashboard carousel → open full image
+  document.querySelectorAll('#dashSlider img').forEach(img=>{
+    img.addEventListener('click', ()=>{
+      fire('carousel_fullscreen', {slide_alt: img.alt || 'unknown'});
+    });
+  });
+
+  // Command palette open (⌘K / Ctrl+K button)
+  document.getElementById('cmdBtn')?.addEventListener('click', ()=> fire('cmdk_open'));
+
+  // Section impressions (50% in view)
+  const io = ('IntersectionObserver' in window)
+    ? new IntersectionObserver((entries)=>{
+        entries.forEach(ent=>{
+          if(ent.isIntersecting){
+            const id = ent.target.id || 'unknown';
+            fire('section_view', {section:id});
+            io.unobserve(ent.target);
+          }
+        });
+      },{threshold:.5})
+    : null;
+  if (io) document.querySelectorAll('section[id]').forEach(s=> io.observe(s));
+
+})();
+</script>
+
 </body>
 </html>
