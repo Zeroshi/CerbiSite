@@ -31,15 +31,8 @@
     #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
     /* Microsoft Partner slightly larger in footer */
     .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-    /* Contact iframe wider on desktop */
-    @media (min-width:900px){
-      /* Allow the contact form to expand on large screens */
-      #contact iframe{
-        width:100%;
-        max-width:1400px; /* increased from 1100px to widen the form */
-        margin:0 auto; display:block;
-      }
-    }
+    /* Contact iframe responsive: fill container on small screens, cap at ~900px on desktop */
+    @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
     /* Dynamic background container */
     #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
     #dynamic-bg canvas{ width:100%; height:100%; display:block }
@@ -585,7 +578,32 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 glass tilt" style="padding:16px">
           <div class="glare"></div>
-          <iframe title="Contact Cerbi" id="contact-iframe" src="https://form.jotform.com/252385904589067" style="width:752px;height:310px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"></iframe>
+          <iframe
+            title="Contact Cerbi"
+            id="contact-iframe"
+            src="https://form.jotform.com/252385904589067"
+            style="width:100%;max-width:900px;min-height:900px;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"
+          ></iframe>
+          <script>
+            (function(){
+              // Auto-resize JotForm iframe height via postMessage, with a min-height safety
+              var ifr = document.getElementById('contact-iframe');
+              function onMsg(e){
+                try{
+                  var host = new URL(e.origin).hostname || '';
+                  if(!/jotform\.com$/i.test(host)) return; // only accept messages from jotform
+                }catch(_){}
+                var data = e.data;
+                var args = (typeof data === 'object') ? data : String(data || '').split(':');
+                if(args[0] === 'setHeight'){
+                  var h = parseInt(args[1], 10);
+                  if(!isNaN(h) && ifr){ ifr.style.height = Math.max(900, h) + 'px'; }
+                }
+                if(args[0] === 'scrollIntoView' && ifr){ try{ ifr.scrollIntoView(); }catch(_){} }
+              }
+              window.addEventListener('message', onMsg, false);
+            })();
+          </script>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
       </div>
