@@ -420,7 +420,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
+  <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
@@ -428,6 +428,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
           <div class="sr-only" aria-live="polite"></div>
 
+          <!-- ✅ All slides live inside this single viewport -->
           <div class="showcase-viewport">
             <figure class="slide active">
               <img
@@ -459,45 +460,45 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             <figure class="slide">
               <img
-                width="1600" height="1200"
-                src="assets/screenshots/cerbishield-violations-1200x900.jpg"
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
                 srcset="
                   assets/screenshots/cerbishield-violations-2400x1800.jpg 1x,
-                  assets/screenshots/cerbishield-violations-2400x1800.jpg 2x
+                  assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
                 "
                 sizes="100vw"
                 alt="CerbiShield — Violations"
                 data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
                 loading="lazy" decoding="async">
             </figure>
-          </div>
 
-                      <figure class="slide">
+            <!-- ✅ New: Settings slide -->
+            <figure class="slide">
               <img
-                width="1600" height="1200"
+                width="1600" height="900"
                 src="assets/screenshots/cerbishield-settings-1200x900.jpg"
                 srcset="
                   assets/screenshots/cerbishield-settings-1200x900.jpg 1x,
-                  assets/screenshots/cerbishield-settings-1200x900.jpg 2x
+                  assets/screenshots/cerbishield-settings-2400x1800.jpg 2x
                 "
                 sizes="100vw"
-                alt="CerbiShield — Violations"
-                data-full="assets/screenshots/cerbishield-settings-1200x900.jpg"
+                alt="CerbiShield — Settings"
+                data-full="assets/screenshots/cerbishield-settings-2400x1800.jpg"
                 loading="lazy" decoding="async">
             </figure>
-          </div>
 
-                    <figure class="slide">
+            <!-- ✅ New: Deploy slide -->
+            <figure class="slide">
               <img
-                width="1600" height="1200"
+                width="1600" height="900"
                 src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
                 srcset="
                   assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x,
-                  assets/screenshots/cerbishield-Deploy-1600x900.jpg 2x
+                  assets/screenshots/cerbishield-Deploy-3200x1800.jpg 2x
                 "
                 sizes="100vw"
-                alt="CerbiShield — Violations"
-                data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                alt="CerbiShield — Deploy"
+                data-full="assets/screenshots/cerbishield-Deploy-3200x1800.jpg"
                 loading="lazy" decoding="async">
             </figure>
           </div>
