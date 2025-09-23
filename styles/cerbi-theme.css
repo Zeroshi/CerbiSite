@@ -228,7 +228,7 @@ h3{font-size:clamp(18px,2.2vw,22px)}
 #bg-clock{
   position:fixed; inset:0; display:grid; place-items:center;
   pointer-events:none; user-select:none;
-  z-index:-1; /* place behind modules/content but above background layers */
+  z-index:20; /* above background layers, below main content */
   mix-blend-mode: normal;
   color: var(--muted,#ffffff);
   font-weight:900; letter-spacing:.02em; text-transform:uppercase;
@@ -404,7 +404,7 @@ body.scrolled .ribbon{ transform: translateY(calc(-1 * var(--ribbon-h))); }
 .sig-rotator{
   position:relative; width:100vw; margin-left:calc(50% - 50vw);
   height:clamp(280px,58vw,720px); overflow:hidden;
-  z-index: 0; /* ensure pop-art sits above background clock (which uses negative z-index) */
+  z-index: 40; /* ensure pop-art sits above background clock and main content */
 }
 .sig-rotator img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
