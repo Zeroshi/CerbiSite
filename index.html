@@ -741,7 +741,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
       function size(){
         const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        el.style.fontSize=Math.min(Math.max(vw*0.34,96),900)+'px';
+        const factor = vw < 820 ? 0.44 : 0.34;
+        el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
         el.style.lineHeight='1';
         const theme=document.documentElement.getAttribute('data-theme')||'dark';
         el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
@@ -753,10 +754,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
       }
       function fade(){
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        document.documentElement.style.setProperty('--clock-opacity', (0.14 + t*0.26).toFixed(3));
+        const base = vw < 820 ? 0.10 : 0.14;
+        const range = vw < 820 ? 0.20 : 0.26;
+        document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
