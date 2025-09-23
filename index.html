@@ -2,18 +2,13 @@
 <html lang="en" data-theme="dark">
 <head>
   <!-- Google tag (gtag.js) -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-
-  // Send page_view automatically; set debug via URL ?debug_mode=1
-  gtag('config', 'G-HQ6M9SCWYH', {
-    send_page_view: true
-  });
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-HQ6M9SCWYH', { send_page_view: true });
+  </script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,7 +21,7 @@
         var saved = localStorage.getItem('theme') || localStorage.getItem('cerbi-theme');
         if(saved) document.documentElement.setAttribute('data-theme', saved);
         else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme','light');
-      }catch(e){ /* ignore */ }
+      }catch(e){}
     })();
   </script>
 
@@ -45,15 +40,22 @@
     #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
     /* Microsoft Partner slightly larger in footer */
     .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-    /* Contact iframe responsive: fill container on small screens, cap at ~900px on desktop */
-    @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
+
+    /* CONTACT WIDTH FIX
+       - Removed old rule that capped #contact iframe at max-width:900px
+       - Use a responsive wrapper so the form can be wider on desktop */
+    .contact-wrap{ margin-inline:auto; width:clamp(680px, 90vw, 1100px); }
+    @media (max-width:760px){ .contact-wrap{ width:100%; } }
+
     /* Dynamic background container */
     #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
     #dynamic-bg canvas{ width:100%; height:100%; display:block }
+
     /* Theme diagnostic badge (non-intrusive) */
     #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
     #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
   </style>
+
   <!-- Favicons / app icons -->
   <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/favicon-16x16.png" />
@@ -434,7 +436,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-  <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
+    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
@@ -614,7 +616,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- CONTACT -->
+    <!-- CONTACT (fixed width behavior) -->
     <section id="contact" class="container section">
       <div class="eyebrow">Let’s talk</div>
       <h2>Get in <span class="hl">Touch</span></h2>
@@ -623,12 +625,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 glass tilt" style="padding:16px">
           <div class="glare"></div>
-          <iframe
-            title="Contact Cerbi"
-            id="contact-iframe"
-            src="https://form.jotform.com/252385904589067"
-            style="width:100%;max-width:900px;min-height:900px;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"
-          ></iframe>
+
+          <!-- Wider, responsive wrapper -->
+          <div class="contact-wrap">
+            <iframe
+              title="Contact Cerbi"
+              id="contact-iframe"
+              src="https://form.jotform.com/252385904589067"
+              style="width:100%;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block"
+            ></iframe>
+          </div>
+
           <script>
             (function(){
               // Auto-resize JotForm iframe height via postMessage, with a min-height safety
@@ -644,45 +651,43 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                   var h = parseInt(args[1], 10);
                   if(!isNaN(h) && ifr){ ifr.style.height = Math.max(900, h) + 'px'; }
                 }
-                if(args[0] === 'scrollIntoView' && ifr){ try{ ifr.scrollIntoView(); }catch(_){} }
+                if(args[0] === 'scrollIntoView' && ifr){ try{ ifr.scrollIntoView({block:'start',behavior:'smooth'}); }catch(_){} }
               }
               window.addEventListener('message', onMsg, false);
             })();
           </script>
+
           <script>
-(function(){
-  // Try to read GA4 client_id from the _ga cookie (works for most cases)
-  function getGaClientId(){
-    const c = document.cookie.split('; ').find(x=>x.startsWith('_ga='));
-    if(!c) return null;
-    const v = decodeURIComponent(c.split('=')[1] || '');
-    // Formats vary: GA1.2.XXXXXXXXX.YYYYYYYYY
-    const parts = v.split('.');
-    return parts.length >= 4 ? (parts[2] + '.' + parts[3]) : null;
-  }
-
-  // Append client_id to JotForm iframe URL for server-side webhook/MP use later
-  const ifr = document.getElementById('contact-iframe');
-  if (ifr){
-    const cid = getGaClientId();
-    if (cid){
-      try{
-        const u = new URL(ifr.src);
-        u.searchParams.set('client_id', cid);
-        ifr.src = u.toString();
-      }catch(e){}
-    }
-  }
-
-  // Optional: if JotForm redirects to your site with #thanks, treat as submit
-  if (location.hash === '#thanks'){
-    try{
-      gtag('event','request_access_submit',{method:'jotform'});
-      gtag('event','generate_lead'); // GA4 standard event (mark as conversion if you want)
-    }catch(e){}
-  }
-})();
-</script>
+            (function(){
+              // Try to read GA4 client_id from the _ga cookie
+              function getGaClientId(){
+                const c = document.cookie.split('; ').find(x=>x.startsWith('_ga='));
+                if(!c) return null;
+                const v = decodeURIComponent(c.split('=')[1] || '');
+                const parts = v.split('.');
+                return parts.length >= 4 ? (parts[2] + '.' + parts[3]) : null;
+              }
+              // Append client_id to JotForm iframe URL
+              const ifr = document.getElementById('contact-iframe');
+              if (ifr){
+                const cid = getGaClientId();
+                if (cid){
+                  try{
+                    const u = new URL(ifr.src);
+                    u.searchParams.set('client_id', cid);
+                    ifr.src = u.toString();
+                  }catch(e){}
+                }
+              }
+              // Optional: treat #thanks as submit
+              if (location.hash === '#thanks'){
+                try{
+                  gtag('event','request_access_submit',{method:'jotform'});
+                  gtag('event','generate_lead');
+                }catch(e){}
+              }
+            })();
+          </script>
 
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
         </div>
@@ -732,7 +737,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
-      // Keep the clock visible above background layers but behind the main UI
       el.style.zIndex='0'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
       el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
       if(!el.textContent || el.textContent.trim()===''){
@@ -1003,29 +1007,24 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const el = document.getElementById('bg-clock');
       if(!el) return;
 
-      // Expanded phrases and playful glyphs inspired by "Love, Death & Robots"
       const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', '❤', '☠', '🤖', 'LDR', 'ANIM', 'MECHA', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
       let mode = 'time';
       let baseScale = 1.0;
-      // Spell-out sequence config
       const SPELL = 'CERBI';
       let spellActive = false;
       let spellIndex = 0;
-      let spellTicks = 0; // small delay between letters
+      let spellTicks = 0;
 
-      // Start a spell-out animation programmatically
       function startSpell(){
         if(spellActive) return;
         spellActive = true; spellIndex = 0; spellTicks = 0;
         setMode('words');
-        // briefly boost size/opacity for emphasis
         const prevScale = baseScale;
         baseScale = Math.min(2, Math.max(0.8, baseScale * 1.12));
         el.style.transition = 'transform .28s ease, opacity .28s ease';
         el.style.transform = `scale(${baseScale})`;
         const prevOpacity = el.style.opacity || getComputedStyle(el).opacity;
         el.style.opacity = Math.max(0.85, parseFloat(prevOpacity) || 0.9);
-        // after spell completes, restore size/opacity gradually
         setTimeout(()=>{
           baseScale = prevScale;
           el.style.transform = `scale(${baseScale})`;
@@ -1057,25 +1056,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             el.textContent = t;
           }
         } else if(mode==='words'){
-          // Occasionally run a short spell-out animation for "CERBI"
           if(!spellActive && Math.random() < 0.12){
             spellActive = true; spellIndex = 0; spellTicks = 0;
           }
-
           if(spellActive){
-            // reveal one letter every 2 ticks to give a slow-typing effect
-            if(spellTicks++ % 2 === 0){
-              spellIndex++;
-            }
+            if(spellTicks++ % 2 === 0){ spellIndex++; }
             const out = SPELL.slice(0, Math.min(spellIndex, SPELL.length));
             el.dataset.text = out || SPELL.charAt(0);
             el.textContent = el.dataset.text;
             if(spellIndex >= SPELL.length){
-              // hold full word for a moment then exit spell mode
               if(spellTicks > SPELL.length * 4){ spellActive = false; spellIndex = 0; spellTicks = 0; }
             }
           } else {
-            // pick a random fun phrase or glyph
             const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
             el.dataset.text = choice;
             el.textContent = choice;
@@ -1098,13 +1090,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
 
       setMode('time'); tick(); setInterval(tick, 900);
-      // Auto-schedule occasional CERBI spell-outs (randomized interval)
       (function scheduleSpell(){
-        const delay = 18000 + Math.floor(Math.random()*22000); // 18–40s
+        const delay = 18000 + Math.floor(Math.random()*22000);
         setTimeout(()=>{
           if(document.hidden) { scheduleSpell(); return; }
           startSpell();
-          // return to time mode after the spell finishes (approx)
           setTimeout(()=>{ if(mode==='words') setMode('time'); spellActive=false; }, 5200);
           scheduleSpell();
         }, delay);
@@ -1165,66 +1155,57 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   </script>
 
   <script>
-(function(){
-  // --- helpers ---
-  function fire(name, params){ try{ gtag('event', name, params||{}); }catch(e){} }
+    (function(){
+      function fire(name, params){ try{ gtag('event', name, params||{}); }catch(e){} }
 
-  // Theme as a user property (shows up after next event)
-  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  gtag('set', 'user_properties', { ui_theme: theme });
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      gtag('set', 'user_properties', { ui_theme: theme });
 
-  // Ribbon → Request Access (Jotform link)
-  document.querySelectorAll('a[href*="jotform.com/252385904589067"]').forEach(a=>{
-    a.addEventListener('click', ()=> fire('request_access_click', {location:'ribbon'}));
-  });
+      document.querySelectorAll('a[href*="jotform.com/252385904589067"]').forEach(a=>{
+        a.addEventListener('click', ()=> fire('request_access_click', {location:'ribbon'}));
+      });
 
-  // Contact (FAB or links to #contact)
-  document.querySelectorAll('a[href^="#contact"]').forEach(a=>{
-    a.addEventListener('click', ()=>{
-      fire('contact_open', {source: a.classList.contains('contact-fab') ? 'fab' : 'link'});
-    });
-  });
-
-  // GitHub CTA
-  document.querySelectorAll('a[href*="github.com/Zeroshi/Cerbi-CerbiStream"]').forEach(a=>{
-    a.addEventListener('click', ()=> fire('github_click', {area:'nav_or_cta'}));
-  });
-
-  // Governance demo PII toggle
-  const pii = document.getElementById('piiSwitch');
-  if (pii){
-    pii.addEventListener('click', ()=>{
-      const on = pii.getAttribute('aria-pressed') === 'true';
-      fire('demo_toggle_pii', {enabled: !on});
-    });
-  }
-
-  // Dashboard carousel → open full image
-  document.querySelectorAll('#dashSlider img').forEach(img=>{
-    img.addEventListener('click', ()=>{
-      fire('carousel_fullscreen', {slide_alt: img.alt || 'unknown'});
-    });
-  });
-
-  // Command palette open (⌘K / Ctrl+K button)
-  document.getElementById('cmdBtn')?.addEventListener('click', ()=> fire('cmdk_open'));
-
-  // Section impressions (50% in view)
-  const io = ('IntersectionObserver' in window)
-    ? new IntersectionObserver((entries)=>{
-        entries.forEach(ent=>{
-          if(ent.isIntersecting){
-            const id = ent.target.id || 'unknown';
-            fire('section_view', {section:id});
-            io.unobserve(ent.target);
-          }
+      document.querySelectorAll('a[href^="#contact"]').forEach(a=>{
+        a.addEventListener('click', ()=>{
+          fire('contact_open', {source: a.classList.contains('contact-fab') ? 'fab' : 'link'});
         });
-      },{threshold:.5})
-    : null;
-  if (io) document.querySelectorAll('section[id]').forEach(s=> io.observe(s));
+      });
 
-})();
-</script>
+      document.querySelectorAll('a[href*="github.com/Zeroshi/Cerbi-CerbiStream"]').forEach(a=>{
+        a.addEventListener('click', ()=> fire('github_click', {area:'nav_or_cta'}));
+      });
+
+      const pii = document.getElementById('piiSwitch');
+      if (pii){
+        pii.addEventListener('click', ()=>{
+          const on = pii.getAttribute('aria-pressed') === 'true';
+          fire('demo_toggle_pii', {enabled: !on});
+        });
+      }
+
+      document.querySelectorAll('#dashSlider img').forEach(img=>{
+        img.addEventListener('click', ()=>{
+          fire('carousel_fullscreen', {slide_alt: img.alt || 'unknown'});
+        });
+      });
+
+      document.getElementById('cmdBtn')?.addEventListener('click', ()=> fire('cmdk_open'));
+
+      const io = ('IntersectionObserver' in window)
+        ? new IntersectionObserver((entries)=>{
+            for (const ent of entries){
+              if(ent.isIntersecting){
+                const id = ent.target.id || 'unknown';
+                fire('section_view', {section:id});
+                io.unobserve(ent.target);
+              }
+            }
+          },{threshold:.5})
+        : null;
+      if (io) document.querySelectorAll('section[id]').forEach(s=> io.observe(s));
+
+    })();
+  </script>
 
 </body>
 </html>
