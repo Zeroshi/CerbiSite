@@ -622,7 +622,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
-      el.style.zIndex='900'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
+      // Keep the clock behind page content (match `styles/cerbi-theme.css` rule `#bg-clock { z-index: -1 }`)
+      el.style.zIndex='-1'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
       el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
       if(!el.textContent || el.textContent.trim()===''){
         var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
@@ -852,7 +853,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }'
           : '{ "status":"ok", "policyVersion":"v1.3.2" }';
       }
-      btn.addEventListener('click', ()=>{
+      btn.addEventListener('click',()=>{
         const now=btn.getAttribute('aria-pressed')==='true';
         btn.setAttribute('aria-pressed', now?'false':'true');
         render();
