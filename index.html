@@ -81,7 +81,7 @@
 
       <nav id="primaryNav" class="nav-links" aria-label="Primary">
         <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
-        <a href="#ecosystem">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
+        <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
         <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a><a href="#contact">Contact</a>
       </nav>
@@ -827,8 +827,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
       const overlay=document.getElementById('lightbox');
       const big=document.getElementById('lightboxImg');
-      const open=(src)=>{ big.src=src; overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; };
-      const close=()=>{ overlay.setAttribute('aria-hidden','true'); big.removeAttribute('src'); document.body.style.overflow=''; };
+      let prevOverflow='';
+      const open=(src)=>{
+        if(!overlay||!big) return;
+        big.src=src;
+        overlay.removeAttribute('hidden');
+        overlay.setAttribute('aria-hidden','false');
+        prevOverflow = document.body.style.overflow || '';
+        document.body.style.overflow='hidden';
+      };
+      const close=()=>{
+        if(!overlay||!big) return;
+        overlay.setAttribute('aria-hidden','true');
+        overlay.setAttribute('hidden','');
+        big.removeAttribute('src');
+        document.body.style.overflow = prevOverflow;
+      };
       overlay.querySelector('.close')?.addEventListener('click', close);
       overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && overlay.getAttribute('aria-hidden')==='false') close(); });
@@ -846,7 +860,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
         'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
         'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
-        'assets/popart/popart-10.png', 'assets/popart/popart-11.png'
+        'assets/popart/popart-10.png'
       ];
       el.innerHTML = '';
       const imgs = sources.map((src, idx) => {
