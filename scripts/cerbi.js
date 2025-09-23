@@ -91,13 +91,15 @@
     };
 
     let burstId, nextBurstAt = Date.now() + 2500;
+    // occasional spell-out (CERBI) scheduling
+    let nextSpellAt = Date.now() + 8000 + Math.random()*12000;
 
     function render(){
       const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
       el.style.fontSize = Math.min(Math.max(vw*0.36,96),900) + 'px';
       el.style.lineHeight = '1';
       const cs = getComputedStyle(root);
-      el.style.color = (root.getAttribute('data-theme') || 'dark') === 'light'
+      el.style.color = (root.getAttribute('data-theme') || 'light') === 'light'
         ? (cs.getPropertyValue('--text').trim() || '#0b1530')
         : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
 
@@ -110,6 +112,46 @@
       el.style.opacity = getComputedStyle(root).getPropertyValue('--clock-opacity') || el.style.opacity;
 
       if (!el.classList.contains('bursting')) setClockText(timeHM());
+    }
+
+    // Spell-out animation: reveal "CERBI" one letter at a time, then a glitchy partial stage
+    function spellCERBI(){
+      if (el.classList.contains('spelling') || el.classList.contains('bursting')) return;
+      el.classList.add('spelling');
+      const WORD = ['C','E','R','B','I'];
+      let step = 0;
+
+      const revealStep = () => {
+        setClockText(WORD.slice(0, step+1).join(''));
+        step++;
+        if (step < WORD.length) setTimeout(revealStep, 380 + Math.random()*160);
+        else setTimeout(runBrokenStage, 260);
+      };
+
+      const runBrokenStage = () => {
+        // run a few frames of heavy glitching (random glyph substitutions)
+        let frames = 0;
+        const maxFrames = 12 + Math.floor(Math.random()*10);
+        const anim = () => {
+          frames++;
+          const arr = WORD.slice();
+          for (let i=0;i<arr.length;i++){
+            if (Math.random() < 0.45) arr[i] = randGlyph();
+          }
+          setClockText(arr.join(''));
+          if (frames < maxFrames) requestAnimationFrame(anim);
+          else {
+            // show a few partially spelled variants (kinda broken)
+            const partials = [ 'CERBI', 'C?RBI', 'CE?BI', 'CER?I', '?ERBI', 'C?RB?' ];
+            setClockText(partials[Math.floor(Math.random()*partials.length)]);
+            // hold then restore time
+            setTimeout(()=>{ el.classList.remove('spelling'); setClockText(timeHM()); }, 800 + Math.random()*600);
+          }
+        };
+        requestAnimationFrame(anim);
+      };
+
+      revealStep();
     }
 
     function burst(){
@@ -140,8 +182,15 @@
     }
 
     render(); setClockText(timeHM());
-    setInterval(() => { render(); if (Date.now() >= nextBurstAt) burst(); }, 1000);
+    setInterval(() => {
+      render();
+      const now = Date.now();
+      if (now >= nextBurstAt) burst();
+      if (now >= nextSpellAt){ spellCERBI(); nextSpellAt = now + 12000 + Math.floor(Math.random()*32000); }
+    }, 1000);
     el.addEventListener('click', burst);
+    // Also trigger spell on double-click to let users force it
+    el.addEventListener('dblclick', (e)=>{ e.preventDefault(); spellCERBI(); });
     addEventListener('resize', render, {passive:true});
     new MutationObserver(render).observe(root, {attributes:true, attributeFilter:['data-theme']});
   }
