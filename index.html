@@ -622,8 +622,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
-      // Keep the clock behind page content (match `styles/cerbi-theme.css` rule `#bg-clock { z-index: -1 }`)
-      el.style.zIndex='-1'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
+      // Keep the clock visible above background layers but behind the main UI
+      el.style.zIndex='0'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
       el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
       if(!el.textContent || el.textContent.trim()===''){
         var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
@@ -875,9 +875,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const el = document.getElementById('bg-clock');
       if(!el) return;
 
-      const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
+      // Expanded phrases and playful glyphs inspired by "Love, Death & Robots"
+      const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', '❤', '☠', '🤖', 'LDR', 'ANIM', 'MECHA', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
       let mode = 'time';
       let baseScale = 1.0;
+      // Spell-out sequence config
+      const SPELL = 'CERBI';
+      let spellActive = false;
+      let spellIndex = 0;
+      let spellTicks = 0; // small delay between letters
 
       function setMode(m){
         mode = m;
@@ -903,9 +909,29 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             el.textContent = t;
           }
         } else if(mode==='words'){
-          const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
-          el.dataset.text = choice;
-          el.textContent = choice;
+          // Occasionally run a short spell-out animation for "CERBI"
+          if(!spellActive && Math.random() < 0.12){
+            spellActive = true; spellIndex = 0; spellTicks = 0;
+          }
+
+          if(spellActive){
+            // reveal one letter every 2 ticks to give a slow-typing effect
+            if(spellTicks++ % 2 === 0){
+              spellIndex++;
+            }
+            const out = SPELL.slice(0, Math.min(spellIndex, SPELL.length));
+            el.dataset.text = out || SPELL.charAt(0);
+            el.textContent = el.dataset.text;
+            if(spellIndex >= SPELL.length){
+              // hold full word for a moment then exit spell mode
+              if(spellTicks > SPELL.length * 4){ spellActive = false; spellIndex = 0; spellTicks = 0; }
+            }
+          } else {
+            // pick a random fun phrase or glyph
+            const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+            el.dataset.text = choice;
+            el.textContent = choice;
+          }
         }
       }
 
@@ -924,7 +950,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
 
       setMode('time'); tick(); setInterval(tick, 900);
-      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);}
+      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);} 
     })();
   </script>
 
