@@ -96,7 +96,9 @@
 
     function render(){
       const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-      el.style.fontSize = Math.min(Math.max(vw*0.36,96),900) + 'px';
+      // Mobile tweak: larger factor for small viewports
+      const sizeFactor = vw < 820 ? 0.44 : 0.36;
+      el.style.fontSize = Math.min(Math.max(vw*sizeFactor,96),900) + 'px';
       el.style.lineHeight = '1';
       const cs = getComputedStyle(root);
       el.style.color = (root.getAttribute('data-theme') || 'light') === 'light'
@@ -107,7 +109,10 @@
       const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
       const sc=(h.scrollTop||document.body.scrollTop);
       const t = Math.min(1, max ? sc/(max*0.35) : 0);
-      root.style.setProperty('--clock-opacity', (0.20 + t*0.25).toFixed(3));
+      // Mobile tweak: lower base/range to increase transparency on small screens
+      const base = vw < 820 ? 0.10 : 0.20;
+      const range = vw < 820 ? 0.18 : 0.25;
+      root.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       // reflect to inline style so browsers rendering old CSS still see it
       el.style.opacity = getComputedStyle(root).getPropertyValue('--clock-opacity') || el.style.opacity;
 
