@@ -9,7 +9,7 @@
 - Standardized correlation fields (app/env/tenant/trace).
 
 **Outcomes (first 8 weeks)**  
-- **–28%** indexed fields from rollups and dedupe.  
+- **â€“28%** indexed fields from rollups and dedupe.  
 - **Fewer broken charts**: stable field names/types across releases.  
 - **Audit-ready**: versioned profiles + violation metadata traceability.
 
@@ -28,4 +28,4 @@
 ```
 
 **Rollout tips**
-Start with one domain (auth/claims), ship relax-mode, then tighten rules over 1–2 sprints.
+Start with one domain (auth/claims), ship relax-mode, then tighten rules over 1â€“2 sprints.
