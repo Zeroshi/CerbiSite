@@ -1,7 +1,32 @@
+---
+title: "Security Overview"
+description: "How Cerbi approaches security, privacy, and safe telemetry."
+permalink: /docs/security/
+layout: default
+last_updated: 2025-09-25
+---
+
 # Security Overview
 
-- **Architecture**: Source-governed telemetry (build-time analyzer + runtime validator). Encryption options via `IEncryption` (AES/Base64/NoOp).
-- **Data minimization**: PII redaction and policy-driven fields; relax-mode preserves signals with violation tags.
-- **Access control** (CerbiShield, beta): Role-based access with audit history and profile versioning.
-- **Handling sensitive data**: We recommend excluding PII from logs entirely; when needed, mask at source per policy.
-- **Reporting**: security@cerbi.io for vulnerabilities. Please include reproduction steps and impact.
+**Architecture**
+- Source-governed telemetry: build-time analyzer + runtime validator
+- Encryption via `IEncryption` implementations: AES, Base64, or NoOp
+- File fallback with rotation for resilient logging
+
+**Data minimization**
+- PII redaction controlled by policy
+- Relax mode preserves signals while tagging violations
+- Stable schemas reduce accidental leakage
+
+**Access control (CerbiShield, beta)**
+- Role-based access control (RBAC)
+- Profile versioning with audit history and rollbacks
+
+**Handling sensitive data**
+- Recommended: exclude PII from logs entirely
+- If business-necessary, mask at source per policy and document justification
+
+**Reporting**
+- Please report vulnerabilities to **security@cerbi.io**
+- Include reproduction steps, expected vs. actual behavior, and impact
+- We will acknowledge receipt and follow up with status updates
