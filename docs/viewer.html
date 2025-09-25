@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cerbi — Document</title>
+  <title>Cerbi â€” Document</title>
   <link rel="stylesheet" href="../styles/cerbi-theme.css" />
   <link rel="stylesheet" href="../styles/cerbi-fixes.css" />
   <style>
@@ -12,36 +12,65 @@
     .doc h1,.doc h2,.doc h3{letter-spacing:.01em}
     .doc pre{overflow:auto;background:rgba(0,0,0,.4);padding:12px;border-radius:10px}
     .doc a{color:var(--accent);}
+    .error{padding:16px;border-radius:10px;background:#2b1a1a;border:1px solid #593030}
   </style>
 </head>
 <body>
   <main class="container">
-    <article id="md" class="doc">Loading…</article>
+    <article id="md" class="doc">Loadingâ€¦</article>
   </main>
 
   <!-- Marked (MD -> HTML) + DOMPurify (sanitize) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
   <script>
-    (async function () {
-      const el = document.getElementById('md');
-      const p = new URLSearchParams(location.search);
-      const file = p.get('file');
-      if (!file || !/^[\w\-\/\.]+\.md$/i.test(file)) { el.textContent = 'Missing or invalid file.'; return; }
-      try {
-        const res = await fetch('../' + file.replace(/^\.\/+/, ''), { cache: 'no-cache' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const md = await res.text();
-        const html = DOMPurify.sanitize(marked.parse(md));
-        el.innerHTML = html;
-        const h1 = el.querySelector('h1');
-        if(h1) document.title = h1.textContent + ' — Cerbi';
-        // GA4 custom event (safe guard if gtag present)
-        try { if (typeof gtag === 'function') { gtag('event','doc_view',{file:file}); } } catch(_){}
-      } catch (e) {
-        el.textContent = 'Could not load document.';
+  (async function () {
+    const box = document.getElementById('md');            // âœ… correct target
+    const params = new URLSearchParams(location.search);
+    let file = params.get('file') || '/docs/index.html';
+
+    // Normalize: treat file as root-absolute so /docs/viewer.html works with /docs/* targets
+    if (!file.startsWith('/')) file = '/' + file;
+
+    async function tryFetch(url) {
+      const res = await fetch(url, { cache: 'no-cache' });
+      return res.ok ? res.text() : null;
+    }
+
+    // 1) try exact path
+    let text = await tryFetch(file);
+
+    // 2) if .md not found, try Jekyll-built .html
+    if (!text && file.endsWith('.md')) {
+      text = await tryFetch(file.replace(/\.md$/, '.html'));
+      // If that exists and is a full HTML page, just go there.
+      if (text && /^\s*<!DOCTYPE html>|<html[\s>]/i.test(text)) {
+        location.replace(file.replace(/\.md$/, '.html'));  // âœ… redirect to the built page
+        return;
       }
-    })();
+    }
+
+    if (!text) {
+      box.innerHTML = `<div class="error">Could not load document.</div>`;
+      return;
+    }
+
+    // If it looks like a full HTML page, navigate to it instead of nesting it
+    if (/^\s*<!DOCTYPE html>|<html[\s>]/i.test(text)) {
+      location.replace(file);                              // âœ… redirect
+      return;
+    }
+
+    // Render Markdown safely
+    if (window.marked && window.DOMPurify) {
+      const html = marked.parse(text);
+      box.innerHTML = DOMPurify.sanitize(html);
+    } else {
+      // Fallback: raw pre
+      const esc = s => s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+      box.innerHTML = `<pre>${esc(text)}</pre>`;
+    }
+  })();
   </script>
 </body>
 </html>
