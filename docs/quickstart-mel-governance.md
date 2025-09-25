@@ -1,24 +1,19 @@
-# Quick Start — MEL Runtime Governance Only
+---
+title: "Quick Start â€” MEL Runtime Governance Only"
+description: "Use Cerbi runtime governance with Microsoft.Extensions.Logging (no logger swap)."
+permalink: /docs/quickstart-mel/
+layout: default
+---
 
-```
+# Quick Start - MEL Runtime Governance Only
+
+```bash
 dotnet add package Cerbi.MEL.Governance
-
-```
-
-**appsettings.json (example)**
-
-```
 {
-  "Cerbi": { "GovernanceProfile": "cerbi_governance.json", "Mode": "Relax" }
+  "Cerbi": {
+    "GovernanceProfile": "cerbi_governance.json",
+    "Mode": "Relax"
+  }
 }
-
-```
-
-**Startup**
-
-```
+// .NET Generic Host (Program.cs)
 builder.Logging.AddCerbiGovernance("cerbi_governance.json");
-
-```
-
-Violations are redacted and tagged; events continue to flow for visibility.
