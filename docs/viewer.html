@@ -7,11 +7,12 @@
   <link rel="stylesheet" href="../styles/cerbi-theme.css" />
   <link rel="stylesheet" href="../styles/cerbi-fixes.css" />
   <style>
+    :root{--pad:22px}
     main{max-width:900px;margin:calc(var(--nav-h,64px) + 24px) auto 80px;padding:0 16px}
-    .doc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:22px}
+    .doc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:var(--pad)}
     .doc h1,.doc h2,.doc h3{letter-spacing:.01em}
     .doc pre{overflow:auto;background:rgba(0,0,0,.4);padding:12px;border-radius:10px}
-    .doc a{color:var(--accent);}
+    .doc a{color:var(--accent)}
     .error{padding:16px;border-radius:10px;background:#2b1a1a;border:1px solid #593030}
   </style>
 </head>
@@ -25,50 +26,58 @@
   <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
   <script>
   (async function () {
-    const box = document.getElementById('md');            // ✅ correct target
+    const box = document.getElementById('md');
     const params = new URLSearchParams(location.search);
     let file = params.get('file') || '/docs/index.html';
 
-    // Normalize: treat file as root-absolute so /docs/viewer.html works with /docs/* targets
+    // Normalize to root-absolute so /docs/viewer.html works with /docs/*
     if (!file.startsWith('/')) file = '/' + file;
 
     async function tryFetch(url) {
-      const res = await fetch(url, { cache: 'no-cache' });
-      return res.ok ? res.text() : null;
-    }
-
-    // 1) try exact path
-    let text = await tryFetch(file);
-
-    // 2) if .md not found, try Jekyll-built .html
-    if (!text && file.endsWith('.md')) {
-      text = await tryFetch(file.replace(/\.md$/, '.html'));
-      // If that exists and is a full HTML page, just go there.
-      if (text && /^\s*<!DOCTYPE html>|<html[\s>]/i.test(text)) {
-        location.replace(file.replace(/\.md$/, '.html'));  // ✅ redirect to the built page
-        return;
+      try {
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) return null;
+        const text = await res.text();
+        return { url, text };
+      } catch (_) {
+        return null;
       }
     }
 
-    if (!text) {
-      box.innerHTML = `<div class="error">Could not load document.</div>`;
+    // Build candidate URLs in order of likelihood
+    const candidates = [ file ];
+    if (file.endsWith('.md')) {
+      candidates.push(file.replace(/\.md$/, '.html')); // /docs/x.html
+      candidates.push(file.replace(/\.md$/, ''));      // /docs/x
+      candidates.push(file.replace(/\.md$/, '/'));     // /docs/x/
+    }
+
+    // Try each candidate until one works
+    let hit = null;
+    for (const u of candidates) {
+      hit = await tryFetch(u);
+      if (hit) break;
+    }
+
+    if (!hit) {
+      box.innerHTML = '<div class="error">Could not load document.</div>';
       return;
     }
 
-    // If it looks like a full HTML page, navigate to it instead of nesting it
+    const { url, text } = hit;
+
+    // If what we fetched is a full HTML document, navigate to it (don’t nest <html> inside)
     if (/^\s*<!DOCTYPE html>|<html[\s>]/i.test(text)) {
-      location.replace(file);                              // ✅ redirect
+      location.replace(url);
       return;
     }
 
-    // Render Markdown safely
+    // Otherwise, render Markdown safely
     if (window.marked && window.DOMPurify) {
-      const html = marked.parse(text);
-      box.innerHTML = DOMPurify.sanitize(html);
+      box.innerHTML = DOMPurify.sanitize(marked.parse(text));
     } else {
-      // Fallback: raw pre
       const esc = s => s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-      box.innerHTML = `<pre>${esc(text)}</pre>`;
+      box.innerHTML = '<pre>' + esc(text) + '</pre>';
     }
   })();
   </script>
