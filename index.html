@@ -64,6 +64,13 @@
     .prose-doc th,.prose-doc td{ border:1px solid rgba(255,255,255,.08); padding:.5em .6em }
     .prose-doc img{ max-width:100%; height:auto; border-radius:8px; }
 
+    /* Lock page scroll only while a modal is open */
+    html.modal-open, body.modal-open { overflow: hidden !important; }
+
+    /* Add breathing room for the WHY value-rotator */
+    .value-rotator { padding-bottom: 16px; }
+    .value-rotator .dots { margin-top: 10px; padding-bottom: 6px; }
+
     /* Theme diagnostic badge (non-intrusive) */
     #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
     #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
@@ -983,59 +990,93 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       root.style.setProperty('--spot-y','16%');
     })();
 
-    // DOCS MODAL (intercept links → fetch & render Markdown in-theme)
+    // DOCS MODAL — robust: .doc-link only, class-based scroll lock, graceful fallback
     (function(){
-      const modal = document.getElementById('docbox');
+      const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
       if(!modal || !content) return;
 
-      function openModal(){ modal.removeAttribute('hidden'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-      function closeModal(){ modal.setAttribute('aria-hidden','true'); modal.setAttribute('hidden',''); content.innerHTML=''; document.body.style.overflow=''; }
+      const html = document.documentElement;
+      const body = document.body;
+      let fallbackHref = null;
 
-      modal.querySelector('.close')?.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
+      function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
+      function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
 
-      function isDocLink(a){ try{ return a && a.href && a.href.includes('docs/viewer.html?file='); } catch { return false; } }
-      function extractPath(href){
-        try{
-          const u = new URL(href, location.href);
-          return u.searchParams.get('file'); // e.g. docs/privacy.md
-        }catch{ return null; }
+      function openModal(){
+        modal.removeAttribute('hidden');
+        modal.setAttribute('aria-hidden','false');
+        lockScroll();
+      }
+      function closeModal(){
+        modal.setAttribute('aria-hidden','true');
+        modal.setAttribute('hidden','');
+        content.innerHTML = '';
+        fallbackHref = null;
+        unlockScroll();
       }
 
-      async function fetchAndRender(mdPath){
-        if(!mdPath){ content.innerHTML = '<p class="k">Unable to locate document.</p>'; return; }
+      modal.querySelector('.close')?.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
+
+      function isDocLink(a){
+        return a instanceof HTMLAnchorElement && a.classList.contains('doc-link');
+      }
+      function extractMdPath(href){
         try{
-          const resp = await fetch(mdPath, { cache:'no-store' });
-          if(!resp.ok){ content.innerHTML = '<p class="k">Failed to load document.</p>'; return; }
-          const md = await resp.text();
-          if(window.marked){
-            content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
-          } else {
-            // Fallback: minimal escape
-            content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
-            content.querySelector('pre').textContent = md;
-          }
-          content.scrollTop = 0;
-        }catch{
-          content.innerHTML = '<p class="k">Error loading document.</p>';
+          const url = new URL(href, location.href);
+          return url.searchParams.get('file'); // e.g. "docs/privacy.md"
+        }catch{ return null; }
+      }
+      async function fetchMd(absPath){
+        const url = new URL(absPath, location.origin).toString();
+        const res = await fetch(url, { cache:'no-store' });
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        return await res.text();
+      }
+      async function renderMarkdown(md){
+        if (window.marked) {
+          content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
+        } else {
+          const pre = document.createElement('pre');
+          pre.className = 'kbd'; pre.style.whiteSpace = 'pre-wrap';
+          pre.textContent = md;
+          content.replaceChildren(pre);
+        }
+        content.scrollTop = 0;
+      }
+
+      async function onDocClick(e){
+        const a = e.currentTarget;
+        if(!isDocLink(a)) return;
+        e.preventDefault();
+
+        const mdPath = extractMdPath(a.href);
+        fallbackHref = a.href;
+
+        openModal();
+        content.innerHTML = '<p class="k">Loading…</p>';
+
+        try{
+          const md = await fetchMd(mdPath);
+          await renderMarkdown(md);
+        }catch(err){
+          // Restore state, then navigate normally
+          closeModal();
+          location.href = fallbackHref;
         }
       }
 
       function attach(){
-        document.querySelectorAll('a.doc-link, footer a, #contact a, .nav a').forEach(a=>{
-          if(!isDocLink(a)) return;
-          a.addEventListener('click', async (e)=>{
-            e.preventDefault();
-            const mdPath = extractPath(a.href);
-            openModal();
-            content.innerHTML = '<p class="k">Loading…</p>';
-            await fetchAndRender(mdPath);
-          });
+        document.querySelectorAll('a.doc-link').forEach(a=>{
+          a.removeEventListener('click', onDocClick);
+          a.addEventListener('click', onDocClick);
         });
       }
-      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach); else attach();
+
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
+      else attach();
     })();
   </script>
 
