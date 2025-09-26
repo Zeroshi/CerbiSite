@@ -40,6 +40,13 @@
     /* Ensure screenshots don’t jump while loading */
     #dashboards .showcase-viewport img{ aspect-ratio:16/9; width:100%; height:auto; object-fit:contain; }
 
+    /* breathing room for value-rotator */
+    .value-rotator { padding-bottom: 16px; }
+    .value-rotator .dots { margin-top: 10px; padding-bottom: 6px; }
+
+    /* Lock page scroll only while modal is open */
+    html.modal-open, body.modal-open { overflow: hidden !important; }
+
     /* Themed markdown modal content (dark-aware) */
     .prose-doc{
       width:min(100vw, 960px);
@@ -64,16 +71,19 @@
     .prose-doc th,.prose-doc td{ border:1px solid rgba(255,255,255,.08); padding:.5em .6em }
     .prose-doc img{ max-width:100%; height:auto; border-radius:8px; }
 
-    /* Lock page scroll only while a modal is open */
-    html.modal-open, body.modal-open { overflow: hidden !important; }
+    /* visible overlay backdrop for the docs modal (in case content fails) */
+    #docbox.lightbox { background: rgba(0,0,0,.55); }
 
-    /* Add breathing room for the WHY value-rotator */
-    .value-rotator { padding-bottom: 16px; }
-    .value-rotator .dots { margin-top: 10px; padding-bottom: 6px; }
-
-    /* Theme diagnostic badge (non-intrusive) */
-    #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
-    #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
+    /* Basic lightbox shell (shared by screenshots + docs) */
+    .lightbox{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background:rgba(0,0,0,.5); z-index:1200;
+    }
+    .lightbox[hidden]{ display:none; }
+    .lightbox .close{
+      position:absolute; top:12px; right:12px;
+    }
+    #lightbox img{ max-width:min(96vw,1600px); max-height:90vh; border-radius:10px; }
   </style>
 
   <!-- Favicons / app icons -->
@@ -120,7 +130,7 @@
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
         <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
-        <!-- Docs open in themed modal -->
+        <!-- Company opens as modal -->
         <a href="docs/company.md" class="doc-link">Company</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -664,7 +674,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             })();
           </script>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">By submitting, you agree to our <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.</p>
+          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">
+            By submitting, you agree to our
+            <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our
+            <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
+          </p>
         </div>
       </div>
     </section>
@@ -705,13 +719,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- IMAGE LIGHTBOX -->
+  <!-- IMAGE LIGHTBOX: hidden by default -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- DOCS MODAL -->
+  <!-- DOCS MODAL (Markdown-rendered, themed) -->
   <div id="docbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
     <article id="docboxContent" class="prose-doc"></article>
@@ -743,7 +757,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <!-- marked (Markdown parser) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing, docs modal -->
+  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
     // Theme button wiring (fallback)
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
@@ -992,8 +1006,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       root.style.setProperty('--spot-x','82%');
       root.style.setProperty('--spot-y','16%');
     })();
+  </script>
 
-    /* ===== DOCS MODAL (robust, no 404 navigation) ===== */
+  <!-- ===== DOCS MODAL (robust, race-safe, scroll-safe) ===== -->
+  <script>
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -1002,10 +1018,26 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const html = document.documentElement;
       const body = document.body;
 
+      const showLoader = (msg='Loading…') => {
+        content.innerHTML =
+          '<div style="display:grid;place-items:center;min-height:240px;padding:24px">' +
+          '<div class="k">'+msg+'</div></div>';
+      };
+
+      const showError = (path, extra='') => {
+        content.innerHTML =
+          '<article class="prose-doc">' +
+          '<h2 style="margin-top:0">Unable to load document</h2>' +
+          '<p class="k">I tried: <code>'+ (path || '(unknown)') +'</code></p>' +
+          (extra ? '<p class="k">'+extra+'</p>' : '') +
+          '<p class="k">If this is a GitHub Pages site, confirm the file exists under <code>/docs/</code> with exact casing.</p>' +
+          '</article>';
+      };
+
       function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
       function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
 
-      function openModal(){
+      function actuallyOpenModal(){
         modal.removeAttribute('hidden');
         modal.setAttribute('aria-hidden','false');
         lockScroll();
@@ -1021,45 +1053,77 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
 
-      function getMdPathFromHref(href){
+      // Support both direct docs/*.md and legacy viewer.html?file=docs/*.md
+      function mdPathFromHref(href){
         try{
           const u = new URL(href, location.href);
-          // Support either direct md path (docs/*.md) or legacy viewer?file=docs/*.md
           const qfile = u.searchParams.get('file');
-          const direct = u.pathname.endsWith('.md') ? u.pathname + (u.search ? u.search : '') : null;
-          return qfile || direct || null;
+          if (qfile) return qfile;
+          if (u.pathname.endsWith('.md')) return u.pathname.replace(/^\//,'');
+          return null;
         }catch{ return null; }
       }
 
-      async function fetchAndRender(mdPath){
-        if(!mdPath){ content.innerHTML = '<p class="k">Unable to locate document.</p>'; return; }
-        // If mdPath is relative without leading slash, normalize it
-        if(!/^https?:\/\//i.test(mdPath) && !mdPath.startsWith('/')){
-          mdPath = '/' + mdPath.replace(/^\.?\//,'');
-        }
-        try{
-          const resp = await fetch(mdPath, { cache:'no-store' });
-          if(!resp.ok){ throw new Error('HTTP '+resp.status); }
-          const md = await resp.text();
-          if(window.marked){
-            content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
+      function waitForMarked(){
+        if (window.marked && typeof window.marked.parse === 'function') return Promise.resolve();
+        return new Promise(resolve=>{
+          if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            const i = setInterval(()=>{
+              if (window.marked) { clearInterval(i); resolve(); }
+            }, 30);
           } else {
-            content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
-            content.querySelector('pre').textContent = md;
+            window.addEventListener('DOMContentLoaded', ()=>{
+              const i = setInterval(()=>{
+                if (window.marked) { clearInterval(i); resolve(); }
+              }, 30);
+            }, { once:true });
           }
+          setTimeout(resolve, 800); // fallback to plaintext rendering
+        });
+      }
+
+      async function fetchMd(path){
+        const local = path.replace(/^\/+/,''); // 'docs/file.md'
+        try{
+          const r = await fetch(local, { cache:'no-store' });
+          if (r.ok) return { text: await r.text(), source: 'local', tried: [local] };
+          return { error: 'HTTP '+r.status, tried: [local] };
+        }catch(e){
+          return { error: String(e), tried: [local] };
+        }
+      }
+
+      async function openDocs(href){
+        const mdRel = mdPathFromHref(href);
+        actuallyOpenModal();
+        showLoader();
+
+        if(!mdRel){
+          showError('(no md path)', 'That link does not point to a Markdown file.');
+          return;
+        }
+
+        const res = await fetchMd(mdRel);
+        if (!res || res.error || !res.text){
+          showError(mdRel, res && res.error ? 'Fetch error: '+res.error : 'Unknown fetch error.');
+          return;
+        }
+
+        await waitForMarked();
+        if (window.marked && typeof window.marked.parse === 'function'){
+          content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
+          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
           content.scrollTop = 0;
-        }catch(err){
-          content.innerHTML = '<p class="k">Failed to load: <code>'+mdPath+'</code></p>';
+        } else {
+          content.innerHTML = '<article class="prose-doc"><pre class="kbd" style="white-space:pre-wrap"></pre></article>';
+          content.querySelector('pre').textContent = res.text;
         }
       }
 
       function onDocClick(e){
-        const a = e.currentTarget;
         e.preventDefault();
-        const mdPath = getMdPathFromHref(a.href);
-        openModal();
-        content.innerHTML = '<p class="k">Loading…</p>';
-        fetchAndRender(mdPath);
+        const a = e.currentTarget;
+        openDocs(a.getAttribute('href'));
       }
 
       function attach(){
@@ -1069,8 +1133,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         });
       }
 
-      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
-      else attach();
+      if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', attach, { once:true });
+      } else {
+        attach();
+      }
     })();
   </script>
 
