@@ -119,7 +119,10 @@
         <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
-        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a><a href="docs/viewer.html?file=docs/company.md" class="doc-link">Company</a><a href="#contact">Contact</a>
+        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
+        <!-- Docs open in themed modal -->
+        <a href="docs/company.md" class="doc-link">Company</a>
+        <a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
@@ -388,9 +391,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View full docs on GitHub →</a>
       </p>
       <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">
-        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
-        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/quickstart-mel-governance.md">MEL Governance Only</a>
-        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study (Claims)</a>
+        <a class="btn btn-ghost doc-link" href="docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
+        <a class="btn btn-ghost doc-link" href="docs/quickstart-mel-governance.md">MEL Governance Only</a>
+        <a class="btn btn-ghost doc-link" href="docs/case-study-claims.md">Case Study (Claims)</a>
       </div>
     </section>
 
@@ -661,7 +664,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             })();
           </script>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">By submitting, you agree to our <a class="doc-link" href="docs/viewer.html?file=docs/terms.md">Terms</a> and acknowledge our <a class="doc-link" href="docs/viewer.html?file=docs/privacy.md">Privacy Policy</a>.</p>
+          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">By submitting, you agree to our <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.</p>
         </div>
       </div>
     </section>
@@ -679,11 +682,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
         <!-- Docs open in themed modal -->
-        <a class="tag doc-link" href="docs/viewer.html?file=docs/privacy.md">Privacy</a>
-        <a class="tag doc-link" href="docs/viewer.html?file=docs/terms.md">Terms</a>
-        <a class="tag doc-link" href="docs/viewer.html?file=docs/security.md">Security</a>
-        <a class="tag doc-link" href="docs/viewer.html?file=docs/company.md">Company</a>
-        <a class="tag doc-link" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study</a>
+        <a class="tag doc-link" href="docs/privacy.md">Privacy</a>
+        <a class="tag doc-link" href="docs/terms.md">Terms</a>
+        <a class="tag doc-link" href="docs/security.md">Security</a>
+        <a class="tag doc-link" href="docs/company.md">Company</a>
+        <a class="tag doc-link" href="docs/case-study-claims.md">Case Study</a>
         <img class="partner-mini" src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" loading="lazy" decoding="async" />
       </div>
     </div>
@@ -702,13 +705,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- IMAGE LIGHTBOX: hidden by default, no broken img -->
+  <!-- IMAGE LIGHTBOX -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- DOCS MODAL (Markdown-rendered, themed) -->
+  <!-- DOCS MODAL -->
   <div id="docbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
     <article id="docboxContent" class="prose-doc"></article>
@@ -990,7 +993,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       root.style.setProperty('--spot-y','16%');
     })();
 
-    // DOCS MODAL — robust: .doc-link only, class-based scroll lock, graceful fallback
+    /* ===== DOCS MODAL (robust, no 404 navigation) ===== */
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -998,7 +1001,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
       const html = document.documentElement;
       const body = document.body;
-      let fallbackHref = null;
 
       function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
       function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
@@ -1012,7 +1014,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         modal.setAttribute('aria-hidden','true');
         modal.setAttribute('hidden','');
         content.innerHTML = '';
-        fallbackHref = null;
         unlockScroll();
       }
 
@@ -1020,52 +1021,45 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
 
-      function isDocLink(a){
-        return a instanceof HTMLAnchorElement && a.classList.contains('doc-link');
-      }
-      function extractMdPath(href){
+      function getMdPathFromHref(href){
         try{
-          const url = new URL(href, location.href);
-          return url.searchParams.get('file'); // e.g. "docs/privacy.md"
+          const u = new URL(href, location.href);
+          // Support either direct md path (docs/*.md) or legacy viewer?file=docs/*.md
+          const qfile = u.searchParams.get('file');
+          const direct = u.pathname.endsWith('.md') ? u.pathname + (u.search ? u.search : '') : null;
+          return qfile || direct || null;
         }catch{ return null; }
       }
-      async function fetchMd(absPath){
-        const url = new URL(absPath, location.origin).toString();
-        const res = await fetch(url, { cache:'no-store' });
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        return await res.text();
-      }
-      async function renderMarkdown(md){
-        if (window.marked) {
-          content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
-        } else {
-          const pre = document.createElement('pre');
-          pre.className = 'kbd'; pre.style.whiteSpace = 'pre-wrap';
-          pre.textContent = md;
-          content.replaceChildren(pre);
+
+      async function fetchAndRender(mdPath){
+        if(!mdPath){ content.innerHTML = '<p class="k">Unable to locate document.</p>'; return; }
+        // If mdPath is relative without leading slash, normalize it
+        if(!/^https?:\/\//i.test(mdPath) && !mdPath.startsWith('/')){
+          mdPath = '/' + mdPath.replace(/^\.?\//,'');
         }
-        content.scrollTop = 0;
+        try{
+          const resp = await fetch(mdPath, { cache:'no-store' });
+          if(!resp.ok){ throw new Error('HTTP '+resp.status); }
+          const md = await resp.text();
+          if(window.marked){
+            content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
+          } else {
+            content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
+            content.querySelector('pre').textContent = md;
+          }
+          content.scrollTop = 0;
+        }catch(err){
+          content.innerHTML = '<p class="k">Failed to load: <code>'+mdPath+'</code></p>';
+        }
       }
 
-      async function onDocClick(e){
+      function onDocClick(e){
         const a = e.currentTarget;
-        if(!isDocLink(a)) return;
         e.preventDefault();
-
-        const mdPath = extractMdPath(a.href);
-        fallbackHref = a.href;
-
+        const mdPath = getMdPathFromHref(a.href);
         openModal();
         content.innerHTML = '<p class="k">Loading…</p>';
-
-        try{
-          const md = await fetchMd(mdPath);
-          await renderMarkdown(md);
-        }catch(err){
-          // Restore state, then navigate normally
-          closeModal();
-          location.href = fallbackHref;
-        }
+        fetchAndRender(mdPath);
       }
 
       function attach(){
