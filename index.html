@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark"> 
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +11,9 @@
       try{
         var saved = localStorage.getItem('theme') || localStorage.getItem('cerbi-theme');
         if(saved) document.documentElement.setAttribute('data-theme', saved);
-        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme','light');
+        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.setAttribute('data-theme','light');
+        }
       }catch(e){ /* ignore */ }
     })();
   </script>
@@ -25,21 +27,27 @@
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
   <style>
-    /* Lift spotlight opacity a touch so it’s visible */
+    /* Subtle spotlight/clock visibility + screenshot aspect guard */
     .spotlight{ opacity:.95; }
-    /* Background clock: ensure visibility */
     #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
-    /* Microsoft Partner slightly larger in footer */
     .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-    /* Contact iframe responsive: fill container on small screens, cap at ~900px on desktop */
     @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
+
     /* Dynamic background container */
     #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
     #dynamic-bg canvas{ width:100%; height:100%; display:block }
+
+    /* Ensure screenshots don’t jump while loading */
+    #dashboards .showcase-viewport img{ aspect-ratio:16/9; width:100%; height:auto; object-fit:contain; }
+
+    /* Docs modal inherits lightbox look */
+    #docbox iframe{ width:min(100vw,1000px); height:min(90vh,900px); border:0; border-radius:12px; background:rgba(0,0,0,.15) }
+
     /* Theme diagnostic badge (non-intrusive) */
     #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
     #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
   </style>
+
   <!-- Favicons / app icons -->
   <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/favicon-16x16.png" />
@@ -114,6 +122,7 @@
           </pattern>
           <linearGradient id="grid" x1="0" x2="1"><stop offset="0%" stop-color="#13223e"/><stop offset="100%" stop-color="#0b1630"/></linearGradient>
         </defs>
+        <rect width="1200" height="600" fill="radialGradient(#g1)"/>
         <rect width="1200" height="600" fill="url(#g1)"/>
         <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.35"/>
         <g opacity="0.45"><rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/></g>
@@ -408,7 +417,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
       </div>
 
-      <!-- Demo -->
+      <!-- Live governance demo -->
       <div class="glass reveal" style="padding:16px;margin-top:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
           <h3 style="margin:0">Live Rule Check (demo)</h3>
@@ -425,7 +434,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
+    <!-- DASHBOARDS — FULL BLEED -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
@@ -434,6 +443,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <div class="sr-only" aria-live="polite"></div>
 
           <div class="showcase-viewport">
+            <!-- HERO -->
             <figure class="slide active">
               <img
                 width="1600" height="900"
@@ -448,9 +458,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 loading="eager" decoding="async">
             </figure>
 
+            <!-- PROFILES -->
             <figure class="slide">
               <img
-                width="1600" height="900"
+                width="1200" height="900"
                 src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
                 srcset="
                   assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
@@ -462,17 +473,32 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 loading="lazy" decoding="async">
             </figure>
 
+            <!-- VIOLATIONS -->
             <figure class="slide">
               <img
-                width="1600" height="1200"
+                width="1200" height="900"
                 src="assets/screenshots/cerbishield-violations-1200x900.jpg"
                 srcset="
-                  assets/screenshots/cerbishield-violations-2400x1800.jpg 1x,
+                  assets/screenshots/cerbishield-violations-1200x900.jpg 1x,
                   assets/screenshots/cerbishield-violations-2400x1800.jpg 2x
                 "
                 sizes="100vw"
                 alt="CerbiShield — Violations"
-                data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
+                data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+                loading="lazy" decoding="async">
+            </figure>
+
+            <!-- DEPLOY -->
+            <figure class="slide">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x
+                "
+                sizes="100vw"
+                alt="CerbiShield — Deploy"
+                data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
                 loading="lazy" decoding="async">
             </figure>
           </div>
@@ -610,7 +636,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             })();
           </script>
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">By submitting, you agree to our <a href="docs/viewer.html?file=docs/terms.md">Terms</a> and acknowledge our <a href="docs/viewer.html?file=docs/privacy.md">Privacy Policy</a>.</p>
+          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">By submitting, you agree to our <a class="doc-link" href="docs/viewer.html?file=docs/terms.md">Terms</a> and acknowledge our <a class="doc-link" href="docs/viewer.html?file=docs/privacy.md">Privacy Policy</a>.</p>
         </div>
       </div>
     </section>
@@ -627,7 +653,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
-        <a class="tag" href="docs/viewer.html?file=docs/privacy.md">Privacy</a><a class="tag" href="docs/viewer.html?file=docs/terms.md">Terms</a><a class="tag" href="docs/viewer.html?file=docs/security.md">Security</a><a class="tag" href="docs/viewer.html?file=docs/company.md">Company</a><a class="tag" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study</a>
+        <!-- Docs open in modal (no full navigation) -->
+        <a class="tag doc-link" href="docs/viewer.html?file=docs/privacy.md">Privacy</a>
+        <a class="tag doc-link" href="docs/viewer.html?file=docs/terms.md">Terms</a>
+        <a class="tag doc-link" href="docs/viewer.html?file=docs/security.md">Security</a>
+        <a class="tag doc-link" href="docs/viewer.html?file=docs/company.md">Company</a>
+        <a class="tag doc-link" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study</a>
         <img class="partner-mini" src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" loading="lazy" decoding="async" />
       </div>
     </div>
@@ -652,14 +683,20 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img id="lightboxImg" alt="" />
   </div>
 
+  <!-- DOCS MODAL (footer/docs open here instead of navigating away) -->
+  <div id="docbox" class="lightbox" aria-hidden="true" hidden>
+    <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
+    <iframe id="docboxFrame" title="Cerbi docs"></iframe>
+  </div>
+
   <!-- Scripts: load app.js early so theme is initialized -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
+
+  <!-- Ensure the big background clock is visible immediately (Edge-safe) -->
   <script>
-    // Fallback to ensure the background clock is visible immediately (Edge safe)
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
-      // Keep the clock visible above background layers but behind the main UI
       el.style.zIndex='0'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
       el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
       if(!el.textContent || el.textContent.trim()===''){
@@ -668,13 +705,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
   </script>
+
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=6" defer></script>
   <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
 
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
+  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing, docs modal -->
   <script>
     // Theme button wiring (fallback)
     (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
@@ -891,7 +929,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    // Live governance demo
+    // Live governance demo (PII toggle)
     (function(){
       const btn=document.getElementById('piiSwitch');
       const input=document.getElementById('inputJson');
@@ -917,126 +955,36 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       render();
     })();
 
+    // Set initial spotlight target
     (function(){
       const root = document.documentElement;
       root.style.setProperty('--spot-x','82%');
       root.style.setProperty('--spot-y','16%');
     })();
-  </script>
 
-  <!-- Clock interactivity & words mode (Love Death & Robots style) -->
-  <script>
+    // Docs modal: intercept footer/doc links so they open in-page instead of navigating away
     (function(){
-      const el = document.getElementById('bg-clock');
-      if(!el) return;
+      const modal = document.getElementById('docbox');
+      const frame = document.getElementById('docboxFrame');
+      if(!modal || !frame) return;
 
-      // Expanded phrases and playful glyphs inspired by "Love, Death & Robots"
-      const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', '❤', '☠', '🤖', 'LDR', 'ANIM', 'MECHA', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
-      let mode = 'time';
-      let baseScale = 1.0;
-      // Spell-out sequence config
-      const SPELL = 'CERBI';
-      let spellActive = false;
-      let spellIndex = 0;
-      let spellTicks = 0; // small delay between letters
+      const close = ()=>{ modal.setAttribute('aria-hidden','true'); modal.setAttribute('hidden',''); frame.removeAttribute('src'); document.body.style.overflow=''; };
+      modal.querySelector('.close')?.addEventListener('click', close);
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) close(); });
 
-      // Start a spell-out animation programmatically
-      function startSpell(){
-        if(spellActive) return;
-        spellActive = true; spellIndex = 0; spellTicks = 0;
-        setMode('words');
-        // briefly boost size/opacity for emphasis
-        const prevScale = baseScale;
-        baseScale = Math.min(2, Math.max(0.8, baseScale * 1.12));
-        el.style.transition = 'transform .28s ease, opacity .28s ease';
-        el.style.transform = `scale(${baseScale})`;
-        const prevOpacity = el.style.opacity || getComputedStyle(el).opacity;
-        el.style.opacity = Math.max(0.85, parseFloat(prevOpacity) || 0.9);
-        // after spell completes, restore size/opacity gradually
-        setTimeout(()=>{
-          baseScale = prevScale;
-          el.style.transform = `scale(${baseScale})`;
-          el.style.opacity = '';
-        }, 5200);
-      }
+      function isDocLink(a){ try{ return a && a.href && a.href.includes('docs/viewer.html?file='); }catch{ return false; } }
 
-      function setMode(m){
-        mode = m;
-        el.classList.remove('mode-time','mode-glitch','mode-words');
-        el.classList.add('mode-' + m);
-        document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-mode')===m));
-      }
-
-      function tick(){
-        if(mode==='time'){
-          const d = new Date();
-          el.dataset.text = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-          el.textContent = el.dataset.text;
-        } else if(mode==='glitch'){
-          const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°•◦○●◎◆◢◣◤◥▄▀';
-          const d=new Date(); const t = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-          if(Math.random() < 0.15){
-            const g = GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
-            el.dataset.text = g.repeat(4);
-            el.textContent = el.dataset.text;
-          } else {
-            el.dataset.text = t;
-            el.textContent = t;
-          }
-        } else if(mode==='words'){
-          // Occasionally run a short spell-out animation for "CERBI"
-          if(!spellActive && Math.random() < 0.12){
-            spellActive = true; spellIndex = 0; spellTicks = 0;
-          }
-
-          if(spellActive){
-            // reveal one letter every 2 ticks to give a slow-typing effect
-            if(spellTicks++ % 2 === 0){
-              spellIndex++;
-            }
-            const out = SPELL.slice(0, Math.min(spellIndex, SPELL.length));
-            el.dataset.text = out || SPELL.charAt(0);
-            el.textContent = el.dataset.text;
-            if(spellIndex >= SPELL.length){
-              // hold full word for a moment then exit spell mode
-              if(spellTicks > SPELL.length * 4){ spellActive = false; spellIndex = 0; spellTicks = 0; }
-            }
-          } else {
-            // pick a random fun phrase or glyph
-            const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
-            el.dataset.text = choice;
-            el.textContent = choice;
-          }
-        }
-      }
-
-      function adjustSize(delta){ baseScale = Math.min(3, Math.max(0.6, baseScale + delta)); el.style.transform = `scale(${baseScale})`; }
-
-      document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(btn=>{ btn.addEventListener('click', ()=> setMode(btn.getAttribute('data-mode'))); });
-      document.getElementById('size-sm').addEventListener('click', ()=> adjustSize(-0.08));
-      document.getElementById('size-lg').addEventListener('click', ()=> adjustSize(0.12));
-
-      document.addEventListener('keydown', (e)=>{
-        if(e.key.toLowerCase()==='t') setMode('time');
-        if(e.key.toLowerCase()==='g') setMode('glitch');
-        if(e.key.toLowerCase()==='w') setMode('words');
-        if(e.key === '+') adjustSize(0.12);
-        if(e.key === '-') adjustSize(-0.08);
+      // Footer and contact section links that point to docs
+      document.querySelectorAll('footer a, #contact a, .doc-link').forEach(a=>{
+        if(!isDocLink(a)) return;
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          frame.src = a.href;
+          modal.removeAttribute('hidden');
+          modal.setAttribute('aria-hidden','false');
+          document.body.style.overflow='hidden';
+        });
       });
-
-      setMode('time'); tick(); setInterval(tick, 900);
-      // Auto-schedule occasional CERBI spell-outs (randomized interval)
-      (function scheduleSpell(){
-        const delay = 18000 + Math.floor(Math.random()*22000); // 18–40s
-        setTimeout(()=>{
-          if(document.hidden) { scheduleSpell(); return; }
-          startSpell();
-          // return to time mode after the spell finishes (approx)
-          setTimeout(()=>{ if(mode==='words') setMode('time'); spellActive=false; }, 5200);
-          scheduleSpell();
-        }, delay);
-      })();
-      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);} 
     })();
   </script>
 
