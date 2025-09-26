@@ -40,8 +40,29 @@
     /* Ensure screenshots don’t jump while loading */
     #dashboards .showcase-viewport img{ aspect-ratio:16/9; width:100%; height:auto; object-fit:contain; }
 
-    /* Docs modal inherits lightbox look */
-    #docbox iframe{ width:min(100vw,1000px); height:min(90vh,900px); border:0; border-radius:12px; background:rgba(0,0,0,.15) }
+    /* Themed markdown modal content (dark-aware) */
+    .prose-doc{
+      width:min(100vw, 960px);
+      max-height:min(90vh, 900px);
+      overflow:auto;
+      padding:22px 26px;
+      border-radius:12px;
+      background:rgba(10,14,24,.92);
+      backdrop-filter: blur(6px);
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+      color:var(--text, #d9e2ff);
+      line-height:1.55;
+    }
+    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--heading,#fff); margin:.6em 0 .35em }
+    .prose-doc h1{ font-size:1.9rem } .prose-doc h2{ font-size:1.5rem } .prose-doc h3{ font-size:1.22rem }
+    .prose-doc a{ color:var(--accent,#ff6a2b); text-decoration:none; border-bottom:1px dashed currentColor }
+    .prose-doc pre{ background:#0b1222; padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid rgba(255,255,255,.06) }
+    .prose-doc code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .prose-doc blockquote{ border-left:3px solid rgba(255,255,255,.15); margin:.6em 0; padding:.2em .9em; color:#c4cfe8 }
+    .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
+    .prose-doc th,.prose-doc td{ border:1px solid rgba(255,255,255,.08); padding:.5em .6em }
+    .prose-doc img{ max-width:100%; height:auto; border-radius:8px; }
 
     /* Theme diagnostic badge (non-intrusive) */
     #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
@@ -50,9 +71,9 @@
 
   <!-- Favicons / app icons -->
   <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="150x150" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/mstile-150x150.png" />
-  <meta name="msapplication-TileImage" content="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/mstile-150x150.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="150x150" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
+  <meta name="msapplication-TileImage" content="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
 </head>
 <body>
   <!-- Dynamic background layer (canvas) -->
@@ -91,7 +112,7 @@
         <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
-        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a><a href="docs/viewer.html?file=docs/company.md">Company</a><a href="#contact">Contact</a>
+        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a><a href="docs/viewer.html?file=docs/company.md" class="doc-link">Company</a><a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
@@ -122,7 +143,6 @@
           </pattern>
           <linearGradient id="grid" x1="0" x2="1"><stop offset="0%" stop-color="#13223e"/><stop offset="100%" stop-color="#0b1630"/></linearGradient>
         </defs>
-        <rect width="1200" height="600" fill="radialGradient(#g1)"/>
         <rect width="1200" height="600" fill="url(#g1)"/>
         <rect width="1200" height="600" fill="url(#miniTiles)" opacity="0.35"/>
         <g opacity="0.45"><rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#grid)" stroke-width="1"/></g>
@@ -361,9 +381,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View full docs on GitHub →</a>
       </p>
       <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">
-        <a class="btn btn-ghost" href="docs/viewer.html?file=docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
-        <a class="btn btn-ghost" href="docs/viewer.html?file=docs/quickstart-mel-governance.md">MEL Governance Only</a>
-        <a class="btn btn-ghost" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study (Claims)</a>
+        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
+        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/quickstart-mel-governance.md">MEL Governance Only</a>
+        <a class="btn btn-ghost doc-link" href="docs/viewer.html?file=docs/case-study-claims.md">Case Study (Claims)</a>
       </div>
     </section>
 
@@ -493,9 +513,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               <img
                 width="1600" height="900"
                 src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
-                srcset="
-                  assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x
-                "
+                srcset="assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x"
                 sizes="100vw"
                 alt="CerbiShield — Deploy"
                 data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
@@ -653,7 +671,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
-        <!-- Docs open in modal (no full navigation) -->
+        <!-- Docs open in themed modal -->
         <a class="tag doc-link" href="docs/viewer.html?file=docs/privacy.md">Privacy</a>
         <a class="tag doc-link" href="docs/viewer.html?file=docs/terms.md">Terms</a>
         <a class="tag doc-link" href="docs/viewer.html?file=docs/security.md">Security</a>
@@ -677,16 +695,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- LIGHTBOX: hidden by default, no broken img -->
+  <!-- IMAGE LIGHTBOX: hidden by default, no broken img -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- DOCS MODAL (footer/docs open here instead of navigating away) -->
+  <!-- DOCS MODAL (Markdown-rendered, themed) -->
   <div id="docbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
-    <iframe id="docboxFrame" title="Cerbi docs"></iframe>
+    <article id="docboxContent" class="prose-doc"></article>
   </div>
 
   <!-- Scripts: load app.js early so theme is initialized -->
@@ -711,6 +729,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=6" defer></script>
   <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
+
+  <!-- marked (Markdown parser) -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
   <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing, docs modal -->
   <script>
@@ -962,29 +983,59 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       root.style.setProperty('--spot-y','16%');
     })();
 
-    // Docs modal: intercept footer/doc links so they open in-page instead of navigating away
+    // DOCS MODAL (intercept links → fetch & render Markdown in-theme)
     (function(){
       const modal = document.getElementById('docbox');
-      const frame = document.getElementById('docboxFrame');
-      if(!modal || !frame) return;
+      const content = document.getElementById('docboxContent');
+      if(!modal || !content) return;
 
-      const close = ()=>{ modal.setAttribute('aria-hidden','true'); modal.setAttribute('hidden',''); frame.removeAttribute('src'); document.body.style.overflow=''; };
-      modal.querySelector('.close')?.addEventListener('click', close);
-      modal.addEventListener('click', (e)=>{ if(e.target===modal) close(); });
+      function openModal(){ modal.removeAttribute('hidden'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+      function closeModal(){ modal.setAttribute('aria-hidden','true'); modal.setAttribute('hidden',''); content.innerHTML=''; document.body.style.overflow=''; }
 
-      function isDocLink(a){ try{ return a && a.href && a.href.includes('docs/viewer.html?file='); }catch{ return false; } }
+      modal.querySelector('.close')?.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
 
-      // Footer and contact section links that point to docs
-      document.querySelectorAll('footer a, #contact a, .doc-link').forEach(a=>{
-        if(!isDocLink(a)) return;
-        a.addEventListener('click', (e)=>{
-          e.preventDefault();
-          frame.src = a.href;
-          modal.removeAttribute('hidden');
-          modal.setAttribute('aria-hidden','false');
-          document.body.style.overflow='hidden';
+      function isDocLink(a){ try{ return a && a.href && a.href.includes('docs/viewer.html?file='); } catch { return false; } }
+      function extractPath(href){
+        try{
+          const u = new URL(href, location.href);
+          return u.searchParams.get('file'); // e.g. docs/privacy.md
+        }catch{ return null; }
+      }
+
+      async function fetchAndRender(mdPath){
+        if(!mdPath){ content.innerHTML = '<p class="k">Unable to locate document.</p>'; return; }
+        try{
+          const resp = await fetch(mdPath, { cache:'no-store' });
+          if(!resp.ok){ content.innerHTML = '<p class="k">Failed to load document.</p>'; return; }
+          const md = await resp.text();
+          if(window.marked){
+            content.innerHTML = window.marked.parse(md, { mangle:false, headerIds:true });
+          } else {
+            // Fallback: minimal escape
+            content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
+            content.querySelector('pre').textContent = md;
+          }
+          content.scrollTop = 0;
+        }catch{
+          content.innerHTML = '<p class="k">Error loading document.</p>';
+        }
+      }
+
+      function attach(){
+        document.querySelectorAll('a.doc-link, footer a, #contact a, .nav a').forEach(a=>{
+          if(!isDocLink(a)) return;
+          a.addEventListener('click', async (e)=>{
+            e.preventDefault();
+            const mdPath = extractPath(a.href);
+            openModal();
+            content.innerHTML = '<p class="k">Loading…</p>';
+            await fetchAndRender(mdPath);
+          });
         });
-      });
+      }
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach); else attach();
     })();
   </script>
 
