@@ -1,35 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="powder">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
   <meta name="color-scheme" content="light dark" />
 
-  <!-- Apply a RANDOM theme on every load (no persistence) so CSS uses the correct variables -->
+  <!-- ======================== RANDOM THEME ON LOAD (runs BEFORE CSS) ======================== -->
   <script>
     (function(){
       try{
-        // Ten distinct Cerbi themes (IDs must match CSS blocks below)
         var ORDER = ['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian'];
-        function rand(){ return ORDER[Math.floor(Math.random()*ORDER.length)]; }
 
-        // Pick a random theme each visit (do not persist)
-        var chosen = rand();
+        function chooseRandom(list){ return list[Math.floor(Math.random()*list.length)]; }
 
-        // If user explicitly prefers light, bias to a light theme ~60% of the time
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          var lighties = ['powder','celadon','champagne','greige','lilac'];
-          if (Math.random() < 0.6) chosen = lighties[Math.floor(Math.random()*lighties.length)];
-        }
+        // If user prefers light, bias toward a light theme ~60% of the time
+        var lighties = ['powder','celadon','champagne','greige','lilac'];
+        var darkies  = ['pewter','midnight','indigo','charcoal','obsidian'];
+        var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+
+        var chosen = prefersLight && Math.random() < 0.60
+          ? chooseRandom(lighties)
+          : chooseRandom(ORDER);
+
         document.documentElement.setAttribute('data-theme', chosen);
 
-        // Update UA color-scheme hint for form controls/scrollbars
-        var isLight = ['powder','celadon','champagne','greige','lilac'].indexOf(chosen) > -1;
+        // Keep UA widgets readable
         var meta = document.querySelector('meta[name="color-scheme"]') || (function(){
           var m=document.createElement('meta'); m.name='color-scheme'; document.head.appendChild(m); return m;
         })();
-        meta.setAttribute('content', isLight ? 'light dark' : 'dark light');
+        meta.setAttribute('content', lighties.includes(chosen) ? 'light dark' : 'dark light');
+
+        // Expose a minimal early API so later scripts can interact safely even if they run before our full manager
+        window.__cerbiEarlyTheme__ = {
+          ORDER: ORDER,
+          isLight: function(id){ return lighties.includes(id || document.documentElement.getAttribute('data-theme')); },
+          setMeta: function(id){
+            meta.setAttribute('content', lighties.includes(id) ? 'light dark' : 'dark light');
+          }
+        };
       }catch(e){ /* ignore */ }
     })();
   </script>
@@ -42,6 +51,209 @@
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
+  <!-- ================================== THEMES CSS ================================== -->
+  <style>
+    :root{
+      --cerbi-blue: #2F7DFF;
+      --radius: 16px;
+      --shadow: 0 18px 44px rgba(2,10,35,.45);
+      --focus: 0 0 0 3px rgba(47,125,255,.35);
+    }
+
+    /* Base text + layout tokens (consume theme vars below) */
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      transition: background-color .25s ease, color .25s ease;
+    }
+    .container{ width:min(1100px, 92vw); margin:0 auto; }
+    .nav{ position:sticky; top:0; z-index:50; background: color-mix(in srgb, var(--bg) 86%, #0000); backdrop-filter: blur(6px); border-bottom: 1px solid var(--border); }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; padding:10px 0; }
+    .brand{ display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none; font-weight:700; }
+    .nav-links a{ margin:0 8px; color:var(--muted); text-decoration:none; }
+    .nav-links a:hover{ color:var(--text); }
+    .nav-actions{ display:flex; gap:8px; align-items:center; }
+
+    .btn{
+      --_bg: var(--btn, var(--accent));
+      --_fg: #fff;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      background: var(--_bg); color: var(--_fg);
+      border:1px solid color-mix(in srgb, var(--_bg) 85%, #000);
+      padding:10px 14px; border-radius: 12px; box-shadow: var(--shadow); cursor:pointer;
+      transition: background-color .18s ease, transform .06s ease;
+    }
+    .btn:hover{ background: var(--btn-hover, color-mix(in srgb, var(--_bg) 85%, #000)); }
+    .btn:active{ transform: translateY(1px); }
+    .btn-ghost{
+      background: transparent; color: var(--accent); border:1px solid var(--border); box-shadow:none;
+    }
+    .btn-ghost:hover{ background: color-mix(in srgb, var(--panel, var(--bg)) 86%, #0000); }
+
+    .card{
+      background: var(--panel); color: var(--text);
+      border:1px solid var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding:16px;
+    }
+    .muted{ color: var(--muted); }
+    a{ color: var(--link, var(--accent)); }
+    a:hover{ text-decoration: underline; }
+
+    .hero{ padding: 32px 0; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center }
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap:14px; }
+    .col-4{ grid-column: span 4; }
+    .col-6{ grid-column: span 6; }
+    @media (max-width:900px){ .col-6{ grid-column: span 12; } .col-4{ grid-column: span 12; } }
+
+    /* ========================== 10 THEME DEFINITIONS ========================== */
+    /* Each block sets: --bg, --text, --muted, --accent, --btn, --btn-hover, --panel, --border, --link, --ring */
+
+    /* 1) Powder Blue Mist — LIGHT */
+    [data-theme="powder"]{
+      --bg:       #A7C7E7;            /* Powder Blue Mist */
+      --text:     #2E2A5E;            /* Indigo Ink */
+      --muted:    #5A6B78;            /* tuned neutral */
+      --accent:   var(--cerbi-blue);  /* Cerbi blue */
+      --btn:      var(--cerbi-blue);
+      --btn-hover:#1E62DC;
+      --panel:    #FFFFFF;
+      --border:   rgba(46,42,94,.18);
+      --link:     #1B56FF;
+      --ring:     rgba(47,125,255,.35);
+    }
+
+    /* 2) Celadon Frost — LIGHT */
+    [data-theme="celadon"]{
+      --bg:       #B7E1C0;            /* Celadon Frost */
+      --text:     #26324A;            /* deep slate */
+      --muted:    #48605A;
+      --accent:   #2F7DFF;            /* Cerbi blue */
+      --btn:      #2F7DFF;
+      --btn-hover:#1E62DC;
+      --panel:    #FFFFFF;
+      --border:   rgba(38,50,74,.16);
+      --link:     #0C59FF;
+      --ring:     rgba(47,125,255,.32);
+    }
+
+    /* 3) Champagne Blush — LIGHT */
+    [data-theme="champagne"]{
+      --bg:       #F7E3D4;            /* Champagne Blush */
+      --text:     #2E2A5E;            /* Indigo Ink */
+      --muted:    #6B5D6B;            /* gentle plum-gray */
+      --accent:   #2F7DFF;            /* Cerbi blue pops on warm bg */
+      --btn:      #2F7DFF;
+      --btn-hover:#1E62DC;
+      --panel:    #FFFFFF;
+      --border:   rgba(46,42,94,.16);
+      --link:     #1B56FF;
+      --ring:     rgba(47,125,255,.30);
+    }
+
+    /* 4) Greige Stone — NEUTRAL */
+    [data-theme="greige"]{
+      --bg:       #C5C1B9;            /* Greige Stone */
+      --text:     #2E2A5E;            /* Indigo Ink */
+      --muted:    #7A8A99;            /* Pewter Slate */
+      --accent:   #004F59;            /* Midnight Teal */
+      --btn:      #004F59;
+      --btn-hover:#003A41;
+      --panel:    #FFFFFF;
+      --border:   rgba(0,79,89,.18);
+      --link:     #0C6C79;
+      --ring:     rgba(0,79,89,.35);
+    }
+
+    /* 5) Ashen Lilac — NEUTRAL */
+    [data-theme="lilac"]{
+      --bg:       #C8B7D9;            /* Ashen Lilac */
+      --text:     #2E2A5E;            /* Indigo Ink */
+      --muted:    #5A516B;            /* deeper lilac-gray */
+      --accent:   #2F7DFF;            /* Cerbi blue */
+      --btn:      #2F7DFF;
+      --btn-hover:#1E62DC;
+      --panel:    #FFFFFF;
+      --border:   rgba(46,42,94,.20);
+      --link:     #1B56FF;
+      --ring:     rgba(47,125,255,.35);
+    }
+
+    /* 6) Pewter Slate — DIM/NEUTRAL */
+    [data-theme="pewter"]{
+      --bg:       #7A8A99;            /* Pewter Slate */
+      --text:     #F2F6FA;            /* light text on dim bg */
+      --muted:    #D4DFEA;
+      --accent:   #B7E1C0;            /* Celadon Frost accent */
+      --btn:      #2F7DFF;            /* Cerbi blue buttons */
+      --btn-hover:#1E62DC;
+      --panel:    #95A5B3;            /* lighter slate for cards */
+      --border:   rgba(255,255,255,.22);
+      --link:     #EAF6FF;
+      --ring:     rgba(47,125,255,.35);
+    }
+
+    /* 7) Midnight Teal — DARK */
+    [data-theme="midnight"]{
+      --bg:       #004F59;            /* Midnight Teal */
+      --text:     #EAF2F2;            /* cool light */
+      --muted:    #B7E1C0;            /* Celadon Frost */
+      --accent:   #2F7DFF;            /* Cerbi blue */
+      --btn:      #2F7DFF;
+      --btn-hover:#1E62DC;
+      --panel:    #0D1B2A;            /* Obsidian for depth */
+      --border:   rgba(183,225,192,.25);
+      --link:     #9ED8FF;
+      --ring:     rgba(47,125,255,.35);
+    }
+
+    /* 8) Indigo Ink — DARK */
+    [data-theme="indigo"]{
+      --bg:       #2E2A5E;            /* Indigo Ink */
+      --text:     #F1F3FF;            /* very light */
+      --muted:    #C8B7D9;            /* Ashen Lilac as muted */
+      --accent:   #A7C7E7;            /* Powder Blue Mist */
+      --btn:      #2F7DFF;            /* Cerbi blue */
+      --btn-hover:#1E62DC;
+      --panel:    #3B2C35;            /* Charcoal Plum panel */
+      --border:   rgba(199, 205, 255, .22);
+      --link:     #B9D5FF;
+      --ring:     rgba(47,125,255,.35);
+    }
+
+    /* 9) Charcoal Plum — DARK */
+    [data-theme="charcoal"]{
+      --bg:       #3B2C35;            /* Charcoal Plum */
+      --text:     #F6F0F6;            /* soft light */
+      --muted:    #E2D5EA;            /* lilac-tinted muted */
+      --accent:   #B7E1C0;            /* Celadon Frost */
+      --btn:      #2F7DFF;            /* Cerbi blue */
+      --btn-hover:#1E62DC;
+      --panel:    #2E2A5E;            /* Indigo panel */
+      --border:   rgba(255,255,255,.18);
+      --link:     #9CD8FF;
+      --ring:     rgba(183,225,192,.35);
+    }
+
+    /* 10) Obsidian Blue-Black — ULTRA-DARK */
+    [data-theme="obsidian"]{
+      --bg:       #0D1B2A;            /* Obsidian */
+      --text:     #EAF2FA;            /* icy light */
+      --muted:    #A7C7E7;            /* Powder Blue Mist */
+      --accent:   #B7E1C0;            /* Celadon Frost for contrast */
+      --btn:      #2F7DFF;            /* Cerbi blue */
+      --btn-hover:#1E62DC;
+      --panel:    #15263A;            /* slightly raised card */
+      --border:   rgba(167,199,231,.22);
+      --link:     #79CFE3;
+      --ring:     rgba(47,125,255,.35);
+    }
+  </style>
+
+  <!-- Inline page-specific adjustments originally included -->
   <style>
     /* Subtle spotlight/clock visibility + screenshot aspect guard */
     .spotlight{ opacity:.95; }
@@ -101,81 +313,6 @@
       position:absolute; top:12px; right:12px;
     }
     #lightbox img{ max-width:min(96vw,1600px); max-height:90vh; border-radius:10px; }
-  </style>
-
-  <!-- =============== 10 CERBI THEMES (variables consumed by your CSS) =============== -->
-  <style>
-    :root{ --cerbi-blue:#2F7DFF; }
-
-    /* 1) Powder Blue Mist — LIGHT (#A7C7E7) */
-    [data-theme="powder"]{
-      --bg:#A7C7E7; --text:#2E2A5E; --muted:#5A6B78;
-      --accent:var(--cerbi-blue); --btn:var(--cerbi-blue); --btn-hover:#1E62DC;
-      --panel:#FFFFFF; --border:rgba(46,42,94,.18); --link:#1B56FF; --ring:rgba(47,125,255,.35);
-    }
-
-    /* 2) Celadon Frost — LIGHT (#B7E1C0) */
-    [data-theme="celadon"]{
-      --bg:#B7E1C0; --text:#26324A; --muted:#48605A;
-      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#FFFFFF; --border:rgba(38,50,74,.16); --link:#0C59FF; --ring:rgba(47,125,255,.32);
-    }
-
-    /* 3) Champagne Blush — LIGHT (#F7E3D4) */
-    [data-theme="champagne"]{
-      --bg:#F7E3D4; --text:#2E2A5E; --muted:#6B5D6B;
-      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#FFFFFF; --border:rgba(46,42,94,.16); --link:#1B56FF; --ring:rgba(47,125,255,.30);
-    }
-
-    /* 4) Greige Stone — NEUTRAL (#C5C1B9) */
-    [data-theme="greige"]{
-      --bg:#C5C1B9; --text:#2E2A5E; --muted:#7A8A99;
-      --accent:#004F59; --btn:#004F59; --btn-hover:#003A41;
-      --panel:#FFFFFF; --border:rgba(0,79,89,.18); --link:#0C6C79; --ring:rgba(0,79,89,.35);
-    }
-
-    /* 5) Ashen Lilac — NEUTRAL (#C8B7D9) */
-    [data-theme="lilac"]{
-      --bg:#C8B7D9; --text:#2E2A5E; --muted:#5A516B;
-      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#FFFFFF; --border:rgba(46,42,94,.20); --link:#1B56FF; --ring:rgba(47,125,255,.35);
-    }
-
-    /* 6) Pewter Slate — DIM (#7A8A99) */
-    [data-theme="pewter"]{
-      --bg:#7A8A99; --text:#F2F6FA; --muted:#D4DFEA;
-      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#95A5B3; --border:rgba(255,255,255,.22); --link:#EAF6FF; --ring:rgba(47,125,255,.35);
-    }
-
-    /* 7) Midnight Teal — DARK (#004F59) */
-    [data-theme="midnight"]{
-      --bg:#004F59; --text:#EAF2F2; --muted:#B7E1C0;
-      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#0D1B2A; --border:rgba(183,225,192,.25); --link:#9ED8FF; --ring:rgba(47,125,255,.35);
-    }
-
-    /* 8) Indigo Ink — DARK (#2E2A5E) */
-    [data-theme="indigo"]{
-      --bg:#2E2A5E; --text:#F1F3FF; --muted:#C8B7D9;
-      --accent:#A7C7E7; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#3B2C35; --border:rgba(199,205,255,.22); --link:#B9D5FF; --ring:rgba(47,125,255,.35);
-    }
-
-    /* 9) Charcoal Plum — DARK (#3B2C35) */
-    [data-theme="charcoal"]{
-      --bg:#3B2C35; --text:#F6F0F6; --muted:#E2D5EA;
-      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#2E2A5E; --border:rgba(255,255,255,.18); --link:#9CD8FF; --ring:rgba(183,225,192,.35);
-    }
-
-    /* 10) Obsidian Blue-Black — ULTRA-DARK (#0D1B2A) */
-    [data-theme="obsidian"]{
-      --bg:#0D1B2A; --text:#EAF2FA; --muted:#A7C7E7;
-      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
-      --panel:#15263A; --border:rgba(167,199,231,.22); --link:#79CFE3; --ring:rgba(47,125,255,.35);
-    }
   </style>
 
   <!-- Favicons / app icons -->
@@ -823,25 +960,29 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
-  <!-- Theme Manager: stable API & wiring (toggle/cycle) -->
+  <!-- ===================== ROBUST THEME MANAGER (works regardless of load order) ===================== -->
   <script>
     (function () {
-      const ORDER = ['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian'];
+      const ORDER = (window.__cerbiEarlyTheme__ && window.__cerbiEarlyTheme__.ORDER) || ['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian'];
       const root = document.documentElement;
 
-      function setColorSchemeMeta(themeId){
-        const lightish = ['powder','celadon','champagne','greige','lilac'].includes(themeId);
-        const meta = document.querySelector('meta[name="color-scheme"]') || (function(){
-          const m=document.createElement('meta'); m.name='color-scheme'; document.head.appendChild(m); return m;
-        })();
-        meta.setAttribute('content', lightish ? 'light dark' : 'dark light');
+      function setMetaFor(themeId){
+        if (window.__cerbiEarlyTheme__ && window.__cerbiEarlyTheme__.setMeta) {
+          window.__cerbiEarlyTheme__.setMeta(themeId);
+        } else {
+          const meta = document.querySelector('meta[name="color-scheme"]') || (function(){
+            const m=document.createElement('meta'); m.name='color-scheme'; document.head.appendChild(m); return m;
+          })();
+          const lightish = ['powder','celadon','champagne','greige','lilac'].includes(themeId);
+          meta.setAttribute('content', lightish ? 'light dark' : 'dark light');
+        }
       }
 
       function get(){ return root.getAttribute('data-theme') || ORDER[0]; }
       function set(id){
         if (!ORDER.includes(id)) id = ORDER[0];
         root.setAttribute('data-theme', id);
-        setColorSchemeMeta(id);
+        setMetaFor(id);
         window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme:id } }));
       }
       function cycle(step=1){
@@ -850,35 +991,51 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         set(ORDER[(idx+step+ORDER.length)%ORDER.length]);
       }
       function toggle(){
-        // Simple toggle between light cluster and dark cluster
+        // Toggle between clusters (light ↔ dark)
         const t = get();
         const light = ['powder','celadon','champagne','greige','lilac'];
         set(light.includes(t) ? 'midnight' : 'powder');
       }
+      function reroll(){
+        const next = ORDER[Math.floor(Math.random()*ORDER.length)];
+        set(next);
+        return next;
+      }
       function list(){ return ORDER.slice(); }
 
-      window.CerbiTheme = { get, set, cycle, toggle, list };
+      // Expose public API
+      window.CerbiTheme = { get, set, cycle, toggle, reroll, list };
 
-      // Wire existing buttons if present
-      const b=document.getElementById('themeBtn');
-      if(b && !b.__bound){ b.addEventListener('click',()=>window.CerbiTheme.toggle()); b.__bound=true; }
+      // Wire Theme button even if this script loads after the DOM or before/after prior snippets
+      function bindThemeBtn(){
+        const b=document.getElementById('themeBtn');
+        if(b && !b.__cerbiBound){
+          b.addEventListener('click',()=>window.CerbiTheme.toggle());
+          b.addEventListener('keydown',(e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); window.CerbiTheme.toggle(); }});
+          b.__cerbiBound = true;
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bindThemeBtn, { once:true });
+      } else {
+        bindThemeBtn();
+      }
 
+      // Small debug widget support (if present)
       const diagName = document.getElementById('theme-name');
+      const diagCycle = document.getElementById('theme-cycle');
       function refresh(){ if(diagName) diagName.textContent = 'Theme: ' + get(); }
       window.addEventListener('theme-changed', refresh);
-      setTimeout(refresh, 250);
-
-      // Extra debug cycle button in badge (if present)
-      const cyc = document.getElementById('theme-cycle');
-      if (cyc && !cyc.__bound){
-        cyc.addEventListener('click', ()=>{ window.CerbiTheme.cycle(1); setTimeout(refresh,80); });
-        cyc.__bound = true;
+      if (diagCycle && !diagCycle.__cerbiBound) {
+        diagCycle.addEventListener('click', ()=>{ window.CerbiTheme.cycle(1); });
+        diagCycle.__cerbiBound = true;
       }
+      setTimeout(refresh, 250);
     })();
   </script>
 
   <!-- Scripts: load app.js early so theme is initialized -->
-  <script src="scripts/app.js?v=2025-09-22.13" defer></script>
+  <script src="scripts/app.js?v=2025-09-26.1" defer></script>
 
   <!-- Ensure the big background clock is visible immediately (Edge-safe) -->
   <script>
@@ -898,16 +1055,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=6" defer></script>
-  <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
+  <script src="scripts/cerbi-ui.js?v=2025-09-26.1" defer></script>
 
   <!-- marked (Markdown parser) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
+  <!-- Page JS: clocks, slider, progress, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
-    // Theme button wiring (fallback)
-    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
-
     // CmdK palette
     (function(){
       const overlay = document.getElementById('cmdkOverlay');
@@ -963,7 +1117,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
     })();
 
-    // Badge clock
+    // Badge clock (small)
     (function(){
       const el=document.getElementById('clock'); if(!el) return;
       const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
@@ -980,8 +1134,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const factor = vw < 820 ? 0.44 : 0.34;
         el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
         el.style.lineHeight='1';
-        const theme=document.documentElement.getAttribute('data-theme')||'dark';
-        el.style.color = ['powder','celadon','champagne','greige','lilac','light'].includes(theme) ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
+        const theme=document.documentElement.getAttribute('data-theme');
+        const lightish = ['powder','celadon','champagne','greige','lilac'];
+        el.style.color = lightish.includes(theme) ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
       }
       function render(){
         const d=new Date();
@@ -1152,10 +1307,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       root.style.setProperty('--spot-x','82%');
       root.style.setProperty('--spot-y','16%');
     })();
-  </script>
 
-  <!-- ===== DOCS MODAL (robust, race-safe, scroll-safe) ===== -->
-  <script>
+    // Docs modal loader
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -1197,7 +1350,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
 
-      // Support both direct docs/*.md and legacy viewer.html?file=docs/*.md
       function mdPathFromHref(href){
         try{
           const u = new URL(href, location.href);
@@ -1222,19 +1374,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         });
       }
 
-      // Try local /docs/*.md first, then fall back to GitHub raw content on main
       async function fetchMd(path){
         const local = path.replace(/^\/+/,''); // 'docs/file.md'
         const tried = [];
-
-        // 1) Local
         try{
           const r = await fetch(local, { cache:'no-store' });
           tried.push(location.origin + '/' + local);
           if (r.ok) return { text: await r.text(), source: 'local', tried };
         }catch(e){ /* ignore */ }
-
-        // 2) GitHub raw fallback
         try{
           const gh = `https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`;
           tried.push(gh);
@@ -1328,19 +1475,21 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   </script>
 
   <!-- Theme diagnostic badge (debug) -->
-  <div id="theme-diag" aria-hidden="false">
+  <div id="theme-diag" aria-hidden="false" style="position:fixed;right:12px;bottom:12px;display:flex;gap:8px;align-items:center;padding:8px 10px;background:color-mix(in srgb, var(--panel, var(--bg)) 82%, #0000);border:1px solid var(--border);border-radius:10px;z-index:1000">
     <span id="theme-name">Theme: …</span>
-    <button id="theme-cycle" title="Cycle theme">Cycle</button>
+    <button id="theme-cycle" class="btn-ghost" title="Cycle theme">Cycle</button>
   </div>
   <script>
     (function(){
       const el = document.getElementById('theme-name');
       const btn = document.getElementById('theme-cycle');
       function refresh(){
-        const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'dark';
-        el.textContent = 'Theme: ' + t;
+        try{
+          const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'powder';
+          el.textContent = 'Theme: ' + t;
+        }catch(_){}
       }
-      btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.cycle){ window.CerbiTheme.cycle(1); setTimeout(refresh,80); } });
+      if (btn) btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.cycle){ window.CerbiTheme.cycle(1); } else { const ORDER=(window.__cerbiEarlyTheme__&&__cerbiEarlyTheme__.ORDER)||['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian']; const cur=document.documentElement.getAttribute('data-theme')||ORDER[0]; const i=Math.max(0,ORDER.indexOf(cur)); document.documentElement.setAttribute('data-theme', ORDER[(i+1)%ORDER.length]); } setTimeout(refresh,80); });
       window.addEventListener('theme-changed', refresh);
       setTimeout(refresh,250);
     })();
