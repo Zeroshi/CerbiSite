@@ -1,24 +1,71 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="random">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- Persisted theme early -->
+  <!-- ===================== THEME PRELOAD ===================== -->
+  <!-- Random starting theme with persistence + prefers-color-scheme fallback -->
   <script>
-    (function(){
-      try{
-        var saved = localStorage.getItem('cerbi-theme-name') || localStorage.getItem('cerbi-theme') || localStorage.getItem('theme');
-        if(saved) document.documentElement.setAttribute('data-theme', saved);
-        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          document.documentElement.setAttribute('data-theme','light');
-        }
-      }catch(e){}
+    (function () {
+      // Cerbi brand hue sampled from emblem (warm orange ~ 18deg hue)
+      var CERBI_BRAND_HEX = '#ff4d00';
+
+      // 10 named themes (ids) — must match CSS [data-theme="<id>"] blocks below
+      var THEMES = [
+        'mist-light','celadon','champagne','greige','lilac',
+        'pewter','midnight','indigo','plum','obsidian'
+      ];
+
+      // Persisted?
+      var saved = null;
+      try {
+        saved = localStorage.getItem('cerbi-theme');
+      } catch (_) {}
+
+      // If user set 'random' explicitly or first visit, choose a random theme, but bias to readable light ones first
+      function pickRandom() {
+        var lightFirst = ['mist-light','celadon','champagne','greige','lilac'];
+        var pool = Math.random() < 0.6 ? lightFirst : THEMES;
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      var chosen = saved || (function(){
+        // Respect prefers-color-scheme for first paint if no saved theme
+        try{
+          var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+          if (prefersLight) return 'mist-light';
+        }catch(_){}
+        return pickRandom();
+      })();
+
+      document.documentElement.setAttribute('data-theme', chosen);
+
+      // Expose minimal theme API early
+      window.CerbiTheme = {
+        list: function(){ return THEMES.slice(); },
+        get: function(){ return document.documentElement.getAttribute('data-theme') || 'mist-light'; },
+        set: function(id){
+          if (!id || THEMES.indexOf(id) < 0) return;
+          document.documentElement.setAttribute('data-theme', id);
+          try { localStorage.setItem('cerbi-theme', id); } catch(_){}
+          var ev = new CustomEvent('theme-changed', { detail: { theme: id }});
+          window.dispatchEvent(ev);
+        },
+        toggle: function(){
+          var cur = CerbiTheme.get();
+          var i = THEMES.indexOf(cur);
+          var next = THEMES[(i + 1) % THEMES.length];
+          CerbiTheme.set(next);
+        },
+        brand: CERBI_BRAND_HEX
+      };
     })();
   </script>
 
-  <!-- Your existing styles -->
+  <!-- ===================== CSS (external) ===================== -->
+  <!-- Keep your existing stylesheets (order preserved) -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.12" />
   <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.11" />
@@ -26,95 +73,313 @@
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
-  <!-- === Cerbi hotfixes & tokens (nav fixed, contrast-safe themes, readable docs, glyph clock) === -->
-  <style id="cerbi-theme-hotfix">
+  <!-- ===================== TOKEN OVERRIDES & FIXES ===================== -->
+  <style>
+    /* ----------------------------------------------------------------
+       10 contrast-safe theme tokens (derived from your palette + logo)
+       Each theme defines: background, surface, card, text/heading/muted,
+       accent, button (bg/hover), borders, nav background, md modal, etc.
+       ---------------------------------------------------------------- */
     :root{
-      /* Brand from your orange emblem (buttons/nav accents) */
-      --brand:#FF3500; --brand-600:#e33000; --brand-700:#c42b00; --brand-800:#a32400;
+      /* common tokens */
+      --brand:#ff4d00;                 /* Cerbi emblem warm orange */
+      --radius:12px;
+      --shadow:0 10px 40px rgba(0,0,0,.45);
+
+      /* fallbacks (overridden per theme) */
+      --bg:#0d1b2a;
+      --surface:#0f2233;
+      --card:#12283c;
+      --text:#e6eef8;
+      --heading:#ffffff;
+      --muted:#a7b4cf;
       --accent:var(--brand);
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(255,255,255,.08);
+      --divider:rgba(255,255,255,.12);
+      --nav-bg:rgba(6,10,20,.72);
+      --chip-bg:rgba(255,255,255,.08);
+      --chip-text:var(--text);
+      --kbd-bg:rgba(255,255,255,.08);
+      --kbd-text:var(--text);
+      --md-bg:rgba(10,14,24,.92);
+      --md-text:var(--text);
+      --focus:0 0 0 3px rgba(255,77,0,.35);
+      --glyph: rgba(255,77,0,0.12);   /* big clock tint */
+      --glyph-strong: rgba(255,77,0,0.18);
 
-      /* Sensible defaults, overridden by themes */
-      --bg:#0b1222; --text:#d9e2ff; --muted:#a7b4cf; --heading:#ffffff;
-      --surface:#0f1730; --border:rgba(255,255,255,.12);
-      --btn-fg:#0a0a0a; --btn-bg:var(--brand); --btn-bg-hover:#ff5a26; --link:var(--brand);
-
-      /* Nav */
-      --nav-bg: rgba(6,10,20,.78);
-      --nav-fg: #d9e2ff;
-      --nav-border: rgba(255,255,255,.12);
-      --nav-active: var(--brand);
-
-      /* Layout heights (calculated) */
-      --nav-h: 64px;
-      --ribbon-h: 0px;
-
-      /* Glyph clock */
-      --clock-color: var(--muted);
-      --clock-opacity: .26;
-
-      /* Markdown modal */
-      --md-bg: rgba(255,255,255,.98);
-      --md-text: #0b1222;
-      --md-border: rgba(0,0,0,.1);
+      /* spacing/stacking fixes */
+      --nav-h:64px;
+      --ribbon-h:0px;
     }
 
-    html{ background:var(--bg); color:var(--text); }
-    body{ margin:0; }
-    a{ color:var(--link); }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border-radius:10px; cursor:pointer; text-decoration:none; }
-    .btn.btn-primary{ background:var(--btn-bg); color:var(--btn-fg); border:0; transition:background .15s ease; }
-    .btn.btn-primary:hover{ background:var(--btn-bg-hover); }
-    .btn.btn-ghost{ color:var(--text); border:1px solid var(--border); background:transparent; }
-    .card,.glass{ background:var(--surface); border:1px solid var(--border); border-radius:14px; }
-    .img-frame{ background:var(--surface); border:1px solid var(--border); border-radius:14px; }
-    .table th,.table td{ border-color:var(--border); }
-    .muted,.k{ color:var(--muted); }
-
-    /* ===== NAV fixed and readable ===== */
-    .nav{
-      position: fixed !important; top: 0; left: 0; right: 0; z-index: 1200;
-      background: var(--nav-bg) !important;
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--nav-border);
-      color: var(--nav-fg) !important;
+    /* ---------- THEME: 1. Powder Blue Mist (light) ---------- */
+    [data-theme="mist-light"]{
+      --bg:#f6fbff;
+      --surface:#f2f7fd;
+      --card:#ffffff;
+      --text:#133047;
+      --heading:#0b1f33;
+      --muted:#3f5b73;
+      --accent:#ff4d00;
+      --accent-contrast:#fff7f2;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(10,20,30,.10);
+      --divider:rgba(10,20,30,.14);
+      --nav-bg:rgba(255,255,255,.82);
+      --chip-bg:#e9f2ff;
+      --chip-text:#15324a;
+      --kbd-bg:#eef4fb;
+      --kbd-text:#19354c;
+      --md-bg:#ffffff;
+      --md-text:#0f2640;
+      --glyph: rgba(255,77,0,0.07);
+      --glyph-strong: rgba(255,77,0,0.12);
     }
-    .nav .nav-links a{ color: var(--nav-fg) !important; }
-    .nav .nav-links a:hover,
-    .nav .nav-links a.active{ color: var(--nav-active) !important; }
-    .nav .brand span{ color: var(--nav-fg) !important; }
-    main{ padding-top: calc(var(--nav-h) + var(--ribbon-h)); }
-    .ribbon{ margin-top: var(--nav-h); }
 
-    /* Keep UI above the background glyph clock */
-    .ribbon, main, footer { position: relative; z-index: 2; }
+    /* ---------- THEME: 2. Celadon Frost (light-neutral) ---------- */
+    [data-theme="celadon"]{
+      --bg:#f7fff9;
+      --surface:#effaf2;
+      --card:#ffffff;
+      --text:#163226;
+      --heading:#0a2a1d;
+      --muted:#3e5a4e;
+      --accent:#ff4d00;
+      --accent-contrast:#fff7f2;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(10,30,20,.10);
+      --divider:rgba(10,30,20,.14);
+      --nav-bg:rgba(255,255,255,.85);
+      --chip-bg:#e6f7ec;
+      --chip-text:#163226;
+      --md-bg:#ffffff;
+      --md-text:#15251d;
+      --glyph: rgba(255,77,0,0.07);
+      --glyph-strong: rgba(255,77,0,0.12);
+    }
 
-    /* Background canvas + layers */
-    #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
-    #dynamic-bg canvas{ width:100%; height:100%; display:block }
+    /* ---------- THEME: 3. Champagne Blush (warm light) ---------- */
+    [data-theme="champagne"]{
+      --bg:#fff9f5;
+      --surface:#fff5ef;
+      --card:#ffffff;
+      --text:#3b2a22;
+      --heading:#281b15;
+      --muted:#6b5144;
+      --accent:#ff4d00;
+      --accent-contrast:#fff7f2;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(40,20,10,.10);
+      --divider:rgba(40,20,10,.14);
+      --nav-bg:rgba(255,255,255,.86);
+      --chip-bg:#ffefe6;
+      --chip-text:#3b2a22;
+      --md-bg:#ffffff;
+      --md-text:#2c1d16;
+      --glyph: rgba(255,77,0,0.08);
+      --glyph-strong: rgba(255,77,0,0.15);
+    }
 
-    /* Glyph clock (behind everything) */
+    /* ---------- THEME: 4. Greige Stone (mid light-neutral) ---------- */
+    [data-theme="greige"]{
+      --bg:#fbfbf9;
+      --surface:#f4f3f0;
+      --card:#ffffff;
+      --text:#252421;
+      --heading:#181816;
+      --muted:#585651;
+      --accent:#ff4d00;
+      --accent-contrast:#fff7f2;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(20,20,18,.14);
+      --divider:rgba(20,20,18,.18);
+      --nav-bg:rgba(255,255,255,.86);
+      --chip-bg:#efeee9;
+      --chip-text:#2b2a26;
+      --md-bg:#ffffff;
+      --md-text:#1d1d1a;
+      --glyph: rgba(255,77,0,0.08);
+      --glyph-strong: rgba(255,77,0,0.15);
+    }
+
+    /* ---------- THEME: 5. Ashen Lilac (soft light) ---------- */
+    [data-theme="lilac"]{
+      --bg:#fbf9ff;
+      --surface:#f6f2ff;
+      --card:#ffffff;
+      --text:#2b2434;
+      --heading:#1a1520;
+      --muted:#5e566a;
+      --accent:#ff4d00;
+      --accent-contrast:#fff7f2;
+      --btn:#ff4d00;
+      --btn-hover:#ff6a2b;
+      --border:rgba(26,21,32,.12);
+      --divider:rgba(26,21,32,.16);
+      --nav-bg:rgba(255,255,255,.86);
+      --chip-bg:#f0eaff;
+      --chip-text:#2b2434;
+      --md-bg:#ffffff;
+      --md-text:#1c1723;
+      --glyph: rgba(255,77,0,0.07);
+      --glyph-strong: rgba(255,77,0,0.12);
+    }
+
+    /* ---------- THEME: 6. Pewter Slate (mid dark) ---------- */
+    [data-theme="pewter"]{
+      --bg:#0f1a22;
+      --surface:#132331;
+      --card:#162a3b;
+      --text:#e5eef8;
+      --heading:#ffffff;
+      --muted:#a7b4cf;
+      --accent:#ff6a2b;
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff7a44;
+      --border:rgba(255,255,255,.08);
+      --divider:rgba(255,255,255,.12);
+      --nav-bg:rgba(6,10,20,.78);
+      --chip-bg:rgba(255,255,255,.08);
+      --chip-text:#e5eef8;
+      --md-bg:rgba(10,14,24,.92);
+      --md-text:#d9e2ff;
+      --glyph: rgba(255,77,0,0.12);
+      --glyph-strong: rgba(255,77,0,0.18);
+    }
+
+    /* ---------- THEME: 7. Midnight Teal (dark) ---------- */
+    [data-theme="midnight"]{
+      --bg:#031e22;
+      --surface:#072a2f;
+      --card:#0d3036;
+      --text:#e7f7fb;
+      --heading:#ffffff;
+      --muted:#b7d7df;
+      --accent:#ff6a2b;
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff7a44;
+      --border:rgba(255,255,255,.08);
+      --divider:rgba(255,255,255,.12);
+      --nav-bg:rgba(1,16,18,.80);
+      --chip-bg:rgba(255,255,255,.10);
+      --chip-text:#e7f7fb;
+      --md-bg:rgba(5,18,20,.92);
+      --md-text:#e7f7fb;
+      --glyph: rgba(255,77,0,0.12);
+      --glyph-strong: rgba(255,77,0,0.2);
+    }
+
+    /* ---------- THEME: 8. Indigo Ink (dark) ---------- */
+    [data-theme="indigo"]{
+      --bg:#101327;
+      --surface:#151a34;
+      --card:#181e3d;
+      --text:#e6e9ff;
+      --heading:#ffffff;
+      --muted:#b9c0ff;
+      --accent:#ff6a2b;
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff7a44;
+      --border:rgba(255,255,255,.08);
+      --divider:rgba(255,255,255,.12);
+      --nav-bg:rgba(8,10,30,.82);
+      --chip-bg:rgba(255,255,255,.10);
+      --chip-text:#e6e9ff;
+      --md-bg:rgba(12,14,36,.92);
+      --md-text:#e6e9ff;
+      --glyph: rgba(255,77,0,0.13);
+      --glyph-strong: rgba(255,77,0,0.22);
+    }
+
+    /* ---------- THEME: 9. Charcoal Plum (dark) ---------- */
+    [data-theme="plum"]{
+      --bg:#1a1216;
+      --surface:#22171f;
+      --card:#291d26;
+      --text:#ffeaf3;
+      --heading:#ffffff;
+      --muted:#f3cfe0;
+      --accent:#ff6a2b;
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff7a44;
+      --border:rgba(255,255,255,.10);
+      --divider:rgba(255,255,255,.14);
+      --nav-bg:rgba(18,10,14,.80);
+      --chip-bg:rgba(255,255,255,.12);
+      --chip-text:#ffeaf3;
+      --md-bg:rgba(28,20,26,.92);
+      --md-text:#ffeaf3;
+      --glyph: rgba(255,77,0,0.13);
+      --glyph-strong: rgba(255,77,0,0.22);
+    }
+
+    /* ---------- THEME: 10. Obsidian Blue-Black (darkest) ---------- */
+    [data-theme="obsidian"]{
+      --bg:#0b1520;
+      --surface:#0e1b29;
+      --card:#102033;
+      --text:#dfeaff;
+      --heading:#ffffff;
+      --muted:#a9c2ff;
+      --accent:#ff6a2b;
+      --accent-contrast:#1a0b05;
+      --btn:#ff4d00;
+      --btn-hover:#ff7a44;
+      --border:rgba(255,255,255,.08);
+      --divider:rgba(255,255,255,.12);
+      --nav-bg:rgba(6,10,20,.82);
+      --chip-bg:rgba(255,255,255,.10);
+      --chip-text:#dfeaff;
+      --md-bg:rgba(10,14,24,.92);
+      --md-text:#dfeaff;
+      --glyph: rgba(255,77,0,0.14);
+      --glyph-strong: rgba(255,77,0,0.24);
+    }
+
+    /* ---------- Global application of tokens ---------- */
+    html, body { background: var(--bg); color: var(--text); }
+    .nav { position: sticky; top: 0; z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(10px); }
+    .nav a, .nav .btn, .nav .theme-toggle { color: var(--text); }
+    .btn { background: var(--btn); color: var(--accent-contrast); border: 1px solid transparent; }
+    .btn:hover { background: var(--btn-hover); }
+    .btn.btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
+    .btn.btn-ghost:hover { background: rgba(255,255,255,.06); }
+    .chip, .tag { background: var(--chip-bg); color: var(--chip-text); }
+    .glass { background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .card { background: var(--card); border:1px solid var(--border); }
+    .kbd, pre.codeblock, code[class*="language-"], pre[class*="language-"] { background: var(--kbd-bg); color: var(--kbd-text); }
+    .img-cap, .muted, .k { color: var(--muted); }
+    a { color: var(--accent); }
+    a:hover { opacity: .92; }
+    h1,h2,h3,h4,h5,h6 { color: var(--heading); }
+    .table th,.table td { border-color: var(--divider); }
+    hr { border-color: var(--divider); }
+
+    /* Ribbon spacing compensation for sticky nav */
+    #topRibbon { position: sticky; top: var(--nav-h); z-index: 900; background: linear-gradient(0deg, rgba(0,0,0,.18), rgba(0,0,0,.18)), var(--nav-bg); }
+
+    /* Glyph clock behind everything (but above background) */
     #bg-clock{
-      position: fixed; inset: 0;
-      display: grid; place-items: center;
-      z-index: 0;
-      pointer-events: none; user-select: none;
-      opacity: var(--clock-opacity,.26);
-      color: var(--clock-color, var(--muted));
-      mix-blend-mode: normal;
-      transition: color .2s ease, opacity .2s ease;
-      line-height: 1;
+      position: fixed; inset:0; display:grid; place-items:center;
+      z-index: -1; pointer-events: none; user-select: none; line-height:1;
+      color: var(--muted); opacity: var(--clock-opacity, .18);
     }
 
-    .spotlight{ opacity:.95; }
-    #dashboards .showcase-viewport img{ aspect-ratio:16/9; width:100%; height:auto; object-fit:contain; }
+    /* Ensure the dynamic background sits under content */
+    #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
 
-    .value-rotator { padding-bottom: 16px; }
-    .value-rotator .dash-slider { padding-bottom: 6px; }
-    .value-rotator .dots { margin-top: 10px; }
-
-    html.modal-open, body.modal-open { overflow: hidden !important; }
-
-    /* Docs modal: readable on all themes via tokens */
+    /* Docs modal theming (readable on light/dark) */
     .prose-doc{
       width:min(100vw, 960px);
       max-height:min(90vh, 900px);
@@ -122,69 +387,71 @@
       padding:22px 26px;
       border-radius:12px;
       background:var(--md-bg);
-      backdrop-filter: blur(6px);
-      border:1px solid var(--md-border);
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
       color:var(--md-text);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
       line-height:1.55;
     }
-    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:inherit; margin:.6em 0 .35em }
-    .prose-doc h1{ font-size:1.9rem } .prose-doc h2{ font-size:1.5rem } .prose-doc h3{ font-size:1.22rem }
-    .prose-doc a{ color:var(--brand); text-decoration:none; border-bottom:1px dashed currentColor }
-    .prose-doc pre{ background:rgba(0,0,0,.06); padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid var(--md-border); color:var(--md-text) }
-    .prose-doc code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-    .prose-doc blockquote{ border-left:3px solid rgba(0,0,0,.12); margin:.6em 0; padding:.2em .9em; color:rgba(0,0,0,.75) }
+    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--heading); margin:.6em 0 .35em }
+    .prose-doc a{ color:var(--accent); text-decoration:none; border-bottom:1px dashed currentColor }
+    .prose-doc pre{ background:var(--kbd-bg); color:var(--kbd-text); padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid var(--border) }
     .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
-    .prose-doc th,.prose-doc td{ border:1px solid var(--md-border); padding:.5em .6em }
+    .prose-doc th,.prose-doc td{ border:1px solid var(--divider); padding:.5em .6em }
 
-    #docbox.lightbox { background: rgba(0,0,0,.55); }
-    .lightbox{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.5); z-index:1400; }
-    .lightbox[hidden]{ display:none; }
-    .lightbox .close{ position:absolute; top:12px; right:12px; }
-    #lightbox img{ max-width:min(96vw,1600px); max-height:90vh; border-radius:10px; }
+    /* Remove stray blanks: collapse any empty .space blocks */
+    .space:empty { display:none; }
+    .section.full-bleed-wrap + .space:empty { display:none; }
 
-    .switch{
-      width:44px;height:26px;border-radius:26px;border:1px solid var(--border);
-      background:linear-gradient(0deg, rgba(255,255,255,.06), rgba(255,255,255,0));
-      position:relative;cursor:pointer
+    /* Contact FAB moved to the right; never overlap hero headline */
+    .contact-fab{
+      position: fixed; right: 22px; bottom: 22px; z-index: 900;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
     }
-    .switch::after{
-      content:""; position:absolute; top:2px; left:2px; width:22px; height:22px; border-radius:50%;
-      background:var(--btn-bg); transition:left .18s ease, background .2s ease, transform .2s ease;
-      box-shadow:0 2px 6px rgba(0,0,0,.25)
+
+    /* Theme diagnostic widget (single instance, top-left, no stacking) */
+    #theme-diag{
+      position: fixed; left: 12px; bottom: 12px; z-index: 910;
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border); border-radius: 14px; padding: 8px 10px;
+      display: flex; gap: 8px; align-items: center;
+      box-shadow: var(--shadow);
     }
-    .switch[aria-pressed="true"]::after{ left:20px; transform: scale(1.02); }
+    #theme-diag button{ background: transparent; color: var(--text); border:1px solid var(--border); border-radius:10px; padding: 6px 10px; }
+    #theme-diag button:hover{ background: rgba(255,255,255,.06); }
 
-    /* Demo panes are readable on all themes */
-    .demo{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .demo .pane{ background: var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px; }
-    .demo pre{ margin:0; }
-    .kbd{ color: var(--text); }
+    /* Ensure menu readability on all themes */
+    .nav a{ text-shadow: 0 1px 0 rgba(0,0,0,.25); }
+    .nav .btn{ box-shadow: 0 2px 0 rgba(0,0,0,.2) inset; }
 
-    #theme-diag{ position:fixed; bottom:10px; right:10px; z-index:1600; background:var(--surface);
-      border:1px solid var(--border); border-radius:10px; padding:8px 10px; font-size:12px; display:flex; gap:8px; align-items:center; color:var(--text); }
-    #theme-diag button{ border:1px solid var(--border); background:transparent; padding:4px 8px; border-radius:8px; color:var(--text); cursor:pointer }
+    /* Ensure hero chips readable */
+    .chip{ border: 1px solid var(--border); }
 
-    .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-    @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
-    @media (max-width:900px){ .demo{ grid-template-columns:1fr; } }
+    /* Improve slider dots contrast */
+    .dash-slider .dots button{ background: var(--chip-bg); border:1px solid var(--border); }
+    .dash-slider .dots button.active{ background: var(--accent); border-color: transparent; }
+
+    /* Accessibility focus ring */
+    :focus-visible{ outline: none; box-shadow: var(--focus); border-radius: 6px; }
   </style>
 
-  <!-- Favicons -->
+  <!-- Favicons / app icons -->
   <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="150x150" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
   <meta name="msapplication-TileImage" content="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
 </head>
+
 <body>
-  <!-- Dynamic background -->
+  <!-- Dynamic background layer (canvas) -->
   <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
 
-  <!-- Background layers -->
+  <!-- Background layers: tiles + sky + veil + spotlight + clock -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
+
+  <!-- GLYPH CLOCK (behind content) -->
   <div id="bg-clock" aria-hidden="true" class="mode-time"><div class="scan"></div></div>
 
   <!-- Ribbon -->
@@ -201,6 +468,7 @@
   <!-- Nav -->
   <header id="siteNav" class="nav">
     <div class="container nav-inner">
+      <!-- Brand: always scroll to top -->
       <a href="#top" class="brand" aria-label="Cerbi — back to top">
         <img src="assets/CerbiLogo.png" alt="" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high" />
         <span>CerbiSuite</span>
@@ -211,12 +479,13 @@
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
         <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
+        <!-- Company opens as modal -->
         <a href="docs/company.md" class="doc-link">Company</a>
         <a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
-        <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
+        <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme" title="Rotate theme">🌗 Theme</button>
         <button id="cmdBtn" class="theme-toggle" aria-label="Open command palette" title="⌘K / Ctrl+K">⌘K</button>
         <a class="btn btn-ghost" href="#contact">Contact</a>
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a>
@@ -229,7 +498,7 @@
 
   <main id="main">
     <!-- ===== HERO ===== -->
-    <section class="hero container">
+    <section class="hero container" id="top">
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="70%" cy="10%" r="60%">
@@ -350,7 +619,7 @@
 
       <div class="glass reveal" style="padding:16px;margin-top:16px">
         <h3 style="margin:0 0 6px">Business Use Case — Claims Platform (Regulated)</h3>
-        <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile… dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
+        <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules). Developers see IDE diagnostics for forbidden fields; runtime applies redaction and flags violations instead of dropping events. Splunk dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
         <ul style="margin-top:8px">
           <li><strong>Why it helps:</strong> lower ingestion cost, faster incident triage, audit-ready evidence.</li>
           <li><strong>How to roll out:</strong> enable analyzer in CI; deploy runtime validators in relax-mode; tighten over 2 sprints.</li>
@@ -387,7 +656,7 @@
           <h3 style="margin-top:4px">Cerbi’s approach: logs as governed data products</h3>
           <ul>
             <li><strong>Contract (schema + rules):</strong> required/forbidden fields, types, enums, PII policy.</li>
-            <li><strong>Build-time enforcement:</strong> Roslyn analyzer flags violations before they ship.</li>
+            <li><strong>Build-time enforcement:</strong> Roslyn analyzer catches violations before they ship.</li>
             <li><strong>Runtime enforcement:</strong> validation, redaction, and <em>relax-mode</em> flagging in prod.</li>
             <li><strong>Ownership & versioning:</strong> profiles live in CerbiShield with history, RBAC, rollbacks.</li>
             <li><strong>Analytics-ready metadata:</strong> app, env, tenant, correlation, tags, and categories.</li>
@@ -445,23 +714,30 @@
       <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
 
       <div class="glass tilt reveal" style="padding:18px;position:relative">
-        <div class="glare" aria-hidden="true"></div>
+        <div class="glare"></div>
 <pre class="codeblock"><code>// 1) Install
+// Choose the integration that fits your stack
+// Core structured logger (native)
 dotnet add package CerbiStream
+
+// MEL runtime governance (Microsoft.Extensions.Logging)
 dotnet add package Cerbi.MEL.Governance
+
+// Build-time analyzer (Roslyn)
 dotnet add package CerbiStream.GovernanceAnalyzer
 
 // 2) Configure in Program.cs (MEL)
 using CerbiStream;
 
-var logger = LoggerFactory.Create(builder =&gt;
+var logger = LoggerFactory.Create(builder =>
 {
-  builder.AddCerbiStream(options =&gt;
+  builder.AddCerbiStream(options =>
   {
     options.WithFileFallback();                     // resilient logging
     options.UseGovernance("cerbi_governance.json"); // build-time + runtime profile
   });
 }).CreateLogger&lt;Program&gt;();
+
 
 // 3) Log safely with governance validation
 logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
@@ -550,6 +826,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
+
         <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
           <div class="sr-only" aria-live="polite"></div>
 
@@ -604,6 +881,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
               <img
                 width="1600" height="900"
                 src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                srcset="assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x"
                 sizes="100vw"
                 alt="CerbiShield — Deploy"
                 data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
@@ -648,7 +926,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <figure class="col-6 img-frame arch-diagram reveal">
           <img
             src="assets/architecture/cerbisuite-architecture-1600x900.png"
-            srcset="assets/architecture/cerbisuite-architecture-1600x900.png 1x, assets/architecture/cerbisuite-architecture-1600x900.png 2x"
+            srcset="assets/architecture/cerbisuite-architecture-1600x900.png 1x, assets/architecture/cerbisuite-architecture-1600x900.png 1.5x, assets/architecture/cerbisuite-architecture-1600x900.png 2x"
             sizes="(max-width: 900px) 100vw, 900px"
             alt="Cerbi reference architecture diagram"
             loading="lazy"
@@ -683,102 +961,114 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <p class="k" style="margin-top:10px">Bottom line: your teams keep familiar tools; leadership gets cost control, auditability, and faster incident response.</p>
     </section>
 
-    <!-- PACKAGES -->
+    <!-- PACKAGES (NuGet) -->
     <section id="packages" class="container section">
-      <div class="eyebrow">NuGet</div>
-      <h2>Pick your <span class="hl">Packages</span></h2>
-      <div class="grid" style="gap:18px">
+      <div class="eyebrow">Install</div>
+      <h2><span class="hl">NuGet Packages</span></h2>
+      <div class="grid" style="gap:16px">
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>CerbiStream</h3>
-          <p class="k">Core structured logger with queue/cloud routing, optional encryption, and governance integration.</p>
-          <p>
-            <a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet</a>
-            <a class="btn btn-ghost" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">Repo</a>
-          </p>
+          <p class="k">Core structured logger for .NET. Consistent shapes, tags, correlation metadata, optional encryption, and resilient file fallback.</p>
+          <a class="btn" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a>
         </article>
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.MEL.Governance</h3>
-          <p class="k">Runtime governance validator for Microsoft.Extensions.Logging; redaction, relax-mode, and profile enforcement.</p>
-          <p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet</a></p>
+          <p class="k">Runtime governance for Microsoft.Extensions.Logging. Validates events, redacts sensitive fields, supports relax-mode rollout.</p>
+          <a class="btn" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a>
         </article>
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>CerbiStream.GovernanceAnalyzer</h3>
-          <p class="k">Roslyn analyzer for build-time governance feedback (IDE/CI) with clear diagnostics.</p>
-          <p><a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet</a></p>
+          <p class="k">Roslyn analyzer. Build-time diagnostics for schema/PII violations; ships fixable messages in IDE/CI.</p>
+          <a class="btn" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
         </article>
+
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.Governance.Runtime</h3>
-          <p class="k">Real-time policy execution with violation tagging and safe retention via redaction.</p>
-          <p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet</a></p>
+          <p class="k">Common runtime services shared across integrations (validators, redactors, policy evaluation).</p>
+          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a>
         </article>
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.Governance.Core</h3>
-          <p class="k">Core abstractions & types for governance profiles, rules, and validators.</p>
-          <p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet</a></p>
+          <p class="k">Core governance model & policy types—schemas, rules, enums, and versioning primitives.</p>
+          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a>
         </article>
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-          <p class="k">Analyzer for Serilog pipelines to align logging with governance rules pre-merge.</p>
-          <p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet</a></p>
+          <p class="k">Analyzer support for Serilog pipelines—bring the same policy to Serilog apps.</p>
+          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
         </article>
       </div>
     </section>
 
-    <!-- REPOS -->
+    <!-- REPOSITORIES -->
     <section id="repos" class="container section">
       <div class="eyebrow">Open Source</div>
-      <h2>Cerbi <span class="hl">Repos</span></h2>
-      <div class="grid" style="gap:18px">
+      <h2><span class="hl">GitHub Repositories</span></h2>
+      <div class="grid" style="gap:16px">
         <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi-CerbiStream</h3>
-          <p class="k">Secure .NET logging with encryption, queue/cloud routing, and governance integration; async console & file fallback.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a></p>
+          <h3>CerbiStream</h3>
+          <p class="k">Reference implementation of the structured logger, with samples and docs.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a>
         </article>
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>CerbiStream.BenchmarkTests</h3>
-          <p class="k">BenchmarkDotNet suite comparing CerbiStream with Serilog, NLog, Log4Net, and MEL for latency & allocations.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests" target="_blank" rel="noopener">GitHub</a></p>
+          <p class="k">Benchmarks to validate throughput/allocations vs. common baselines.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a>
         </article>
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.MEL.Governance</h3>
-          <p class="k">Runtime validation for <code>Microsoft.Extensions.Logging</code>; profile enforcement, redaction, relax-mode.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi.MEL.Governance" target="_blank" rel="noopener">GitHub</a></p>
+          <p class="k">Runtime validator package for Microsoft.Extensions.Logging.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a>
         </article>
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.MEL.Governance.Demo</h3>
-          <p class="k">Runnable sample demonstrating MEL integration, violations, policy rollouts, and safe redaction.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo" target="_blank" rel="noopener">GitHub</a></p>
+          <p class="k">Small demo app showing runtime validation, redaction, and relax-mode.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a>
         </article>
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-          <p class="k">Roslyn analyzer surfacing governance rule issues in Serilog pipelines at build time.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">GitHub</a></p>
+          <p class="k">Analyzer support for Serilog projects to align with governance profiles.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a>
         </article>
         <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
-          <p class="k">Test harness validating analyzer diagnostics and expected warnings/errors for Serilog scenarios.</p>
-          <p><a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp" target="_blank" rel="noopener">GitHub</a></p>
+          <p class="k">Test harness exercising Serilog analyzer rules and diagnostics.</p>
+          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a>
         </article>
       </div>
     </section>
 
     <!-- COMPARE -->
     <section id="compare" class="container section">
-      <div class="eyebrow">Why Cerbi</div>
-      <h2>Compare <span class="hl">Approaches</span></h2>
-      <div class="glass" style="padding:8px 12px;overflow-x:auto">
+      <div class="eyebrow">Decision support</div>
+      <h2><span class="hl">Compare Approaches</span></h2>
+      <div class="glass" style="padding:12px">
         <table class="table">
-          <thead><tr><th>Feature</th><th>CerbiStream</th><th>Serilog</th><th>NLog</th><th>Log4Net</th><th>MEL</th></tr></thead>
+          <thead>
+            <tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best when…</th></tr>
+          </thead>
           <tbody>
-            <tr><td>Structured logging</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
-            <tr><td>Governance enforcement</td><td>✅ (runtime + analyzer)</td><td>❌</td><td>❌</td><td>❌</td><td>⬜ (ext)</td></tr>
-            <tr><td>Queue-first routing</td><td>✅</td><td>⬜ (ext)</td><td>⬜ (ext)</td><td>⬜ (ext)</td><td>⬜</td></tr>
-            <tr><td>Encryption</td><td>✅</td><td>⬜ (ext)</td><td>⬜ (ext)</td><td>⬜ (ext)</td><td>⬜</td></tr>
-            <tr><td>Async console output</td><td>✅</td><td>✅</td><td>✅</td><td>⬜</td><td>⬜</td></tr>
+            <tr>
+              <td><strong>“Just log more” (no guardrails)</strong></td>
+              <td>Fast to start</td>
+              <td>Inconsistent fields, breakage, PII risk, higher cost</td>
+              <td>Tiny apps, throwaway prototypes</td>
+            </tr>
+            <tr>
+              <td><strong>Downstream normalization only</strong></td>
+              <td>No app changes</td>
+              <td>Late fixes, incomplete context, fragile</td>
+              <td>Short-term stopgap for legacy streams</td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi governance (build + runtime)</strong></td>
+              <td>Stable schema, redaction, versioned policy, cheaper ingestion</td>
+              <td>Define profiles; add analyzers/validators</td>
+              <td>Multi-team apps, compliance needs, dashboard durability</td>
+            </tr>
           </tbody>
         </table>
       </div>
-      <p class="muted" style="font-size:12px">Built-ins vs typical ecosystem extensions.</p>
     </section>
 
     <!-- ROADMAP -->
@@ -823,10 +1113,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           ></iframe>
           <script>
             (function(){
+              // Auto-resize JotForm iframe height via postMessage, with a min-height safety
               var ifr = document.getElementById('contact-iframe');
               function onMsg(e){
-                try{ var host = new URL(e.origin).hostname||''; if(!/jotform\.com$/i.test(host)) return; }catch(_){}
-                var data = e.data, args = (typeof data === 'object') ? data : String(data||'').split(':');
+                try{
+                  var host = new URL(e.origin).hostname || '';
+                  if(!/jotform\.com$/i.test(host)) return; // only accept messages from jotform
+                }catch(_){}
+                var data = e.data;
+                var args = (typeof data === 'object') ? data : String(data || '').split(':');
                 if(args[0] === 'setHeight'){
                   var h = parseInt(args[1], 10);
                   if(!isNaN(h) && ifr){ ifr.style.height = Math.max(900, h) + 'px'; }
@@ -858,6 +1153,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
+        <!-- Docs open in themed modal -->
         <a class="tag doc-link" href="docs/privacy.md">Privacy</a>
         <a class="tag doc-link" href="docs/terms.md">Terms</a>
         <a class="tag doc-link" href="docs/security.md">Security</a>
@@ -868,7 +1164,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </footer>
 
-  <!-- Command palette -->
+  <!-- Command palette (closed by default) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header"><span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" /></div>
@@ -876,22 +1172,24 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  <!-- FAB -->
+  <!-- Contact FAB -->
   <a href="#contact" class="contact-fab" aria-label="Contact">
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- Lightboxes -->
+  <!-- IMAGE LIGHTBOX -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
+
+  <!-- DOCS MODAL -->
   <div id="docbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
-  <!-- Your existing script bundle -->
+  <!-- ===================== CORE SCRIPTS ===================== -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
@@ -900,294 +1198,52 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- ===== DOCS MODAL ===== -->
+  <!-- ===================== PAGE JS & FIXES ===================== -->
   <script>
+    // Wire theme button
+    (function(){ const b=document.getElementById('themeBtn'); b?.addEventListener('click', ()=>window.CerbiTheme?.toggle()); })();
+
+    // Sticky sizing + ribbon/nav heights
     (function(){
-      const modal   = document.getElementById('docbox');
-      const content = document.getElementById('docboxContent');
-      if(!modal || !content) return;
-
-      const html = document.documentElement;
-      const body = document.body;
-
-      const showLoader = (msg='Loading…') => {
-        content.innerHTML =
-          '<div style="display:grid;place-items:center;min-height:240px;padding:24px">' +
-          '<div class="k">'+msg+'</div></div>';
-      };
-
-      const showError = (path, extra='') => {
-        content.innerHTML =
-          '<h2 style="margin-top:0">Unable to load document</h2>' +
-          '<p class="k">I tried: <code>'+ (path || '(unknown)') +'</code></p>' +
-          (extra ? '<p class="k">'+extra+'</p>' : '') +
-          '<p class="k">If this is a GitHub Pages site, confirm the file exists under <code>/docs/</code> with exact casing.</p>';
-      };
-
-      function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
-      function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
-
-      function actuallyOpenModal(){
-        modal.removeAttribute('hidden');
-        modal.setAttribute('aria-hidden','false');
-        lockScroll();
-      }
-      function closeModal(){
-        modal.setAttribute('aria-hidden','true');
-        modal.setAttribute('hidden','');
-        content.innerHTML = '';
-        unlockScroll();
-      }
-
-      modal.querySelector('.close')?.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
-
-      function mdPathFromHref(href){
-        try{
-          const u = new URL(href, location.href);
-          const qfile = u.searchParams.get('file');
-          if (qfile) return qfile;
-          if (u.pathname.endsWith('.md')) return u.pathname.replace(/^\//,'');
-          return null;
-        }catch{ return null; }
-      }
-
-      function waitForMarked(){
-        if (window.marked && typeof window.marked.parse === 'function') return Promise.resolve();
-        return new Promise(resolve=>{
-          if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-          } else {
-            window.addEventListener('DOMContentLoaded', ()=>{
-              const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-            }, { once:true });
-          }
-          setTimeout(resolve, 800);
-        });
-      }
-
-      async function fetchMd(path){
-        const local = path.replace(/^\/+/,'');
-        const tried = [];
-        try{
-          const r = await fetch(local, { cache:'no-store' });
-          tried.push(location.origin + '/' + local);
-          if (r.ok) return { text: await r.text(), source: 'local', tried };
-        }catch(e){}
-        try{
-          const gh = `https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`;
-          tried.push(gh);
-          const r2 = await fetch(gh, { cache:'no-store' });
-          if (r2.ok) return { text: await r2.text(), source: 'github', tried };
-          return { error: 'HTTP '+r2.status, tried };
-        }catch(e2){
-          return { error: String(e2), tried };
-        }
-      }
-
-      async function openDocs(href){
-        const mdRel = mdPathFromHref(href);
-        actuallyOpenModal(); 
-        showLoader();
-        if(!mdRel){ showError('(no md path)', 'That link does not point to a Markdown file.'); return; }
-        const res = await fetchMd(mdRel);
-        if (!res || res.error || !res.text){ showError(mdRel, res && res.error ? ('Fetch error: ' + res.error) : 'Unknown fetch error.'); return; }
-        await waitForMarked();
-        if (window.marked && typeof window.marked.parse === 'function'){
-          content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.scrollTop = 0;
-        } else {
-          content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.querySelector('pre').textContent = res.text;
-        }
-      }
-
-      function onDocClick(e){ e.preventDefault(); const a = e.currentTarget; openDocs(a.getAttribute('href')); }
-
-      function attach(){
-        document.querySelectorAll('a.doc-link').forEach(a=>{
-          a.removeEventListener('click', onDocClick);
-          a.addEventListener('click', onDocClick);
-        });
-      }
-
-      if(document.readyState === 'loading'){
-        document.addEventListener('DOMContentLoaded', attach, { once:true });
-      } else {
-        attach();
-      }
-    })();
-  </script>
-
-  <!-- ===== THEME RUNTIME (10 themes) with contrast guard ===== -->
-  <script id="cerbi-theme-runtime">
-    (function(){
-      // Utility: WCAG contrast helpers
-      function hexToRgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); const num=parseInt(h,16); return {r:(num>>16)&255,g:(num>>8)&255,b:num&255}; }
-      function srgb(v){ v/=255; return v<=0.03928? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); }
-      function luminance(rgb){ return 0.2126*srgb(rgb.r)+0.7152*srgb(rgb.g)+0.0722*srgb(rgb.b); }
-      function contrast(hex1, hex2){
-        const L1=luminance(hexToRgb(hex1)), L2=luminance(hexToRgb(hex2));
-        const a=Math.max(L1,L2)+0.05, b=Math.min(L1,L2)+0.05;
-        return a/b;
-      }
-      function ensureContrast(bg, fg, target){
-        // If contrast below target, choose black or white, otherwise keep fg
-        const c = contrast(bg, fg);
-        if(c>=target) return fg;
-        const test1 = contrast(bg, '#0b1222'); // deep navy-ish
-        const test2 = contrast(bg, '#101010'); // near black
-        const test3 = contrast(bg, '#ffffff'); // white
-        const best = [[test1,'#0b1222'],[test2,'#101010'],[test3,'#ffffff']].sort((a,b)=>b[0]-a[0])[0][1];
-        return best;
-      }
-
-      // 10 themes (backgrounds vary); text/nav/modal colors are auto-corrected for contrast
-      const THEMES = [
-        {name:'light', vars:{'--bg':'#ffffff','--text':'#0b1222','--muted':'#44506a','--heading':'#0b1222','--surface':'#f7fafc','--border':'rgba(10,18,34,.12)','--btn-fg':'#0b1222','--btn-bg':'var(--brand)','--btn-bg-hover':'#ff5a26','--link':'var(--brand)','--nav-bg':'rgba(255,255,255,.92)','--nav-fg':'#0b1222','--nav-border':'rgba(10,18,34,.10)','--nav-active':'var(--brand)','--md-bg':'#ffffff','--md-text':'#0b1222','--md-border':'rgba(10,18,34,.12)','--clock-color':'rgba(193,42,0,.45)','--clock-opacity':'.36'}},
-        {name:'neutral', vars:{'--bg':'#f4f6f8','--text':'#0e1320','--muted':'#5a647c','--heading':'#0e1320','--surface':'#ffffff','--border':'rgba(0,0,0,.12)','--btn-fg':'#0b1222','--btn-bg':'var(--brand)','--btn-bg-hover':'#ff5a26','--link':'var(--brand)','--nav-bg':'rgba(255,255,255,.90)','--nav-fg':'#0e1320','--nav-border':'rgba(0,0,0,.10)','--nav-active':'var(--brand)','--md-bg':'#ffffff','--md-text':'#0b1222','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.42)','--clock-opacity':'.34'}},
-        {name:'dark', vars:{'--bg':'#0b1222','--text':'#d9e2ff','--muted':'#a7b4cf','--heading':'#ffffff','--surface':'#0f1730','--border':'rgba(255,255,255,.12)','--btn-fg':'#0a0a0a','--btn-bg':'var(--brand)','--btn-bg-hover':'#ff5a26','--link':'var(--brand)','--nav-bg':'rgba(12,16,32,.78)','--nav-fg':'#d9e2ff','--nav-border':'rgba(255,255,255,.10)','--nav-active':'var(--brand)','--md-bg':'rgba(10,14,24,.96)','--md-text':'#dbe5ff','--md-border':'rgba(255,255,255,.10)','--clock-color':'#a7b4cf','--clock-opacity':'.24'}},
-        {name:'powder-mist', vars:{'--bg':'#A7C7E7','--text':'#132030','--muted':'#2c3f5a','--heading':'#0e1320','--surface':'#eaf2fb','--border':'rgba(0,0,0,.14)','--btn-fg':'#101010','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.86)','--nav-fg':'#0e1320','--nav-border':'rgba(0,0,0,.12)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#0b1222','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.40)','--clock-opacity':'.30'}},
-        {name:'celadon-frost', vars:{'--bg':'#B7E1C0','--text':'#0f1a14','--muted':'#2e4a39','--heading':'#0f1a14','--surface':'#e8f6ee','--border':'rgba(0,0,0,.14)','--btn-fg':'#101010','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.88)','--nav-fg':'#0f1a14','--nav-border':'rgba(0,0,0,.12)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#0f1a14','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.38)','--clock-opacity':'.30'}},
-        {name:'champagne-blush', vars:{'--bg':'#F7E3D4','--text':'#251b16','--muted':'#6b5a50','--heading':'#251b16','--surface':'#fff7f0','--border':'rgba(0,0,0,.12)','--btn-fg':'#251b16','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.88)','--nav-fg':'#251b16','--nav-border':'rgba(0,0,0,.10)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#251b16','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.38)','--clock-opacity':'.30'}},
-        {name:'greige-stone', vars:{'--bg':'#C5C1B9','--text':'#121212','--muted':'#424242','--heading':'#121212','--surface':'#ecebe8','--border':'rgba(0,0,0,.16)','--btn-fg':'#121212','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.88)','--nav-fg':'#121212','--nav-border':'rgba(0,0,0,.12)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#121212','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.40)','--clock-opacity':'.30'}},
-        {name:'ashen-lilac', vars:{'--bg':'#C8B7D9','--text':'#1b1325','--muted':'#4b3b5c','--heading':'#1b1325','--surface':'#efe8f6','--border':'rgba(0,0,0,.14)','--btn-fg':'#1b1325','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.86)','--nav-fg':'#1b1325','--nav-border':'rgba(0,0,0,.12)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#1b1325','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.38)','--clock-opacity':'.30'}},
-        {name:'pewter-slate', vars:{'--bg':'#7A8A99','--text':'#0b1222','--muted':'#233142','--heading':'#0b1222','--surface':'#dde3e9','--border':'rgba(0,0,0,.18)','--btn-fg':'#0b1222','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF3500','--nav-bg':'rgba(255,255,255,.86)','--nav-fg':'#0b1222','--nav-border':'rgba(0,0,0,.12)','--nav-active':'#FF3500','--md-bg':'#ffffff','--md-text':'#0b1222','--md-border':'rgba(0,0,0,.12)','--clock-color':'rgba(193,42,0,.36)','--clock-opacity':'.28'}},
-        {name:'midnight-teal', vars:{'--bg':'#004F59','--text':'#e8f8ff','--muted':'#b8d2da','--heading':'#ffffff','--surface':'#0c3340','--border':'rgba(255,255,255,.14)','--btn-fg':'#0a0a0a','--btn-bg':'#FF3500','--btn-bg-hover':'#ff5a26','--link':'#FF754f','--nav-bg':'rgba(5,22,28,.80)','--nav-fg':'#e8f8ff','--nav-border':'rgba(255,255,255,.10)','--nav-active':'#FF754f','--md-bg':'rgba(6,16,22,.96)','--md-text':'#eaf6ff','--md-border':'rgba(255,255,255,.10)','--clock-color':'#cbe2e8','--clock-opacity':'.24'}}
-      ];
-
-      const root = document.documentElement;
-
-      function apply(vars){ for(const k in vars){ root.style.setProperty(k, vars[k]); } }
-
-      function contrastGuard(themeVars){
-        // Ensure core tokens meet contrast on the fly
-        const bg = getHex(themeVars['--bg']);
-        let text = getHex(themeVars['--text']);
-        let navBg = rgbaToHex(themeVars['--nav-bg']) || bg;
-        let navFg = getHex(themeVars['--nav-fg']);
-        let mdBg = rgbaToHex(themeVars['--md-bg']) || '#ffffff';
-        let mdText = getHex(themeVars['--md-text']);
-
-        text   = ensureContrast(bg,   text,  4.5);
-        navFg  = ensureContrast(navBg,navFg, 4.5);
-        mdText = ensureContrast(mdBg, mdText,4.5);
-
-        themeVars['--text']    = text;
-        themeVars['--nav-fg']  = navFg;
-        themeVars['--md-text'] = mdText;
-
-        // Muted should also be readable but lower contrast; clamp to ≥ 3:1
-        let muted = getHex(themeVars['--muted']);
-        if(contrast(bg, muted) < 3){
-          // shift toward text slightly
-          muted = blendHex(muted, text, 0.35);
-          if(contrast(bg, muted) < 3) muted = text;
-          themeVars['--muted'] = muted;
-        }
-
-        return themeVars;
-      }
-
-      function getHex(val){
-        if(!val) return '#000000';
-        if(val.startsWith('var(')) return '#000000';
-        if(val.startsWith('#')) return val;
-        // handle rgba/hsla fallbacks
-        return rgbaToHex(val) || '#000000';
-      }
-      function rgbaToHex(str){
-        if(!str) return null;
-        const m = str.trim().match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([.\d]+))?\)$/i);
-        if(!m) return null;
-        const r=Number(m[1]), g=Number(m[2]), b=Number(m[3]);
-        const toHex=n=>('#'+((1<<24)+(n<<16)+(g<<8)+b).toString(16).slice(1)); // not correct; fix:
-        return '#'+[r,g,b].map(n=>n.toString(16).padStart(2,'0')).join('');
-      }
-      function blendHex(h1,h2,t){
-        const a=hexToRgb(h1), b=hexToRgb(h2);
-        const c={ r:Math.round(a.r+(b.r-a.r)*t), g:Math.round(a.g+(b.g-a.g)*t), b:Math.round(a.b+(b.b-a.b)*t) };
-        return '#'+[c.r,c.g,c.b].map(n=>n.toString(16).padStart(2,'0')).join('');
-      }
-
-      function setTheme(name){
-        const t = THEMES.find(x=>x.name===name) || THEMES[0];
-        // copy vars to avoid mutating canonical theme
-        const vars = JSON.parse(JSON.stringify(t.vars));
-        contrastGuard(vars);
-        root.setAttribute('data-theme', t.name);
-        apply(vars);
-        localStorage.setItem('cerbi-theme-name', t.name);
-        localStorage.setItem('cerbi-theme', t.name);
-        window.dispatchEvent(new CustomEvent('theme-changed',{detail:t.name}));
-      }
-
-      function cycle(){
-        const cur = localStorage.getItem('cerbi-theme-name') || THEMES[0].name;
-        const i = THEMES.findIndex(t=>t.name===cur);
-        const next = THEMES[(i+1)%THEMES.length];
-        setTheme(next.name);
-      }
-
-      function init(){
-        let chosen = localStorage.getItem('cerbi-theme-name');
-        if(!chosen){ chosen = THEMES[Math.floor(Math.random()*THEMES.length)].name; }
-        setTheme(chosen);
-      }
-
-      window.CerbiTheme = { toggle: cycle, get: ()=>localStorage.getItem('cerbi-theme-name')||'light', set: setTheme };
-
-      function bindButtons(){
-        const btn = document.getElementById('themeBtn');
-        if(btn){ btn.addEventListener('click', cycle); }
-        const nameEl = document.getElementById('theme-name');
-        const cyc = document.getElementById('theme-cycle');
-        if(cyc){ cyc.addEventListener('click', ()=>{ cycle(); setTimeout(()=>{ if(nameEl) nameEl.textContent='Theme: '+window.CerbiTheme.get(); }, 60); }); }
-        window.addEventListener('theme-changed', ()=>{ if(nameEl) nameEl.textContent='Theme: '+window.CerbiTheme.get(); });
-        if(nameEl){ nameEl.textContent='Theme: '+window.CerbiTheme.get(); }
-      }
-
-      if(document.readyState === 'loading'){
-        document.addEventListener('DOMContentLoaded', ()=>{ init(); bindButtons(); }, { once:true });
-      } else { init(); bindButtons(); }
-    })();
-  </script>
-
-  <!-- Utility JS: layout, sliders, glyph clock, lightboxes, demo, bg -->
-  <script>
-    // Layout heights for fixed nav + ribbon
-    (function(){
+      const nav = document.getElementById('siteNav');
+      const ribbon = document.getElementById('topRibbon');
       function setHeights(){
-        const nav = document.getElementById('siteNav');
-        const ribbon = document.getElementById('topRibbon');
-        const nh = (nav?.offsetHeight)||64;
-        const rh = (ribbon?.offsetHeight)||0;
+        const nh = nav?.offsetHeight || 64;
+        const rh = ribbon?.offsetHeight || 0;
         document.documentElement.style.setProperty('--nav-h', nh + 'px');
         document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
       }
-      const ready = ()=>{ setHeights(); requestAnimationFrame(setHeights); };
-      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ready, {once:true}); else ready();
-      addEventListener('resize', setHeights, {passive:true});
+      setHeights(); addEventListener('resize', setHeights, {passive:true});
       new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
       if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
+      // Brand → smooth-scroll to top
       document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
-      document.getElementById('year')?.textContent = new Date().getFullYear();
     })();
 
-    // Glyph clock rendering
+    // Progress bar
+    (function(){
+      const bar=document.getElementById('progress'); if(!bar) return;
+      const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
+      on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
+    })();
+
+    // Footer year
+    (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
+
+    // Big background glyph clock — behind content, logo-tinted on light themes
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
       const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
-      function css(n,f){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f; }
+      function read(n,f){ try{ return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f; }catch(_){ return f; } }
       function size(){
-        const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const factor = vw < 820 ? 0.44 : 0.34;
         el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
-        el.style.color = css('--clock-color', css('--muted','#a7b4cf'));
-        el.style.opacity = css('--clock-opacity','.28');
+        el.style.lineHeight='1';
+        // On light themes make the tint brand-colored, on dark themes use muted
+        const t = document.documentElement.getAttribute('data-theme') || '';
+        const lighty = /mist-light|celadon|champagne|greige|lilac/.test(t);
+        el.style.color = lighty ? 'var(--glyph-strong)' : 'var(--glyph)';
       }
       function render(){
         const d=new Date();
@@ -1196,21 +1252,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
       }
       function fade(){
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = parseFloat(css('--clock-opacity','.28')) || .28;
-        const range = .08;
+        const base = vw < 820 ? 0.10 : 0.14;
+        const range = vw < 820 ? 0.20 : 0.26;
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
       addEventListener('scroll',fade,{passive:true});
-      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['style','data-theme']});
+      window.addEventListener('theme-changed', size);
       setInterval(render,1000);
     })();
 
-    // WHY slider
+    // WHY slider dots + control
     (function(){
       const slider=document.getElementById('whySlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -1221,7 +1278,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
     })();
 
-    // Dash slider + lightbox
+    // Dash slider + lightbox (autoplay + keyboard + swipe)
     (function(){
       const slider=document.getElementById('dashSlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -1286,6 +1343,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       };
       overlay.querySelector('.close')?.addEventListener('click', close);
       overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && overlay.getAttribute('aria-hidden')==='false') close(); });
 
       slider.querySelectorAll('img').forEach(img=>{
         img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src));
@@ -1293,47 +1351,212 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
     })();
 
-    // Live governance demo (PII toggle) — now working and visible
+    // POP-ART rotator
     (function(){
-      const btn=document.getElementById('piiSwitch');
-      const input=document.getElementById('inputJson');
-      const evalEl=document.getElementById('evalJson');
-      if(!btn||!input||!evalEl) return;
-      function render(){
-        const on=btn.getAttribute('aria-pressed')==='true';
-        const model = {
-          timestamp:new Date().toISOString(),
-          action:'UserLoggedIn',
-          app:'identity-api',
-          env:'prod',
-          user: on ? { id:'123', email:'jane@example.com' } : { id:'123' },
-          traceId:'a1b2c3'
-        };
-        input.textContent = JSON.stringify(model, null, 2);
-        evalEl.textContent = on
-          ? JSON.stringify({ status:'redacted', violations:['PII: email'], policyVersion:'v1.3.2' }, null, 2)
-          : JSON.stringify({ status:'ok', policyVersion:'v1.3.2' }, null, 2);
-      }
-      btn.addEventListener('click',()=>{
-        const now=btn.getAttribute('aria-pressed')==='true';
-        btn.setAttribute('aria-pressed', now?'false':'true');
-        render();
+      const el = document.getElementById('sigRotator'); if(!el) return;
+      const sources = [
+        'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
+        'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
+        'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
+        'assets/popart/popart-10.png'
+      ];
+      el.innerHTML = '';
+      const imgs = sources.map((src, idx) => {
+        const im = new Image();
+        im.decoding = 'async';
+        im.loading = idx === 0 ? 'eager' : 'lazy';
+        im.src = src;
+        im.alt = 'Cerbi pop-art ' + (idx+1);
+        if (idx === 0) im.className = 'is-active';
+        el.appendChild(im);
+        return im;
       });
-      btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
-      render();
+      let i = 0;
+      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced && imgs.length > 1) {
+        setInterval(() => {
+          imgs[i].classList.remove('is-active');
+          i = (i + 1) % imgs.length;
+          imgs[i].classList.add('is-active');
+        }, 3500);
+      }
     })();
 
-    // Dynamic background orbs (subtle, brand hue)
+    // Live governance demo — robust wiring (fix for non-firing earlier)
+    (function(){
+      function init(){
+        const btn=document.getElementById('piiSwitch');
+        const input=document.getElementById('inputJson');
+        const evalEl=document.getElementById('evalJson');
+        if(!btn||!input||!evalEl) return;
+        function render(){
+          const on=btn.getAttribute('aria-pressed')==='true';
+          input.textContent=JSON.stringify({
+            timestamp:new Date().toISOString(),
+            action:'UserLoggedIn',
+            user: on ? { id:'123', email:'jane@example.com' } : { id:'123' }
+          }, null, 2);
+          evalEl.textContent = on
+            ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }'
+            : '{ "status":"ok", "policyVersion":"v1.3.2" }';
+        }
+        btn.addEventListener('click',()=>{
+          const now=btn.getAttribute('aria-pressed')==='true';
+          btn.setAttribute('aria-pressed', now?'false':'true');
+          render();
+        });
+        btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
+        render();
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once:true });
+      } else { init(); }
+    })();
+
+    // Docs modal (Markdown) — robust & readable
+    (function(){
+      const modal   = document.getElementById('docbox');
+      const content = document.getElementById('docboxContent');
+      if(!modal || !content) return;
+
+      const html = document.documentElement;
+      const body = document.body;
+
+      const showLoader = (msg='Loading…') => {
+        content.innerHTML =
+          '<div style="display:grid;place-items:center;min-height:240px;padding:24px">' +
+          '<div class="k">'+msg+'</div></div>';
+      };
+
+      const showError = (path, extra='') => {
+        content.innerHTML =
+          '<h2 style="margin-top:0">Unable to load document</h2>' +
+          '<p class="k">I tried: <code>'+ (path || '(unknown)') +'</code></p>' +
+          (extra ? '<p class="k">'+extra+'</p>' : '') +
+          '<p class="k">If this is a GitHub Pages site, confirm the file exists under <code>/docs/</code> with exact casing.</p>';
+      };
+
+      function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
+      function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
+
+      function actuallyOpenModal(){
+        modal.removeAttribute('hidden');
+        modal.setAttribute('aria-hidden','false');
+        lockScroll();
+      }
+      function closeModal(){
+        modal.setAttribute('aria-hidden','true');
+        modal.setAttribute('hidden','');
+        content.innerHTML = '';
+        unlockScroll();
+      }
+
+      modal.querySelector('.close')?.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
+
+      function mdPathFromHref(href){
+        try{
+          const u = new URL(href, location.href);
+          const qfile = u.searchParams.get('file');
+          if (qfile) return qfile;
+          if (u.pathname.endsWith('.md')) return u.pathname.replace(/^\//,'');
+          return null;
+        }catch{ return null; }
+      }
+
+      function waitForMarked(){
+        if (window.marked && typeof window.marked.parse === 'function') return Promise.resolve();
+        return new Promise(resolve=>{
+          if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
+          } else {
+            window.addEventListener('DOMContentLoaded', ()=>{
+              const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
+            }, { once:true });
+          }
+          setTimeout(resolve, 800); // fallback to plaintext rendering
+        });
+      }
+
+      async function fetchMd(path){
+        const local = path.replace(/^\/+/,''); // 'docs/file.md'
+        const tried = [];
+        try{
+          const r = await fetch(local, { cache:'no-store' });
+          tried.push(location.origin + '/' + local);
+          if (r.ok) return { text: await r.text(), source: 'local', tried };
+        }catch(e){}
+        try{
+          const gh = `https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`;
+          tried.push(gh);
+          const r2 = await fetch(gh, { cache:'no-store' });
+          if (r2.ok) return { text: await r2.text(), source: 'github', tried };
+          return { error: 'HTTP '+r2.status, tried };
+        }catch(e2){
+          return { error: String(e2), tried };
+        }
+      }
+
+      async function openDocs(href){
+        actuallyOpenModal();
+        showLoader();
+        const mdRel = mdPathFromHref(href);
+        if(!mdRel){
+          showError('(no md path)', 'That link does not point to a Markdown file.');
+          return;
+        }
+        const res = await fetchMd(mdRel);
+        if (!res || res.error || !res.text){
+          showError(mdRel, res && res.error ? ('Fetch error: ' + res.error) : 'Unknown fetch error.');
+          return;
+        }
+
+        await waitForMarked();
+        if (window.marked && typeof window.marked.parse === 'function'){
+          content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
+          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
+          content.scrollTop = 0;
+        } else {
+          content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
+          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
+          content.querySelector('pre').textContent = res.text;
+        }
+      }
+
+      function onDocClick(e){
+        e.preventDefault();
+        const a = e.currentTarget;
+        openDocs(a.getAttribute('href'));
+      }
+
+      function attach(){
+        document.querySelectorAll('a.doc-link').forEach(a=>{
+          a.removeEventListener('click', onDocClick);
+          a.addEventListener('click', onDocClick);
+        });
+      }
+
+      if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', attach, { once:true });
+      } else {
+        attach();
+      }
+    })();
+
+    // Dynamic background (subtle moving color orbs)
     (function(){
       const canvas = document.getElementById('bgCanvas'); if(!canvas) return;
       const ctx = canvas.getContext('2d');
       function resize(){ canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
-      resize(); addEventListener('resize', resize, {passive:true});
+      resize(); window.addEventListener('resize', resize, {passive:true});
+
       const circles = [];
       const count = Math.max(12, Math.floor((innerWidth*innerHeight)/180000));
       for(let i=0;i<count;i++){
-        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 18 + Math.random()*12 });
+        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 18 + Math.random()*20 }); // brand-ish hue
       }
+
       function draw(){
         ctx.clearRect(0,0,innerWidth,innerHeight);
         ctx.fillStyle = 'rgba(6,10,20,0.6)'; ctx.fillRect(0,0,innerWidth,innerHeight);
@@ -1342,17 +1565,30 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           if(c.x < -200) c.x = innerWidth + 200; if(c.x > innerWidth + 200) c.x = -200;
           if(c.y < -200) c.y = innerHeight + 200; if(c.y > innerHeight + 200) c.y = -200;
           const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.r*3);
-          g.addColorStop(0, `hsla(${c.hue},85%,54%,0.10)`);
-          g.addColorStop(1, `hsla(${c.hue},65%,8%,0)`);
+          g.addColorStop(0, `hsla(${c.hue},80%,60%,0.12)`);
+          g.addColorStop(1, `hsla(${c.hue},60%,8%,0)`);
           ctx.beginPath(); ctx.fillStyle = g; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
         }
         requestAnimationFrame(draw);
       }
       requestAnimationFrame(draw);
     })();
+
+    // Theme diagnostic (single)
+    (function(){
+      const el = document.getElementById('theme-name');
+      const btn = document.getElementById('theme-cycle');
+      function refresh(){
+        const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'mist-light';
+        el.textContent = 'Theme: ' + t;
+      }
+      btn?.addEventListener('click', ()=>{ window.CerbiTheme?.toggle(); setTimeout(refresh,80); });
+      window.addEventListener('theme-changed', refresh);
+      setTimeout(refresh,250);
+    })();
   </script>
 
-  <!-- Theme diagnostic -->
+  <!-- Theme diagnostic badge -->
   <div id="theme-diag" aria-hidden="false">
     <span id="theme-name">Theme: …</span>
     <button id="theme-cycle" title="Cycle theme">Cycle</button>
