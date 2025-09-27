@@ -5,93 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- ===== THEME ENGINE (runs ASAP; randomizes first visit; persists choice) ===== -->
+  <!-- =========================================================
+       ROBUST THEME ENGINE (applies BEFORE CSS to avoid FOUC)
+       - 10 themes
+       - Random on first visit
+       - Persists to localStorage
+       - URL override ?theme=<key>
+       - Contrast Shield ensures readability (see CSS below)
+     ========================================================= -->
   <script>
     (function () {
-      const THEMES = [
-        { key:"powder-mist-light", label:"Powder Mist (Light)", mode:"light", vars:{
+      var THEMES = [
+        { key:"powder-mist-light", mode:"light", label:"Powder Mist (Light)", vars:{
           "--bg":"#F6FAFF","--text":"#0D1B2A","--muted":"#46556A","--heading":"#0D1B2A","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#D7E3F2"
         }},
-        { key:"celadon-frost", label:"Celadon Frost", mode:"light", vars:{
+        { key:"celadon-frost", mode:"light", label:"Celadon Frost", vars:{
           "--bg":"#F7FCF8","--text":"#092018","--muted":"#44615A","--heading":"#04120E","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#CCE8D6"
         }},
-        { key:"champagne-blush", label:"Champagne Blush", mode:"light", vars:{
+        { key:"champagne-blush", mode:"light", label:"Champagne Blush", vars:{
           "--bg":"#FFF9F5","--text":"#281A13","--muted":"#6C5B52","--heading":"#1E140F","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#F0DED2"
         }},
-        { key:"greige-stone", label:"Greige Stone (Neutral)", mode:"neutral", vars:{
+        { key:"greige-stone", mode:"neutral", label:"Greige Stone (Neutral)", vars:{
           "--bg":"#F6F5F3","--text":"#1E1E1C","--muted":"#60605B","--heading":"#0E0E0D","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#DCD9D2"
         }},
-        { key:"ashen-lilac", label:"Ashen Lilac (Neutral)", mode:"neutral", vars:{
+        { key:"ashen-lilac", mode:"neutral", label:"Ashen Lilac (Neutral)", vars:{
           "--bg":"#F8F6FB","--text":"#221E32","--muted":"#5D5870","--heading":"#171325","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#E2DAF1"
         }},
-        { key:"pewter-slate", label:"Pewter Slate (Neutral/Dark)", mode:"dark", vars:{
+        /* Note: Pewter Slate was more “light neutral” in effect; keeping mode dark->auto contrast guard handles it */
+        { key:"pewter-slate", mode:"dark", label:"Pewter Slate (Neutral)", vars:{
           "--bg":"#EEF2F6","--text":"#0C1621","--muted":"#4C5B6A","--heading":"#0C1621","--accent":"#2A6EF4",
           "--card":"#FFFFFF","--btn":"#2A6EF4","--btn-hover":"#1F57C3","--border":"#C7D2DE"
         }},
-        { key:"midnight-teal", label:"Midnight Teal (Dark)", mode:"dark", vars:{
+        { key:"midnight-teal", mode:"dark", label:"Midnight Teal (Dark)", vars:{
           "--bg":"#002E34","--text":"#E8F6F6","--muted":"#A2C3C3","--heading":"#EFFFFE","--accent":"#6FB7FF",
           "--card":"#003A42","--btn":"#2A6EF4","--btn-hover":"#6FB7FF","--border":"#0A525B"
         }},
-        { key:"indigo-ink", label:"Indigo Ink (Dark)", mode:"dark", vars:{
+        { key:"indigo-ink", mode:"dark", label:"Indigo Ink (Dark)", vars:{
           "--bg":"#17133C","--text":"#ECEBFF","--muted":"#B8B4E6","--heading":"#FFFFFF","--accent":"#7BAAFA",
           "--card":"#211B57","--btn":"#2A6EF4","--btn-hover":"#7BAAFA","--border":"#2D285F"
         }},
-        { key:"charcoal-plum", label:"Charcoal Plum (Dark)", mode:"dark", vars:{
+        { key:"charcoal-plum", mode:"dark", label:"Charcoal Plum (Dark)", vars:{
           "--bg":"#251C22","--text":"#F6EDF2","--muted":"#C9B8BE","--heading":"#FFFFFF","--accent":"#8EB7FF",
           "--card":"#2E232A","--btn":"#2A6EF4","--btn-hover":"#8EB7FF","--border":"#3A2C34"
         }},
-        { key:"obsidian-blueblack", label:"Obsidian Blue-Black (Dark)", mode:"dark", vars:{
+        { key:"obsidian-blueblack", mode:"dark", label:"Obsidian Blue-Black (Dark)", vars:{
           "--bg":"#0D1B2A","--text":"#E6F0FA","--muted":"#A7B4CF","--heading":"#FFFFFF","--accent":"#73B0FF",
           "--card":"#11263A","--btn":"#2A6EF4","--btn-hover":"#73B0FF","--border":"#1E344A"
         }},
-        { key:"powder-mist-dark", label:"Powder Mist (Dark)", mode:"dark", vars:{
+        { key:"powder-mist-dark", mode:"dark", label:"Powder Mist (Dark)", vars:{
           "--bg":"#0F1824","--text":"#E8F1FF","--muted":"#A7C7E7","--heading":"#FFFFFF","--accent":"#7DB4FF",
           "--card":"#152233","--btn":"#2A6EF4","--btn-hover":"#7DB4FF","--border":"#1D2B40"
         }},
       ];
-      const STORAGE_KEY="cerbi-theme-key-v2";
-      const html=document.documentElement;
 
-      function applyTheme(t){
-        html.setAttribute("data-theme", t.mode || "dark");
-        html.setAttribute("data-theme-key", t.key);
-        for(const [k,v] of Object.entries(t.vars)){ html.style.setProperty(k,v); }
-        html.style.setProperty("--background", t.vars["--bg"]);
-        html.style.setProperty("--text-strong", t.vars["--heading"]);
-        // Useful for components that read semantic tokens:
-        html.style.setProperty("--text", t.vars["--text"]);
-        html.style.setProperty("--muted", t.vars["--muted"]);
-        html.style.setProperty("--accent", t.vars["--accent"]);
-        html.style.setProperty("--card", t.vars["--card"]);
-        html.style.setProperty("--btn", t.vars["--btn"]);
-        html.style.setProperty("--btn-hover", t.vars["--btn-hover"]);
-        html.style.setProperty("--border", t.vars["--border"]);
+      var STORAGE_KEY = "cerbi-theme-key-v2";
+      var html = document.documentElement;
+
+      function setVar(k, v){ try{ html.style.setProperty(k, v); }catch(e){} }
+      function applyTheme(theme){
+        html.setAttribute("data-theme", theme.mode || "dark");
+        html.setAttribute("data-theme-key", theme.key);
+        for (var k in theme.vars) setVar(k, theme.vars[k]);
+
+        // Provide common aliases some CSS may use
+        setVar("--background", theme.vars["--bg"]);
+        setVar("--text-strong", theme.vars["--heading"]);
+
+        // ---- Contrast Shield base tokens (used by CSS below to guarantee legibility) ----
+        setVar("--cs-bg", theme.vars["--bg"]);
+        setVar("--cs-text", theme.vars["--text"]);
+        // If background is dark-ish, ensure links/buttons stay bright enough; if light-ish, darken text:
+        try{
+          // Simple luminance heuristic
+          var bg = theme.vars["--bg"].replace("#","");
+          var r = parseInt(bg.slice(0,2),16)/255, g = parseInt(bg.slice(2,4),16)/255, b = parseInt(bg.slice(4,6),16)/255;
+          var lum = 0.2126*Math.pow(r,2.2)+0.7152*Math.pow(g,2.2)+0.0722*Math.pow(b,2.2);
+          var isDark = lum < 0.5;
+          setVar("--cs-link", isDark ? "#ffffff" : "#0B1730");
+          setVar("--cs-link-2", theme.vars["--accent"]);
+          setVar("--cs-border", theme.vars["--border"]);
+        }catch(e){}
       }
-      const getByKey = (k)=>THEMES.find(t=>t.key===k);
-      const pickRandom = ()=>THEMES[Math.floor(Math.random()*THEMES.length)];
-      const params=new URLSearchParams(location.search);
-      const urlKey=params.get("theme");
-      let theme=(urlKey&&getByKey(urlKey))||(localStorage.getItem(STORAGE_KEY)&&getByKey(localStorage.getItem(STORAGE_KEY)))||pickRandom();
-      applyTheme(theme);
-      try{ localStorage.setItem(STORAGE_KEY, theme.key); }catch{}
 
-      window.CerbiTheme={
-        getList:()=>THEMES.map(t=>({key:t.key,label:t.label,mode:t.mode})),
-        getKey:()=>html.getAttribute("data-theme-key"),
-        get:()=>html.getAttribute("data-theme"),
-        set:(key)=>{ const t=getByKey(key)||theme; applyTheme(t); try{localStorage.setItem(STORAGE_KEY, t.key);}catch{}; window.dispatchEvent(new CustomEvent("theme-changed",{detail:{key:t.key}})); return t.key; },
-        toggle:()=>{ const cur=html.getAttribute("data-theme-key"); const i=THEMES.findIndex(t=>t.key===cur); const next=THEMES[(i+1)%THEMES.length]; return window.CerbiTheme.set(next.key); },
-        randomize:()=>window.CerbiTheme.set(pickRandom().key)
+      function getByKey(key){
+        for (var i=0;i<THEMES.length;i++) if (THEMES[i].key===key) return THEMES[i];
+        return null;
+      }
+      function pickRandom(){ return THEMES[Math.floor(Math.random()*THEMES.length)]; }
+
+      var params = new URLSearchParams(location.search);
+      var urlKey = params.get("theme");
+      var storedKey = null;
+      try { storedKey = localStorage.getItem(STORAGE_KEY) || null; } catch(e) {}
+      var theme = (urlKey && getByKey(urlKey)) || (storedKey && getByKey(storedKey)) || pickRandom();
+
+      applyTheme(theme);
+      try { localStorage.setItem(STORAGE_KEY, theme.key); } catch(e) {}
+
+      // Public API
+      window.CerbiTheme = {
+        list: function(){ return THEMES.map(function(t){ return {key:t.key, label:t.label, mode:t.mode}; }); },
+        getKey: function(){ return html.getAttribute("data-theme-key"); },
+        getMode: function(){ return html.getAttribute("data-theme"); },
+        set: function(key){
+          var t = getByKey(key) || theme;
+          applyTheme(t);
+          try { localStorage.setItem(STORAGE_KEY, t.key); } catch(e) {}
+          window.dispatchEvent(new CustomEvent("theme-changed",{detail:{key:t.key}}));
+          return t.key;
+        },
+        toggle: function(){
+          var cur = html.getAttribute("data-theme-key");
+          var i = THEMES.findIndex ? THEMES.findIndex(function(t){ return t.key===cur; }) : (function(){
+            for (var j=0;j<THEMES.length;j++) if (THEMES[j].key===cur) return j;
+            return -1;
+          })();
+          var next = THEMES[(Math.max(0,i)+1) % THEMES.length];
+          return this.set(next.key);
+        },
+        random: function(){ return this.set(pickRandom().key); }
       };
     })();
   </script>
 
-  <!-- Styles (unchanged order) -->
+  <!-- External styles (unchanged order) -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.12" />
   <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.11" />
@@ -99,70 +141,67 @@
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
+  <!-- =========================================================
+       CONTRAST SHIELD (readability guard)
+       Forces legible base colors regardless of external CSS.
+       You can remove once verified, but it protects nav/links.
+     ========================================================= -->
   <style>
-    /* Fallbacks in case the script is blocked */
     :root{
+      /* Strong defaults in case early script fails */
       --bg:#0D1B2A; --text:#E6F0FA; --muted:#A7B4CF; --heading:#FFFFFF; --accent:#73B0FF;
       --card:#11263A; --btn:#2A6EF4; --btn-hover:#73B0FF; --border:#1E344A;
+
+      /* Contrast Shield tokens (set by script too) */
+      --cs-bg: var(--bg);
+      --cs-text: var(--text);
+      --cs-link: var(--accent);
+      --cs-link-2: var(--accent);
+      --cs-border: var(--border);
     }
-    /* Subtle spotlight/clock visibility + screenshot aspect guard */
-    .spotlight{ opacity:.95; }
-    #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
-    .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
-    @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
 
-    /* Dynamic background container */
-    #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
-    #dynamic-bg canvas{ width:100%; height:100%; display:block }
+    /* UNIVERSAL LEGIBILITY */
+    html, body { background: var(--cs-bg) !important; color: var(--cs-text) !important; }
+    body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 
-    /* Ensure screenshots don’t jump while loading */
-    #dashboards .showcase-viewport img{ aspect-ratio:16/9; width:100%; height:auto; object-fit:contain; }
+    /* Headings & paragraphs */
+    h1,h2,h3,h4,h5,h6 { color: var(--heading) !important; }
+    p, li, td, th, small, .k, .lead, .muted { color: var(--cs-text) !important; }
 
-    /* breathing room for value-rotator */
-    .value-rotator { padding-bottom: 16px; }
-    .value-rotator .dash-slider { padding-bottom: 6px; }
-    .value-rotator .dots { margin-top: 10px; }
+    /* Links/buttons readable regardless of other CSS */
+    a { color: var(--cs-link) !important; }
+    a:hover { color: var(--cs-link-2) !important; }
 
-    /* Lock page scroll only while modal is open */
-    html.modal-open, body.modal-open { overflow: hidden !important; }
-
-    /* Themed markdown modal content (dark-aware) */
-    .prose-doc{
-      width:min(100vw, 960px);
-      max-height:min(90vh, 900px);
-      overflow:auto;
-      padding:22px 26px;
-      border-radius:12px;
-      background:rgba(10,14,24,.92);
-      backdrop-filter: blur(6px);
-      border:1px solid rgba(255,255,255,.06);
-      box-shadow: 0 10px 40px rgba(0,0,0,.45);
-      color:var(--text, #d9e2ff);
-      line-height:1.55;
+    /* Panels/cards/dividers */
+    .card, .glass, .prose-doc, .img-frame, .showcase-inner, .cmdk, .ribbon, header.nav, footer.footer {
+      background: color-mix(in srgb, var(--cs-bg) 88%, transparent) !important;
+      border-color: var(--cs-border) !important;
+      color: var(--cs-text) !important;
     }
-    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--heading,#fff); margin:.6em 0 .35em }
-    .prose-doc h1{ font-size:1.9rem } .prose-doc h2{ font-size:1.5rem } .prose-doc h3{ font-size:1.22rem }
-    .prose-doc a{ color:var(--accent,#ff6a2b); text-decoration:none; border-bottom:1px dashed currentColor }
-    .prose-doc pre{ background:#0b1222; padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid rgba(255,255,255,.06) }
-    .prose-doc code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
-    .prose-doc blockquote{ border-left:3px solid rgba(255,255,255,.15); margin:.6em 0; padding:.2em .9em; color:#c4cfe8 }
-    .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
-    .prose-doc th,.prose-doc td{ border:1px solid rgba(255,255,255,.08); padding:.5em .6em }
-    .prose-doc img{ max-width:100%; height:auto; border-radius:8px; }
 
-    /* visible overlay backdrop for the docs modal (in case content fails) */
-    #docbox.lightbox { background: rgba(0,0,0,.55); }
+    /* Buttons */
+    .btn, .theme-toggle, .btn-primary {
+      background: var(--btn) !important; color:#fff !important; border: 1px solid var(--border) !important;
+    }
+    .btn:hover, .theme-toggle:hover, .btn-primary:hover { background: var(--btn-hover) !important; }
 
-    /* Basic lightbox shell (shared by screenshots + docs) */
-    .lightbox{
-      position:fixed; inset:0; display:grid; place-items:center;
-      background:rgba(0,0,0,.5); z-index:1200;
-    }
-    .lightbox[hidden]{ display:none; }
-    .lightbox .close{
-      position:absolute; top:12px; right:12px;
-    }
-    #lightbox img{ max-width:min(96vw,1600px); max-height:90vh; border-radius:10px; }
+    /* Nav links */
+    .nav-links a { color: color-mix(in srgb, var(--cs-text) 70%, transparent) !important; }
+    .nav-links a.active, .nav-links a:hover { color: var(--cs-text) !important; }
+
+    /* Ribbon looks fine on all themes */
+    .ribbon { border-bottom: 1px solid var(--cs-border) !important; }
+
+    /* Progress bar uses accent */
+    #progress{ position:fixed; top:0; left:0; height:3px; width:100%; z-index:70;
+      background: linear-gradient(90deg, var(--accent) var(--progress, 0%), transparent 0) !important; }
+
+    /* Image captions etc. */
+    .img-cap, .tag { color: color-mix(in srgb, var(--cs-text) 70%, transparent) !important; }
+    .tag:hover { color: var(--cs-text) !important; }
+
+    /* Make sure the big background clock remains visible */
+    #bg-clock{ color: color-mix(in srgb, var(--cs-text) 60%, transparent) !important; }
   </style>
 
   <!-- Favicons / app icons -->
@@ -175,7 +214,7 @@
   <!-- Dynamic background layer (canvas) -->
   <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
 
-  <!-- Background layers: tiles + sky + veil + spotlight + clock -->
+  <!-- Background layers -->
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
@@ -186,7 +225,7 @@
 
   <!-- Ribbon -->
   <div id="topRibbon" class="ribbon ribbon-beta" role="status">
-    <div class="container ribbon-inner">
+    <div class="container ribbon-inner" style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;">
       <div class="rb-copy"><strong>CerbiShield Dashboard</strong> — Beta preview available.</div>
       <div class="rb-ctas">
         <a class="btn btn-ghost btn-sm" href="#dashboards">See preview</a>
@@ -197,24 +236,22 @@
 
   <!-- Nav -->
   <header id="siteNav" class="nav">
-    <div class="container nav-inner">
-      <!-- Brand: always scroll to top -->
-      <a href="#top" class="brand" aria-label="Cerbi — back to top">
+    <div class="container nav-inner" style="display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 0;">
+      <a href="#top" class="brand" aria-label="Cerbi — back to top" style="display:flex;align-items:center;gap:10px;text-decoration:none">
         <img src="assets/CerbiLogo.png" alt="" style="height:36px;width:auto;border-radius:8px;filter:drop-shadow(0 0 10px rgba(255,77,0,.25))" decoding="async" fetchpriority="high" />
-        <span>CerbiSuite</span>
+        <span style="font-weight:600">CerbiSuite</span>
       </a>
 
-      <nav id="primaryNav" class="nav-links" aria-label="Primary">
+      <nav id="primaryNav" class="nav-links" aria-label="Primary" style="white-space:nowrap;overflow:auto">
         <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
         <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
-        <!-- Company opens as modal -->
         <a href="docs/company.md" class="doc-link">Company</a>
         <a href="#contact">Contact</a>
       </nav>
 
-      <div class="nav-actions">
+      <div class="nav-actions" style="display:flex;align-items:center;gap:8px">
         <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
         <button id="cmdBtn" class="theme-toggle" aria-label="Open command palette" title="⌘K / Ctrl+K">⌘K</button>
         <a class="btn btn-ghost" href="#contact">Contact</a>
@@ -248,7 +285,7 @@
         <g stroke="#1c2e55" opacity=".55"><path d="M80,520 C460,420 740,560 1120,460" fill="none"/><path d="M80,480 C420,380 780,520 1120,420" fill="none"/></g>
       </svg>
 
-      <div class="chip-row" role="list" aria-label="High level features">
+      <div class="chip-row" role="list" aria-label="High level features" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px">
         <span class="chip">Structured Logging</span><span class="chip">Governance (Build & Runtime)</span>
         <span class="chip">Cloud-Native & Portable</span><span class="chip">Modular</span>
         <span class="chip">Hybrid-Ready</span><span class="chip">ML-Friendly</span>
@@ -258,7 +295,7 @@
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
       <!-- WHY VALUE ROTATOR -->
-      <div class="glass tilt reveal value-rotator">
+      <div class="glass tilt reveal value-rotator" style="padding-bottom:16px">
         <div class="glare" aria-hidden="true"></div>
         <div id="whySlider" class="dash-slider">
           <figure class="slide active">
@@ -285,19 +322,19 @@
         </div>
       </div>
 
-      <div class="row hero-cta-row">
+      <div class="row hero-cta-row" style="display:flex;gap:10px;flex-wrap:wrap">
         <a class="btn btn-primary" href="#governance">Explore Governance</a>
         <a class="btn" href="#ecosystem">See Ecosystem</a>
       </div>
 
-      <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center">
+      <div class="logo-row" aria-label="Trusted by" style="display:flex;gap:18px;justify-content:center;align-items:center;margin-top:12px">
         <img src="assets/CerbiLogo.png" alt="Cerbi logo" style="height:42px;width:auto;opacity:.98;filter:drop-shadow(0 0 14px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
         <img src="assets/CerbiStream.png" alt="CerbiStream logo" style="height:42px;width:auto;opacity:.85" loading="lazy" decoding="async" />
         <img src="assets/CerbiShield.png" alt="CerbiShield logo" style="height:42px;width:auto;opacity:.72" loading="lazy" decoding="async" />
       </div>
     </section>
 
-    <!-- SIGNATURE ART (POP ART) — FULL BLEED -->
+    <!-- SIGNATURE ART -->
     <section id="hero-art" class="section full-bleed-wrap">
       <div class="full-bleed">
         <div class="glass tilt reveal" style="padding:0;border-radius:0">
@@ -553,7 +590,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL BLEED -->
+    <!-- DASHBOARDS -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
@@ -734,12 +771,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           ></iframe>
           <script>
             (function(){
-              // Auto-resize JotForm iframe height via postMessage, with a min-height safety
               var ifr = document.getElementById('contact-iframe');
               function onMsg(e){
                 try{
                   var host = new URL(e.origin).hostname || '';
-                  if(!/jotform\.com$/i.test(host)) return; // only accept messages from jotform
+                  if(!/jotform\.com$/i.test(host)) return;
                 }catch(_){}
                 var data = e.data;
                 var args = (typeof data === 'object') ? data : String(data || '').split(':');
@@ -774,7 +810,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
-        <!-- Docs open in themed modal -->
         <a class="tag doc-link" href="docs/privacy.md">Privacy</a>
         <a class="tag doc-link" href="docs/terms.md">Terms</a>
         <a class="tag doc-link" href="docs/security.md">Security</a>
@@ -785,7 +820,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </footer>
 
-  <!-- Command palette (closed by default) -->
+  <!-- Command palette -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true">
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header"><span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" /></div>
@@ -793,27 +828,27 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  <!-- Contact FAB: icon only -->
+  <!-- Contact FAB -->
   <a href="#contact" class="contact-fab" aria-label="Contact">
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- IMAGE LIGHTBOX: hidden by default -->
+  <!-- LIGHTBOX -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- DOCS MODAL (Markdown-rendered, themed) -->
+  <!-- DOCS MODAL -->
   <div id="docbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
-  <!-- Scripts: load app.js early so theme is initialized -->
+  <!-- App scripts (unchanged) -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
 
-  <!-- Ensure the big background clock is visible immediately (Edge-safe) -->
+  <!-- Make big background clock visible -->
   <script>
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
@@ -836,10 +871,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <!-- marked (Markdown parser) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
+  <!-- Page JS (unchanged, with theme button wiring) -->
   <script>
-    // Theme button wiring (fallback) — uses the new CerbiTheme API
-    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
+    // Theme button → uses CerbiTheme API (robust)
+    (function(){
+      var b=document.getElementById('themeBtn');
+      function wire(){ if(b && window.CerbiTheme){ b.addEventListener('click', function(){ window.CerbiTheme.toggle(); }); } }
+      if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', wire, {once:true}); } else { wire(); }
+    })();
 
     // CmdK palette
     (function(){
@@ -854,7 +893,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       overlay.setAttribute('aria-hidden','true');
     })();
 
-    // Intersection reveal
+    // Reveal
     (function(){
       const els=[...document.querySelectorAll('.reveal')];
       if (!('IntersectionObserver' in window) || els.length===0){ els.forEach(e=>e.classList.add('in')); return; }
@@ -876,7 +915,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Compute dynamic heights
+    // Heights
     (function(){
       const nav = document.getElementById('siteNav');
       const ribbon = document.getElementById('topRibbon');
@@ -892,7 +931,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
       if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
 
-      // Brand → smooth-scroll to top
       document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
     })();
 
@@ -903,7 +941,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
     })();
 
-    // Big background glyph clock (fixed + glitch)
+    // Big background glyph clock
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
       const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
@@ -938,7 +976,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       setInterval(render,1000);
     })();
 
-    // WHY slider dots + control
+    // WHY slider
     (function(){
       const slider=document.getElementById('whySlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -949,7 +987,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
     })();
 
-    // Dash slider + lightbox (autoplay + keyboard + swipe)
+    // Dash slider + lightbox
     (function(){
       const slider=document.getElementById('dashSlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -985,15 +1023,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
       slider.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);} if(e.key==='ArrowRight'){e.preventDefault();show(i+1);} });
 
-      let x0=null;
-      slider.addEventListener('touchstart', e=>{x0=e.touches[0].clientX;},{passive:true});
-      slider.addEventListener('touchend', e=>{
-        if(x0==null) return;
-        const dx=e.changedTouches[0].clientX - x0;
-        if(Math.abs(dx)>40){ dx>0?show(i-1):show(i+1); }
-        x0=null;
-      },{passive:true});
-
       const overlay=document.getElementById('lightbox');
       const big=document.getElementById('lightboxImg');
       let prevOverflow='';
@@ -1022,7 +1051,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
     })();
 
-    // POP-ART rotator — full-bleed, one image at a time
+    // POP-ART rotator
     (function(){
       const el = document.getElementById('sigRotator'); if(!el) return;
       const sources = [
@@ -1053,7 +1082,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    // Live governance demo (PII toggle)
+    // Governance demo toggle
     (function(){
       const btn=document.getElementById('piiSwitch');
       const input=document.getElementById('inputJson');
@@ -1079,7 +1108,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       render();
     })();
 
-    // Set initial spotlight target
+    // Spotlight target
     (function(){
       const root = document.documentElement;
       root.style.setProperty('--spot-x','82%');
@@ -1087,180 +1116,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     })();
   </script>
 
-  <!-- ===== DOCS MODAL (robust, race-safe, scroll-safe) ===== -->
-  <script>
-    (function(){
-      const modal   = document.getElementById('docbox');
-      const content = document.getElementById('docboxContent');
-      if(!modal || !content) return;
-
-      const html = document.documentElement;
-      const body = document.body;
-
-      const showLoader = (msg='Loading…') => {
-        content.innerHTML =
-          '<div style="display:grid;place-items:center;min-height:240px;padding:24px">' +
-          '<div class="k">'+msg+'</div></div>';
-      };
-
-      const showError = (path, extra='') => {
-        content.innerHTML =
-          '<h2 style="margin-top:0">Unable to load document</h2>' +
-          '<p class="k">I tried: <code>'+ (path || '(unknown)') +'</code></p>' +
-          (extra ? '<p class="k">'+extra+'</p>' : '') +
-          '<p class="k">If this is a GitHub Pages site, confirm the file exists under <code>/docs/</code> with exact casing.</p>';
-      };
-
-      function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
-      function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
-
-      function actuallyOpenModal(){
-        modal.removeAttribute('hidden');
-        modal.setAttribute('aria-hidden','false');
-        lockScroll();
-      }
-      function closeModal(){
-        modal.setAttribute('aria-hidden','true');
-        modal.setAttribute('hidden','');
-        content.innerHTML = '';
-        unlockScroll();
-      }
-
-      modal.querySelector('.close')?.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
-
-      // Support both direct docs/*.md and legacy viewer.html?file=docs/*.md
-      function mdPathFromHref(href){
-        try{
-          const u = new URL(href, location.href);
-          const qfile = u.searchParams.get('file');
-          if (qfile) return qfile;
-          if (u.pathname.endsWith('.md')) return u.pathname.replace(/^\//,'');
-          return null;
-        }catch{ return null; }
-      }
-
-      function waitForMarked(){
-        if (window.marked && typeof window.marked.parse === 'function') return Promise.resolve();
-        return new Promise(resolve=>{
-          if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-          } else {
-            window.addEventListener('DOMContentLoaded', ()=>{
-              const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-            }, { once:true });
-          }
-          setTimeout(resolve, 800); // fallback to plaintext rendering
-        });
-      }
-
-      // Try local /docs/*.md first, then fall back to GitHub raw content on main
-      async function fetchMd(path){
-        const local = path.replace(/^\/+/,''); // 'docs/file.md'
-        const tried = [];
-
-        // 1) Local
-        try{
-          const r = await fetch(local, { cache:'no-store' });
-          tried.push(location.origin + '/' + local);
-          if (r.ok) return { text: await r.text(), source: 'local', tried };
-        }catch(e){ /* ignore */ }
-
-        // 2) GitHub raw fallback
-        try{
-          const gh = `https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`;
-          tried.push(gh);
-          const r2 = await fetch(gh, { cache:'no-store' });
-          if (r2.ok) return { text: await r2.text(), source: 'github', tried };
-          return { error: 'HTTP '+r2.status, tried };
-        }catch(e2){
-          return { error: String(e2), tried };
-        }
-      }
-
-      async function openDocs(href){
-        const mdRel = mdPathFromHref(href);
-        actuallyOpenModal();
-        showLoader();
-
-        if(!mdRel){
-          showError('(no md path)', 'That link does not point to a Markdown file.');
-          return;
-        }
-
-        const res = await fetchMd(mdRel);
-        if (!res || res.error || !res.text){
-          showError(mdRel, res && res.error ? ('Fetch error: ' + res.error) : 'Unknown fetch error.');
-          return;
-        }
-
-        await waitForMarked();
-        if (window.marked && typeof window.marked.parse === 'function'){
-          content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.scrollTop = 0;
-        } else {
-          content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.querySelector('pre').textContent = res.text;
-        }
-      }
-
-      function onDocClick(e){
-        e.preventDefault();
-        const a = e.currentTarget;
-        openDocs(a.getAttribute('href'));
-      }
-
-      function attach(){
-        document.querySelectorAll('a.doc-link').forEach(a=>{
-          a.removeEventListener('click', onDocClick);
-          a.addEventListener('click', onDocClick);
-        });
-      }
-
-      if(document.readyState === 'loading'){
-        document.addEventListener('DOMContentLoaded', attach, { once:true });
-      } else {
-        attach();
-      }
-    })();
-  </script>
-
-  <!-- Dynamic background script (subtle moving color orbs) -->
-  <script>
-    (function(){
-      const canvas = document.getElementById('bgCanvas'); if(!canvas) return;
-      const ctx = canvas.getContext('2d');
-      function resize(){ canvas.width = innerWidth * devicePixelRatio; canvas.height = innerHeight * devicePixelRatio; canvas.style.width = innerWidth + 'px'; canvas.style.height = innerHeight + 'px'; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
-      resize(); window.addEventListener('resize', resize, {passive:true});
-
-      const circles = [];
-      const count = Math.max(12, Math.floor((innerWidth*innerHeight)/180000));
-      for(let i=0;i<count;i++){
-        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 200 + Math.random()*80 });
-      }
-
-      function draw(){
-        ctx.clearRect(0,0,innerWidth,innerHeight);
-        ctx.fillStyle = 'rgba(6,10,20,0.6)'; ctx.fillRect(0,0,innerWidth,innerHeight);
-        for(const c of circles){
-          c.x += c.vx; c.y += c.vy;
-          if(c.x < -200) c.x = innerWidth + 200; if(c.x > innerWidth + 200) c.x = -200;
-          if(c.y < -200) c.y = innerHeight + 200; if(c.y > innerHeight + 200) c.y = -200;
-          const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.r*3);
-          g.addColorStop(0, `hsla(${c.hue},80%,60%,0.12)`);
-          g.addColorStop(1, `hsla(${c.hue},60%,8%,0)`);
-          ctx.beginPath(); ctx.fillStyle = g; ctx.arc(c.x,c.y,c.r,0,Math.PI*2); ctx.fill();
-        }
-        requestAnimationFrame(draw);
-      }
-      requestAnimationFrame(draw);
-    })();
-  </script>
-
-  <!-- Theme diagnostic badge (debug) -->
+  <!-- Simple dev badge to verify theme; remove after confirming -->
   <div id="theme-diag" aria-hidden="false" style="position: fixed; right: 10px; bottom: 10px; z-index: 2000; background: color-mix(in srgb, var(--bg) 70%, transparent); border: 1px dashed var(--border); padding: 8px 10px; border-radius: 10px; font-size: 12px; display:flex; align-items:center; gap:8px; color: var(--muted);">
     <span id="theme-name">Theme: …</span>
     <button id="theme-cycle" class="btn" style="padding:6px 8px">Cycle</button>
@@ -1269,15 +1125,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script>
     (function(){
       const nameEl = document.getElementById('theme-name');
-      const btn = document.getElementById('theme-cycle');
+      const cyc = document.getElementById('theme-cycle');
       const rnd = document.getElementById('theme-rand');
-
       function refresh(){
         const key = (document.documentElement.getAttribute('data-theme-key')) || (window.CerbiTheme && window.CerbiTheme.getKey && window.CerbiTheme.getKey()) || 'unknown';
         nameEl.textContent = 'Theme: ' + key;
       }
-      btn.addEventListener('click', ()=>{ window.CerbiTheme && window.CerbiTheme.toggle && window.CerbiTheme.toggle(); setTimeout(refresh,80); });
-      rnd.addEventListener('click', ()=>{ window.CerbiTheme && window.CerbiTheme.randomize && window.CerbiTheme.randomize(); setTimeout(refresh,80); });
+      cyc.addEventListener('click', ()=>{ window.CerbiTheme && window.CerbiTheme.toggle && window.CerbiTheme.toggle(); setTimeout(refresh,80); });
+      rnd.addEventListener('click', ()=>{ window.CerbiTheme && window.CerbiTheme.random && window.CerbiTheme.random(); setTimeout(refresh,80); });
       window.addEventListener('theme-changed', refresh);
       setTimeout(refresh,200);
     })();
