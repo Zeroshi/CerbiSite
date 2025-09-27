@@ -1,106 +1,126 @@
-// Cerbi Forest JS — stars, gradient scroll, interactions
-(() => {
-  const $ = (s, r=document) => r.querySelector(s);
-  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+/* scripts/app.js — robust theme manager (cycle-safe, idempotent) */
+(function () {
+  // Prevent double-initialization if this file is included twice
+  if (window.CerbiTheme && window.CerbiTheme.__v === '2.0.0') return;
 
-  // Year
-  const y = $('#year'); if (y) y.textContent = new Date().getFullYear();
+  const KEY   = 'cerbi-theme';
+  const ORDER = ['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
+  const DOC   = document.documentElement;
 
-  // Theme - support multiple named themes and persist selection
-  const prefersLight = matchMedia('(prefers-color-scheme: light)').matches;
-  const html = document.documentElement;
-  const themeBtn = $('#themeBtn');
+  // Utilities
+  const clampTheme = (t) => ORDER.includes(t) ? t : null;
+  const getSaved   = () => clampTheme(localStorage.getItem(KEY));
+  const getAttr    = () => clampTheme(DOC.getAttribute('data-theme'));
 
-  const THEMES = ['dark','light','dusk','emerald','violet','sand','mint','rose','slate'];
-  function applyTheme(t){
-    if (!t) return;
-    html.setAttribute('data-theme', t);
-    html.dataset.theme = t;
-    try{
-      localStorage.setItem('theme', t);
-      localStorage.setItem('cerbi-theme', t);
-    }catch(e){ console.warn('Failed to persist theme', e); }
-    if (themeBtn) themeBtn.textContent = `Theme: ${t}`;
-    const ev = new CustomEvent('theme-changed', { detail: { theme: t } });
-    window.dispatchEvent(ev);
-    html.dispatchEvent(ev);
+  // Initialization: decide the starting theme exactly once
+  function initTheme() {
+    // 1) saved
+    let t = getSaved();
+    if (t) return setTheme(t, { announce:false, persist:false });
+
+    // 2) attribute already set by inline boot script (validate)
+    t = getAttr();
+    if (t) return setTheme(t, { announce:false, persist:true });
+
+    // 3) system preference → light if media matches, else dark
+    try {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return setTheme('light', { announce:false, persist:true });
+      }
+    } catch (_) {}
+    return setTheme('dark', { announce:false, persist:true });
   }
 
-  // expose global API for other scripts
-  window.CerbiTheme = {
-    list: THEMES.slice(),
-    get(){ return document.documentElement.getAttribute('data-theme') || document.documentElement.dataset.theme || 'dark'; },
-    set(t){ if (!t) return; if (!THEMES.includes(t)) return; applyTheme(t); },
-    toggle(){
-      const cur = this.get();
-      const idx = THEMES.indexOf(cur);
-      const next = THEMES[(idx + 1) % THEMES.length] || THEMES[0];
-      applyTheme(next);
+  let busy = false;
+  function setTheme(theme, opts) {
+    const { announce = true, persist = true } = (opts || {});
+    const t = clampTheme(theme);
+    if (!t) return false;
+
+    if (busy) return false;
+    busy = true;
+
+    const prev = DOC.getAttribute('data-theme');
+    DOC.setAttribute('data-theme', t);
+    if (persist) {
+      try { localStorage.setItem(KEY, t); } catch (_) {}
     }
-  };
+    if (announce) {
+      try {
+        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: t, prev } }));
+      } catch (_) {}
+    }
 
-  // initialize theme from storage or system preference
-  const saved = (()=>{ try{ return localStorage.getItem('theme') || localStorage.getItem('cerbi-theme'); }catch(e){ return null; } })();
-  const initial = saved || (prefersLight ? 'light' : 'dark');
-  if (!THEMES.includes(initial)) applyTheme('dark');
-  else applyTheme(initial);
-
-  // cycle themes on button click
-  if (themeBtn){
-    themeBtn.addEventListener('click', ()=>{
-      window.CerbiTheme.toggle();
-    });
+    // re-entrancy guard releases on next tick
+    setTimeout(() => { busy = false; }, 0);
+    return true;
   }
 
-  // Mobile nav
-  const navToggle = $('#navToggle');
-  const nav = $('#primaryNav');
-  navToggle?.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', nav.classList.contains('open'));
-  });
+  function getTheme() {
+    return getAttr() || getSaved() || ORDER[0];
+  }
 
-  // Spotlight follows cursor
-  const spotlight = $('.spotlight');
-  document.addEventListener('pointermove', (e) => {
-    spotlight?.style.setProperty('--mx', e.clientX + 'px');
-    spotlight?.style.setProperty('--my', e.clientY + 'px');
-  }, { passive: true });
+  function indexOf(t) {
+    const i = ORDER.indexOf(t);
+    return i >= 0 ? i : 0;
+  }
 
-  // Progress bar
-  const progress = $('#progress');
-  const setProgress = () => {
-    const max = document.body.scrollHeight - innerHeight;
-    const pct = Math.max(0, Math.min(1, scrollY / (max || 1)));
-    if(progress) progress.style.width = (pct * 100) + '%';
+  function nextTheme() {
+    const cur = getTheme();
+    const i   = indexOf(cur);
+    return ORDER[(i + 1) % ORDER.length];
+  }
+
+  function toggle() {
+    return setTheme(nextTheme(), { announce: true, persist: true });
+  }
+
+  // Public API
+  window.CerbiTheme = {
+    __v: '2.0.0',
+    ORDER: ORDER.slice(),
+    get: getTheme,
+    set: setTheme,
+    toggle,
+    next: nextTheme
   };
-  document.addEventListener('scroll', setProgress, { passive: true });
-  setProgress();
 
-  // Reveal-on-scroll
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) if (e.isIntersecting) e.target.classList.add('in');
-  }, { threshold: 0.12 });
-  $$('.reveal').forEach(el => io.observe(el));
+  // Initialize once DOM is ready enough to set attributes
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTheme, { once: true });
+  } else {
+    initTheme();
+  }
 
-  // Tilt + glare
-  $$('.tilt').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--gx', ((e.clientX - r.left) / r.width) * 100 + '%');
-      card.style.setProperty('--gy', ((e.clientY - r.top) / r.height) * 100 + '%');
-    });
-  });
+  // Optional: keep a *single* listener to system changes, but only if user has never chosen a theme
+  // If a user picked a theme (we have localStorage), we respect that and ignore OS flips.
+  try {
+    const mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+    if (mq && !getSaved()) {
+      const onChange = () => {
+        if (!getSaved()) setTheme(mq.matches ? 'light' : 'dark', { announce: true, persist: false });
+      };
+      if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onChange);
+      else if (typeof mq.addListener === 'function') mq.addListener(onChange);
+    }
+  } catch (_) {}
 
-  // Copy buttons
-  $$('[data-copy]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const sel = document.querySelector(btn.getAttribute('data-copy'))?.textContent;
-      if (!sel) return;
-      navigator.clipboard?.writeText(sel).then(()=>{
-        const prev = btn.textContent; btn.textContent = 'Copied'; setTimeout(()=>btn.textContent=prev,1200);
-      }).catch(()=>{});
-    });
-  });
-
+  // Wire up any buttons that might exist (idempotent; safe to run even if buttons absent)
+  (function wireButtons(){
+    const btn = document.getElementById('themeBtn');
+    const cyc = document.getElementById('theme-cycle');
+    const updateBadge = () => {
+      const label = document.getElementById('theme-name');
+      if (label) label.textContent = 'Theme: ' + getTheme();
+    };
+    if (btn) btn.addEventListener('click', () => { toggle(); updateBadge(); });
+    if (cyc) cyc.addEventListener('click', () => { toggle(); updateBadge(); });
+    window.addEventListener('theme-changed', updateBadge);
+    // Initial badge render (after initTheme runs)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateBadge, { once:true });
+    } else {
+      setTimeout(updateBadge, 0);
+    }
+  })();
 })();
