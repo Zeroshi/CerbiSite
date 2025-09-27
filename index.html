@@ -82,21 +82,21 @@
       --bg:#f7fafc; --text:#101318; --text-2:#374151;
       --accent:#ff4d00; --btn-bg:var(--accent); --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(0,0,0,.10); --muted:#6b7280;
-      --clock-fg:rgba(13,27,42,.08); color-scheme:light;
+      --clock-fg: rgba(255, 77, 0, 0.06); color-scheme:light; /* softer, matches logo on light */
     }
     /* 2) Light — Sand */
     [data-theme="light-sand"]{
       --bg:#fbf7f3; --text:#171512; --text-2:#4b463f;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(0,0,0,.12); --muted:#6f675e;
-      --clock-fg:rgba(59,44,53,.10); color-scheme:light;
+      --clock-fg: rgba(255, 77, 0, 0.06); color-scheme:light;
     }
     /* 3) Light — Mist */
     [data-theme="light-mist"]{
       --bg:#f5f9fb; --text:#0f172a; --text-2:#334155;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(15,23,42,.12); --muted:#5b708a;
-      --clock-fg:rgba(46,42,94,.10); color-scheme:light;
+      --clock-fg: rgba(255, 77, 0, 0.06); color-scheme:light;
     }
 
     /* 4) Neutral — Graphite */
@@ -104,21 +104,21 @@
       --bg:#0e1522; --text:#e8eefc; --text-2:#a9b6d2;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.10); --muted:#8aa0bd;
-      --clock-fg:rgba(255,77,0,.12); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.10); color-scheme:dark; /* slightly dim orange */
     }
     /* 5) Neutral — Greige */
     [data-theme="neutral-greige"]{
       --bg:#1a1f24; --text:#f1f5f9; --text-2:#c4cdd8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#1f2732; --border:rgba(255,255,255,.12); --muted:#9aa6b2;
-      --clock-fg:rgba(255,77,0,.10); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.10); color-scheme:dark;
     }
     /* 6) Neutral — Lilac */
     [data-theme="neutral-lilac"]{
       --bg:#151522; --text:#eef0ff; --text-2:#cbbfe8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#191a2a; --border:rgba(255,255,255,.12); --muted:#a9a2c4;
-      --clock-fg:rgba(255,77,0,.10); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.10); color-scheme:dark;
     }
 
     /* 7) Dark — Ember */
@@ -126,28 +126,28 @@
       --bg:#0d0f12; --text:#f0f6ff; --text-2:#b7c4e6;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#121720; --border:rgba(255,255,255,.10); --muted:#95a6c9;
-      --clock-fg:rgba(255,77,0,.20); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.16); color-scheme:dark; /* toned down from .20 */
     }
     /* 8) Dark — Abyss (Obsidian Blue-Black) */
     [data-theme="dark-abyss"]{
       --bg:#0d1b2a; --text:#e6f0ff; --text-2:#a8b7d2;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#0f2236; --border:rgba(255,255,255,.10); --muted:#8aa1c0;
-      --clock-fg:rgba(255,77,0,.16); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.14); color-scheme:dark; /* toned down */
     }
     /* 9) Dark — Ink (Indigo Ink) */
     [data-theme="dark-ink"]{
       --bg:#141229; --text:#eef1ff; --text-2:#b9c0e8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#171532; --border:rgba(255,255,255,.12); --muted:#9aa3ce;
-      --clock-fg:rgba(255,77,0,.18); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.15); color-scheme:dark; /* toned down */
     }
     /* 10) Dark — Teal (Midnight Teal) */
     [data-theme="dark-teal"]{
       --bg:#001e23; --text:#e8f7fb; --text-2:#bde3ea;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#032a32; --border:rgba(255,255,255,.12); --muted:#9cd0d7;
-      --clock-fg:rgba(255,77,0,.16); color-scheme:dark;
+      --clock-fg: rgba(255, 77, 0, 0.14); color-scheme:dark; /* toned down */
     }
 
     /* Minimal base+overrides to ensure buttons/links/scrollbar pick up theme vars
@@ -173,7 +173,7 @@
   <style>
     /* Subtle spotlight/clock visibility + screenshot aspect guard */
     .spotlight{ opacity:.95; }
-    #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: normal; }
+    #bg-clock{ opacity: var(--clock-opacity,.14); mix-blend-mode: normal; } /* fallback softened from .28 to .14 */
     .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
     @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
 
@@ -396,7 +396,7 @@
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3><span class="n">4.</span>Accelerate Incidents</h3>
           <p class="k">Consistent app/env/tenant/trace IDs → faster triage and MTTR.</p>
-          <ul><li>Joinable logs across services</li><li>Violation context included</li></ul>
+          <ul><li>Joinable logs across services</li><li>Actionable violation metadata</li></ul>
         </article>
         <article class="col-4 card tilt reveal"><div class="glare"></div>
           <h3><span class="n">5.</span>Ship ML-Ready Telemetry</h3>
@@ -1006,7 +1006,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = 0.10, range = 0.26;
+        // Soften visibility: lower base & range
+        const base = 0.04;   // softer base (was 0.10)
+        const range = 0.12;  // softer max (was 0.26)
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
