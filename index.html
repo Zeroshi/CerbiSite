@@ -60,11 +60,20 @@
       --card:rgba(255,255,255,0.04);
       --border:rgba(255,255,255,0.12);
       --muted:#8ea0c4;
-      --clock-fg:rgba(255,77,0,.10);    /* glyph tint */
-      --chip-bg:rgba(255,255,255,.06);
-      --chip-text:var(--text);
       --link:var(--accent);
       --shadow:0 10px 40px rgba(0,0,0,.35);
+
+      /* Glyph clock control */
+      --clock-fg:rgba(255,77,0,.10);
+      --clock-opacity:.14;              /* dynamic via JS fade() */
+
+      /* Docs modal (force high-contrast, theme-agnostic) */
+      --doc-bg:#0b1222;
+      --doc-text:#e6ecff;
+      --doc-muted:#c4cfe8;
+      --doc-border:rgba(255,255,255,.10);
+      --doc-link:#ff6a2b;
+
       color-scheme: dark light;
     }
 
@@ -73,19 +82,25 @@
       --bg:#f7fafc; --text:#101318; --text-2:#374151;
       --accent:#ff4d00; --btn-bg:var(--accent); --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(0,0,0,.10); --muted:#6b7280;
-      --clock-fg: rgba(255,77,0,.06); color-scheme:light;
+      --clock-fg: rgba(255,77,0,.16);
+      --clock-opacity:.18;
+      color-scheme:light;
     }
     [data-theme="light-sand"]{
       --bg:#fbf7f3; --text:#171512; --text-2:#4b463f;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(0,0,0,.12); --muted:#6f675e;
-      --clock-fg: rgba(255,77,0,.06); color-scheme:light;
+      --clock-fg: rgba(255,77,0,.18);
+      --clock-opacity:.20;
+      color-scheme:light;
     }
     [data-theme="light-mist"]{
       --bg:#f5f9fb; --text:#0f172a; --text-2:#334155;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#ffffff; --border:rgba(15,23,42,.12); --muted:#5b708a;
-      --clock-fg: rgba(255,77,0,.06); color-scheme:light;
+      --clock-fg: rgba(255,77,0,.17);
+      --clock-opacity:.19;
+      color-scheme:light;
     }
 
     /* NEUTRALS */
@@ -93,19 +108,25 @@
       --bg:#0e1522; --text:#e8eefc; --text-2:#a9b6d2;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.10); --muted:#8aa0bd;
-      --clock-fg: rgba(255,77,0,.10); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.13);
+      --clock-opacity:.14;
+      color-scheme:dark;
     }
     [data-theme="neutral-greige"]{
       --bg:#1a1f24; --text:#f1f5f9; --text-2:#c4cdd8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#1f2732; --border:rgba(255,255,255,.12); --muted:#9aa6b2;
-      --clock-fg: rgba(255,77,0,.10); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.14);
+      --clock-opacity:.15;
+      color-scheme:dark;
     }
     [data-theme="neutral-lilac"]{
       --bg:#151522; --text:#eef0ff; --text-2:#cbbfe8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#191a2a; --border:rgba(255,255,255,.12); --muted:#a9a2c4;
-      --clock-fg: rgba(255,77,0,.10); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.15);
+      --clock-opacity:.16;
+      color-scheme:dark;
     }
 
     /* DARKS */
@@ -113,25 +134,33 @@
       --bg:#0d0f12; --text:#f0f6ff; --text-2:#b7c4e6;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#121720; --border:rgba(255,255,255,.10); --muted:#95a6c9;
-      --clock-fg: rgba(255,77,0,.16); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.20);
+      --clock-opacity:.18;
+      color-scheme:dark;
     }
     [data-theme="dark-abyss"]{
       --bg:#0d1b2a; --text:#e6f0ff; --text-2:#a8b7d2;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#0f2236; --border:rgba(255,255,255,.10); --muted:#8aa1c0;
-      --clock-fg: rgba(255,77,0,.14); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.19);
+      --clock-opacity:.17;
+      color-scheme:dark;
     }
     [data-theme="dark-ink"]{
       --bg:#141229; --text:#eef1ff; --text-2:#b9c0e8;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#171532; --border:rgba(255,255,255,.12); --muted:#9aa3ce;
-      --clock-fg: rgba(255,77,0,.15); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.19);
+      --clock-opacity:.17;
+      color-scheme:dark;
     }
     [data-theme="dark-teal"]{
       --bg:#001e23; --text:#e8f7fb; --text-2:#bde3ea;
       --accent:#ff4d00; --btn-bg:#ff4d00; --btn-bg-hover:#ff6a2b;
       --card:#032a32; --border:rgba(255,255,255,.12); --muted:#9cd0d7;
-      --clock-fg: rgba(255,77,0,.14); color-scheme:dark;
+      --clock-fg: rgba(255,77,0,.18);
+      --clock-opacity:.16;
+      color-scheme:dark;
     }
 
     /* Minimal base to ensure widgets pick up theme vars */
@@ -140,9 +169,10 @@
     .btn-primary{background:var(--btn-bg)!important;border-color:transparent!important;color:#fff!important}
     .btn-primary:hover{background:var(--btn-bg-hover)!important}
     .btn-ghost{border-color:var(--border)}
+    .card, .glass{background:var(--card); border:1px solid var(--border)}
     ::-webkit-scrollbar{height:12px;width:12px}
     ::-webkit-scrollbar-thumb{background-color:var(--accent); border-radius:10px}
-    #bg-clock{color:var(--clock-fg)}
+    #bg-clock{color:var(--clock-fg); opacity: var(--clock-opacity); mix-blend-mode: normal;}
   </style>
 
   <!-- Your existing styles (order preserved) -->
@@ -156,7 +186,6 @@
   <style>
     /* Spotlight/clock + helpers */
     .spotlight{ opacity:.95; }
-    #bg-clock{ opacity: var(--clock-opacity,.14); mix-blend-mode: normal; } /* fallback softened */
     .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
     @media (min-width:900px){ #contact iframe{ width:100%; max-width:900px; margin:0 auto; display:block } }
 
@@ -175,24 +204,30 @@
     /* Lock scroll while modal open */
     html.modal-open, body.modal-open { overflow: hidden !important; }
 
-    /* Markdown modal */
+    /* ===== Markdown modal: theme-agnostic and readable ===== */
     .prose-doc{
       width:min(100vw, 960px);
       max-height:min(90vh, 900px);
       overflow:auto;
       padding:22px 26px;
       border-radius:12px;
-      background:rgba(10,14,24,.92);
+      background:var(--doc-bg);
       backdrop-filter: blur(6px);
-      border:1px solid rgba(255,255,255,.06);
+      border:1px solid var(--doc-border);
       box-shadow: 0 10px 40px rgba(0,0,0,.45);
-      color:var(--text, #d9e2ff);
+      color:var(--doc-text);
       line-height:1.55;
     }
-    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--text,#fff); margin:.6em 0 .35em }
-    .prose-doc a{ color:var(--accent); text-decoration:none; border-bottom:1px dashed currentColor }
-    .prose-doc pre{ background:#0b1222; padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid rgba(255,255,255,.06) }
-    .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
+    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--doc-text); margin:.6em 0 .35em }
+    .prose-doc a{ color:var(--doc-link); text-decoration:none; border-bottom:1px dashed currentColor }
+    .prose-doc pre{ background:#0d172a; color:#e6f0ff; padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid var(--doc-border) }
+    .prose-doc code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .prose-doc blockquote{ border-left:3px solid rgba(255,255,255,.15); margin:.6em 0; padding:.2em .9em; color:var(--doc-muted) }
+    .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0; color:var(--doc-text) }
+    .prose-doc th,.prose-doc td{ border:1px solid var(--doc-border); padding:.5em .6em }
+    .prose-doc img{ max-width:100%; height:auto; border-radius:8px; }
+
+    /* Basic lightbox shell */
     .lightbox{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.5); z-index:1200; }
     .lightbox[hidden]{ display:none; }
     .lightbox .close{ position:absolute; top:12px; right:12px; }
@@ -608,30 +643,104 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- PACKAGES (ADDED) -->
+    <!-- PACKAGES (NuGet) -->
     <section id="packages" class="container section">
       <div class="eyebrow">Get Cerbi via NuGet</div>
       <h2><span class="hl">Packages</span></h2>
+      <p class="lead">Install the packages that match your stack. Governance can be enforced at build-time and runtime.</p>
+
+      <div class="glass" style="padding:8px 12px;overflow-x:auto">
+        <table class="table">
+          <thead><tr><th>Package</th><th>Description</th><th>Install</th><th>Link</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>CerbiStream</strong></td>
+              <td>Core .NET structured logger. Clean, consistent events with correlation metadata.</td>
+              <td><pre class="kbd">dotnet add package CerbiStream</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/CerbiStream">NuGet →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi.MEL.Governance</strong></td>
+              <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines.</td>
+              <td><pre class="kbd">dotnet add package Cerbi.MEL.Governance</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/Cerbi.MEL.Governance">NuGet →</a></td>
+            </tr>
+            <tr>
+              <td><strong>CerbiStream.GovernanceAnalyzer</strong></td>
+              <td>Roslyn analyzer that flags policy violations at build-time (IDE/CI).</td>
+              <td><pre class="kbd">dotnet add package CerbiStream.GovernanceAnalyzer</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer">NuGet →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi.Governance.Runtime</strong></td>
+              <td>Core runtime components for applying governance rules (validation, redaction, relax-mode).</td>
+              <td><pre class="kbd">dotnet add package Cerbi.Governance.Runtime</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime">NuGet →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi.Governance.Core</strong></td>
+              <td>Shared governance domain models and primitives: profiles, rules, policy contracts.</td>
+              <td><pre class="kbd">dotnet add package Cerbi.Governance.Core</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/Cerbi.Governance.Core">NuGet →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></td>
+              <td>Analyzer for Serilog-based pipelines to enforce Cerbi governance conventions.</td>
+              <td><pre class="kbd">dotnet add package Cerbi.Serilog.GovernanceAnalyzer</pre></td>
+              <td><a target="_blank" rel="noopener" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer">NuGet →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:14px">
+        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View CerbiStream on GitHub →</a>
+      </p>
+    </section>
+
+    <!-- REPOS -->
+    <section id="repos" class="container section">
+      <div class="eyebrow">Open source</div>
+      <h2><span class="hl">Repositories</span></h2>
+      <p class="lead">Explore the source, benchmarks, analyzers, and demos that make up the Cerbi ecosystem.</p>
+
       <div class="grid" style="gap:18px">
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream</h3>
-          <p class="k">Core .NET structured logger. Emits clean, stable events with correlation metadata.</p>
-          <pre class="kbd">dotnet add package CerbiStream</pre>
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3>Cerbi-CerbiStream</h3>
+          <p class="k">Core logger for .NET. Emits governed, structured logs with correlation metadata and optional encryption.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">Open on GitHub →</a></div>
         </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3>CerbiStream.BenchmarkTests</h3>
+          <p class="k">Microbenchmarks and performance tests to validate throughput and allocations under realistic workloads.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">Open on GitHub →</a></div>
+        </article>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
           <h3>Cerbi.MEL.Governance</h3>
-          <p class="k">Runtime validator for Microsoft.Extensions.Logging.</p>
-          <pre class="kbd">dotnet add package Cerbi.MEL.Governance</pre>
+          <p class="k">Runtime validators for Microsoft.Extensions.Logging pipelines. Enforce policy, redact PII, support relax-mode.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">Open on GitHub →</a></div>
         </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream.GovernanceAnalyzer</h3>
-          <p class="k">Roslyn analyzer to catch policy violations during build.</p>
-          <pre class="kbd">dotnet add package CerbiStream.GovernanceAnalyzer</pre>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3>Cerbi.MEL.Governance.Demo</h3>
+          <p class="k">A runnable sample demonstrating build-time and runtime governance working together in a simple app.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">Open on GitHub →</a></div>
+        </article>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
+          <p class="k">Analyzer for Serilog usage to keep events aligned with governed profiles and naming conventions.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">Open on GitHub →</a></div>
+        </article>
+
+        <article class="col-6 card tilt reveal"><div class="glare"></div>
+          <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
+          <p class="k">Companion test app for the Serilog analyzer showcasing findings and quick fixes in context.</p>
+          <div><a class="btn btn-primary" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">Open on GitHub →</a></div>
         </article>
       </div>
-      <p style="margin-top:14px">
-        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View on GitHub →</a>
-      </p>
     </section>
 
     <!-- ARCHITECTURE -->
@@ -691,7 +800,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <p class="k" style="margin-top:10px">Bottom line: familiar tools + cost control, auditability, faster incident response.</p>
     </section>
 
-    <!-- COMPARE (ADDED) -->
+    <!-- COMPARE -->
     <section id="compare" class="container section">
       <div class="eyebrow">Evaluate options</div>
       <h2><span class="hl">Compare</span> Approaches</h2>
@@ -785,7 +894,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
-        <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
+        <a class="tag" href="#packages">NuGet</a><a class="tag" href="#repos">Repos</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
         <a class="tag doc-link" href="docs/privacy.md">Privacy</a>
         <a class="tag doc-link" href="docs/terms.md">Terms</a>
         <a class="tag doc-link" href="docs/security.md">Security</a>
@@ -824,14 +933,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <!-- Your existing scripts -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
 
-  <!-- Ensure the big background clock reads theme variables (no hardcoded opacity) -->
+  <!-- Clock init -->
   <script>
     (function(){
       var el = document.getElementById('bg-clock'); if(!el) return;
       el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
       el.style.zIndex='0'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
-      el.style.mixBlendMode='normal'; /* IMPORTANT: no el.style.opacity here—opacity comes from --clock-opacity only */
-      // color comes from CSS var; keep inline free of overrides
+      el.style.mixBlendMode='normal';
       if(!el.textContent || el.textContent.trim()===''){
         var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
         el.textContent=t;
@@ -921,17 +1029,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
     })();
 
-    // Big background glyph clock
+    // Big background glyph clock (stronger on light, gentle on dark)
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
       const glyphs = ['◆','◇','◆','◇','◆','◇'];
       const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
+      const isLight = () => (document.documentElement.getAttribute('data-theme')||'').startsWith('light');
+
       function size(){
         const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const factor = vw < 820 ? 0.44 : 0.34;
         el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
         el.style.lineHeight='1';
-        el.style.color = read('--clock-fg','rgba(255,77,0,.12)');
+        el.style.color = read('--clock-fg','rgba(255,77,0,.16)');
       }
       function render(){
         const d=new Date();
@@ -943,14 +1053,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = 0.04;   // very soft base
-        const range = 0.12;  // capped range
+        const base = isLight() ? 0.14 : 0.06;
+        const range = isLight() ? 0.18 : 0.10;
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
       addEventListener('scroll',fade,{passive:true});
-      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+      new MutationObserver(()=>{ size(); fade(); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
       setInterval(render,1000);
     })();
 
@@ -1014,7 +1124,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
     })();
 
-    // Docs modal loader for .md links
+    // Docs modal loader for .md links (dark sheet, readable)
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -1095,7 +1205,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     })();
   </script>
 
-  <!-- Dynamic background (subtle orbs matching orange hue range) -->
+  <!-- Dynamic background (subtle orbs) -->
   <script>
     (function(){
       const canvas = document.getElementById('bgCanvas'); if(!canvas) return;
