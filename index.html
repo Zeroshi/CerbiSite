@@ -4,16 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
+  <meta name="color-scheme" content="light dark" />
 
-  <!-- Apply persisted theme early so CSS uses the correct variables -->
+  <!-- Apply a RANDOM theme on every load (no persistence) so CSS uses the correct variables -->
   <script>
     (function(){
       try{
-        var saved = localStorage.getItem('theme') || localStorage.getItem('cerbi-theme');
-        if(saved) document.documentElement.setAttribute('data-theme', saved);
-        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-          document.documentElement.setAttribute('data-theme','light');
+        // Ten distinct Cerbi themes (IDs must match CSS blocks below)
+        var ORDER = ['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian'];
+        function rand(){ return ORDER[Math.floor(Math.random()*ORDER.length)]; }
+
+        // Pick a random theme each visit (do not persist)
+        var chosen = rand();
+
+        // If user explicitly prefers light, bias to a light theme ~60% of the time
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+          var lighties = ['powder','celadon','champagne','greige','lilac'];
+          if (Math.random() < 0.6) chosen = lighties[Math.floor(Math.random()*lighties.length)];
         }
+        document.documentElement.setAttribute('data-theme', chosen);
+
+        // Update UA color-scheme hint for form controls/scrollbars
+        var isLight = ['powder','celadon','champagne','greige','lilac'].indexOf(chosen) > -1;
+        var meta = document.querySelector('meta[name="color-scheme"]') || (function(){
+          var m=document.createElement('meta'); m.name='color-scheme'; document.head.appendChild(m); return m;
+        })();
+        meta.setAttribute('content', isLight ? 'light dark' : 'dark light');
       }catch(e){ /* ignore */ }
     })();
   </script>
@@ -85,6 +101,81 @@
       position:absolute; top:12px; right:12px;
     }
     #lightbox img{ max-width:min(96vw,1600px); max-height:90vh; border-radius:10px; }
+  </style>
+
+  <!-- =============== 10 CERBI THEMES (variables consumed by your CSS) =============== -->
+  <style>
+    :root{ --cerbi-blue:#2F7DFF; }
+
+    /* 1) Powder Blue Mist — LIGHT (#A7C7E7) */
+    [data-theme="powder"]{
+      --bg:#A7C7E7; --text:#2E2A5E; --muted:#5A6B78;
+      --accent:var(--cerbi-blue); --btn:var(--cerbi-blue); --btn-hover:#1E62DC;
+      --panel:#FFFFFF; --border:rgba(46,42,94,.18); --link:#1B56FF; --ring:rgba(47,125,255,.35);
+    }
+
+    /* 2) Celadon Frost — LIGHT (#B7E1C0) */
+    [data-theme="celadon"]{
+      --bg:#B7E1C0; --text:#26324A; --muted:#48605A;
+      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#FFFFFF; --border:rgba(38,50,74,.16); --link:#0C59FF; --ring:rgba(47,125,255,.32);
+    }
+
+    /* 3) Champagne Blush — LIGHT (#F7E3D4) */
+    [data-theme="champagne"]{
+      --bg:#F7E3D4; --text:#2E2A5E; --muted:#6B5D6B;
+      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#FFFFFF; --border:rgba(46,42,94,.16); --link:#1B56FF; --ring:rgba(47,125,255,.30);
+    }
+
+    /* 4) Greige Stone — NEUTRAL (#C5C1B9) */
+    [data-theme="greige"]{
+      --bg:#C5C1B9; --text:#2E2A5E; --muted:#7A8A99;
+      --accent:#004F59; --btn:#004F59; --btn-hover:#003A41;
+      --panel:#FFFFFF; --border:rgba(0,79,89,.18); --link:#0C6C79; --ring:rgba(0,79,89,.35);
+    }
+
+    /* 5) Ashen Lilac — NEUTRAL (#C8B7D9) */
+    [data-theme="lilac"]{
+      --bg:#C8B7D9; --text:#2E2A5E; --muted:#5A516B;
+      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#FFFFFF; --border:rgba(46,42,94,.20); --link:#1B56FF; --ring:rgba(47,125,255,.35);
+    }
+
+    /* 6) Pewter Slate — DIM (#7A8A99) */
+    [data-theme="pewter"]{
+      --bg:#7A8A99; --text:#F2F6FA; --muted:#D4DFEA;
+      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#95A5B3; --border:rgba(255,255,255,.22); --link:#EAF6FF; --ring:rgba(47,125,255,.35);
+    }
+
+    /* 7) Midnight Teal — DARK (#004F59) */
+    [data-theme="midnight"]{
+      --bg:#004F59; --text:#EAF2F2; --muted:#B7E1C0;
+      --accent:#2F7DFF; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#0D1B2A; --border:rgba(183,225,192,.25); --link:#9ED8FF; --ring:rgba(47,125,255,.35);
+    }
+
+    /* 8) Indigo Ink — DARK (#2E2A5E) */
+    [data-theme="indigo"]{
+      --bg:#2E2A5E; --text:#F1F3FF; --muted:#C8B7D9;
+      --accent:#A7C7E7; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#3B2C35; --border:rgba(199,205,255,.22); --link:#B9D5FF; --ring:rgba(47,125,255,.35);
+    }
+
+    /* 9) Charcoal Plum — DARK (#3B2C35) */
+    [data-theme="charcoal"]{
+      --bg:#3B2C35; --text:#F6F0F6; --muted:#E2D5EA;
+      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#2E2A5E; --border:rgba(255,255,255,.18); --link:#9CD8FF; --ring:rgba(183,225,192,.35);
+    }
+
+    /* 10) Obsidian Blue-Black — ULTRA-DARK (#0D1B2A) */
+    [data-theme="obsidian"]{
+      --bg:#0D1B2A; --text:#EAF2FA; --muted:#A7C7E7;
+      --accent:#B7E1C0; --btn:#2F7DFF; --btn-hover:#1E62DC;
+      --panel:#15263A; --border:rgba(167,199,231,.22); --link:#79CFE3; --ring:rgba(47,125,255,.35);
+    }
   </style>
 
   <!-- Favicons / app icons -->
@@ -732,6 +823,60 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
+  <!-- Theme Manager: stable API & wiring (toggle/cycle) -->
+  <script>
+    (function () {
+      const ORDER = ['powder','celadon','champagne','greige','lilac','pewter','midnight','indigo','charcoal','obsidian'];
+      const root = document.documentElement;
+
+      function setColorSchemeMeta(themeId){
+        const lightish = ['powder','celadon','champagne','greige','lilac'].includes(themeId);
+        const meta = document.querySelector('meta[name="color-scheme"]') || (function(){
+          const m=document.createElement('meta'); m.name='color-scheme'; document.head.appendChild(m); return m;
+        })();
+        meta.setAttribute('content', lightish ? 'light dark' : 'dark light');
+      }
+
+      function get(){ return root.getAttribute('data-theme') || ORDER[0]; }
+      function set(id){
+        if (!ORDER.includes(id)) id = ORDER[0];
+        root.setAttribute('data-theme', id);
+        setColorSchemeMeta(id);
+        window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme:id } }));
+      }
+      function cycle(step=1){
+        const cur = get();
+        let idx = ORDER.indexOf(cur); if (idx<0) idx=0;
+        set(ORDER[(idx+step+ORDER.length)%ORDER.length]);
+      }
+      function toggle(){
+        // Simple toggle between light cluster and dark cluster
+        const t = get();
+        const light = ['powder','celadon','champagne','greige','lilac'];
+        set(light.includes(t) ? 'midnight' : 'powder');
+      }
+      function list(){ return ORDER.slice(); }
+
+      window.CerbiTheme = { get, set, cycle, toggle, list };
+
+      // Wire existing buttons if present
+      const b=document.getElementById('themeBtn');
+      if(b && !b.__bound){ b.addEventListener('click',()=>window.CerbiTheme.toggle()); b.__bound=true; }
+
+      const diagName = document.getElementById('theme-name');
+      function refresh(){ if(diagName) diagName.textContent = 'Theme: ' + get(); }
+      window.addEventListener('theme-changed', refresh);
+      setTimeout(refresh, 250);
+
+      // Extra debug cycle button in badge (if present)
+      const cyc = document.getElementById('theme-cycle');
+      if (cyc && !cyc.__bound){
+        cyc.addEventListener('click', ()=>{ window.CerbiTheme.cycle(1); setTimeout(refresh,80); });
+        cyc.__bound = true;
+      }
+    })();
+  </script>
+
   <!-- Scripts: load app.js early so theme is initialized -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
 
@@ -836,7 +981,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
         el.style.lineHeight='1';
         const theme=document.documentElement.getAttribute('data-theme')||'dark';
-        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
+        el.style.color = ['powder','celadon','champagne','greige','lilac','light'].includes(theme) ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
       }
       function render(){
         const d=new Date();
@@ -1195,7 +1340,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'dark';
         el.textContent = 'Theme: ' + t;
       }
-      btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.toggle){ window.CerbiTheme.toggle(); setTimeout(refresh,80); } });
+      btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.cycle){ window.CerbiTheme.cycle(1); setTimeout(refresh,80); } });
       window.addEventListener('theme-changed', refresh);
       setTimeout(refresh,250);
     })();
