@@ -1,71 +1,32 @@
+
 <!DOCTYPE html>
-<html lang="en" data-theme="random">
+<html lang="en" data-theme="dark">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-HQ6M9SCWYH', { send_page_view: true });
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- ===================== THEME PRELOAD ===================== -->
-  <!-- Random starting theme with persistence + prefers-color-scheme fallback -->
+  <!-- Apply persisted theme early so CSS uses the correct variables -->
   <script>
-    (function () {
-      // Cerbi brand hue sampled from emblem (warm orange ~ 18deg hue)
-      var CERBI_BRAND_HEX = '#ff4d00';
-
-      // 10 named themes (ids) — must match CSS [data-theme="<id>"] blocks below
-      var THEMES = [
-        'mist-light','celadon','champagne','greige','lilac',
-        'pewter','midnight','indigo','plum','obsidian'
-      ];
-
-      // Persisted?
-      var saved = null;
-      try {
-        saved = localStorage.getItem('cerbi-theme');
-      } catch (_) {}
-
-      // If user set 'random' explicitly or first visit, choose a random theme, but bias to readable light ones first
-      function pickRandom() {
-        var lightFirst = ['mist-light','celadon','champagne','greige','lilac'];
-        var pool = Math.random() < 0.6 ? lightFirst : THEMES;
-        return pool[Math.floor(Math.random() * pool.length)];
-      }
-
-      var chosen = saved || (function(){
-        // Respect prefers-color-scheme for first paint if no saved theme
-        try{
-          var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-          if (prefersLight) return 'mist-light';
-        }catch(_){}
-        return pickRandom();
-      })();
-
-      document.documentElement.setAttribute('data-theme', chosen);
-
-      // Expose minimal theme API early
-      window.CerbiTheme = {
-        list: function(){ return THEMES.slice(); },
-        get: function(){ return document.documentElement.getAttribute('data-theme') || 'mist-light'; },
-        set: function(id){
-          if (!id || THEMES.indexOf(id) < 0) return;
-          document.documentElement.setAttribute('data-theme', id);
-          try { localStorage.setItem('cerbi-theme', id); } catch(_){}
-          var ev = new CustomEvent('theme-changed', { detail: { theme: id }});
-          window.dispatchEvent(ev);
-        },
-        toggle: function(){
-          var cur = CerbiTheme.get();
-          var i = THEMES.indexOf(cur);
-          var next = THEMES[(i + 1) % THEMES.length];
-          CerbiTheme.set(next);
-        },
-        brand: CERBI_BRAND_HEX
-      };
+    (function(){
+      try{
+        var saved = localStorage.getItem('theme') || localStorage.getItem('cerbi-theme');
+        if(saved) document.documentElement.setAttribute('data-theme', saved);
+        else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme','light');
+      }catch(e){}
     })();
   </script>
 
-  <!-- ===================== CSS (external) ===================== -->
-  <!-- Keep your existing stylesheets (order preserved) -->
+  <!-- Styles order preserved, cache-busted -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-22.12" />
   <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-22.11" />
@@ -73,439 +34,35 @@
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
 
-  <!-- ===================== TOKEN OVERRIDES & FIXES ===================== -->
   <style>
-    /* ----------------------------------------------------------------
-       10 contrast-safe theme tokens (derived from your palette + logo)
-       Each theme defines: background, surface, card, text/heading/muted,
-       accent, button (bg/hover), borders, nav background, md modal, etc.
-       ---------------------------------------------------------------- */
-    :root{
-      /* common tokens */
-      --brand:#ff4d00;                 /* Cerbi emblem warm orange */
-      --radius:12px;
-      --shadow:0 10px 40px rgba(0,0,0,.45);
+    /* Lift spotlight opacity a touch so it’s visible */
+    .spotlight{ opacity:.95; }
+    /* Background clock: ensure visibility */
+    #bg-clock{ opacity: var(--clock-opacity,.28); mix-blend-mode: screen; }
+    /* Microsoft Partner slightly larger in footer */
+    .footer .partner-mini{ height:22px; width:auto; opacity:.96; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 
-      /* fallbacks (overridden per theme) */
-      --bg:#0d1b2a;
-      --surface:#0f2233;
-      --card:#12283c;
-      --text:#e6eef8;
-      --heading:#ffffff;
-      --muted:#a7b4cf;
-      --accent:var(--brand);
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.72);
-      --chip-bg:rgba(255,255,255,.08);
-      --chip-text:var(--text);
-      --kbd-bg:rgba(255,255,255,.08);
-      --kbd-text:var(--text);
-      --md-bg:rgba(10,14,24,.92);
-      --md-text:var(--text);
-      --focus:0 0 0 3px rgba(255,77,0,.35);
-      --glyph: rgba(255,77,0,0.12);   /* big clock tint */
-      --glyph-strong: rgba(255,77,0,0.18);
+    /* CONTACT WIDTH FIX
+       - Removed old rule that capped #contact iframe at max-width:900px
+       - Use a responsive wrapper so the form can be wider on desktop */
+    .contact-wrap{ margin-inline:auto; width:clamp(680px, 90vw, 1100px); }
+    @media (max-width:760px){ .contact-wrap{ width:100%; } }
 
-      /* spacing/stacking fixes */
-      --nav-h:64px;
-      --ribbon-h:0px;
-    }
-
-    /* ---------- THEME: 1. Powder Blue Mist (light) ---------- */
-    [data-theme="mist-light"]{
-      --bg:#f6fbff;
-      --surface:#f2f7fd;
-      --card:#ffffff;
-      --text:#133047;
-      --heading:#0b1f33;
-      --muted:#3f5b73;
-      --accent:#ff4d00;
-      --accent-contrast:#fff7f2;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(10,20,30,.10);
-      --divider:rgba(10,20,30,.14);
-      --nav-bg:rgba(255,255,255,.82);
-      --chip-bg:#e9f2ff;
-      --chip-text:#15324a;
-      --kbd-bg:#eef4fb;
-      --kbd-text:#19354c;
-      --md-bg:#ffffff;
-      --md-text:#0f2640;
-      --glyph: rgba(255,77,0,0.07);
-      --glyph-strong: rgba(255,77,0,0.12);
-    }
-
-    /* ---------- THEME: 2. Celadon Frost (light-neutral) ---------- */
-    [data-theme="celadon"]{
-      --bg:#f7fff9;
-      --surface:#effaf2;
-      --card:#ffffff;
-      --text:#163226;
-      --heading:#0a2a1d;
-      --muted:#3e5a4e;
-      --accent:#ff4d00;
-      --accent-contrast:#fff7f2;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(10,30,20,.10);
-      --divider:rgba(10,30,20,.14);
-      --nav-bg:rgba(255,255,255,.85);
-      --chip-bg:#e6f7ec;
-      --chip-text:#163226;
-      --md-bg:#ffffff;
-      --md-text:#15251d;
-      --glyph: rgba(255,77,0,0.07);
-      --glyph-strong: rgba(255,77,0,0.12);
-    }
-
-    /* ---------- THEME: 3. Champagne Blush (warm light) ---------- */
-    [data-theme="champagne"]{
-      --bg:#fff9f5;
-      --surface:#fff5ef;
-      --card:#ffffff;
-      --text:#3b2a22;
-      --heading:#281b15;
-      --muted:#6b5144;
-      --accent:#ff4d00;
-      --accent-contrast:#fff7f2;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(40,20,10,.10);
-      --divider:rgba(40,20,10,.14);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#ffefe6;
-      --chip-text:#3b2a22;
-      --md-bg:#ffffff;
-      --md-text:#2c1d16;
-      --glyph: rgba(255,77,0,0.08);
-      --glyph-strong: rgba(255,77,0,0.15);
-    }
-
-    /* ---------- THEME: 4. Greige Stone (mid light-neutral) ---------- */
-    [data-theme="greige"]{
-      --bg:#fbfbf9;
-      --surface:#f4f3f0;
-      --card:#ffffff;
-      --text:#252421;
-      --heading:#181816;
-      --muted:#585651;
-      --accent:#ff4d00;
-      --accent-contrast:#fff7f2;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(20,20,18,.14);
-      --divider:rgba(20,20,18,.18);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#efeee9;
-      --chip-text:#2b2a26;
-      --md-bg:#ffffff;
-      --md-text:#1d1d1a;
-      --glyph: rgba(255,77,0,0.08);
-      --glyph-strong: rgba(255,77,0,0.15);
-    }
-
-    /* ---------- THEME: 5. Ashen Lilac (soft light) ---------- */
-    [data-theme="lilac"]{
-      --bg:#fbf9ff;
-      --surface:#f6f2ff;
-      --card:#ffffff;
-      --text:#2b2434;
-      --heading:#1a1520;
-      --muted:#5e566a;
-      --accent:#ff4d00;
-      --accent-contrast:#fff7f2;
-      --btn:#ff4d00;
-      --btn-hover:#ff6a2b;
-      --border:rgba(26,21,32,.12);
-      --divider:rgba(26,21,32,.16);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#f0eaff;
-      --chip-text:#2b2434;
-      --md-bg:#ffffff;
-      --md-text:#1c1723;
-      --glyph: rgba(255,77,0,0.07);
-      --glyph-strong: rgba(255,77,0,0.12);
-    }
-
-    /* ---------- THEME: 6. Pewter Slate (mid dark) ---------- */
-    [data-theme="pewter"]{
-      --bg:#0f1a22;
-      --surface:#132331;
-      --card:#162a3b;
-      --text:#e5eef8;
-      --heading:#ffffff;
-      --muted:#a7b4cf;
-      --accent:#ff6a2b;
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.78);
-      --chip-bg:rgba(255,255,255,.08);
-      --chip-text:#e5eef8;
-      --md-bg:rgba(10,14,24,.92);
-      --md-text:#d9e2ff;
-      --glyph: rgba(255,77,0,0.12);
-      --glyph-strong: rgba(255,77,0,0.18);
-    }
-
-    /* ---------- THEME: 7. Midnight Teal (dark) ---------- */
-    [data-theme="midnight"]{
-      --bg:#031e22;
-      --surface:#072a2f;
-      --card:#0d3036;
-      --text:#e7f7fb;
-      --heading:#ffffff;
-      --muted:#b7d7df;
-      --accent:#ff6a2b;
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(1,16,18,.80);
-      --chip-bg:rgba(255,255,255,.10);
-      --chip-text:#e7f7fb;
-      --md-bg:rgba(5,18,20,.92);
-      --md-text:#e7f7fb;
-      --glyph: rgba(255,77,0,0.12);
-      --glyph-strong: rgba(255,77,0,0.2);
-    }
-
-    /* ---------- THEME: 8. Indigo Ink (dark) ---------- */
-    [data-theme="indigo"]{
-      --bg:#101327;
-      --surface:#151a34;
-      --card:#181e3d;
-      --text:#e6e9ff;
-      --heading:#ffffff;
-      --muted:#b9c0ff;
-      --accent:#ff6a2b;
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(8,10,30,.82);
-      --chip-bg:rgba(255,255,255,.10);
-      --chip-text:#e6e9ff;
-      --md-bg:rgba(12,14,36,.92);
-      --md-text:#e6e9ff;
-      --glyph: rgba(255,77,0,0.13);
-      --glyph-strong: rgba(255,77,0,0.22);
-    }
-
-    /* ---------- THEME: 9. Charcoal Plum (dark) ---------- */
-    [data-theme="plum"]{
-      --bg:#1a1216;
-      --surface:#22171f;
-      --card:#291d26;
-      --text:#ffeaf3;
-      --heading:#ffffff;
-      --muted:#f3cfe0;
-      --accent:#ff6a2b;
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.10);
-      --divider:rgba(255,255,255,.14);
-      --nav-bg:rgba(18,10,14,.80);
-      --chip-bg:rgba(255,255,255,.12);
-      --chip-text:#ffeaf3;
-      --md-bg:rgba(28,20,26,.92);
-      --md-text:#ffeaf3;
-      --glyph: rgba(255,77,0,0.13);
-      --glyph-strong: rgba(255,77,0,0.22);
-    }
-
-    /* ---------- THEME: 10. Obsidian Blue-Black (darkest) ---------- */
-    [data-theme="obsidian"]{
-      --bg:#0b1520;
-      --surface:#0e1b29;
-      --card:#102033;
-      --text:#dfeaff;
-      --heading:#ffffff;
-      --muted:#a9c2ff;
-      --accent:#ff6a2b;
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
-      --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.82);
-      --chip-bg:rgba(255,255,255,.10);
-      --chip-text:#dfeaff;
-      --md-bg:rgba(10,14,24,.92);
-      --md-text:#dfeaff;
-      --glyph: rgba(255,77,0,0.14);
-      --glyph-strong: rgba(255,77,0,0.24);
-    }
-
-    /* ---------- Global application of tokens ---------- */
-    html, body { background: var(--bg); color: var(--text); }
-    .nav { position: sticky; top: 0; z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(10px); }
-    .nav a, .nav .btn, .nav .theme-toggle { color: var(--text); }
-    .btn { background: var(--btn); color: var(--accent-contrast); border: 1px solid transparent; }
-    .btn:hover { background: var(--btn-hover); }
-    .btn.btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
-    .btn.btn-ghost:hover { background: rgba(255,255,255,.06); }
-    .chip, .tag { background: var(--chip-bg); color: var(--chip-text); }
-    .glass { background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); box-shadow: var(--shadow); }
-    .card { background: var(--card); border:1px solid var(--border); }
-    .kbd, pre.codeblock, code[class*="language-"], pre[class*="language-"] { background: var(--kbd-bg); color: var(--kbd-text); }
-    .img-cap, .muted, .k { color: var(--muted); }
-    a { color: var(--accent); }
-    a:hover { opacity: .92; }
-    h1,h2,h3,h4,h5,h6 { color: var(--heading); }
-    .table th,.table td { border-color: var(--divider); }
-    hr { border-color: var(--divider); }
-
-    /* Ribbon spacing compensation for sticky nav */
-    #topRibbon { position: sticky; top: var(--nav-h); z-index: 900; background: linear-gradient(0deg, rgba(0,0,0,.18), rgba(0,0,0,.18)), var(--nav-bg); }
-
-    /* Glyph clock behind everything (but above background) */
-    #bg-clock{
-      position: fixed; inset:0; display:grid; place-items:center;
-      z-index: -1; pointer-events: none; user-select: none; line-height:1;
-      color: var(--muted); opacity: var(--clock-opacity, .18);
-    }
-
-    /* Ensure the dynamic background sits under content */
+    /* Dynamic background container */
     #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
+    #dynamic-bg canvas{ width:100%; height:100%; display:block }
 
-    /* Docs modal theming (readable on light/dark) */
-    .prose-doc{
-      width:min(100vw, 960px);
-      max-height:min(90vh, 900px);
-      overflow:auto;
-      padding:22px 26px;
-      border-radius:12px;
-      background:var(--md-bg);
-      color:var(--md-text);
-      border:1px solid var(--border);
-      box-shadow: var(--shadow);
-      line-height:1.55;
-    }
-    .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--heading); margin:.6em 0 .35em }
-    .prose-doc a{ color:var(--accent); text-decoration:none; border-bottom:1px dashed currentColor }
-    .prose-doc pre{ background:var(--kbd-bg); color:var(--kbd-text); padding:12px 14px; border-radius:10px; overflow:auto; border:1px solid var(--border) }
-    .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
-    .prose-doc th,.prose-doc td{ border:1px solid var(--divider); padding:.5em .6em }
-
-    /* Remove stray blanks: collapse any empty .space blocks */
-    .space:empty { display:none; }
-    .section.full-bleed-wrap + .space:empty { display:none; }
-
-    /* Contact FAB — ORIGINAL (bottom-right) replaced by floating-right alignment */
-    .contact-fab{
-      /* ADDED: convert to right-floating, vertically-centered control */
-      position: fixed;
-      right: 20px;
-      top: 0;                                     /* we control Y with --fab-y */
-      transform: translateY(calc(var(--fab-y, 60vh) - 50%));
-      z-index: 900;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
-      transition: transform .12s ease;
-    }
-
-    /* Theme diagnostic widget (single instance, top-left, no stacking) */
-    #theme-diag{
-      position: fixed; left: 12px; bottom: 12px; z-index: 910;
-      background: var(--surface); color: var(--text);
-      border: 1px solid var(--border); border-radius: 14px; padding: 8px 10px;
-      display: flex; gap: 8px; align-items: center;
-      box-shadow: var(--shadow);
-    }
-    #theme-diag button{ background: transparent; color: var(--text); border:1px solid var(--border); border-radius:10px; padding: 6px 10px; }
-    #theme-diag button:hover{ background: rgba(255,255,255,.06); }
-
-    /* Ensure menu readability on all themes */
-    .nav a{ text-shadow: 0 1px 0 rgba(0,0,0,.25); }
-    .nav .btn{ box-shadow: 0 2px 0 rgba(0,0,0,.2) inset; }
-
-    /* Ensure hero chips readable */
-    .chip{ border: 1px solid var(--border); }
-
-    /* Improve slider dots contrast */
-    .dash-slider .dots button{ background: var(--chip-bg); border:1px solid var(--border); }
-    .dash-slider .dots button.active{ background: var(--accent); border-color: transparent; }
-
-    /* Accessibility focus ring */
-    :focus-visible{ outline: none; box-shadow: var(--focus); border-radius: 6px; }
-
-    /* ===================== ADDED: BRAND-COLORED SWITCH ===================== */
-    /**
-     * Styles the Live Rule Check (demo) toggle (button.switch) so that:
-     *  - idle track is subtle, high-contrast against both light/dark cards
-     *  - "on" state uses --brand / --accent
-     *  - accessible focus ring and ARIA-pressed visuals
-     */
-    .switch{
-      --sw-track: color-mix(in srgb, var(--card) 86%, transparent);
-      --sw-border: var(--border);
-      --sw-on: var(--brand);
-      --sw-off: color-mix(in srgb, var(--chip-bg) 60%, transparent);
-      --sw-knob: #fff;
-
-      position: relative;
-      display: inline-block;
-      width: 56px; height: 30px;
-      border-radius: 999px;
-      background: var(--sw-off);
-      border: 1px solid var(--sw-border);
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
-    }
-    .switch::before{
-      /* track glow when on */
-      content: '';
-      position: absolute; inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .2s ease;
-      background: radial-gradient(120% 120% at 80% 50%, color-mix(in srgb, var(--sw-on), white 25%) 0%, transparent 60%);
-    }
-    .switch::after{
-      /* knob */
-      content:'';
-      position:absolute; top:3px; left:3px;
-      width:24px; height:24px; border-radius:50%;
-      background: var(--sw-knob);
-      box-shadow: 0 4px 10px rgba(0,0,0,.20);
-      transition: transform .22s ease;
-    }
-    .switch[aria-pressed="true"]{
-      background: var(--sw-on);
-      border-color: color-mix(in srgb, var(--sw-on), black 12%);
-    }
-    .switch[aria-pressed="true"]::before{ opacity: .55; }
-    .switch[aria-pressed="true"]::after{ transform: translateX(26px); }
-    .switch:focus-visible{ box-shadow: var(--focus); }
-
-    /* ===================== ADDED: FAB MOBILE FALLBACK ===================== */
-    @media (max-width: 720px){
-      .contact-fab{
-        right: 16px;
-        bottom: 16px;
-        top: auto;
-        transform: none;          /* classic bottom-right on mobile */
-      }
-    }
+    /* Theme diagnostic badge (non-intrusive) */
+    #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:1300; background:rgba(0,0,0,.6); color:#fff; padding:8px 10px; border-radius:10px; font-family:Inter,Arial,monospace; font-size:13px; display:flex; gap:8px; align-items:center; }
+    #theme-diag button{ background:transparent;border:1px solid rgba(255,255,255,.08); color:inherit; padding:6px 8px; border-radius:8px; cursor:pointer }
   </style>
 
   <!-- Favicons / app icons -->
   <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
-  <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="150x150" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
-  <meta name="msapplication-TileImage" content="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="150x150" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/mstile-150x150.png" />
+  <meta name="msapplication-TileImage" content="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/mstile-150x150.png" />
 </head>
-
 <body>
   <!-- Dynamic background layer (canvas) -->
   <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
@@ -515,9 +72,9 @@
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
-
-  <!-- GLYPH CLOCK (behind content) -->
-  <div id="bg-clock" aria-hidden="true" class="mode-time"><div class="scan"></div></div>
+  <div id="bg-clock" aria-hidden="true" class="mode-time">
+    <div class="scan"></div>
+  </div>
 
   <!-- Ribbon -->
   <div id="topRibbon" class="ribbon ribbon-beta" role="status">
@@ -543,14 +100,11 @@
         <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
         <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
         <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
-        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
-        <!-- Company opens as modal -->
-        <a href="docs/company.md" class="doc-link">Company</a>
-        <a href="#contact">Contact</a>
+        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a><a href="#contact">Contact</a>
       </nav>
 
       <div class="nav-actions">
-        <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme" title="Rotate theme">🌗 Theme</button>
+        <button id="themeBtn" class="theme-toggle" aria-label="Toggle theme">🌗 Theme</button>
         <button id="cmdBtn" class="theme-toggle" aria-label="Open command palette" title="⌘K / Ctrl+K">⌘K</button>
         <a class="btn btn-ghost" href="#contact">Contact</a>
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub</a>
@@ -563,7 +117,7 @@
 
   <main id="main">
     <!-- ===== HERO ===== -->
-    <section class="hero container" id="top">
+    <section class="hero container">
       <svg class="hero-bg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <radialGradient id="g1" cx="70%" cy="10%" r="60%">
@@ -804,6 +358,7 @@ var logger = LoggerFactory.Create(builder =>
 }).CreateLogger&lt;Program&gt;();
 
 
+
 // 3) Log safely with governance validation
 logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </code></pre>
@@ -813,11 +368,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <p style="margin-top:14px">
         <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View full docs on GitHub →</a>
       </p>
-      <div class="row" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">
-        <a class="btn btn-ghost doc-link" href="docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
-        <a class="btn btn-ghost doc-link" href="docs/quickstart-mel-governance.md">MEL Governance Only</a>
-        <a class="btn btn-ghost doc-link" href="docs/case-study-claims.md">Case Study (Claims)</a>
-      </div>
     </section>
 
     <!-- ECOSYSTEM -->
@@ -870,7 +420,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
       </div>
 
-      <!-- Live governance demo -->
+      <!-- Demo -->
       <div class="glass reveal" style="padding:16px;margin-top:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
           <h3 style="margin:0">Live Rule Check (demo)</h3>
@@ -887,7 +437,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL BLEED -->
+    <!-- DASHBOARDS — FULL BLEED, IMPACTFUL, NO CROPPING -->
     <section id="dashboards" class="section full-bleed-wrap full-bleed">
       <div class="glass tilt reveal img-frame showcase">
         <div class="glare" aria-hidden="true"></div>
@@ -895,8 +445,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
           <div class="sr-only" aria-live="polite"></div>
 
+          <!-- ✅ All slides live inside this single viewport -->
           <div class="showcase-viewport">
-            <!-- HERO -->
             <figure class="slide active">
               <img
                 width="1600" height="900"
@@ -911,10 +461,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 loading="eager" decoding="async">
             </figure>
 
-            <!-- PROFILES -->
             <figure class="slide">
               <img
-                width="1200" height="900"
+                width="1600" height="900"
                 src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
                 srcset="
                   assets/screenshots/cerbishield-profiles-1200x900.jpg 1x,
@@ -926,30 +475,47 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 loading="lazy" decoding="async">
             </figure>
 
-            <!-- VIOLATIONS -->
             <figure class="slide">
               <img
-                width="1200" height="900"
-                src="assets/screenshots/cerbishield-violations-1200x900.jpg"
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-violations-2400x1800.jpg"
                 srcset="
-                  assets/screenshots/cerbishield-violations-1200x900.jpg 1x,
-                  assets/screenshots/cerbishield-violations-2400x1800.jpg 2x
+                  assets/screenshots/cerbishield-violations-2400x1800.jpg 1x,
+                  assets/screenshots/cerbishield-violations-3200x2400.jpg 2x
                 "
                 sizes="100vw"
                 alt="CerbiShield — Violations"
-                data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+                data-full="assets/screenshots/cerbishield-violations-3200x2400.jpg"
                 loading="lazy" decoding="async">
             </figure>
 
-            <!-- DEPLOY -->
+            <!-- ✅ New: Settings slide -->
+            <figure class="slide">
+              <img
+                width="1600" height="900"
+                src="assets/screenshots/cerbishield-settings-1200x900.jpg"
+                srcset="
+                  assets/screenshots/cerbishield-settings-1200x900.jpg 1x,
+                  assets/screenshots/cerbishield-settings-2400x1800.jpg 2x
+                "
+                sizes="100vw"
+                alt="CerbiShield — Settings"
+                data-full="assets/screenshots/cerbishield-settings-2400x1800.jpg"
+                loading="lazy" decoding="async">
+            </figure>
+
+            <!-- ✅ New: Deploy slide -->
             <figure class="slide">
               <img
                 width="1600" height="900"
                 src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
-                srcset="assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x"
+                srcset="
+                  assets/screenshots/cerbishield-Deploy-1600x900.jpg 1x,
+                  assets/screenshots/cerbishield-Deploy-3200x1800.jpg 2x
+                "
                 sizes="100vw"
                 alt="CerbiShield — Deploy"
-                data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                data-full="assets/screenshots/cerbishield-Deploy-3200x1800.jpg"
                 loading="lazy" decoding="async">
             </figure>
           </div>
@@ -1026,116 +592,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <p class="k" style="margin-top:10px">Bottom line: your teams keep familiar tools; leadership gets cost control, auditability, and faster incident response.</p>
     </section>
 
-    <!-- PACKAGES (NuGet) -->
-    <section id="packages" class="container section">
-      <div class="eyebrow">Install</div>
-      <h2><span class="hl">NuGet Packages</span></h2>
-      <div class="grid" style="gap:16px">
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream</h3>
-          <p class="k">Core structured logger for .NET. Consistent shapes, tags, correlation metadata, optional encryption, and resilient file fallback.</p>
-          <a class="btn" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.MEL.Governance</h3>
-          <p class="k">Runtime governance for Microsoft.Extensions.Logging. Validates events, redacts sensitive fields, supports relax-mode rollout.</p>
-          <a class="btn" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream.GovernanceAnalyzer</h3>
-          <p class="k">Roslyn analyzer. Build-time diagnostics for schema/PII violations; ships fixable messages in IDE/CI.</p>
-          <a class="btn" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.Governance.Runtime</h3>
-          <p class="k">Common runtime services shared across integrations (validators, redactors, policy evaluation).</p>
-          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.Governance.Core</h3>
-          <p class="k">Core governance model & policy types—schemas, rules, enums, and versioning primitives.</p>
-          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-        <article class="col-4 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-          <p class="k">Analyzer support for Serilog pipelines—bring the same policy to Serilog apps.</p>
-          <a class="btn" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
-        </article>
-      </div>
-    </section>
-
-    <!-- REPOSITORIES -->
-    <section id="repos" class="container section">
-      <div class="eyebrow">Open Source</div>
-      <h2><span class="hl">GitHub Repositories</span></h2>
-      <div class="grid" style="gap:16px">
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream</h3>
-          <p class="k">Reference implementation of the structured logger, with samples and docs.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a>
-        </article>
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>CerbiStream.BenchmarkTests</h3>
-          <p class="k">Benchmarks to validate throughput/allocations vs. common baselines.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a>
-        </article>
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.MEL.Governance</h3>
-          <p class="k">Runtime validator package for Microsoft.Extensions.Logging.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a>
-        </article>
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.MEL.Governance.Demo</h3>
-          <p class="k">Small demo app showing runtime validation, redaction, and relax-mode.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a>
-        </article>
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-          <p class="k">Analyzer support for Serilog projects to align with governance profiles.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a>
-        </article>
-        <article class="col-6 card tilt reveal"><div class="glare"></div>
-          <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
-          <p class="k">Test harness exercising Serilog analyzer rules and diagnostics.</p>
-          <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a>
-        </article>
-      </div>
-    </section>
-
-    <!-- COMPARE -->
-    <section id="compare" class="container section">
-      <div class="eyebrow">Decision support</div>
-      <h2><span class="hl">Compare Approaches</span></h2>
-      <div class="glass" style="padding:12px">
-        <table class="table">
-          <thead>
-            <tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best when…</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>“Just log more” (no guardrails)</strong></td>
-              <td>Fast to start</td>
-              <td>Inconsistent fields, breakage, PII risk, higher cost</td>
-              <td>Tiny apps, throwaway prototypes</td>
-            </tr>
-            <tr>
-              <td><strong>Downstream normalization only</strong></td>
-              <td>No app changes</td>
-              <td>Late fixes, incomplete context, fragile</td>
-              <td>Short-term stopgap for legacy streams</td>
-            </tr>
-            <tr>
-              <td><strong>Cerbi governance (build + runtime)</strong></td>
-              <td>Stable schema, redaction, versioned policy, cheaper ingestion</td>
-              <td>Define profiles; add analyzers/validators</td>
-              <td>Multi-team apps, compliance needs, dashboard durability</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
     <!-- ROADMAP -->
     <section id="roadmap" class="container section">
       <div class="eyebrow">What’s shipping</div>
@@ -1161,7 +617,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- CONTACT -->
+    <!-- CONTACT (fixed width behavior) -->
     <section id="contact" class="container section">
       <div class="eyebrow">Let’s talk</div>
       <h2>Get in <span class="hl">Touch</span></h2>
@@ -1170,12 +626,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 glass tilt" style="padding:16px">
           <div class="glare"></div>
-          <iframe
-            title="Contact Cerbi"
-            id="contact-iframe"
-            src="https://form.jotform.com/252385904589067"
-            style="width:100%;max-width:900px;min-height:900px;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"
-          ></iframe>
+
+          <!-- Wider, responsive wrapper -->
+          <div class="contact-wrap">
+            <iframe
+              title="Contact Cerbi"
+              id="contact-iframe"
+              src="https://form.jotform.com/252385904589067"
+              style="width:100%;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block"
+            ></iframe>
+          </div>
+
           <script>
             (function(){
               // Auto-resize JotForm iframe height via postMessage, with a min-height safety
@@ -1191,17 +652,45 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                   var h = parseInt(args[1], 10);
                   if(!isNaN(h) && ifr){ ifr.style.height = Math.max(900, h) + 'px'; }
                 }
-                if(args[0] === 'scrollIntoView' && ifr){ try{ ifr.scrollIntoView(); }catch(_){} }
+                if(args[0] === 'scrollIntoView' && ifr){ try{ ifr.scrollIntoView({block:'start',behavior:'smooth'}); }catch(_){} }
               }
               window.addEventListener('message', onMsg, false);
             })();
           </script>
+
+          <script>
+            (function(){
+              // Try to read GA4 client_id from the _ga cookie
+              function getGaClientId(){
+                const c = document.cookie.split('; ').find(x=>x.startsWith('_ga='));
+                if(!c) return null;
+                const v = decodeURIComponent(c.split('=')[1] || '');
+                const parts = v.split('.');
+                return parts.length >= 4 ? (parts[2] + '.' + parts[3]) : null;
+              }
+              // Append client_id to JotForm iframe URL
+              const ifr = document.getElementById('contact-iframe');
+              if (ifr){
+                const cid = getGaClientId();
+                if (cid){
+                  try{
+                    const u = new URL(ifr.src);
+                    u.searchParams.set('client_id', cid);
+                    ifr.src = u.toString();
+                  }catch(e){}
+                }
+              }
+              // Optional: treat #thanks as submit
+              if (location.hash === '#thanks'){
+                try{
+                  gtag('event','request_access_submit',{method:'jotform'});
+                  gtag('event','generate_lead');
+                }catch(e){}
+              }
+            })();
+          </script>
+
           <p class="k" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-          <p class="k" style="margin-top:6px;font-size:12px;opacity:.85">
-            By submitting, you agree to our
-            <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our
-            <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
-          </p>
         </div>
       </div>
     </section>
@@ -1218,12 +707,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <a class="tag" href="#why">Why</a><a class="tag" href="#usecases">Use Cases</a><a class="tag" href="#quickstart">Quick Start</a>
         <a class="tag" href="#ecosystem">Ecosystem</a><a class="tag" href="#governance">Governance</a><a class="tag" href="#dashboards">Dashboards</a>
         <a class="tag" href="#packages">NuGet</a><a class="tag" href="#compare">Compare</a><a class="tag" href="#architecture">Architecture</a><a class="tag" href="#interop">Interoperability</a><a class="tag" href="#roadmap">Roadmap</a><a class="tag" href="#contact">Contact</a>
-        <!-- Docs open in themed modal -->
-        <a class="tag doc-link" href="docs/privacy.md">Privacy</a>
-        <a class="tag doc-link" href="docs/terms.md">Terms</a>
-        <a class="tag doc-link" href="docs/security.md">Security</a>
-        <a class="tag doc-link" href="docs/company.md">Company</a>
-        <a class="tag doc-link" href="docs/case-study-claims.md">Case Study</a>
         <img class="partner-mini" src="assets/partners/microsoft-partner.svg" alt="Microsoft Partner" loading="lazy" decoding="async" />
       </div>
     </div>
@@ -1237,52 +720,66 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </div>
 
-  <!-- Contact FAB -->
+  <!-- Contact FAB: icon only -->
   <a href="#contact" class="contact-fab" aria-label="Contact">
     <img src="assets/contact-fab.png" alt="" width="64" height="64" decoding="async" />
   </a>
 
-  <!-- IMAGE LIGHTBOX -->
+  <!-- LIGHTBOX: hidden by default, no broken img -->
   <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
     <button class="close btn btn-ghost" aria-label="Close preview">✕</button>
     <img id="lightboxImg" alt="" />
   </div>
 
-  <!-- DOCS MODAL -->
-  <div id="docbox" class="lightbox" aria-hidden="true" hidden>
-    <button class="close btn btn-ghost" aria-label="Close docs">✕</button>
-    <article id="docboxContent" class="prose-doc"></article>
-  </div>
-
-  <!-- ===================== CORE SCRIPTS ===================== -->
+  <!-- Scripts: load app.js early so theme is initialized -->
   <script src="scripts/app.js?v=2025-09-22.13" defer></script>
+  <script>
+    // Fallback to ensure the background clock is visible immediately (Edge safe)
+    (function(){
+      var el = document.getElementById('bg-clock'); if(!el) return;
+      el.style.position='fixed'; el.style.inset='0'; el.style.display='grid'; el.style.placeItems='center';
+      el.style.zIndex='0'; el.style.pointerEvents='none'; el.style.userSelect='none'; el.style.lineHeight='1';
+      el.style.mixBlendMode='normal'; el.style.opacity='0.92'; el.style.color='var(--muted)';
+      if(!el.textContent || el.textContent.trim()===''){
+        var d=new Date(); var t=(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));
+        el.textContent=t;
+      }
+    })();
+  </script>
   <script src="scripts/cerbi-sky.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-pro-full" defer></script>
   <script src="scripts/cerbi-motion.js" defer></script>
   <script src="scripts/mobile-fixes.js?v=6" defer></script>
   <script src="scripts/cerbi-ui.js?v=2025-09-22.9" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- ===================== PAGE JS & FIXES ===================== -->
+  <!-- Page JS: clocks, slider, progress, theme, palette, lightbox, pop-art, demo, reveals, spacing -->
   <script>
-    // Wire theme button
-    (function(){ const b=document.getElementById('themeBtn'); b?.addEventListener('click', ()=>window.CerbiTheme?.toggle()); })();
+    // Theme button wiring (fallback)
+    (function(){const b=document.getElementById('themeBtn'); if(b&&window.CerbiTheme){b.addEventListener('click',()=>window.CerbiTheme.toggle());}})();
 
-    // Sticky sizing + ribbon/nav heights
+    // CmdK palette
     (function(){
-      const nav = document.getElementById('siteNav');
-      const ribbon = document.getElementById('topRibbon');
-      function setHeights(){
-        const nh = nav?.offsetHeight || 64;
-        const rh = ribbon?.offsetHeight || 0;
-        document.documentElement.style.setProperty('--nav-h', nh + 'px');
-        document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
-      }
-      setHeights(); addEventListener('resize', setHeights, {passive:true});
-      new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
-      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
-      // Brand → smooth-scroll to top
-      document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
+      const overlay = document.getElementById('cmdkOverlay');
+      const input = document.getElementById('cmdkInput');
+      const open = () => { overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>input?.focus(), 0); };
+      const close = () => { overlay.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+      document.getElementById('cmdBtn')?.addEventListener('click', open);
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
+      overlay.querySelector('.cmdk')?.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      document.addEventListener('keydown', (e)=>{ if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); (overlay.getAttribute('aria-hidden')==='true'?open:close)(); } });
+      overlay.setAttribute('aria-hidden','true');
+    })();
+
+    // Intersection reveal
+    (function(){
+      const els=[...document.querySelectorAll('.reveal')];
+      if (!('IntersectionObserver' in window) || els.length===0){ els.forEach(e=>e.classList.add('in')); return; }
+      const io=new IntersectionObserver((entries)=>{
+        entries.forEach(ent=>{
+          if(ent.isIntersecting){ ent.target.classList.add('in'); io.unobserve(ent.target); }
+        });
+      },{root:null, rootMargin:'0px 0px -10% 0px', threshold:.15});
+      els.forEach(el=>io.observe(el));
     })();
 
     // Progress bar
@@ -1295,19 +792,45 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Big background glyph clock — behind content, logo-tinted on light themes
+    // Compute dynamic heights
+    (function(){
+      const nav = document.getElementById('siteNav');
+      const ribbon = document.getElementById('topRibbon');
+      function setHeights(){
+        const nh = nav?.offsetHeight || 64;
+        const rh = ribbon?.offsetHeight || 0;
+        document.documentElement.style.setProperty('--nav-h', nh + 'px');
+        document.documentElement.style.setProperty('--ribbon-h', rh + 'px');
+      }
+      const ready = () => { setHeights(); requestAnimationFrame(setHeights); };
+      ready();
+      addEventListener('resize', setHeights, {passive:true});
+      new MutationObserver(setHeights).observe(document.body, {subtree:true, childList:true, attributes:true});
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeights).catch(()=>{}); }
+
+      // Brand → smooth-scroll to top
+      document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
+    })();
+
+    // Badge clock
+    (function(){
+      const el=document.getElementById('clock'); if(!el) return;
+      const fmt=()=>{const d=new Date();const date=d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'2-digit'});const time=d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit',second:'2-digit'});return `${date} ${time}`;};
+      const tick=()=>el.textContent=fmt(); tick(); setInterval(tick,1000);
+    })();
+
+    // Big background glyph clock (fixed + glitch)
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
       const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
+      const read=(n,f)=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;
       function size(){
         const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const factor = vw < 820 ? 0.44 : 0.34;
         el.style.fontSize=Math.min(Math.max(vw*factor,96),900)+'px';
         el.style.lineHeight='1';
-        // On light themes make the tint brand-colored, on dark themes use muted
-        const t = document.documentElement.getAttribute('data-theme') || '';
-        const lighty = /mist-light|celadon|champagne|greige|lilac/.test(t);
-        el.style.color = lighty ? 'var(--glyph-strong)' : 'var(--glyph)';
+        const theme=document.documentElement.getAttribute('data-theme')||'dark';
+        el.style.color = theme==='light' ? read('--text','#0a0a0a') : read('--muted','#a7b4cf');
       }
       function render(){
         const d=new Date();
@@ -1316,17 +839,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
       }
       function fade(){
+        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = innerWidth < 820 ? 0.10 : 0.14;
-        const range = innerWidth < 820 ? 0.20 : 0.26;
+        const base = vw < 820 ? 0.10 : 0.14;
+        const range = vw < 820 ? 0.20 : 0.26;
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
       addEventListener('scroll',fade,{passive:true});
-      window.addEventListener('theme-changed', size);
+      new MutationObserver(size).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
       setInterval(render,1000);
     })();
 
@@ -1414,7 +938,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       });
     })();
 
-    // POP-ART rotator
+    // POP-ART rotator — full-bleed, one image at a time
     (function(){
       const el = document.getElementById('sigRotator'); if(!el) return;
       const sources = [
@@ -1445,154 +969,143 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    // Live governance demo — robust wiring
+    // Live governance demo
     (function(){
-      function init(){
-        const btn=document.getElementById('piiSwitch');
-        const input=document.getElementById('inputJson');
-        const evalEl=document.getElementById('evalJson');
-        if(!btn||!input||!evalEl) return;
-        function render(){
-          const on=btn.getAttribute('aria-pressed')==='true';
-          input.textContent=JSON.stringify({
-            timestamp:new Date().toISOString(),
-            action:'UserLoggedIn',
-            user: on ? { id:'123', email:'jane@example.com' } : { id:'123' }
-          }, null, 2);
-          evalEl.textContent = on
-            ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }'
-            : '{ "status":"ok", "policyVersion":"v1.3.2" }';
-        }
-        btn.addEventListener('click',()=>{
-          const now=btn.getAttribute('aria-pressed')==='true';
-          btn.setAttribute('aria-pressed', now?'false':'true');
-          render();
-        });
-        btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
+      const btn=document.getElementById('piiSwitch');
+      const input=document.getElementById('inputJson');
+      const evalEl=document.getElementById('evalJson');
+      if(!btn||!input||!evalEl) return;
+      function render(){
+        const on=btn.getAttribute('aria-pressed')==='true';
+        input.textContent=JSON.stringify({
+          timestamp:new Date().toISOString(),
+          action:'UserLoggedIn',
+          user: on ? { id:'123', email:'jane@example.com' } : { id:'123' }
+        }, null, 2);
+        evalEl.textContent = on
+          ? '{ "status":"redacted", "violations":["PII: email"], "policyVersion":"v1.3.2" }'
+          : '{ "status":"ok", "policyVersion":"v1.3.2" }';
+      }
+      btn.addEventListener('click',()=>{
+        const now=btn.getAttribute('aria-pressed')==='true';
+        btn.setAttribute('aria-pressed', now?'false':'true');
         render();
-      }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init, { once:true });
-      } else { init(); }
+      });
+      btn.addEventListener('keydown', (e)=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); btn.click(); } });
+      render();
     })();
 
-    // Docs modal (Markdown)
     (function(){
-      const modal   = document.getElementById('docbox');
-      const content = document.getElementById('docboxContent');
-      if(!modal || !content) return;
-
-      const html = document.documentElement;
-      const body = document.body;
-
-      const showLoader = (msg='Loading…') => {
-        content.innerHTML =
-          '<div style="display:grid;place-items:center;min-height:240px;padding:24px">' +
-          '<div class="k">'+msg+'</div></div>';
-      };
-
-      const showError = (path, extra='') => {
-        content.innerHTML =
-          '<h2 style="margin-top:0">Unable to load document</h2>' +
-          '<p class="k">I tried: <code>'+ (path || '(unknown)') +'</code></p>' +
-          (extra ? '<p class="k">'+extra+'</p>' : '') +
-          '<p class="k">If this is a GitHub Pages site, confirm the file exists under <code>/docs/</code> with exact casing.</p>';
-      };
-
-      function lockScroll(){ html.classList.add('modal-open'); body.classList.add('modal-open'); }
-      function unlockScroll(){ html.classList.remove('modal-open'); body.classList.remove('modal-open'); }
-
-      function actuallyOpenModal(){
-        modal.removeAttribute('hidden');
-        modal.setAttribute('aria-hidden','false');
-        lockScroll();
-      }
-      function closeModal(){
-        modal.setAttribute('aria-hidden','true');
-        modal.setAttribute('hidden','');
-        content.innerHTML = '';
-        unlockScroll();
-      }
-
-      modal.querySelector('.close')?.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') closeModal(); });
-
-      function mdPathFromHref(href){
-        try{
-          const u = new URL(href, location.href);
-          const qfile = u.searchParams.get('file');
-          if (qfile) return qfile;
-          if (u.pathname.endsWith('.md')) return u.pathname.replace(/^\//,'');
-          return null;
-        }catch{ return null; }
-      }
-
-      async function fetchMd(path){
-        const local = path.replace(/^\/+/,''); // 'docs/file.md'
-        const tried = [];
-        try{
-          const r = await fetch(local, { cache:'no-store' });
-          tried.push(location.origin + '/' + local);
-          if (r.ok) return { text: await r.text(), source: 'local', tried };
-        }catch(e){}
-        try{
-          const gh = `https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`;
-          tried.push(gh);
-          const r2 = await fetch(gh, { cache:'no-store' });
-          if (r2.ok) return { text: await r2.text(), source: 'github', tried };
-          return { error: 'HTTP '+r2.status, tried };
-        }catch(e2){
-          return { error: String(e2), tried };
-        }
-      }
-
-      async function openDocs(href){
-        actuallyOpenModal();
-        showLoader();
-        const mdRel = mdPathFromHref(href);
-        if(!mdRel){
-          showError('(no md path)', 'That link does not point to a Markdown file.');
-          return;
-        }
-        const res = await fetchMd(mdRel);
-        if (!res || res.error || !res.text){
-          showError(mdRel, res && res.error ? ('Fetch error: ' + res.error) : 'Unknown fetch error.');
-          return;
-        }
-
-        if (window.marked && typeof window.marked.parse === 'function'){
-          content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.scrollTop = 0;
-        } else {
-          content.innerHTML = '<pre class="kbd" style="white-space:pre-wrap"></pre>';
-          if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
-          content.querySelector('pre').textContent = res.text;
-        }
-      }
-
-      function onDocClick(e){
-        e.preventDefault();
-        const a = e.currentTarget;
-        openDocs(a.getAttribute('href'));
-      }
-
-      function attach(){
-        document.querySelectorAll('a.doc-link').forEach(a=>{
-          a.removeEventListener('click', onDocClick);
-          a.addEventListener('click', onDocClick);
-        });
-      }
-
-      if(document.readyState === 'loading'){
-        document.addEventListener('DOMContentLoaded', attach, { once:true });
-      } else {
-        attach();
-      }
+      const root = document.documentElement;
+      root.style.setProperty('--spot-x','82%');
+      root.style.setProperty('--spot-y','16%');
     })();
+  </script>
 
-    // Dynamic background (subtle moving color orbs)
+  <!-- Clock interactivity & words mode (Love Death & Robots style) -->
+  <script>
+    (function(){
+      const el = document.getElementById('bg-clock');
+      if(!el) return;
+
+      const PHRASES = [ 'LOVE', 'DEATH', 'ROBOTS', '❤', '☠', '🤖', 'LDR', 'ANIM', 'MECHA', 'CERBI', 'STREAM', 'GOVERNANCE', 'AUDIT', 'OBSERVE' ];
+      let mode = 'time';
+      let baseScale = 1.0;
+      const SPELL = 'CERBI';
+      let spellActive = false;
+      let spellIndex = 0;
+      let spellTicks = 0;
+
+      function startSpell(){
+        if(spellActive) return;
+        spellActive = true; spellIndex = 0; spellTicks = 0;
+        setMode('words');
+        const prevScale = baseScale;
+        baseScale = Math.min(2, Math.max(0.8, baseScale * 1.12));
+        el.style.transition = 'transform .28s ease, opacity .28s ease';
+        el.style.transform = `scale(${baseScale})`;
+        const prevOpacity = el.style.opacity || getComputedStyle(el).opacity;
+        el.style.opacity = Math.max(0.85, parseFloat(prevOpacity) || 0.9);
+        setTimeout(()=>{
+          baseScale = prevScale;
+          el.style.transform = `scale(${baseScale})`;
+          el.style.opacity = '';
+        }, 5200);
+      }
+
+      function setMode(m){
+        mode = m;
+        el.classList.remove('mode-time','mode-glitch','mode-words');
+        el.classList.add('mode-' + m);
+        document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(b=>b.classList.toggle('active', b.getAttribute('data-mode')===m));
+      }
+
+      function tick(){
+        if(mode==='time'){
+          const d = new Date();
+          el.dataset.text = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+          el.textContent = el.dataset.text;
+        } else if(mode==='glitch'){
+          const GLYPHS = '█▓▒░#@%&*+≣≡≠≈~^°•◦○●◎◆◢◣◤◥▄▀';
+          const d=new Date(); const t = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+          if(Math.random() < 0.15){
+            const g = GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+            el.dataset.text = g.repeat(4);
+            el.textContent = el.dataset.text;
+          } else {
+            el.dataset.text = t;
+            el.textContent = t;
+          }
+        } else if(mode==='words'){
+          if(!spellActive && Math.random() < 0.12){
+            spellActive = true; spellIndex = 0; spellTicks = 0;
+          }
+          if(spellActive){
+            if(spellTicks++ % 2 === 0){ spellIndex++; }
+            const out = SPELL.slice(0, Math.min(spellIndex, SPELL.length));
+            el.dataset.text = out || SPELL.charAt(0);
+            el.textContent = el.dataset.text;
+            if(spellIndex >= SPELL.length){
+              if(spellTicks > SPELL.length * 4){ spellActive = false; spellIndex = 0; spellTicks = 0; }
+            }
+          } else {
+            const choice = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+            el.dataset.text = choice;
+            el.textContent = choice;
+          }
+        }
+      }
+
+      function adjustSize(delta){ baseScale = Math.min(3, Math.max(0.6, baseScale + delta)); el.style.transform = `scale(${baseScale})`; }
+
+      document.querySelectorAll('#bg-clock-controls button[data-mode]').forEach(btn=>{ btn.addEventListener('click', ()=> setMode(btn.getAttribute('data-mode'))); });
+      document.getElementById('size-sm').addEventListener('click', ()=> adjustSize(-0.08));
+      document.getElementById('size-lg').addEventListener('click', ()=> adjustSize(0.12));
+
+      document.addEventListener('keydown', (e)=>{
+        if(e.key.toLowerCase()==='t') setMode('time');
+        if(e.key.toLowerCase()==='g') setMode('glitch');
+        if(e.key.toLowerCase()==='w') setMode('words');
+        if(e.key === '+') adjustSize(0.12);
+        if(e.key === '-') adjustSize(-0.08);
+      });
+
+      setMode('time'); tick(); setInterval(tick, 900);
+      (function scheduleSpell(){
+        const delay = 18000 + Math.floor(Math.random()*22000);
+        setTimeout(()=>{
+          if(document.hidden) { scheduleSpell(); return; }
+          startSpell();
+          setTimeout(()=>{ if(mode==='words') setMode('time'); spellActive=false; }, 5200);
+          scheduleSpell();
+        }, delay);
+      })();
+      if(!el.querySelector('.scan')){ const s=document.createElement('div'); s.className='scan'; el.appendChild(s);} 
+    })();
+  </script>
+
+  <!-- Dynamic background script (subtle moving color orbs) -->
+  <script>
     (function(){
       const canvas = document.getElementById('bgCanvas'); if(!canvas) return;
       const ctx = canvas.getContext('2d');
@@ -1602,7 +1115,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const circles = [];
       const count = Math.max(12, Math.floor((innerWidth*innerHeight)/180000));
       for(let i=0;i<count;i++){
-        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 18 + Math.random()*20 }); // brand-ish hue
+        circles.push({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, r: 6+Math.random()*28, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, hue: 200 + Math.random()*80 });
       }
 
       function draw(){
@@ -1621,46 +1134,79 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
       requestAnimationFrame(draw);
     })();
-
-    // Theme diagnostic (name + cycle)
-    (function(){
-      const el = document.getElementById('theme-name');
-      const btn = document.getElementById('theme-cycle');
-      function refresh(){
-        const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'mist-light';
-        el.textContent = 'Theme: ' + t;
-      }
-      btn?.addEventListener('click', ()=>{ window.CerbiTheme?.toggle(); setTimeout(refresh,80); });
-      window.addEventListener('theme-changed', refresh);
-      setTimeout(refresh,250);
-    })();
-
-    // Align the Contact FAB to the right-side vertical mid of content on desktop
-    (function () {
-      const fab = document.querySelector('.contact-fab');
-      const main = document.getElementById('main');
-      if (!fab || !main) return;
-
-      function alignFab() {
-        if (innerWidth <= 720) return; // mobile handled by CSS fallback
-        const rect = main.getBoundingClientRect();
-        const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-        const yMid = rect.top + scrollY + rect.height / 2;
-        const viewportTop = scrollY + 80;
-        const viewportBottom = scrollY + innerHeight - 80;
-        const clamped = Math.max(viewportTop, Math.min(viewportBottom, yMid));
-        document.documentElement.style.setProperty('--fab-y', clamped + 'px');
-      }
-      alignFab();
-      addEventListener('scroll', alignFab, { passive: true });
-      addEventListener('resize', alignFab);
-    })();
   </script>
 
-  <!-- Theme diagnostic badge -->
+  <!-- Theme diagnostic badge (debug) -->
   <div id="theme-diag" aria-hidden="false">
     <span id="theme-name">Theme: …</span>
     <button id="theme-cycle" title="Cycle theme">Cycle</button>
   </div>
+  <script>
+    (function(){
+      const el = document.getElementById('theme-name');
+      const btn = document.getElementById('theme-cycle');
+      function refresh(){
+        const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get()) || document.documentElement.getAttribute('data-theme') || 'dark';
+        el.textContent = 'Theme: ' + t;
+      }
+      btn.addEventListener('click', ()=>{ if(window.CerbiTheme && window.CerbiTheme.toggle){ window.CerbiTheme.toggle(); setTimeout(refresh,80); } });
+      window.addEventListener('theme-changed', refresh);
+      setTimeout(refresh,250);
+    })();
+  </script>
+
+  <script>
+    (function(){
+      function fire(name, params){ try{ gtag('event', name, params||{}); }catch(e){} }
+
+      const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+      gtag('set', 'user_properties', { ui_theme: theme });
+
+      document.querySelectorAll('a[href*="jotform.com/252385904589067"]').forEach(a=>{
+        a.addEventListener('click', ()=> fire('request_access_click', {location:'ribbon'}));
+      });
+
+      document.querySelectorAll('a[href^="#contact"]').forEach(a=>{
+        a.addEventListener('click', ()=>{
+          fire('contact_open', {source: a.classList.contains('contact-fab') ? 'fab' : 'link'});
+        });
+      });
+
+      document.querySelectorAll('a[href*="github.com/Zeroshi/Cerbi-CerbiStream"]').forEach(a=>{
+        a.addEventListener('click', ()=> fire('github_click', {area:'nav_or_cta'}));
+      });
+
+      const pii = document.getElementById('piiSwitch');
+      if (pii){
+        pii.addEventListener('click', ()=>{
+          const on = pii.getAttribute('aria-pressed') === 'true';
+          fire('demo_toggle_pii', {enabled: !on});
+        });
+      }
+
+      document.querySelectorAll('#dashSlider img').forEach(img=>{
+        img.addEventListener('click', ()=>{
+          fire('carousel_fullscreen', {slide_alt: img.alt || 'unknown'});
+        });
+      });
+
+      document.getElementById('cmdBtn')?.addEventListener('click', ()=> fire('cmdk_open'));
+
+      const io = ('IntersectionObserver' in window)
+        ? new IntersectionObserver((entries)=>{
+            for (const ent of entries){
+              if(ent.isIntersecting){
+                const id = ent.target.id || 'unknown';
+                fire('section_view', {section:id});
+                io.unobserve(ent.target);
+              }
+            }
+          },{threshold:.5})
+        : null;
+      if (io) document.querySelectorAll('section[id]').forEach(s=> io.observe(s));
+
+    })();
+  </script>
+
 </body>
 </html>
