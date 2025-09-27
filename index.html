@@ -402,10 +402,16 @@
     .space:empty { display:none; }
     .section.full-bleed-wrap + .space:empty { display:none; }
 
-    /* Contact FAB moved to the right; never overlap hero headline */
+    /* Contact FAB — ORIGINAL (bottom-right) replaced by floating-right alignment */
     .contact-fab{
-      position: fixed; right: 22px; bottom: 22px; z-index: 900;
+      /* ADDED: convert to right-floating, vertically-centered control */
+      position: fixed;
+      right: 20px;
+      top: 0;                                     /* we control Y with --fab-y */
+      transform: translateY(calc(var(--fab-y, 60vh) - 50%));
+      z-index: 900;
       filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
+      transition: transform .12s ease;
     }
 
     /* Theme diagnostic widget (single instance, top-left, no stacking) */
@@ -432,6 +438,65 @@
 
     /* Accessibility focus ring */
     :focus-visible{ outline: none; box-shadow: var(--focus); border-radius: 6px; }
+
+    /* ===================== ADDED: BRAND-COLORED SWITCH ===================== */
+    /**
+     * Styles the Live Rule Check (demo) toggle (button.switch) so that:
+     *  - idle track is subtle, high-contrast against both light/dark cards
+     *  - "on" state uses --brand / --accent
+     *  - accessible focus ring and ARIA-pressed visuals
+     */
+    .switch{
+      --sw-track: color-mix(in srgb, var(--card) 86%, transparent);
+      --sw-border: var(--border);
+      --sw-on: var(--brand);
+      --sw-off: color-mix(in srgb, var(--chip-bg) 60%, transparent);
+      --sw-knob: #fff;
+
+      position: relative;
+      display: inline-block;
+      width: 56px; height: 30px;
+      border-radius: 999px;
+      background: var(--sw-off);
+      border: 1px solid var(--sw-border);
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
+    }
+    .switch::before{
+      /* track glow when on */
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s ease;
+      background: radial-gradient(120% 120% at 80% 50%, color-mix(in srgb, var(--sw-on), white 25%) 0%, transparent 60%);
+    }
+    .switch::after{
+      /* knob */
+      content:'';
+      position:absolute; top:3px; left:3px;
+      width:24px; height:24px; border-radius:50%;
+      background: var(--sw-knob);
+      box-shadow: 0 4px 10px rgba(0,0,0,.20);
+      transition: transform .22s ease;
+    }
+    .switch[aria-pressed="true"]{
+      background: var(--sw-on);
+      border-color: color-mix(in srgb, var(--sw-on), black 12%);
+    }
+    .switch[aria-pressed="true"]::before{ opacity: .55; }
+    .switch[aria-pressed="true"]::after{ transform: translateX(26px); }
+    .switch:focus-visible{ box-shadow: var(--focus); }
+
+    /* ===================== ADDED: FAB MOBILE FALLBACK ===================== */
+    @media (max-width: 720px){
+      .contact-fab{
+        right: 16px;
+        bottom: 16px;
+        top: auto;
+        transform: none;          /* classic bottom-right on mobile */
+      }
+    }
   </style>
 
   <!-- Favicons / app icons -->
@@ -1234,7 +1299,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
       const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
-      function read(n,f){ try{ return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f; }catch(_){ return f; } }
       function size(){
         const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const factor = vw < 820 ? 0.44 : 0.34;
@@ -1252,12 +1316,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
       }
       function fade(){
-        const vw=Math.max(document.documentElement.clientWidth, window.innerWidth||0);
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = vw < 820 ? 0.10 : 0.14;
-        const range = vw < 820 ? 0.20 : 0.26;
+        const base = innerWidth < 820 ? 0.10 : 0.14;
+        const range = innerWidth < 820 ? 0.20 : 0.26;
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
@@ -1382,7 +1445,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    // Live governance demo — robust wiring (fix for non-firing earlier)
+    // Live governance demo — robust wiring
     (function(){
       function init(){
         const btn=document.getElementById('piiSwitch');
@@ -1413,7 +1476,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       } else { init(); }
     })();
 
-    // Docs modal (Markdown) — robust & readable
+    // Docs modal (Markdown)
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -1465,20 +1528,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         }catch{ return null; }
       }
 
-      function waitForMarked(){
-        if (window.marked && typeof window.marked.parse === 'function') return Promise.resolve();
-        return new Promise(resolve=>{
-          if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-          } else {
-            window.addEventListener('DOMContentLoaded', ()=>{
-              const i = setInterval(()=>{ if (window.marked) { clearInterval(i); resolve(); } }, 30);
-            }, { once:true });
-          }
-          setTimeout(resolve, 800); // fallback to plaintext rendering
-        });
-      }
-
       async function fetchMd(path){
         const local = path.replace(/^\/+/,''); // 'docs/file.md'
         const tried = [];
@@ -1512,7 +1561,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           return;
         }
 
-        await waitForMarked();
         if (window.marked && typeof window.marked.parse === 'function'){
           content.innerHTML = window.marked.parse(res.text, { mangle:false, headerIds:true });
           if (!content.classList.contains('prose-doc')) content.classList.add('prose-doc');
@@ -1574,7 +1622,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       requestAnimationFrame(draw);
     })();
 
-    // Theme diagnostic (single)
+    // Theme diagnostic (name + cycle)
     (function(){
       const el = document.getElementById('theme-name');
       const btn = document.getElementById('theme-cycle');
@@ -1585,6 +1633,27 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       btn?.addEventListener('click', ()=>{ window.CerbiTheme?.toggle(); setTimeout(refresh,80); });
       window.addEventListener('theme-changed', refresh);
       setTimeout(refresh,250);
+    })();
+
+    // Align the Contact FAB to the right-side vertical mid of content on desktop
+    (function () {
+      const fab = document.querySelector('.contact-fab');
+      const main = document.getElementById('main');
+      if (!fab || !main) return;
+
+      function alignFab() {
+        if (innerWidth <= 720) return; // mobile handled by CSS fallback
+        const rect = main.getBoundingClientRect();
+        const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        const yMid = rect.top + scrollY + rect.height / 2;
+        const viewportTop = scrollY + 80;
+        const viewportBottom = scrollY + innerHeight - 80;
+        const clamped = Math.max(viewportTop, Math.min(viewportBottom, yMid));
+        document.documentElement.style.setProperty('--fab-y', clamped + 'px');
+      }
+      alignFab();
+      addEventListener('scroll', alignFab, { passive: true });
+      addEventListener('resize', alignFab);
     })();
   </script>
 
