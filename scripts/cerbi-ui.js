@@ -1,121 +1,172 @@
-/* ===== Utilities ===== */
-const qs = (sel, el=document)=>el.querySelector(sel);
-const qsa = (sel, el=document)=>[...el.querySelectorAll(sel)];
-
-/* ===== Year stamp ===== */
+/* ======================================================================
+   Cerbi UI glue — sliders, pop-art rotator, small helpers
+   ====================================================================== */
 (() => {
-  const y = qs('#year'); if (y) y.textContent = new Date().getFullYear();
-})();
+  "use strict";
 
-/* ===== Theme toggle (persisted) ===== */
-const setTheme = t => {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('cerbi-theme', t);
-  const meta = qs('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224');
-};
-(() => {
-  const saved = localStorage.getItem('cerbi-theme');
-  if (saved) setTheme(saved);
-  qs('#themeBtn')?.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-    setTheme(cur === 'dark' ? 'light' : 'dark');
-  });
-})();
+  /* ---------- Helper: safe query ---------- */
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 
-/* ===== Sticky progress ===== */
-const progressBar = qs('#progress');
-const onScroll = () => {
-  const h = document.documentElement;
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
-  if (progressBar) progressBar.style.width = (scrolled * 100).toFixed(2) + '%';
-};
-window.addEventListener('scroll', onScroll, {passive:true});
+  /* ---------- WHY slider dots ---------- */
+  (function initWhySlider(){
+    const slider = $("#whySlider");
+    if(!slider) return;
 
-/* ===== Mobile nav ===== */
-qs('#navToggle')?.addEventListener('click', () => {
-  const nav = qs('#primaryNav');
-  const open = nav.classList.toggle('open');
-  qs('#navToggle').setAttribute('aria-expanded', String(open));
-});
+    const slides = $$(".slide", slider);
+    const dotsBox = $(".dots", slider);
+    if (!slides.length || !dotsBox) return;
 
-/* ===== Command palette (simple) ===== */
-(() => {
-  const overlay = qs('#cmdkOverlay');
-  if (!overlay) return;
-  const input = qs('#cmdkInput');
-  const list = qs('#cmdkList');
-  const items = [
-    {label:'Why', href:'#why'},
-    {label:'Ecosystem', href:'#ecosystem'},
-    {label:'Governance', href:'#governance'},
-    {label:'Packages', href:'#packages'},
-    {label:'Repositories', href:'#repos'},
-    {label:'Compare', href:'#compare'},
-    {label:'Architecture', href:'#architecture'},
-    {label:'Contact', href:'#contact'},
-  ];
-  list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
-  list.addEventListener('click', e=>{
-    const item = e.target.closest('.item'); if(!item) return;
-    location.hash = item.lastChild.textContent.trim();
-    overlay.classList.remove('open');
-  });
-  const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); };
-  const close = ()=>overlay.classList.remove('open');
-  qs('#cmdBtn')?.addEventListener('click', open);
-  window.addEventListener('keydown', e=>{
-    if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k') { e.preventDefault(); open(); }
-    if (e.key==='Escape') close();
-  });
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) close(); });
-})();
+    dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join("");
+    const dots = $$("button", dotsBox);
 
-/* ===== Copy buttons ===== */
-qsa('[data-copy]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const el = qs(btn.getAttribute('data-copy'));
-    if (!el) return;
-    const text = el.innerText || el.textContent || '';
-    navigator.clipboard.writeText(text);
-    btn.textContent = 'Copied!';
-    setTimeout(()=>btn.textContent='Copy', 1200);
-  });
-});
+    let i = Math.max(0, slides.findIndex(s => s.classList.contains("active")));
+    const show = n => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle("active", idx === i));
+      dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+    };
+    dots.forEach((d, idx) => d.addEventListener("click", () => show(idx)));
+    show(i);
+  })();
 
-/* ===== Reveal on scroll ===== */
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:.12});
-qsa('.reveal').forEach(el=>obs.observe(el));
+  /* ---------- Dash carousel (prev/next + dots + autoplay) ---------- */
+  (function initDashCarousel(){
+    const slider = $("#dashSlider");
+    if(!slider) return;
 
-/* ===== Pop-Art crossfade ===== */
-(() => {
-  const slides = qsa('.popart-slide');
-  if (slides.length <= 1) return;
-  let i = 0, t = null;
+    const slides = $$(".slide", slider);
+    const dotsBox = $(".dots", slider);
+    const prevBtn = slider.querySelector("[data-prev]");
+    const nextBtn = slider.querySelector("[data-next]");
+    const sr      = slider.querySelector('[aria-live]');
+    if(!slides.length || !dotsBox) return;
 
-  const show = (idx) => {
-    slides.forEach((s, n) => s.classList.toggle('active', n === idx));
-  };
+    dotsBox.innerHTML = slides.map((_,n)=>`<button aria-label="Go to slide ${n+1}"></button>`).join("");
+    const dots = $$("button", dotsBox);
 
-  const play = () => {
-    stop();
-    t = setInterval(() => {
-      i = (i + 1) % slides.length;
-      show(i);
-    }, 5000);
-  };
-  const stop = () => { if (t) { clearInterval(t); t = null; } };
+    let i = Math.max(0, slides.findIndex(s => s.classList.contains("active")));
+    const show = (n, announce=true) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle("active", idx === i));
+      dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+      if (announce && sr) sr.textContent = `Slide ${i+1} of ${slides.length}`;
+    };
+    dots.forEach((d, idx) => d.addEventListener("click", () => show(idx)));
+    prevBtn?.addEventListener("click", () => show(i-1));
+    nextBtn?.addEventListener("click", () => show(i+1));
+    show(i, false);
 
-  const stage = qs('.popart-stage');
-  const io = new IntersectionObserver((ents)=>{
-    ents.forEach(ent => ent.isIntersecting ? play() : stop());
-  }, {threshold:.15});
-  if (stage) io.observe(stage);
+    // autoplay (respect reduced motion)
+    const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let timer = null;
+    const start = () => { if (prefersReduced) return; stop(); timer = setInterval(() => show(i+1, false), 5000); };
+    const stop  = () => { if (timer) clearInterval(timer); timer = null; };
 
-  // pause on hover
-  const block = qs('#brand-canvas');
-  block?.addEventListener('mouseenter', stop);
-  block?.addEventListener('mouseleave', play);
+    slider.addEventListener("mouseenter", stop);
+    slider.addEventListener("mouseleave", start);
+    slider.addEventListener("focusin",   stop);
+    slider.addEventListener("focusout",  start);
+
+    // keyboard
+    slider.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { e.preventDefault(); show(i-1); }
+      if (e.key === "ArrowRight"){ e.preventDefault(); show(i+1); }
+    });
+
+    // swipe
+    let x0=null;
+    slider.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, {passive:true});
+    slider.addEventListener("touchend",   e => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) { dx > 0 ? show(i-1) : show(i+1); }
+      x0 = null;
+    }, {passive:true});
+
+    // lightbox for images
+    const overlay = $("#lightbox");
+    const big     = $("#lightboxImg");
+    let prevOverflow = "";
+    const open = (src) => {
+      if (!overlay || !big) return;
+      big.src = src;
+      overlay.hidden = false;
+      overlay.setAttribute("aria-hidden","false");
+      prevOverflow = document.body.style.overflow || "";
+      document.body.style.overflow = "hidden";
+    };
+    const close = () => {
+      if (!overlay || !big) return;
+      overlay.setAttribute("aria-hidden","true");
+      overlay.hidden = true;
+      big.removeAttribute("src");
+      document.body.style.overflow = prevOverflow;
+    };
+    overlay?.querySelector(".close")?.addEventListener("click", close);
+    overlay?.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && overlay?.getAttribute("aria-hidden") === "false") close(); });
+
+    $$("img", slider).forEach(img => {
+      img.addEventListener("click", () => open(img.dataset.full || img.currentSrc || img.src));
+      img.style.objectFit = "contain";
+    });
+
+    start();
+  })();
+
+  /* ---------- Pop-art rotator (single active image, one interval total) ---------- */
+  (function initPopArt(){
+    const el = document.getElementById('sigRotator');
+    if (!el || el.__cerbiPopArtInit) return;      // guard against double init
+    el.__cerbiPopArtInit = true;
+
+    const sources = [
+      "assets/popart/popart-01.png","assets/popart/popart-02.png","assets/popart/popart-03.png",
+      "assets/popart/popart-04.png","assets/popart/popart-05.png","assets/popart/popart-06.png",
+      "assets/popart/popart-07.png","assets/popart/popart-08.png","assets/popart/popart-09.png",
+      "assets/popart/popart-10.png"
+    ];
+
+    el.innerHTML = "";
+    const imgs = sources.map((src, idx) => {
+      const im = new Image();
+      im.decoding = "async";
+      im.loading  = idx === 0 ? "eager" : "lazy";
+      im.src = src;
+      im.alt = "Cerbi pop-art " + (idx+1);
+      if (idx === 0) im.className = "is-active";
+      el.appendChild(im);
+      return im;
+    });
+
+    let i = 0;
+    const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReduced && imgs.length > 1) {
+      setInterval(() => {
+        imgs[i].classList.remove("is-active");
+        i = (i + 1) % imgs.length;
+        imgs[i].classList.add("is-active");
+      }, 3500);
+    }
+  })();
+
+  /* ---------- Theme diagnostics (reflect currently applied data-theme) ---------- */
+  (function initThemeBadge(){
+    const nameEl = document.getElementById("theme-name");
+    const cycle  = document.getElementById("theme-cycle");
+    if (!nameEl) return;
+
+    const refresh = () => {
+      const t = (window.CerbiTheme && window.CerbiTheme.get && window.CerbiTheme.get())
+             || document.documentElement.getAttribute("data-theme")
+             || "mist-light";
+      nameEl.textContent = "Theme: " + t;
+    };
+
+    cycle?.addEventListener("click", () => { window.CerbiTheme?.toggle(); setTimeout(refresh, 80); });
+    window.addEventListener("theme-changed", refresh);
+    setTimeout(refresh, 150);
+  })();
+
 })();
