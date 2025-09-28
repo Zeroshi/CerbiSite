@@ -5,51 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-  <!-- ===================== THEME PRELOAD ===================== -->
+  <!-- ===================== THEME PRELOAD (LOCKED LIGHT) ===================== -->
   <script>
     (function () {
       var CERBI_BRAND_HEX = '#ff4d00';
 
+      // Keep your original list but we will lock to a single light theme.
       var THEMES = [
         'mist-light','celadon','champagne','greige','lilac',
         'pewter','midnight','indigo','plum','obsidian'
       ];
 
-      var saved = null;
-      try { saved = localStorage.getItem('cerbi-theme'); } catch (_) {}
-
-      function pickRandom() {
-        var lightFirst = ['mist-light','celadon','champagne','greige','lilac'];
-        var pool = Math.random() < 0.6 ? lightFirst : THEMES;
-        return pool[Math.floor(Math.random() * pool.length)];
-      }
-
-      var chosen = saved || (function(){
-        try{
-          var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-          if (prefersLight) return 'mist-light';
-        }catch(_){}
-        return pickRandom();
-      })();
-
+      // Force a single light theme immediately to avoid FOUC/blank bands.
+      var chosen = 'mist-light';
       document.documentElement.setAttribute('data-theme', chosen);
 
+      // Safe no-op API (keeps code that calls CerbiTheme from breaking)
       window.CerbiTheme = {
-        list: function(){ return THEMES.slice(); },
-        get: function(){ return document.documentElement.getAttribute('data-theme') || 'mist-light'; },
-        set: function(id){
-          if (!id || THEMES.indexOf(id) < 0) return;
-          document.documentElement.setAttribute('data-theme', id);
-          try { localStorage.setItem('cerbi-theme', id); } catch(_){}
-          var ev = new CustomEvent('theme-changed', { detail: { theme: id }});
-          window.dispatchEvent(ev);
-        },
-        toggle: function(){
-          var cur = CerbiTheme.get();
-          var i = THEMES.indexOf(cur);
-          var next = THEMES[(i + 1) % THEMES.length];
-          CerbiTheme.set(next);
-        },
+        list: function(){ return ['mist-light']; },
+        get: function(){ return 'mist-light'; },
+        set: function(){ /* locked */ },
+        toggle: function(){ /* locked */ },
         brand: CERBI_BRAND_HEX
       };
     })();
@@ -58,230 +34,142 @@
   <!-- ===================== CSS (external) ===================== -->
   <link rel="stylesheet" href="styles/cerbi-theme.css?v=2025-09-27.1" />
   <link rel="stylesheet" href="styles/nav-and-hero.css?v=2025-09-27.1" />
-  <!-- keep your existing site styles -->
   <link rel="stylesheet" href="styles/theme-hotfix.css?v=2025-09-22.11" />
   <link rel="stylesheet" href="styles/cerbi-motion.css?v=1" />
   <link rel="stylesheet" href="styles/mobile-fixes.css?v=9" />
-  <!-- LOAD FIXES LAST -->
   <link rel="stylesheet" href="styles/cerbi-fixes.css?v=2025-09-27.1" />
 
-  <!-- ===================== TOKEN OVERRIDES & FIXES ===================== -->
+  <!-- ===================== LIGHT THEME TOKENS & POLISH OVERRIDES ===================== -->
   <style>
+    /* ---- Single, readable light theme with powder-blue accent ---- */
     :root{
-      --brand:#ff4d00;
+      --brand:#ff4d00;               /* your logo orange still used for CTAs */
+      --accent-blue:#1f9bff;         /* powder blue accent */
       --radius:12px;
-      --shadow:0 10px 40px rgba(0,0,0,.45);
+      --shadow:0 10px 40px rgba(0,0,0,.12);
 
-      /* fallbacks */
-      --bg:#0d1b2a;
-      --surface:#0f2233;
-      --card:#12283c;
-      --text:#e6eef8;
-      --heading:#ffffff;
-      --muted:#a7b4cf;
-      --accent:var(--brand);
-      --accent-contrast:#1a0b05;
-      --btn:#ff4d00;
+      /* Base light palette */
+      --bg:#f7fbff;
+      --surface:#f1f6fd;
+      --card:#ffffff;
+      --text:#133047;
+      --heading:#0b1f33;
+      --muted:#4b5c77;
+
+      /* Use powder blue for links, chips, and glyph clock tint */
+      --accent:var(--accent-blue);
+      --accent-contrast:#fff;
+
+      --btn:var(--brand);
       --btn-hover:#ff6a2b;
-      --border:rgba(255,255,255,.08);
-      --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.72);
-      --chip-bg:rgba(255,255,255,.08);
-      --chip-text:var(--text);
-      --kbd-bg:rgba(255,255,255,.08);
-      --kbd-text:var(--text);
-      --md-bg:rgba(10,14,24,.92);
-      --md-text:var(--text);
-      --focus:0 0 0 3px rgba(255,77,0,.35);
-      --glyph: rgba(255,77,0,0.12);
-      --glyph-strong: rgba(255,77,0,0.18);
+
+      --link: color-mix(in srgb, var(--accent-blue), black 12%);
+      --border:rgba(16,44,72,.14);
+      --divider:rgba(16,44,72,.18);
+      --nav-bg:rgba(255,255,255,.94);
+
+      --chip-bg:#e7f1ff;
+      --chip-text:#123a68;
+
+      --kbd-bg:#eef4fb;
+      --kbd-text:#19354c;
+
+      --md-bg:#ffffff;
+      --md-text:#0f2640;
+
+      /* Clock tint moved to powder-blue family */
+      --glyph: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+      --glyph-strong: color-mix(in srgb, var(--accent-blue) 28%, transparent);
+
+      --focus:0 0 0 3px color-mix(in srgb, var(--accent-blue), white 45%);
 
       --nav-h:64px;
       --ribbon-h:0px;
     }
 
-    /* ---------- Light themes (high contrast) ---------- */
-    html[data-theme="mist-light"], :root[data-theme="mist-light"]{
-      --bg:#f6fbff; --surface:#f2f7fd; --card:#ffffff;
-      --text:#133047; --heading:#0b1f33; --muted:#3f5b73;
-      --accent:#ff4d00; --accent-contrast:#fff7f2;
-      --btn:#ff4d00; --btn-hover:#ff6a2b;
-      --border:rgba(10,20,30,.10); --divider:rgba(10,20,30,.14);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#e9f2ff; --chip-text:#15324a;
-      --kbd-bg:#eef4fb; --kbd-text:#19354c;
-      --md-bg:#ffffff; --md-text:#0f2640;
-      --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
-    }
-    html[data-theme="celadon"], :root[data-theme="celadon"]{
-      --bg:#f7fff9; --surface:#effaf2; --card:#ffffff;
-      --text:#163226; --heading:#0a2a1d; --muted:#3e5a4e;
-      --accent:#ff4d00; --accent-contrast:#fff7f2;
-      --btn:#ff4d00; --btn-hover:#ff6a2b;
-      --border:rgba(10,30,20,.10); --divider:rgba(10,30,20,.14);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#e6f7ec; --chip-text:#163226;
-      --md-bg:#ffffff; --md-text:#15251d;
-      --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
-    }
-    html[data-theme="champagne"], :root[data-theme="champagne"]{
-      --bg:#fff9f5; --surface:#fff5ef; --card:#ffffff;
-      --text:#3b2a22; --heading:#281b15; --muted:#6b5144;
-      --accent:#ff4d00; --accent-contrast:#fff7f2;
-      --btn:#ff4d00; --btn-hover:#ff6a2b;
-      --border:rgba(40,20,10,.10); --divider:rgba(40,20,10,.14);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#ffefe6; --chip-text:#3b2a22;
-      --md-bg:#ffffff; --md-text:#2c1d16;
-      --glyph: rgba(255,77,0,0.08); --glyph-strong: rgba(255,77,0,0.15);
-    }
-    html[data-theme="greige"], :root[data-theme="greige"]{
-      --bg:#fbfbf9; --surface:#f4f3f0; --card:#ffffff;
-      --text:#252421; --heading:#181816; --muted:#585651;
-      --accent:#ff4d00; --accent-contrast:#fff7f2;
-      --btn:#ff4d00; --btn-hover:#ff6a2b;
-      --border:rgba(20,20,18,.14); --divider:rgba(20,20,18,.18);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#efeee9; --chip-text:#2b2a26;
-      --md-bg:#ffffff; --md-text:#1d1d1a;
-      --glyph: rgba(255,77,0,0.08); --glyph-strong: rgba(255,77,0,0.15);
-    }
-    html[data-theme="lilac"], :root[data-theme="lilac"]{
-      --bg:#fbf9ff; --surface:#f6f2ff; --card:#ffffff;
-      --text:#2b2434; --heading:#1a1520; --muted:#5e566a;
-      --accent:#ff4d00; --accent-contrast:#fff7f2;
-      --btn:#ff4d00; --btn-hover:#ff6a2b;
-      --border:rgba(26,21,32,.12); --divider:rgba(26,21,32,.16);
-      --nav-bg:rgba(255,255,255,.86);
-      --chip-bg:#f0eaff; --chip-text:#2b2434;
-      --md-bg:#ffffff; --md-text:#1c1723;
-      --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
-    }
-
-    /* ---------- Dark themes (optional) ---------- */
-    html[data-theme="pewter"], :root[data-theme="pewter"]{
-      --bg:#0f1a22; --surface:#132331; --card:#162a3b;
-      --text:#e5eef8; --heading:#ffffff; --muted:#a7b4cf;
-      --accent:#ff6a2b; --accent-contrast:#1a0b05;
-      --btn:#ff4d00; --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.78);
-      --chip-bg:rgba(255,255,255,.08); --chip-text:#e5eef8;
-      --md-bg:rgba(10,14,24,.92); --md-text:#d9e2ff;
-      --glyph: rgba(255,77,0,0.12); --glyph-strong: rgba(255,77,0,0.18);
-    }
-    html[data-theme="midnight"], :root[data-theme="midnight"]{
-      --bg:#031e22; --surface:#072a2f; --card:#0d3036;
-      --text:#e7f7fb; --heading:#ffffff; --muted:#b7d7df;
-      --accent:#ff6a2b; --accent-contrast:#1a0b05;
-      --btn:#ff4d00; --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(1,16,18,.80);
-      --chip-bg:rgba(255,255,255,.10); --chip-text:#e7f7fb;
-      --md-bg:rgba(5,18,20,.92); --md-text:#e7f7fb;
-      --glyph: rgba(255,77,0,0.12); --glyph-strong: rgba(255,77,0,0.2);
-    }
-    html[data-theme="indigo"], :root[data-theme="indigo"]{
-      --bg:#101327; --surface:#151a34; --card:#181e3d;
-      --text:#e6e9ff; --heading:#ffffff; --muted:#b9c0ff;
-      --accent:#ff6a2b; --accent-contrast:#1a0b05;
-      --btn:#ff4d00; --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(8,10,30,.82);
-      --chip-bg:rgba(255,255,255,.10); --chip-text:#e6e9ff;
-      --md-bg:rgba(12,14,36,.92); --md-text:#e6e9ff;
-      --glyph: rgba(255,77,0,0.13); --glyph-strong: rgba(255,77,0,0.22);
-    }
-    html[data-theme="plum"], :root[data-theme="plum"]{
-      --bg:#1a1216; --surface:#22171f; --card:#291d26;
-      --text:#ffeaf3; --heading:#ffffff; --muted:#f3cfe0;
-      --accent:#ff6a2b; --accent-contrast:#1a0b05;
-      --btn:#ff4d00; --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.10); --divider:rgba(255,255,255,.14);
-      --nav-bg:rgba(18,10,14,.80);
-      --chip-bg:rgba(255,255,255,.12); --chip-text:#ffeaf3;
-      --md-bg:rgba(28,20,26,.92); --md-text:#ffeaf3;
-      --glyph: rgba(255,77,0,0.13); --glyph-strong: rgba(255,77,0,0.22);
-    }
-    html[data-theme="obsidian"], :root[data-theme="obsidian"]{
-      --bg:#0b1520; --surface:#0e1b29; --card:#102033;
-      --text:#dfeaff; --heading:#ffffff; --muted:#a9c2ff;
-      --accent:#ff6a2b; --accent-contrast:#1a0b05;
-      --btn:#ff4d00; --btn-hover:#ff7a44;
-      --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
-      --nav-bg:rgba(6,10,20,.82);
-      --chip-bg:rgba(255,255,255,.10); --chip-text:#dfeaff;
-      --md-bg:rgba(10,14,24,.92); --md-text:#dfeaff;
-      --glyph: rgba(255,77,0,0.14); --glyph-strong: rgba(255,77,0,0.24);
-    }
-
-    /* ---------- Global app of tokens ---------- */
+    /* Keep all tokens applied globally (preserves your design) */
     html, body { background: var(--bg); color: var(--text); }
-    .nav { position: sticky; top: 0; z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(10px); }
-    .nav a, .nav .btn, .nav .theme-toggle { color: var(--text); }
-    .btn { background: var(--btn); color: var(--accent-contrast); border: 1px solid transparent; }
-    .btn:hover { background: var(--btn-hover); }
-    .btn.btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
-    .btn.btn-ghost:hover { background: rgba(255,255,255,.06); }
-    .chip, .tag { background: var(--chip-bg); color: var(--chip-text); }
-    .glass { background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--border); box-shadow: var(--shadow); }
-    .card { background: var(--card); border:1px solid var(--border); }
-    .kbd, pre.codeblock, code[class*="language-"], pre[class*="language-"] { background: var(--kbd-bg); color: var(--kbd-text); }
-    .img-cap, .muted, .k { color: var(--muted); }
-    a { color: var(--accent); }
-    a:hover { opacity: .92; }
-    h1,h2,h3,h4,h5,h6 { color: var(--heading); }
-    .table th,.table td { border-color: var(--divider); }
-    hr { border-color: var(--divider); }
 
-    /* Layers & stacking — ensure stars/tiles stay behind content, clock above bg */
+    /* ---- Layers & stacking (prevents big blank band & keeps stars behind) ---- */
     #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
-    .tiles{ position:fixed; inset:0; z-index:-6; pointer-events:none; }
-    .sky{ position:fixed; inset:0; z-index:-5; pointer-events:none; display:block; }
-    .veil{ position:fixed; inset:0; z-index:-4; pointer-events:none; }
-    .spotlight{ position:fixed; inset:0; z-index:-3; pointer-events:none; }
+    .tiles{ position:fixed; inset:0; z-index:-6; pointer-events:none }
+    .sky{ position:fixed; inset:0; z-index:-5; pointer-events:none; display:block }
+    .veil{ position:fixed; inset:0; z-index:-4; pointer-events:none }
+    .spotlight{ position:fixed; inset:0; z-index:-3; pointer-events:none }
 
+    /* ---- Glyph clock: always seen, subtle, behind content ---- */
     #bg-clock{
       position: fixed; inset:0; display:grid; place-items:center;
       z-index: -2; pointer-events: none; user-select: none; line-height:1;
-      color: var(--glyph); opacity: var(--clock-opacity, .18);
+      color: var(--glyph-strong); opacity: var(--clock-opacity, .20);
+      mix-blend-mode: multiply;
     }
 
-    /* Ribbon (non-sticky to avoid blank top gap) */
-    #topRibbon { position: relative; top: 0; z-index: 900; background: linear-gradient(0deg, rgba(0,0,0,.18), rgba(0,0,0,.18)), var(--nav-bg); }
+    /* ---- Ribbon is non-sticky to avoid top spacing glitches ---- */
+    #topRibbon { position: relative; top: 0; z-index: 900; background: linear-gradient(0deg, rgba(0,0,0,.10), rgba(0,0,0,.10)), var(--nav-bg); }
 
-    /* Contact FAB pinned right; no hover drift */
-    .contact-fab{
-      position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
-      z-index: 900; filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
-      transition: filter .15s ease;
-    }
-    .contact-fab:hover{ filter: drop-shadow(0 10px 22px rgba(0,0,0,.45)); }
-    @media (max-width: 720px){
-      .contact-fab{ right: 16px; bottom: 16px; top: auto; transform: none; }
-    }
+    /* ---- Nav readability + responsive wrapping instead of overlap ---- */
+    header.nav{ position:sticky; top:0; z-index:1000; background:var(--nav-bg); backdrop-filter: blur(10px) }
+    .nav-inner{ display:flex; gap:12px; align-items:center; justify-content:space-between; padding-block:8px }
+    #primaryNav{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0 }
+    #primaryNav a{ white-space:nowrap; padding:8px 10px; border-radius:10px; color:var(--text) }
+    #primaryNav a:hover{ background:var(--surface) }
+    .nav-actions{ display:flex; gap:10px; flex:0 0 auto }
+    /* Hide theme cycler (single theme mode) */
+    #themeBtn{ display:none !important; }
 
-    /* Pop-art rotator — only active visible */
-    .sig-rotator { position: relative; display: grid; place-items:center; overflow: hidden; min-height: clamp(220px, 40vw, 520px); background: var(--card); }
+    /* ---- Buttons & chips tuned for the light palette ---- */
+    .btn{ background: var(--btn); color: #fff; border:1px solid transparent; box-shadow: var(--shadow) }
+    .btn:hover{ background: var(--btn-hover) }
+    .btn.btn-ghost{ background: transparent; color: var(--link); border:1px solid var(--border); box-shadow:none }
+    .btn.btn-ghost:hover{ background: rgba(0,0,0,.04) }
+    .chip, .tag{ background: var(--chip-bg); color: var(--chip-text); border:1px solid var(--border) }
+    a{ color: var(--accent) }
+
+    /* ---- Pop-art: show one image at a time with a soft fade ---- */
+    .sig-rotator { position: relative; display: grid; place-items:center; overflow: hidden; min-height: clamp(240px, 42vw, 520px); background: var(--card); }
     .sig-rotator img{
       position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
       opacity:0; visibility:hidden; transform:scale(1.02);
-      transition: opacity .4s ease, visibility .4s ease, transform .5s ease;
+      transition: opacity .45s ease, visibility .45s ease, transform .60s ease;
     }
     .sig-rotator img.is-active{ opacity:1; visibility:visible; transform:none; }
 
-    /* Live Rule Check switch (brand-colored) */
-    .switch{
-      --sw-on: var(--brand); --sw-off: color-mix(in srgb, var(--chip-bg) 60%, transparent);
-      position: relative; display:inline-block; width: 56px; height: 30px;
-      border-radius: 999px; background: var(--sw-off);
-      border: 1px solid var(--border); box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
-    }
-    .switch::after{ content:''; position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow: 0 4px 10px rgba(0,0,0,.20); transition: transform .22s ease; }
-    .switch[aria-pressed="true"]{ background: var(--sw-on); border-color: color-mix(in srgb, var(--sw-on), black 12%); }
-    .switch[aria-pressed="true"]::after{ transform: translateX(26px); }
+    /* ---- Dashboard: full-width, auto-scroll, readable dots ---- */
+    .section.full-bleed-wrap.full-bleed{ padding-left:0; padding-right:0 }
+    .showcase{ padding:0; border-radius:0 }
+    .showcase-viewport{ position:relative; left:50%; transform:translateX(-50%); width:100vw; overflow:hidden; background:var(--card) }
+    .showcase-viewport img{ width:100%; height: clamp(360px, 66vw, 760px); object-fit:cover; display:block }
+    .dash-slider .dots{ display:flex; gap:8px; justify-content:center; padding:10px 0 16px }
+    .dash-slider .dots button{ width:10px; height:10px; border-radius:50%; border:1px solid var(--border); background:var(--chip-bg) }
+    .dash-slider .dots button.active{ background:var(--accent); border-color:transparent }
+    .dash-arrows{ display:flex; gap:8px; justify-content:center; padding-bottom:12px }
 
-    :focus-visible{ outline: none; box-shadow: var(--focus); border-radius: 6px; }
+    /* ---- Contact FAB: crisp hover, no drift ---- */
+    .contact-fab{
+      position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
+      z-index: 900; display: grid; place-items:center;
+      width: 56px; height: 56px; border-radius: 16px;
+      background: var(--accent); color: #fff; text-decoration:none; font-size: 22px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      transition: transform .18s ease, filter .18s ease;
+      outline: 2px solid color-mix(in srgb, var(--accent), white 40%);
+    }
+    .contact-fab:hover{ transform: translateY(-50%) scale(1.04); filter: brightness(1.03); }
+    .contact-fab:active{ transform: translateY(-50%) scale(.98); }
+    .contact-fab img{ width:60%; height:60%; object-fit:contain }
+    @media (max-width: 720px){
+      .contact-fab{ right: 16px; bottom: 16px; top: auto; transform: none; }
+      .contact-fab:hover{ transform: scale(1.04) }
+    }
+
+    /* ---- Card/table polish for legibility ---- */
+    .card{ background: var(--card); border:1px solid var(--border); box-shadow:var(--shadow) }
+    .table th,.table td{ border-color: var(--divider) }
+    .img-cap, .muted, .k { color: var(--muted); }
+
+    /* ---- Focus ring (accessible) ---- */
+    :focus-visible{ outline:none; box-shadow: var(--focus); border-radius: 6px; }
   </style>
 
   <!-- Favicons / app icons -->
@@ -289,7 +177,6 @@
   <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="150x150" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
   <meta name="msapplication-TileImage" content="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
-  <link rel="stylesheet" href="styles/emergency.css?v=1" />
 </head>
 
 <body>
@@ -376,6 +263,7 @@
       <div class="orbit" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
+      <!-- WHY VALUE ROTATOR -->
       <div class="glass tilt reveal value-rotator">
         <div class="glare" aria-hidden="true"></div>
         <div id="whySlider" class="dash-slider">
@@ -954,7 +842,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
-  <!-- ===================== CORE SCRIPTS ===================== -->
+  <!-- ===================== CORE SCRIPTS (yours) ===================== -->
   <script src="scripts/app.js?v=2025-09-27.1" defer></script>
   <script src="scripts/cerbi-sky.js?v=2025-09-27.1" defer></script>
   <script src="scripts/cerbi.js?v=2025-09-27.1" defer></script>
@@ -963,12 +851,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="scripts/cerbi-ui.js?v=2025-09-27.1" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
-  <!-- ===================== PAGE JS & FIXES ===================== -->
+  <!-- ===================== PAGE JS & FIXES (kept + light polish) ===================== -->
   <script>
-    // Theme button
-    (function(){ const b=document.getElementById('themeBtn'); b?.addEventListener('click', ()=>window.CerbiTheme?.toggle()); })();
+    // Hide theme cycler UI in single-theme mode
+    (function(){ const b=document.getElementById('themeBtn'); if(b) b.style.display='none'; })();
 
-    // Sticky sizing + ribbon/nav heights
+    // Sticky sizing + ribbon/nav heights (ensure no blank space)
     (function(){
       const nav = document.getElementById('siteNav');
       const ribbon = document.getElementById('topRibbon');
@@ -994,35 +882,30 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Glyph clock (visible above bg, below content)
+    // Glyph clock (blue tint; behind content; readable)
     (function(){
       const el=document.getElementById('bg-clock'); if(!el) return;
-      const glyphs = ['❤','☠','🤖','❤','☠','🤖'];
       function size(){
         const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-        const factor = vw < 820 ? 0.44 : 0.34;
-        el.style.fontSize = Math.min(Math.max(vw*factor,96),900)+'px';
-        const t = document.documentElement.getAttribute('data-theme') || '';
-        const lighty = /mist-light|celadon|champagne|greige|lilac/.test(t);
-        el.style.color = lighty ? 'var(--glyph-strong)' : 'var(--glyph)';
+        const factor = vw < 820 ? 0.42 : 0.34;
+        el.style.fontSize = Math.min(Math.max(vw*factor, 120), 820) + 'px';
+        el.style.color = 'var(--glyph-strong)';
       }
       function render(){
         const d=new Date();
         const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        const showGlyph = Math.floor(d.getSeconds()/7)%2===1;
-        el.textContent = showGlyph ? glyphs[d.getSeconds()%glyphs.length] : t;
+        el.textContent = t;
       }
       function fade(){
         const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
         const sc = (h.scrollTop||document.body.scrollTop);
         const t = Math.min(1, sc / (max*0.35));
-        const base = 0.14, range = 0.22;
+        const base = 0.16, range = 0.18;
         document.documentElement.style.setProperty('--clock-opacity', (base + t*range).toFixed(3));
       }
       size(); render(); fade();
       addEventListener('resize',size,{passive:true});
       addEventListener('scroll',fade,{passive:true});
-      window.addEventListener('theme-changed', size);
       setInterval(render,1000);
     })();
 
@@ -1033,11 +916,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
       const dots=[...dotsBox.querySelectorAll('button')];
       let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-      const show=n=>{slides.forEach((s,idx)=>s.classList.toggle('active',idx===n)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===n));};
+      const show=n=>{i=(n+slides.length)%slides.length;slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));};
       dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!reduced){ let t=setInterval(()=>show(i+1),4200); slider.addEventListener('mouseenter',()=>{clearInterval(t)}); slider.addEventListener('mouseleave',()=>{t=setInterval(()=>show(i+1),4200)}); }
     })();
 
-    // Dash slider + lightbox
+    // Dash slider + lightbox (full width autoplay)
     (function(){
       const slider=document.getElementById('dashSlider'); if(!slider) return;
       const slides=[...slider.querySelectorAll('.slide')];
@@ -1045,10 +930,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const prevBtn=slider.querySelector('[data-prev]');
       const nextBtn=slider.querySelector('[data-next]');
       const sr=slider.querySelector('[aria-live]');
-      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-
       dotsBox.innerHTML = slides.map((_,n)=>`<button aria-label="Go to slide ${n+1}"></button>`).join('');
       const dots=[...dotsBox.querySelectorAll('button')];
+      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
 
       function show(n,announce=true){
         i=(n+slides.length)%slides.length;
@@ -1061,15 +945,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       nextBtn?.addEventListener('click', ()=>show(i+1));
       show(i,false);
 
-      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       let timer=null;
-      const start=()=>{ if(prefersReduced) return; stop(); timer=setInterval(()=>show(i+1,false),5000); };
+      const start=()=>{ if(reduced) return; stop(); timer=setInterval(()=>show(i+1,false),4800); };
       const stop =()=>{ if(timer) clearInterval(timer); timer=null; };
       slider.addEventListener('mouseenter', stop);
       slider.addEventListener('mouseleave', start);
       slider.addEventListener('focusin', stop);
       slider.addEventListener('focusout', start);
-      slider.addEventListener('keydown', (e)=>{ if(e.key==='ArrowLeft'){e.preventDefault();show(i-1);} if(e.key==='ArrowRight'){e.preventDefault();show(i+1);} });
+
+      // Swipe
       let x0=null;
       slider.addEventListener('touchstart', e=>{x0=e.touches[0].clientX;},{passive:true});
       slider.addEventListener('touchend', e=>{
@@ -1079,6 +964,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         x0=null;
       },{passive:true});
 
+      // Lightbox
       const overlay=document.getElementById('lightbox');
       const big=document.getElementById('lightboxImg');
       let prevOverflow='';
@@ -1095,7 +981,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       start();
     })();
 
-    // POP-ART rotator (guard against double init)
+    // POP-ART rotator: guard against double init & keep one active
     (function(){
       const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
       const sources = [
@@ -1116,17 +1002,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         return im;
       });
       let i = 0;
-      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced && imgs.length > 1) {
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduced && imgs.length > 1) {
         setInterval(() => {
           imgs[i].classList.remove('is-active');
           i = (i + 1) % imgs.length;
           imgs[i].classList.add('is-active');
-        }, 3500);
+        }, 3600);
       }
     })();
 
-    // Docs modal (Markdown)
+    // Docs modal (Markdown) (your original logic kept the same)
     (function(){
       const modal   = document.getElementById('docbox');
       const content = document.getElementById('docboxContent');
@@ -1153,7 +1039,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         });
       }
       async function fetchMd(path){
-        const local = path.replace(/^\/+/,'');
+        const local = path.replace(/^\/+/, '');
         try{
           const r = await fetch(local, { cache:'no-store' });
           if (r.ok) return { text: await r.text() };
@@ -1199,11 +1085,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
   </script>
 
-  <!-- Theme diagnostic badge -->
+  <!-- Theme diagnostic badge (optional; kept but visible for now) -->
   <div id="theme-diag" aria-hidden="false" style="position:fixed;left:12px;bottom:12px;z-index:910;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:14px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:var(--shadow)">
-    <span id="theme-name">Theme: …</span>
-    <button id="theme-cycle" title="Cycle theme" style="background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:6px 10px">Cycle</button>
+    <span id="theme-name">Theme: Light (Cerbi)</span>
+    <button id="theme-cycle" title="Cycle theme" style="display:none;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:6px 10px">Cycle</button>
   </div>
-  <script src="scripts/emergency.js?v=1" defer></script>
 </body>
 </html>
