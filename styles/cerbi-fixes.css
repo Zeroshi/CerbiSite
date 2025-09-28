@@ -1,22 +1,177 @@
-/* Keep text contrast sane across themes */
-html, body { color: var(--text); }
-h1,h2,h3{ color: var(--heading); }
-.img-cap, .muted, .k { color: var(--muted); }
+/* ============================================================
+   Cerbi FIXES — minimal, non-destructive overrides
+   Keeps your sections + copy intact and restores the “designed” look.
+   Targeted to your existing HTML, no content removed.
+   ============================================================ */
 
-/* Ensure content paints above background stacks */
-main, header, footer, .contact-fab, .lightbox, .ribbon { position: relative; z-index: 1; }
+/* ---------- Light theme tuned to logo (accent = #ff4d00) ---------- */
+html[data-theme="mist-light"]{
+  --bg:#f9fbfe;
+  --surface:#f4f7fd;
+  --card:#ffffff;
 
-/* Prevent accidental top whitespace caused by sticky stacking contexts */
-body { padding-top: 0; }
-#progress{ position: fixed; left:0; top:0; width: var(--progress, 0%); height:3px; background: var(--accent); z-index: 1100; }
+  /* readable, neutral text on light panels */
+  --text:#122235;
+  --heading:#0a1b2e;
+  --muted:#5a6c85;
 
-/* Lightbox base */
-.lightbox{ position: fixed; inset:0; background: rgba(0,0,0,.65); display:grid; place-items:center; z-index: 1200; }
-.lightbox[hidden]{ display:none !important; }
-.lightbox img{ max-width: 92vw; max-height: 90vh; display:block; border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,.4); }
-.lightbox .close{ position:absolute; top: 16px; right: 16px; }
+  /* accent harmonized to logo, links slightly darker than accent */
+  --accent:#ff4d00;
+  --accent-contrast:#fff7f2;
+  --btn:#ff4d00;
+  --btn-hover:#ff6a2b;
+  --link: color-mix(in srgb, var(--accent), black 18%);
 
-/* Tables, code */
-.table{ width:100%; border-collapse: collapse; }
-.table th,.table td{ border:1px solid var(--divider); padding:.5em .6em; }
-pre.codeblock, .kbd{ background: var(--kbd-bg); color: var(--kbd-text); padding:12px; border-radius:10px; border:1px solid var(--border); overflow:auto; }
+  --border:rgba(14,26,42,.12);
+  --divider:rgba(14,26,42,.16);
+  --nav-bg:rgba(255,255,255,.88);
+
+  --chip-bg:#e9f2ff;
+  --chip-text:#132a45;
+
+  --kbd-bg:#eef4fb;
+  --kbd-text:#19354c;
+
+  --md-bg:#ffffff;
+  --md-text:#0f2640;
+
+  /* glyph visibility on light */
+  --glyph: rgba(255,77,0,0.10);
+  --glyph-strong: rgba(255,77,0,0.18);
+}
+
+/* ---------- Global readability & spacing ---------- */
+html, body { background: var(--bg); color: var(--text); }
+a { color: var(--link, var(--accent)); }
+a:hover { opacity: .96; }
+h1,h2,h3,h4,h5,h6 { color: var(--heading); margin-top: .2em; }
+
+/* ---------- NAV: readable, auto-collapsing with “More” ---------- */
+.nav { position: sticky; top: 0; z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(10px); }
+.nav-inner { display:flex; align-items:center; justify-content:space-between; gap:14px; min-height: var(--nav-h, 64px); }
+.brand { display:flex; gap:10px; align-items:center; font-weight:800; text-decoration:none; color:var(--heading); white-space:nowrap; }
+.brand img { height:36px; width:auto; border-radius:8px; }
+
+#primaryNav { display:flex; align-items:center; gap:10px; flex: 1 1 auto; min-width:0; }
+#primaryNav a { display:inline-block; padding:8px 10px; border-radius:10px; text-decoration:none; color: var(--text); white-space:nowrap; }
+#primaryNav a:hover { background: var(--surface); }
+
+.nav-actions { display:flex; align-items:center; gap:10px; flex: 0 0 auto; }
+.nav-actions .btn { line-height:1; }
+
+.nav-more { position: relative; display:none; }
+.nav-more > button {
+  display:inline-flex; align-items:center; gap:6px;
+  background: transparent; color: var(--text);
+  border:1px solid var(--border); border-radius:10px; padding:6px 10px; cursor:pointer;
+}
+.nav-more .menu {
+  position:absolute; top:calc(100% + 8px); right:0; min-width: 200px;
+  background: var(--card); border:1px solid var(--border); border-radius:12px;
+  box-shadow: var(--shadow); padding:6px; display:none;
+}
+.nav-more.open .menu { display:block; }
+.nav-more .menu a { display:block; padding:8px 10px; border-radius:8px; color: var(--text); }
+.nav-more .menu a:hover { background: var(--surface); }
+
+/* Allow wrap on very small widths as a last resort */
+@media (max-width: 860px){
+  .nav-inner { align-items: flex-start; }
+  #primaryNav { flex-wrap: wrap; row-gap: 6px; }
+}
+
+/* ---------- Chips / buttons ---------- */
+.btn { background: var(--btn); color: var(--accent-contrast); border: 1px solid transparent; }
+.btn:hover { background: var(--btn-hover); }
+.btn.btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
+.btn.btn-ghost:hover { background: rgba(0,0,0,.04); }
+
+/* ---------- Contact FAB — premium hover, no drift ---------- */
+.contact-fab{
+  position: fixed; right: clamp(14px, 2vw, 22px); top: 50%; transform: translateY(-50%);
+  z-index: 900;
+  display:inline-grid; place-items:center;
+  width:56px; height:56px; border-radius:16px;
+  background: var(--accent); color: var(--accent-contrast);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  overflow:hidden;
+}
+.contact-fab img{ width:60%; height:60%; object-fit:contain; transition: transform .25s ease; }
+.contact-fab::after{
+  content:"Contact";
+  position:absolute; inset:0; display:grid; place-items:center;
+  transform: translateX(12px); opacity:0;
+  font-weight:700; letter-spacing:.2px;
+  transition: transform .25s ease, opacity .25s ease;
+}
+.contact-fab:hover img{ transform: translateX(-12px) scale(.9) rotate(-8deg); }
+.contact-fab:hover::after{ transform: translateX(0); opacity:1; }
+@media (max-width: 720px){
+  .contact-fab{ right: 16px; bottom: 16px; top:auto; transform:none; }
+}
+
+/* ---------- Hero & pop-art spacing (no top blank gap) ---------- */
+#topRibbon{ position: relative; top:0; background: linear-gradient(0deg, rgba(0,0,0,.12), rgba(0,0,0,.12)), var(--nav-bg); }
+.section { padding: clamp(24px, 6vw, 48px) 0; }
+.hero.container { padding-top: clamp(18px, 4vw, 28px); }
+
+/* ---------- Layers & background canvases behind content ---------- */
+#dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
+.tiles{ position:fixed; inset:0; z-index:-6; pointer-events:none; }
+.sky{ position:fixed; inset:0; z-index:-5; pointer-events:none; display:block; }
+.veil{ position:fixed; inset:0; z-index:-4; pointer-events:none; }
+.spotlight{ position:fixed; inset:0; z-index:-3; pointer-events:none; }
+
+/* ---------- Glyph clock: reliably visible, beneath content ---------- */
+#bg-clock{
+  position: fixed; inset:0; display:grid; place-items:center;
+  z-index: -2; pointer-events:none; user-select:none;
+  color: var(--glyph); opacity: var(--clock-opacity, .20);
+  mix-blend-mode: multiply; /* subtle on light backgrounds */
+}
+
+/* ---------- Pop-art rotator: only show active ---------- */
+.sig-rotator { position: relative; display:grid; place-items:center; overflow:hidden;
+  min-height: clamp(240px, 42vw, 520px); background: var(--card);
+}
+.sig-rotator img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; visibility:hidden; transform: scale(1.03);
+  transition: opacity .45s ease, visibility .45s ease, transform .6s ease;
+}
+.sig-rotator img.is-active{ opacity:1; visibility:visible; transform:none; }
+
+/* ---------- Dashboard showcase: FULL-WIDTH carousel ---------- */
+.section.full-bleed-wrap.full-bleed { padding-left:0; padding-right:0; }
+.showcase { border-radius:0; padding:0; }
+.showcase-inner { position:relative; width:100%; }
+.showcase-viewport{
+  position: relative;
+  left: 50%;
+  width: 100vw;                 /* full viewport width */
+  transform: translateX(-50%);  /* center across container */
+  overflow:hidden;
+  background: var(--card);
+}
+.showcase-viewport .slide{ margin:0; }
+.showcase-viewport img{
+  width:100%; height: clamp(320px, 62vw, 720px); object-fit:cover;
+  display:block; user-select:none;
+}
+
+/* slider dots & arrows for contrast */
+.dash-slider .dots{ display:flex; gap:8px; justify-content:center; padding:10px 0 16px; }
+.dash-slider .dots button{ width:10px; height:10px; border-radius:50%; border:1px solid var(--border); background: var(--chip-bg); }
+.dash-slider .dots button.active{ background: var(--accent); border-color: transparent; }
+.dash-arrows{ display:flex; gap:8px; justify-content:center; padding-bottom:12px; }
+
+/* ---------- Tables / cards quick contrast pass ---------- */
+.table th,.table td{ border-color: var(--divider); }
+.card{ background: var(--card); border:1px solid var(--border); }
+
+/* ---------- Utilities ---------- */
+.k { color: var(--muted); }
+.img-cap{ color: var(--muted); }
+
+/* ---------- Accessibility ---------- */
+:focus-visible{ outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent), white 40%); border-radius: 6px; }
