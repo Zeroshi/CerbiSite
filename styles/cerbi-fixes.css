@@ -1,139 +1,76 @@
-/* ======================================================================
-   Cerbi — site fixes (safe to load last)
-   ====================================================================== */
+/* Cerbi — global fixes & safe overrides */
 
-/* ---------- Global reset / layout sanity ---------- */
-html, body {
-  margin: 0; padding: 0;
-  min-height: 100%;
-}
+/* Reset spacing */
+html, body { margin: 0; padding: 0; min-height: 100%; }
 * { box-sizing: border-box; }
 img { max-width: 100%; height: auto; }
 
-/* Prevent accidental top whitespace from any element */
-body > :first-child { margin-top: 0; }
-
-/* Sticky nav/ribbon stacking and spacing */
-:root{
-  --nav-h: 64px;
-  --ribbon-h: 0px;
-}
-
-/* Keep nav on top and remove phantom gap above content */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* Make the ribbon non-sticky (removes “mystery gap” ahead of content).
-   If you want it sticky below the nav, set position: sticky; top: var(--nav-h);
-   but be aware it will reserve space in normal flow. */
-#topRibbon.ribbon {
-  position: relative;
-  top: 0;
-  z-index: 900;
-}
+/* Keep nav on top; ribbon not sticky (no phantom gap) */
+.nav { position: sticky; top: 0; z-index: 1000; }
+#topRibbon.ribbon { position: relative; top: 0; z-index: 900; }
 
 /* Progress bar */
 #progress {
-  position: fixed;
-  left: 0; top: 0;
-  width: var(--progress, 0%);
-  height: 3px;
-  background: var(--accent, #ff4d00);
-  z-index: 1100;
+  position: fixed; left: 0; top: 0; width: var(--progress, 0%);
+  height: 3px; background: var(--accent, #ff4d00); z-index: 1100;
 }
 
-/* ---------- Theme variable specificity & safety ----------
-   Ensure [data-theme] wins regardless of other stylesheets. */
-:root[data-theme],
-html[data-theme]{
-  /* selector specificity boost */
-}
+/* Background layers: stay behind everything */
+#dynamic-bg { position: fixed; inset: 0; z-index: -6; pointer-events: none; }
+.tiles       { position: fixed; inset: 0; z-index: -6; pointer-events: none; }
+.sky         { position: fixed; inset: 0; z-index: -5; pointer-events: none; display: block; }
+.veil        { position: fixed; inset: 0; z-index: -4; pointer-events: none; }
+.spotlight   { position: fixed; inset: 0; z-index: -3; pointer-events: none; }
 
-/* The following selectors ensure CSS variables resolve even if :root/html differ */
-html[data-theme="mist-light"], :root[data-theme="mist-light"] {}
-html[data-theme="celadon"],    :root[data-theme="celadon"] {}
-html[data-theme="champagne"],  :root[data-theme="champagne"] {}
-html[data-theme="greige"],     :root[data-theme="greige"] {}
-html[data-theme="lilac"],      :root[data-theme="lilac"] {}
-html[data-theme="pewter"],     :root[data-theme="pewter"] {}
-html[data-theme="midnight"],   :root[data-theme="midnight"] {}
-html[data-theme="indigo"],     :root[data-theme="indigo"] {}
-html[data-theme="plum"],       :root[data-theme="plum"] {}
-html[data-theme="obsidian"],   :root[data-theme="obsidian"] {}
+/* Glyph clock should sit above bg but under content */
+#bg-clock { z-index: -2; }
 
-/* ---------- Pop-art rotator: only one image visible ---------- */
+/* Pop-art: show only the active image */
 .sig-rotator {
-  position: relative;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  min-height: clamp(220px, 40vw, 520px);
+  position: relative; display: grid; place-items: center;
+  overflow: hidden; min-height: clamp(220px, 40vw, 520px);
   background: var(--card, #111);
 }
-
 .sig-rotator img {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;          /* hide by default */
-  visibility: hidden;
-  transform: scale(1.02);
-  transition:
-    opacity .40s ease,
-    visibility .40s ease,
-    transform .50s ease;
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; visibility: hidden; transform: scale(1.02);
+  transition: opacity .40s ease, visibility .40s ease, transform .50s ease;
 }
+.sig-rotator img.is-active { opacity: 1; visibility: visible; transform: none; }
 
-.sig-rotator img.is-active {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-}
-
-/* Defensive: never display all at once even if a class is missing briefly */
-.sig-rotator img:not(.is-active) { pointer-events: none; }
-
-/* ---------- Contact FAB: stable right-side placement w/ no hover jitter ---------- */
+/* Contact FAB: stable, no hover drift */
 .contact-fab{
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);      /* pinned, no scroll-jitter */
-  z-index: 900;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
-  transition: transform .15s ease, filter .15s ease;
+  position: fixed; right: 22px; top: 50%; transform: translateY(-50%);
+  z-index: 900; filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
+  transition: filter .15s ease;
 }
-.contact-fab:hover{
-  transform: translateY(-50%) translateZ(0); /* no X/Y drift on hover */
-  filter: drop-shadow(0 10px 22px rgba(0,0,0,.45));
-}
-
-/* Mobile: classic bottom-right FAB */
+.contact-fab:hover{ filter: drop-shadow(0 10px 22px rgba(0,0,0,.45)); }
 @media (max-width: 720px){
-  .contact-fab{
-    right: 16px;
-    bottom: 16px;
-    top: auto;
-    transform: none;
-  }
+  .contact-fab{ right: 16px; bottom: 16px; top: auto; transform: none; }
 }
 
-/* ---------- Accessibility & small visual nits ---------- */
-:focus-visible{
-  outline: none;
-  box-shadow: var(--focus, 0 0 0 3px rgba(255,77,0,.35));
-  border-radius: 6px;
+/* Live Rule Check switch (brand color) */
+.switch{
+  --sw-on: var(--brand, #ff4d00);
+  --sw-off: color-mix(in srgb, var(--chip-bg, rgba(0,0,0,.08)) 60%, transparent);
+  position: relative; display: inline-block; width: 56px; height: 30px;
+  border-radius: 999px; background: var(--sw-off);
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
 }
+.switch::after{
+  content:''; position:absolute; top:3px; left:3px;
+  width:24px; height:24px; border-radius:50%;
+  background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,.20);
+  transition: transform .22s ease;
+}
+.switch[aria-pressed="true"]{
+  background: var(--sw-on);
+  border-color: color-mix(in srgb, var(--sw-on), black 12%);
+}
+.switch[aria-pressed="true"]::after{ transform: translateX(26px); }
 
-.chip, .tag { border: 1px solid var(--border, rgba(255,255,255,.12)); }
-
-/* Slider dots: visible in light & dark */
+/* Slider dots contrast */
 .dash-slider .dots button{
   background: var(--chip-bg, rgba(255,255,255,.08));
   border: 1px solid var(--border, rgba(255,255,255,.12));
@@ -143,28 +80,5 @@ html[data-theme="obsidian"],   :root[data-theme="obsidian"] {}
   border-color: transparent;
 }
 
-/* ---------- Brand-colored switch (Live Rule Check) ---------- */
-.switch{
-  --sw-on: var(--brand, #ff4d00);
-  --sw-off: color-mix(in srgb, var(--chip-bg, rgba(0,0,0,.08)) 60%, transparent);
-
-  position: relative;
-  display: inline-block;
-  width: 56px; height: 30px;
-  border-radius: 999px;
-  background: var(--sw-off);
-  border: 1px solid var(--border, rgba(255,255,255,.12));
-  box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
-}
-.switch::after{
-  content:''; position:absolute; top:3px; left:3px;
-  width:24px; height:24px; border-radius:50%;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,.20);
-  transition: transform .22s ease;
-}
-.switch[aria-pressed="true"]{
-  background: var(--sw-on);
-  border-color: color-mix(in srgb, var(--sw-on), black 12%);
-}
-.switch[aria-pressed="true"]::after{ transform: translateX(26px); }
+/* Focus ring */
+:focus-visible{ outline: none; box-shadow: var(--focus, 0 0 0 3px rgba(255,77,0,.35)); border-radius: 6px; }
