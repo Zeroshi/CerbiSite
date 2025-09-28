@@ -1,0 +1,106 @@
+/* Cerbi — Locked Light Theme Overrides (single palette, professional) */
+
+:root{
+  --brand:#ff4d00;
+  --bg:#f6fbff;
+  --surface:#f2f7fd;
+  --card:#ffffff;
+  --text:#123046;
+  --heading:#0b1f33;
+  --muted:#4f5f78;
+  --accent:var(--brand);
+  --accent-contrast:#fff7f2;
+  --btn:var(--brand);
+  --btn-hover:#ff6a2b;
+  --link: color-mix(in srgb, var(--brand), black 16%);
+  --border:rgba(12,32,56,.12);
+  --divider:rgba(12,32,56,.18);
+  --nav-bg:rgba(255,255,255,.94);
+  --chip-bg:#e9f2ff;
+  --chip-text:#15324a;
+  --kbd-bg:#eef4fb;
+  --kbd-text:#19354c;
+  --md-bg:#ffffff;
+  --md-text:#0f2640;
+  --glyph: rgba(255,77,0,.10);
+  --glyph-strong: rgba(255,77,0,.18);
+  --shadow:0 10px 40px rgba(0,0,0,.12);
+  --radius:12px;
+  --clock-opacity:.18;
+}
+
+/* Global */
+html,body{ background:var(--bg); color:var(--text) }
+h1,h2,h3,h4,h5,h6{ color:var(--heading) }
+a{ color:var(--link); text-decoration:none }
+a:hover{ opacity:.96 }
+.k,.muted,.img-cap{ color:var(--muted) }
+.card{ background:var(--card); border:1px solid var(--border) }
+.table th,.table td{ border-color:var(--divider) }
+.btn{ background:var(--btn); color:var(--accent-contrast); border:1px solid transparent }
+.btn:hover{ background:var(--btn-hover) }
+.btn.btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text) }
+.btn.btn-ghost:hover{ background:rgba(0,0,0,.04) }
+
+/* Layers */
+#dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
+.tiles{ position:fixed; inset:0; z-index:-6; pointer-events:none }
+.sky{ position:fixed; inset:0; z-index:-5; pointer-events:none; display:block }
+.veil{ position:fixed; inset:0; z-index:-4; pointer-events:none }
+.spotlight{ position:fixed; inset:0; z-index:-3; pointer-events:none }
+
+#bg-clock{
+  position:fixed; inset:0; display:grid; place-items:center;
+  z-index:-2; pointer-events:none; user-select:none;
+  color:var(--glyph); opacity:var(--clock-opacity); mix-blend-mode:multiply;
+}
+
+/* Nav */
+header.nav{ position:sticky; top:0; z-index:1000; background:var(--nav-bg); backdrop-filter:blur(10px) }
+.nav-inner{ display:flex; gap:12px; align-items:center; justify-content:space-between; padding-block:8px }
+#primaryNav{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0 }
+#primaryNav a{ white-space:nowrap; padding:8px 10px; border-radius:10px; color:var(--text) }
+#primaryNav a:hover{ background:var(--surface) }
+.nav-actions{ display:flex; gap:10px; flex:0 0 auto }
+#themeBtn{ display:none !important }
+
+/* Pop-art */
+.sig-rotator{ position:relative; display:grid; place-items:center; overflow:hidden;
+  min-height: clamp(240px, 42vw, 520px); background:var(--card);
+}
+.sig-rotator img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; visibility:hidden; transform:scale(1.02);
+  transition:opacity .4s ease, visibility .4s ease, transform .6s ease;
+}
+.sig-rotator img.is-active{ opacity:1; visibility:visible; transform:none }
+
+/* Dashboards carousel */
+.section.full-bleed-wrap.full-bleed{ padding-left:0; padding-right:0 }
+.showcase{ padding:0; border-radius:0 }
+.showcase-viewport{ position:relative; left:50%; transform:translateX(-50%); width:100vw; overflow:hidden; background:var(--card) }
+.showcase-viewport .slide{ margin:0 }
+.showcase-viewport img{ width:100%; height: clamp(360px, 66vw, 760px); object-fit:cover; display:block }
+.dash-slider .dots{ display:flex; gap:8px; justify-content:center; padding:10px 0 16px }
+.dash-slider .dots button{ width:10px; height:10px; border-radius:50%; border:1px solid var(--border); background:var(--chip-bg) }
+.dash-slider .dots button.active{ background:var(--accent); border-color:transparent }
+.dash-arrows{ display:flex; gap:8px; justify-content:center; padding-bottom:12px }
+
+/* Contact FAB */
+.contact-fab{
+  position:fixed; right:22px; top:50%; transform:translateY(-50%);
+  z-index:900; display:grid; place-items:center;
+  width:56px; height:56px; border-radius:16px;
+  background:var(--accent); color:var(--accent-contrast);
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  transition: transform .18s ease, filter .18s ease;
+}
+.contact-fab:hover{ transform:translateY(-50%) scale(1.04); filter:brightness(1.03) }
+.contact-fab img{ width:60%; height:60%; object-fit:contain }
+@media (max-width: 720px){
+  .contact-fab{ right:16px; bottom:16px; top:auto; transform:none }
+  .contact-fab:hover{ transform:scale(1.04) }
+}
+
+/* Accessibility */
+:focus-visible{ outline:none; box-shadow:0 0 0 3px color-mix(in srgb, var(--accent), white 40%); border-radius:6px }
