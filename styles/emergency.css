@@ -1,0 +1,107 @@
+/* ============================================================
+   CerbiSite — EMERGENCY HOTFIX
+   Load AFTER every other stylesheet. Small, surgical overrides.
+   Goals:
+   - Light, neutral base; logo orange is the accent
+   - Readable nav; no overlap; simple wrap on smaller widths
+   - Background stars/tiles behind everything (no top blank space)
+   - Glyph clock visible but subtle, sits behind content
+   - Pop-art shows ONE image at a time
+   - Dashboard carousel: full width, auto, no jitter
+   - Contact FAB: simple hover, no weird drift
+   ============================================================ */
+
+/* ---------- 0. Base palette: light + logo accent ---------- */
+:root{
+  --brand:#ff4d00;
+  --bg:#ffffff;
+  --surface:#f6f8fb;
+  --card:#ffffff;
+  --text:#112235;          /* deep slate */
+  --heading:#0a1b2e;
+  --muted:#5b6b86;
+  --accent:var(--brand);
+  --accent-contrast:#fff7f2;
+  --btn:var(--brand);
+  --btn-hover:#ff6a2b;
+  --link: color-mix(in srgb, var(--brand), black 14%);
+  --border: rgba(16,32,48,.14);
+  --divider: rgba(16,32,48,.18);
+  --nav-bg: rgba(255,255,255,.92);
+  --chip-bg:#e9f2ff;
+  --chip-text:#16324a;
+  --kbd-bg:#eef4fb;
+  --kbd-text:#17354f;
+  --glyph: rgba(255,77,0,.10);
+  --glyph-strong: rgba(255,77,0,.18);
+  --shadow: 0 10px 32px rgba(0,0,0,.12);
+  --radius:12px;
+}
+
+/* ---------- 1. Global readability ---------- */
+html,body{ background:var(--bg); color:var(--text); }
+h1,h2,h3,h4,h5,h6{ color:var(--heading); }
+a{ color:var(--link); text-decoration:none; }
+a:hover{ opacity:.96; }
+.k,.muted,.img-cap{ color:var(--muted); }
+.card{ background:var(--card); border:1px solid var(--border); }
+.table th,.table td{ border-color:var(--divider); }
+.btn{ background:var(--btn); color:var(--accent-contrast); border:1px solid transparent; }
+.btn:hover{ background:var(--btn-hover); }
+.btn.btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn.btn-ghost:hover{ background:rgba(0,0,0,.04); }
+
+/* ---------- 2. Background layers & top spacing fix ---------- */
+#dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
+.tiles{ position:fixed; inset:0; z-index:-6; pointer-events:none; }
+.sky{ position:fixed; inset:0; z-index:-5; pointer-events:none; display:block; }
+.veil{ position:fixed; inset:0; z-index:-4; pointer-events:none; }
+.spotlight{ position:fixed; inset:0; z-index:-3; pointer-events:none; }
+
+/* Ribbon should NOT be sticky (prevents blank gap) */
+#topRibbon{ position:relative; top:0; background:linear-gradient(0deg, rgba(0,0,0,.10), rgba(0,0,0,.10)), var(--nav-bg); }
+
+/* ---------- 3. Nav: readable + graceful wrap (no overlap) ---------- */
+.nav{ position:sticky; top:0; z-index:1000; background:var(--nav-bg); backdrop-filter:blur(10px); }
+.nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-block:8px; }
+.brand{ display:flex; align-items:center; gap:10px; white-space:nowrap; color:var(--heading); text-decoration:none; }
+#primaryNav{ display:flex; align-items:center; gap:8px; flex:1 1 auto; min-width:0; flex-wrap:wrap; }
+#primaryNav a{ padding:8px 10px; border-radius:10px; color:var(--text); white-space:nowrap; }
+#primaryNav a:hover{ background:var(--surface); }
+.nav-actions{ display:flex; gap:10px; flex:0 0 auto; }
+
+/* Slightly reduce cramped look on medium widths */
+@media (max-width: 1100px){
+  #primaryNav a{ padding:6px 8px; }
+}
+@media (max-width: 860px){
+  .nav-inner{ align-items:flex-start; }
+  #primaryNav{ row-gap:6px; }
+}
+
+/* ---------- 4. Contact FAB: calm hover, no drift ---------- */
+.contact-fab{
+  position:fixed; right:22px; top:50%; transform:translateY(-50%);
+  z-index:900; display:grid; place-items:center;
+  width:56px; height:56px; border-radius:16px;
+  background:var(--accent); color:var(--accent-contrast);
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  transition: transform .18s ease, filter .18s ease;
+}
+.contact-fab:hover{ transform:translateY(-50%) scale(1.04); filter:brightness(1.03); }
+.contact-fab img{ width:60%; height:60%; object-fit:contain; }
+@media (max-width: 720px){
+  .contact-fab{ right:16px; bottom:16px; top:auto; transform:none; }
+  .contact-fab:hover{ transform:scale(1.04); }
+}
+
+/* ---------- 5. Glyph clock: subtle & always visible behind content ---------- */
+#bg-clock{
+  position:fixed; inset:0; display:grid; place-items:center;
+  z-index:-2; pointer-events:none; user-select:none;
+  color:var(--glyph); opacity:var(--clock-opacity,.20);
+  mix-blend-mode:multiply;
+}
+:root{ --clock-opacity:.18; } /* default strength on light */
+
+/* ---------- 6. Po*
