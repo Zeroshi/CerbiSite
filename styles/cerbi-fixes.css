@@ -1,55 +1,170 @@
-/* ==========================================================================
-   Cerbi site hardening & polish
-   ========================================================================== */
+/* ======================================================================
+   Cerbi — site fixes (safe to load last)
+   ====================================================================== */
 
-/* Prevent any horizontal overflow from 100vw, etc. */
-html, body { overflow-x: hidden; }
+/* ---------- Global reset / layout sanity ---------- */
+html, body {
+  margin: 0; padding: 0;
+  min-height: 100%;
+}
+* { box-sizing: border-box; }
+img { max-width: 100%; height: auto; }
 
-/* Full-bleed sections shouldn’t overlap neighbors */
-.section.full-bleed { overflow: hidden; }
+/* Prevent accidental top whitespace from any element */
+body > :first-child { margin-top: 0; }
 
-/* “Glare” and friends must not escape their card */
-.glass, .card { overflow: hidden; }
-
-/* Text safety in tight cards */
-h1, h2, h3, p, .lead, .k, .sub { overflow-wrap: anywhere; word-wrap: break-word; }
-
-/* Grid breathing room (especially on tablet) */
-.grid { row-gap: 16px; }
-
-/* --- Image & slider containment ---------------------------------------- */
-.img-frame, .showcase, #dashSlider { position: relative; overflow: hidden; }
-
-/* Constrain images everywhere */
-.showcase .slide img, #dashSlider .slide img, .card img, .contact-art .img-frame img {
-  display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain;
+/* Sticky nav/ribbon stacking and spacing */
+:root{
+  --nav-h: 64px;
+  --ribbon-h: 0px;
 }
 
-/* Optional aspect–ratio hint the JS sets (falls back safely) */
-.img-frame.showcase { aspect-ratio: var(--ar, 16 / 9); }
+/* Keep nav on top and remove phantom gap above content */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
-/* Hero background pseudo must remain under headings */
-.hero::after { z-index: -1; }
+/* Make the ribbon non-sticky (removes “mystery gap” ahead of content).
+   If you want it sticky below the nav, set position: sticky; top: var(--nav-h);
+   but be aware it will reserve space in normal flow. */
+#topRibbon.ribbon {
+  position: relative;
+  top: 0;
+  z-index: 900;
+}
 
-/* --- Cute, centered CONTACT FAB ---------------------------------------- */
-.contact-fab {
-  position: fixed !important;
-  left: 50%; right: auto; bottom: 22px; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 999px;
-  background: rgba(10,18,36,.72);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  border: 1px solid rgba(127,148,179,.25); text-decoration: none;
-  box-shadow: 0 10px 24px rgba(0,0,0,.25), 0 2px 0 rgba(255,255,255,.06) inset;
+/* Progress bar */
+#progress {
+  position: fixed;
+  left: 0; top: 0;
+  width: var(--progress, 0%);
+  height: 3px;
+  background: var(--accent, #ff4d00);
   z-index: 1100;
 }
-:root[data-theme="light"] .contact-fab { background: rgba(255,255,255,.84); border-color: rgba(0,0,0,.10); }
-.contact-fab img { width: 28px; height: 28px; border-radius: 50%; display: block; }
-.contact-fab .label { font-weight: 700; font-size: 14px; letter-spacing: .2px; }
-@media (hover:hover){ .contact-fab:hover { transform: translateX(-50%) translateY(-2px) scale(1.02); } }
-@media (max-width: 520px) { .contact-fab { bottom: 14px; padding: 9px 12px; gap: 8px; } .contact-fab .label { font-size: 13px; } }
 
-/* --- Big background HH:MM clock --------------------------------------- */
-#bg-clock { font-size: clamp(96px, 36vw, 900px); mix-blend-mode: screen; opacity: var(--clock-opacity,.18); }
+/* ---------- Theme variable specificity & safety ----------
+   Ensure [data-theme] wins regardless of other stylesheets. */
+:root[data-theme],
+html[data-theme]{
+  /* selector specificity boost */
+}
 
-/* The small top-right clock + progress should stay above */
-#progress, .clock { position: fixed; z-index: 1100; }
+/* The following selectors ensure CSS variables resolve even if :root/html differ */
+html[data-theme="mist-light"], :root[data-theme="mist-light"] {}
+html[data-theme="celadon"],    :root[data-theme="celadon"] {}
+html[data-theme="champagne"],  :root[data-theme="champagne"] {}
+html[data-theme="greige"],     :root[data-theme="greige"] {}
+html[data-theme="lilac"],      :root[data-theme="lilac"] {}
+html[data-theme="pewter"],     :root[data-theme="pewter"] {}
+html[data-theme="midnight"],   :root[data-theme="midnight"] {}
+html[data-theme="indigo"],     :root[data-theme="indigo"] {}
+html[data-theme="plum"],       :root[data-theme="plum"] {}
+html[data-theme="obsidian"],   :root[data-theme="obsidian"] {}
+
+/* ---------- Pop-art rotator: only one image visible ---------- */
+.sig-rotator {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  min-height: clamp(220px, 40vw, 520px);
+  background: var(--card, #111);
+}
+
+.sig-rotator img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;          /* hide by default */
+  visibility: hidden;
+  transform: scale(1.02);
+  transition:
+    opacity .40s ease,
+    visibility .40s ease,
+    transform .50s ease;
+}
+
+.sig-rotator img.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+/* Defensive: never display all at once even if a class is missing briefly */
+.sig-rotator img:not(.is-active) { pointer-events: none; }
+
+/* ---------- Contact FAB: stable right-side placement w/ no hover jitter ---------- */
+.contact-fab{
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);      /* pinned, no scroll-jitter */
+  z-index: 900;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
+  transition: transform .15s ease, filter .15s ease;
+}
+.contact-fab:hover{
+  transform: translateY(-50%) translateZ(0); /* no X/Y drift on hover */
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.45));
+}
+
+/* Mobile: classic bottom-right FAB */
+@media (max-width: 720px){
+  .contact-fab{
+    right: 16px;
+    bottom: 16px;
+    top: auto;
+    transform: none;
+  }
+}
+
+/* ---------- Accessibility & small visual nits ---------- */
+:focus-visible{
+  outline: none;
+  box-shadow: var(--focus, 0 0 0 3px rgba(255,77,0,.35));
+  border-radius: 6px;
+}
+
+.chip, .tag { border: 1px solid var(--border, rgba(255,255,255,.12)); }
+
+/* Slider dots: visible in light & dark */
+.dash-slider .dots button{
+  background: var(--chip-bg, rgba(255,255,255,.08));
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+}
+.dash-slider .dots button.active{
+  background: var(--accent, #ff4d00);
+  border-color: transparent;
+}
+
+/* ---------- Brand-colored switch (Live Rule Check) ---------- */
+.switch{
+  --sw-on: var(--brand, #ff4d00);
+  --sw-off: color-mix(in srgb, var(--chip-bg, rgba(0,0,0,.08)) 60%, transparent);
+
+  position: relative;
+  display: inline-block;
+  width: 56px; height: 30px;
+  border-radius: 999px;
+  background: var(--sw-off);
+  border: 1px solid var(--border, rgba(255,255,255,.12));
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.06);
+}
+.switch::after{
+  content:''; position:absolute; top:3px; left:3px;
+  width:24px; height:24px; border-radius:50%;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,.20);
+  transition: transform .22s ease;
+}
+.switch[aria-pressed="true"]{
+  background: var(--sw-on);
+  border-color: color-mix(in srgb, var(--sw-on), black 12%);
+}
+.switch[aria-pressed="true"]::after{ transform: translateX(26px); }
