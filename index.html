@@ -5,42 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-<!-- ============ FONTS (system + Inter fallback) ============ -->
+<!-- Inter (clean, legible), falls back to system-ui -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   Cerbi — One Light Theme (Powder Blue accenting logo orange)
+   Cerbi — One Light Theme (Powder Blue accent + brand orange)
    ============================================================ */
 :root{
-  /* Brand & accents */
-  --brand:#ff4d00;                 /* logo orange */
-  --brand-ink:#d64500;             /* pressed/darker */
-  --sky:#eaf2fb;                   /* hero wash */
-  --ink:#0d2033;                   /* body text */
-  --ink-soft:#465a73;              /* muted text */
-  --heading: var(--brand);         /* headers use logo color */
-  --link:#145ea8;                  /* supporting blue link */
-  --radius:14px;
-  --shadow: 0 14px 36px rgba(15,40,70,.10), 0 2px 6px rgba(10,30,50,.06);
-
-  /* Surfaces */
+  --brand:#ff4d00;                /* logo orange */
+  --brand-ink:#d64500;
+  --powder:#eaf2fb;               /* powder blue surface */
   --bg:#f7fbff;
   --surface:#ffffff;
   --panel:#f2f6fc;
   --chip:#e6eef9;
   --kbd:#edf3fb;
-  --border: #dbe6f6;
+  --ink:#0b2338;                  /* body text */
+  --ink-soft:#475c75;             /* muted */
+  --heading: var(--brand);
+  --link:#145ea8;                 /* supporting blue */
+  --radius:14px;
+  --shadow: 0 14px 36px rgba(15,40,70,.10), 0 2px 6px rgba(10,30,50,.06);
+  --border:#dbe6f6;
   --divider:#e7eef8;
-
-  /* Controls */
   --btn: var(--brand);
   --btn-hover:#ff6a2b;
   --btn-text:#fff;
-
-  /* Clock tint */
-  --clock: color-mix(in srgb, var(--brand), white 78%);
+  --clock: color-mix(in srgb, var(--brand), white 70%); /* stronger */
 }
 
 /* ===== Base ===== */
@@ -57,13 +50,16 @@ body{
 }
 a{ color: var(--link); text-decoration:none }
 a:hover{ text-decoration:underline }
-h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
+h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .45em }
+h1,h2{ font-weight: 900 }
 .lead{ color:var(--ink-soft) }
 .k, .muted, .img-cap{ color: var(--ink-soft) }
 .container{ width:min(1200px, 92vw); margin-inline:auto }
 .section{ padding: 38px 0 44px }
 .full-bleed-wrap{ padding: 0; }
-.full-bleed{ width: min(1400px, 96vw); margin-inline:auto }
+/* Edge-to-edge full-bleed container */
+.full-bleed{ width:100vw; margin-left:50%; transform:translateX(-50%); }
+
 .row{ display:flex; gap:12px; flex-wrap:wrap }
 .grid{ display:grid; gap:14px; grid-template-columns: repeat(12, minmax(0,1fr)); }
 .col-4{ grid-column: span 4 }
@@ -103,7 +99,7 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 /* ===== Buttons ===== */
 .btn{
   appearance:none; border:none; cursor:pointer; user-select:none;
-  border-radius:12px; padding:10px 14px; font-weight:700; letter-spacing:.2px;
+  border-radius:12px; padding:10px 14px; font-weight:800; letter-spacing:.2px;
   background: var(--panel); color: var(--ink); border:1px solid var(--border);
   transition: transform .06s ease, filter .2s ease, background .2s ease, color .2s ease;
   text-decoration:none; display:inline-flex; align-items:center; gap:8px;
@@ -130,7 +126,7 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 }
 .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink) }
 .brand img{ height:36px; width:auto; border-radius:8px; filter: drop-shadow(0 0 10px rgba(255,77,0,.25)) }
-.brand span{ font-weight:800; letter-spacing:.2px }
+.brand span{ font-weight:900; letter-spacing:.2px }
 .nav-links{
   display:flex; gap:10px; align-items:center; overflow:auto hidden; padding: 2px;
   mask-image: linear-gradient( to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100% );
@@ -155,23 +151,38 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 
 /* ===== HERO ===== */
 .hero{ padding: 38px 0 16px }
-.hero h1{ font-size: clamp(30px, 4vw, 48px); line-height:1.1; color: var(--ink) }
+.hero h1{ font-size: clamp(32px, 4.4vw, 54px); line-height:1.08; color: var(--ink) }
 .hero h1 .hl{ color: var(--brand) }
 .sub{ color:var(--ink-soft); max-width: 70ch }
 
-/* Remove old hero background + chips strip (per request) */
+/* Remove old hero bg + chips */
 .hero .hero-bg, .hero .chip-row{ display:none !important; }
 
-/* ===== GLYPH CLOCK ===== */
+/* ===== GLYPH CLOCK (larger, bolder, glitch) ===== */
 #bg-clock{
   position: fixed; inset:0; display:grid; place-items:center; pointer-events:none;
-  z-index: -1; line-height:1; opacity:.22; color: var(--clock); mix-blend-mode:multiply;
+  z-index: -1; line-height:1; opacity:.30; color: var(--clock); mix-blend-mode:multiply;
   transform: translateZ(0);
+  font-weight: 900;
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.25),
+    0 10px 40px rgba(255,77,0,.18),
+    0 20px 60px rgba(10,30,60,.12);
+  -webkit-text-stroke: 1px rgba(255,77,0,.08);
+}
+#bg-clock.glitch{ animation: clk-glitch .4s steps(2, end) 1; }
+@keyframes clk-glitch{
+  0%{ transform:translate(0,0) skewX(0deg) }
+  20%{ transform:translate(-2px,-1px) skewX(-2deg) }
+  40%{ transform:translate(2px,1px) skewX(2deg) }
+  60%{ transform:translate(-1px,2px) skewX(-1deg) }
+  80%{ transform:translate(1px,-2px) skewX(1deg) }
+  100%{ transform:translate(0,0) skewX(0deg) }
 }
 
-/* ===== POP-ART ROTATOR ===== */
+/* ===== POP-ART ROTATOR (edge-to-edge) ===== */
 .sig-rotator{
-  position:relative; min-height: clamp(220px, 40vw, 480px); overflow:hidden; background: var(--panel);
+  position:relative; min-height: clamp(260px, 52vw, 560px); overflow:hidden; background: var(--panel);
 }
 .sig-rotator img{
   position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
@@ -181,10 +192,9 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 .sig-rotator img.is-active{ opacity:1; visibility:visible; transform:none }
 
 /* ===== DASHBOARD SHOWCASE (full width, auto) ===== */
-.full-bleed{ position:relative }
 .showcase{ padding:0; overflow:hidden }
 .showcase-inner{ position:relative }
-.showcase-viewport{ position:relative; width:100%; height: clamp(280px, 52vw, 680px); }
+.showcase-viewport{ position:relative; width:100%; height: clamp(320px, 56vw, 740px); }
 .showcase .slide{ position:absolute; inset:0; margin:0; opacity:0; visibility:hidden; transition: opacity .45s ease, visibility .45s ease; }
 .showcase .slide.active{ opacity:1; visibility:visible }
 .showcase img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -193,11 +203,21 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 .showcase .dots button{ width:10px; height:10px; border-radius:50%; border:1px solid var(--border); background: var(--chip) }
 .showcase .dots button.active{ background: var(--brand); border-color: var(--brand) }
 
-/* ===== TABLES, KBD ===== */
-.table{ width:100%; border-collapse:collapse }
-.table th,.table td{ border:1px solid var(--divider); padding:.55em .6em; background: var(--surface) }
+/* ===== TABLES, KBD (higher contrast) ===== */
+.table{ width:100%; border-collapse:separate; border-spacing:0 }
+.table thead th{
+  position: sticky; top:0; background: color-mix(in srgb, var(--powder) 80%, white);
+  z-index:1; border-bottom: 2px solid var(--border);
+}
+.table th,.table td{ padding:.65em .7em; border-right: 1px solid var(--divider); }
+.table th:last-child,.table td:last-child{ border-right:0 }
+.table tbody tr:nth-child(even){ background: #f9fbfe; }           /* zebra rows */
+.table tbody tr:hover{ background: #f2f7ff }                       /* hover */
+.table-wrap{ overflow:auto; border:1px solid var(--border); border-radius:12px; box-shadow: var(--shadow) }
+
 .kbd, pre.codeblock, code[class*="language-"], pre[class*="language-"]{
-  background: var(--kbd); color:#14314d; padding:12px 14px; border-radius:10px; border:1px solid var(--border);
+  background: var(--kbd); color:var(--ink); padding:14px 16px; border-radius:10px; border:1px solid var(--border);
+  font-size: 14px;
 }
 
 /* ===== CONTACT FAB (tidy hover) ===== */
@@ -220,7 +240,7 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
   z-index:1200; padding: 20px;
 }
 .lightbox[hidden]{ display:none }
-.lightbox img{ max-width: min(96vw, 1400px); max-height: 86vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5) }
+.lightbox img{ max-width: min(96vw, 1600px); max-height: 86vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.5) }
 .lightbox .close{ position:absolute; top: 14px; right: 14px }
 
 /* ===== Prose-doc modal ===== */
@@ -231,16 +251,13 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 }
 .prose-doc h1,.prose-doc h2,.prose-doc h3{ color:var(--heading); margin:.6em 0 .35em }
 .prose-doc a{ color:var(--link); text-decoration:none; border-bottom:1px dashed currentColor }
-.prose-doc pre{ background:var(--kbd); color:#14314d; padding:12px 14px; border-radius:10px; border:1px solid var(--border) }
+.prose-doc pre{ background:var(--kbd); color:var(--ink); padding:12px 14px; border-radius:10px; border:1px solid var(--border) }
 .prose-doc table{ width:100%; border-collapse: collapse; margin:.6em 0 }
 .prose-doc th,.prose-doc td{ border:1px solid var(--divider); padding:.5em .6em }
 
 /* ===== Footer ===== */
 .footer{ padding: 18px 0; border-top:1px solid var(--border); background: color-mix(in srgb, var(--bg), white 22%) }
-.partner-mini{ height: 22px; width: auto; opacity:.9 } /* smaller partner badge */
-@media (min-width:1100px){
-  .partner-mini{ height: 24px }
-}
+.partner-mini{ height: 22px; width: auto; opacity:.9 }
 
 /* ===== Accessibility ===== */
 :focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand), white 65%) }
@@ -248,9 +265,9 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 /* Utilities */
 .img-frame{ overflow:hidden; border-radius: 12px; border:1px solid var(--border); background:var(--surface) }
 .arch-diagram img{ width:100%; height:auto; display:block; }
-.arch-diagram{ max-width: 900px; margin-left:auto; margin-right:auto } /* reduce size */
+.arch-diagram{ max-width: 900px; margin-left:auto; margin-right:auto } /* reduced size */
 
-/* Theme badge */
+/* Theme badge (dev only) */
 #theme-diag{ position:fixed; left:12px; bottom:12px; z-index:910; background:var(--surface); color:var(--ink); border:1px solid var(--border); border-radius:14px; padding:8px 10px; display:flex; gap:8px; align-items:center; box-shadow: var(--shadow) }
 #theme-diag button{ background:transparent; color:var(--ink); border:1px solid var(--border); border-radius:10px; padding:6px 10px }
 #theme-diag button:hover{ background: var(--panel) }
@@ -265,14 +282,8 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 
 <body>
 
-<!-- Dynamic background canvas (kept for future starfield if needed) -->
+<!-- Background canvas (optional) -->
 <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
-
-<!-- Background layers (kept off visually) -->
-<div class="tiles" aria-hidden="true" style="display:none"></div>
-<canvas id="sky" class="sky" aria-hidden="true" style="display:none"></canvas>
-<div class="veil" aria-hidden="true" style="display:none"></div>
-<div class="spotlight" aria-hidden="true" style="display:none"></div>
 
 <!-- GLYPH CLOCK -->
 <div id="bg-clock" aria-hidden="true"><div class="scan" aria-hidden="true"></div></div>
@@ -319,8 +330,6 @@ h1,h2,h3,h4,h5,h6{ color: var(--heading); letter-spacing:.2px; margin:0 0 .4em }
 <main id="main">
   <!-- ===== HERO ===== -->
   <section class="hero container" id="top">
-    <div class="chip-row" role="list" aria-label="High level features" style="display:none"></div>
-
     <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
     <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
@@ -518,33 +527,33 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <h2>The <span class="hl">Cerbi</span> Ecosystem</h2>
     <p class="lead">A cohesive suite where each component addresses a critical aspect of enterprise logging.</p>
 
-    <div class="glass" style="padding:8px 12px;overflow-x:auto">
+    <div class="table-wrap">
       <table aria-label="Cerbi components matrix" class="table">
         <thead><tr><th>Component</th><th>Status</th><th>Purpose</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td>
-            <td>Core .NET logger with structured output and optional encryption. Works with governance analyzers (build-time) and runtime validators.</td>
+            <td><a href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener"><strong>CerbiStream</strong></a></td><td><span class="pill ok">GA</span></td>
+            <td>Core .NET logger with structured output, optional encryption, stable shapes. <a href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet</a></td>
           </tr>
           <tr>
-            <td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td>
-            <td>Roslyn analyzer that flags governance issues during build (IDE/CI). Reads project governance profiles.</td>
+            <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener"><strong>GovernanceAnalyzer</strong></a></td><td><span class="pill ok">GA</span></td>
+            <td>Roslyn analyzer flags governance issues during build (IDE/CI). Reads project profiles.</td>
           </tr>
           <tr>
-            <td><strong>Cerbi.MEL.Governance</strong></td><td><span class="pill ok">GA</span></td>
-            <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines; applies redaction/flagging based on profiles.</td>
+            <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener"><strong>MEL.Governance</strong></a></td><td><span class="pill ok">GA</span></td>
+            <td>Runtime validator for Microsoft.Extensions.Logging; redact/flag with relax-mode.</td>
           </tr>
           <tr>
-            <td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td>
-            <td>Governance dashboard &amp; APIs. Profile authoring, RBAC, audit history, environment-aware deployments, and profile versioning.</td>
+            <td><a href="#" class="doc-link"><strong>CerbiShield</strong></a></td><td><span class="pill beta">Beta</span></td>
+            <td>Governance dashboard & APIs — profile authoring, RBAC, audit history, versioning.</td>
           </tr>
           <tr>
-            <td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2 Planned</span></td>
-            <td>Routing, normalization, rollups, fan-out, and app grouping. Turns disparate streams into consistent, analytics-ready datasets.</td>
+            <td><strong>CerbIQ</strong></td><td><span class="pill planned">Planned</span></td>
+            <td>Routing, normalization, rollups, fan-out, app grouping into analytics-ready datasets.</td>
           </tr>
           <tr>
-            <td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td>
-            <td>ML-driven anomaly detection and trend forecasting on governed logs. Risk scoring and proactive alerting with explainability.</td>
+            <td><strong>CerbiSense</strong></td><td><span class="pill planned">Planned</span></td>
+            <td>ML anomaly detection & forecasting on governed logs, with explainability.</td>
           </tr>
         </tbody>
       </table>
@@ -565,25 +574,26 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <!-- Live governance demo -->
     <div class="glass reveal" style="padding:16px;margin-top:18px">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
-        <h3 style="margin:0">Live Rule Check (demo)</h3>
+        <h3 style="margin:0;color:var(--brand)">Live Rule Check (demo)</h3>
         <div style="display:flex;align-items:center;gap:8px">
-          <span class="kbd">PII Field</span>
-          <button id="piiSwitch" type="button" class="switch" aria-pressed="false" aria-label="Toggle PII field" style="width:56px;height:30px;border-radius:999px;border:1px solid var(--border);background:var(--chip);position:relative">
+          <span class="kbd" style="font-weight:700">PII Field</span>
+          <button id="piiSwitch" type="button" aria-pressed="false" aria-label="Toggle PII field"
+            style="--on:var(--brand);--off:#dde9fb; width:56px;height:30px;border-radius:999px;border:1px solid var(--border);background:var(--off);position:relative;box-shadow:inset 0 -1px 0 rgba(0,0,0,.06)">
             <span aria-hidden="true" style="position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:transform .22s ease"></span>
           </button>
         </div>
       </div>
-      <div class="demo" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="pane"><strong>Input Log</strong><pre><code id="inputJson" class="kbd" aria-live="polite"></code></pre></div>
-        <div class="pane"><strong>Evaluation</strong><pre><code id="evalJson" class="kbd" aria-live="polite"></code></pre></div>
+      <div class="demo" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="pane"><strong>Input Log</strong><pre><code id="inputJson" class="kbd" aria-live="polite" style="font-size:15px;min-height:160px"></code></pre></div>
+        <div class="pane"><strong>Evaluation</strong><pre><code id="evalJson" class="kbd" aria-live="polite" style="font-size:15px;min-height:160px"></code></pre></div>
       </div>
       <p class="k" style="margin-top:10px">This demo mirrors Cerbi’s behavior: <em>keep the event</em>, redact sensitive values, and tag violations with metadata for downstream scoring and audit.</p>
     </div>
   </section>
 
   <!-- DASHBOARDS -->
-  <section id="dashboards" class="section full-bleed-wrap full-bleed">
-    <div class="glass tilt reveal img-frame showcase">
+  <section id="dashboards" class="section full-bleed-wrap">
+    <div class="full-bleed glass tilt reveal img-frame showcase">
       <div class="glare" aria-hidden="true"></div>
 
       <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
@@ -691,80 +701,91 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <p class="k" style="margin-top:10px">Bottom line: familiar tools; cost control, auditability, faster incident response.</p>
   </section>
 
-  <!-- PACKAGES -->
+  <!-- PACKAGES (zebra rows + sticky header + scroll) -->
   <section id="packages" class="container section">
     <div class="eyebrow k">Install</div>
     <h2><span class="hl">NuGet Packages</span></h2>
-    <div class="grid" style="gap:16px">
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>CerbiStream</h3>
-        <p class="k">Core structured logger for .NET.</p>
-        <a class="btn" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a>
-      </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.MEL.Governance</h3>
-        <p class="k">Runtime governance for Microsoft.Extensions.Logging.</p>
-        <a class="btn" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a>
-      </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>CerbiStream.GovernanceAnalyzer</h3>
-        <p class="k">Roslyn analyzer diagnostics for schema/PII.</p>
-        <a class="btn" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
-      </article>
-
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.Governance.Runtime</h3>
-        <p class="k">Common runtime services.</p>
-        <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a>
-      </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.Governance.Core</h3>
-        <p class="k">Core governance model &amp; policy types.</p>
-        <a class="btn" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a>
-      </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-        <p class="k">Analyzer support for Serilog projects.</p>
-        <a class="btn" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
-      </article>
+    <div class="table-wrap">
+      <table class="table" aria-label="NuGet packages">
+        <thead>
+          <tr><th style="min-width:220px">Package</th><th style="min-width:160px">Link</th><th>What you get</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CerbiStream</strong></td>
+            <td><a href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Core structured logger for .NET; stable shapes, correlation IDs, optional encryption; file fallback with rotation.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.MEL.Governance</strong></td>
+            <td><a href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Runtime governance validator for Microsoft.Extensions.Logging; redact &amp; flag, supports relax-mode for gradual rollout.</td>
+          </tr>
+          <tr>
+            <td><strong>CerbiStream.GovernanceAnalyzer</strong></td>
+            <td><a href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Roslyn analyzer diagnostics for schema/PII before merge; integrates with CI; points to exact fields &amp; fixes.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.Governance.Runtime</strong></td>
+            <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Shared runtime primitives for governance operations and profile evaluation.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.Governance.Core</strong></td>
+            <td><a href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Core model &amp; policy types; JSON profile contracts; extensibility points for rules.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></td>
+            <td><a href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a></td>
+            <td>Analyzer for Serilog projects; same governance profile language to keep consistency across teams.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
-  <!-- REPOSITORIES -->
+  <!-- REPOSITORIES (zebra rows + sticky header + scroll) -->
   <section id="repos" class="container section">
     <div class="eyebrow k">Open Source</div>
     <h2><span class="hl">GitHub Repositories</span></h2>
-    <div class="grid" style="gap:16px">
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>CerbiStream</h3>
-        <p class="k">Reference implementation of the structured logger.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a>
-      </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>CerbiStream.BenchmarkTests</h3>
-        <p class="k">Benchmarks for throughput/allocations.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a>
-      </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.MEL.Governance</h3>
-        <p class="k">Runtime validator package.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a>
-      </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.MEL.Governance.Demo</h3>
-        <p class="k">Demo app for validation and relax-mode.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a>
-      </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
-        <p class="k">Analyzer for Serilog projects.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a>
-      </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
-        <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
-        <p class="k">Test harness for analyzer rules.</p>
-        <a class="btn" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a>
-      </article>
+    <div class="table-wrap">
+      <table class="table" aria-label="GitHub repositories">
+        <thead><tr><th style="min-width:260px">Repository</th><th style="min-width:140px">Link</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Cerbi-CerbiStream</strong></td>
+            <td><a href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Reference implementation of the structured logger with samples.</td>
+          </tr>
+          <tr>
+            <td><strong>CerbiStream.BenchmarkTests</strong></td>
+            <td><a href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Benchmarks for throughput/allocations across scenarios and payload sizes.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.MEL.Governance</strong></td>
+            <td><a href="https://github.com/Zeroshi/Cerbi.MEL.Governance" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Runtime validator package for MEL pipelines; redaction, relax-mode, and metadata tagging.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.MEL.Governance.Demo</strong></td>
+            <td><a href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Demo app for validation behavior and policy experiments.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.Serilog.GovernanceAnalyzer</strong></td>
+            <td><a href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Analyzer for Serilog projects that aligns with MEL governance rules.</td>
+          </tr>
+          <tr>
+            <td><strong>Cerbi.Serilog.GovernanceAnalysizer.TestApp</strong></td>
+            <td><a href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp" target="_blank" rel="noopener">GitHub →</a></td>
+            <td>Serilog analyzer test harness and rule demonstrations.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -773,16 +794,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <div class="eyebrow k">Decision support</div>
     <h2><span class="hl">Compare Approaches</span></h2>
     <div class="glass" style="padding:12px">
-      <table class="table">
-        <thead>
-          <tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best when…</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>“Just log more”</strong></td><td>Fast to start</td><td>Inconsistent fields, PII risk, higher cost</td><td>Tiny apps, prototypes</td></tr>
-          <tr><td><strong>Downstream normalization</strong></td><td>No app changes</td><td>Late fixes, fragile</td><td>Short-term stopgap</td></tr>
-          <tr><td><strong>Cerbi governance</strong></td><td>Stable schema, redaction, versioned policy</td><td>Define profiles; add analyzers/validators</td><td>Multi-team apps, compliance</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap" style="box-shadow:none;border-radius:0;border:0">
+        <table class="table">
+          <thead>
+            <tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best when…</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>“Just log more”</strong></td><td>Fast to start</td><td>Inconsistent fields, PII risk, higher cost</td><td>Tiny apps, prototypes</td></tr>
+            <tr><td><strong>Downstream normalization</strong></td><td>No app changes</td><td>Late fixes, fragile</td><td>Short-term stopgap</td></tr>
+            <tr><td><strong>Cerbi governance</strong></td><td>Stable schema, redaction, versioned policy</td><td>Define profiles; add analyzers/validators</td><td>Multi-team apps, compliance</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -878,7 +901,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </footer>
 
 <!-- Command palette -->
-<div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true" hidden>
+<div class="cmdk-overlay lightbox" id="cmdkOverlay" aria-hidden="true" hidden>
   <div class="cmdk prose-doc" role="dialog" aria-modal="true" aria-label="Command palette" style="padding:0; max-width:740px">
     <div class="header" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--divider)">
       <span class="kbd" aria-hidden="true">⌘K</span>
@@ -922,36 +945,42 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
 })();
 
-/* Glyph clock — time or glitchy CERBI */
+/* Glyph clock — bold, large, random ❤/🤖, glitch pulses */
 (function(){
   const el = document.getElementById('bg-clock'); if(!el) return;
+  const glyphs = ['❤','🤖'];
   function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
   function cerbiGlitch(){
     const base = ['C','E','R','B','I'];
     const take = 2 + Math.floor(Math.random()*4); // 2..5
     const picked = shuffle(base.slice()).slice(0, take);
+    // sprinkle hearts/robots
+    if(Math.random()<0.6){ picked.splice(Math.floor(Math.random()*picked.length),0, glyphs[Math.floor(Math.random()*glyphs.length)]); }
+    // occasional drops
     const drops = Math.floor(Math.random()*3);
     for(let k=0;k<drops;k++){ const idx = Math.floor(Math.random()*picked.length); picked[idx] = Math.random()<0.5 ? '·' : ''; }
     return picked.filter(Boolean).join(Math.random()<0.5 ? ' ' : ' ');
   }
   function size(){
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-    const factor = vw < 820 ? 0.46 : 0.36;
-    el.style.fontSize = Math.min(Math.max(vw*factor,120),900)+'px';
+    const factor = vw < 820 ? 0.54 : 0.42; // larger
+    el.style.fontSize = Math.min(Math.max(vw*factor,140),1100)+'px';
   }
   function render(){
     const d = new Date();
-    const showGlitch = (d.getSeconds() % 6 === 0) || Math.random() < 0.5;
+    const showGlitch = (d.getSeconds() % 5 === 0) || Math.random() < 0.45;
     if(showGlitch){
       el.textContent = cerbiGlitch();
+      el.classList.remove('glitch'); void el.offsetWidth; el.classList.add('glitch'); // retrigger CSS glitch
     }else{
       const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      el.textContent = t;
+      // sometimes swap to a big glyph instead of time
+      el.textContent = (Math.random()<0.18) ? glyphs[Math.floor(Math.random()*glyphs.length)] : t;
     }
   }
   function fade(){
     const sc = document.documentElement.scrollTop || document.body.scrollTop;
-    const base = .16, range = .20;
+    const base = .22, range = .22;
     el.style.opacity = (base + Math.min(1, sc / 1200) * range).toFixed(3);
   }
   el.style.color = getComputedStyle(document.documentElement).getPropertyValue('--clock') || 'rgba(255,77,0,.24)';
@@ -959,7 +988,7 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   size(); render(); fade();
   addEventListener('resize', size, {passive:true});
   addEventListener('scroll', fade, {passive:true});
-  setInterval(render,1000);
+  setInterval(render,900);
 })();
 
 /* WHY slider dots + autorotate */
@@ -973,7 +1002,7 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
   show(i);
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let timer=null; const start=()=>{ if(prefersReduced) return; stop(); timer=setInterval(()=>show(i+1),3800); }; const stop=()=>{ if(timer) clearInterval(timer), timer=null; };
+  let timer=null; const start=()=>{ if(prefersReduced) return; stop(); timer=setInterval(()=>show(i+1),3600); }; const stop=()=>{ if(timer) clearInterval(timer), timer=null; };
   slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start); start();
 })();
 
@@ -1032,6 +1061,37 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
     img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src));
   });
   start();
+})();
+
+/* POP-ART rotator — make sure images load and are edge-to-edge */
+(function(){
+  const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
+  const sources = [
+    'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
+    'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
+    'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png',
+    'assets/popart/popart-10.png'
+  ];
+  el.innerHTML = '';
+  const imgs = sources.map((src, idx) => {
+    const im = new Image();
+    im.decoding = 'async';
+    im.loading = idx === 0 ? 'eager' : 'lazy';
+    im.src = src;
+    im.alt = 'Cerbi pop-art ' + (idx+1);
+    if (idx === 0) im.className = 'is-active';
+    el.appendChild(im);
+    return im;
+  });
+  let i = 0;
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReduced && imgs.length > 1) {
+    setInterval(() => {
+      imgs[i].classList.remove('is-active');
+      i = (i + 1) % imgs.length;
+      imgs[i].classList.add('is-active');
+    }, 3500);
+  }
 })();
 
 /* Copy button in Quickstart */
@@ -1100,7 +1160,7 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', attach, { once:true }); } else { attach(); }
 })();
 
-/* Live rule check demo switch */
+/* Live rule check demo switch (contrast-improved) */
 (function(){
   const sw=document.getElementById('piiSwitch'); if(!sw) return;
   const knob=sw.querySelector('span');
@@ -1109,7 +1169,7 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
   function draw(on){
     sw.setAttribute('aria-pressed', on?'true':'false');
     knob.style.transform = on ? 'translateX(26px)' : 'translateX(0)';
-    sw.style.background = on ? 'var(--brand)' : 'var(--chip)';
+    sw.style.background = on ? 'var(--brand)' : '#dde9fb';
     sw.style.borderColor = on ? 'var(--brand)' : 'var(--border)';
     const src = JSON.stringify(input, null, 2);
     document.getElementById('inputJson').textContent = src;
@@ -1121,7 +1181,7 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
   sw.addEventListener('click', ()=>{ on=!on; draw(on); });
 })();
 
-/* Theme badge (single theme, but keep name visible) */
+/* Theme badge (single theme, label only) */
 (function(){
   const badge=document.getElementById('theme-diag'); if(!badge) return;
   const name=badge.querySelector('#theme-name');
@@ -1131,7 +1191,7 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
 })();
 </script>
 
-<!-- Theme diagnostic badge -->
+<!-- Theme diagnostic badge (dev aid, safe to remove) -->
 <div id="theme-diag" aria-hidden="false">
   <span id="theme-name">Theme: cerbi-light</span>
   <button id="theme-cycle" title="Cycle theme">Cycle</button>
