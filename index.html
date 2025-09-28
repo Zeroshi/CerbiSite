@@ -28,15 +28,15 @@
       --muted:#5a6a88;
       --text:#182235;
       --text-strong:#0b1324;
-      --link: #0f63ff;                /* accent blue link */
+      --link:#0f63ff;                 /* accent blue link */
       --radius:14px;
-      --shadow: 0 14px 40px rgba(10,16,30,.12);
-      --ring: 0 0 0 4px color-mix(in srgb, var(--brand), white 70%);
+      --shadow:0 14px 40px rgba(10,16,30,.12);
+      --ring:0 0 0 4px color-mix(in srgb, var(--brand), white 70%);
       --glyph:#1b3159;                /* navy-ish clock */
       --glyph-strong:#0f2444;
 
       --nav-h:64px;
-      --container: min(1200px, 92vw);
+      --container:min(1200px, 92vw);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -50,43 +50,48 @@
     h1,h2,h3,h4,h5{color:var(--text-strong); margin:.2em 0 .35em}
     .container{width:var(--container); margin-inline:auto}
 
-    /* NAV */
+    /* NAV — pinned, never disappears, no overlap */
     .nav{
-      position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.82); backdrop-filter:saturate(1.2) blur(10px);
+      position:sticky; top:0; z-index:2000;
+      background:rgba(255,255,255,.9);
+      backdrop-filter:saturate(1.2) blur(10px);
       border-bottom:1px solid rgba(20,40,72,.08);
     }
-    .nav-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 0}
-    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text-strong); font-weight:800}
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 0; min-height:var(--nav-h)}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text-strong); font-weight:800; flex-shrink:0}
     .brand img{height:36px; width:auto; border-radius:8px; filter:drop-shadow(0 0 10px rgba(255,77,0,.25))}
     .brand span{letter-spacing:.2px}
-    /* responsive primary nav with "More" bucket (no scrollbars) */
-    .nav-links{display:flex; gap:8px; align-items:center; flex: 1 1 auto; justify-content:center; min-width:0}
+
+    /* responsive primary nav with "More" bucket (no overlap) */
+    .nav-wrap{display:flex; align-items:center; gap:12px; flex:1 1 auto; min-width:0}
+    .nav-links{display:flex; gap:8px; align-items:center; justify-content:center; flex:1 1 auto; min-width:0; overflow:hidden}
     .nav-links a{
-      white-space:nowrap; padding:8px 10px; border-radius:10px; color:var(--navy);
+      white-space:nowrap; padding:8px 10px; border-radius:10px; color:var(--navy); flex:0 0 auto;
+      transition:background .2s ease;
     }
     .nav-links a:hover{background:var(--panel-2)}
-    .nav-actions{display:flex; gap:8px; align-items:center}
-    .btn{appearance:none; border:none; cursor:pointer; border-radius:12px; padding:10px 14px; font-weight:700; transition:transform .06s ease, box-shadow .2s ease, background .2s ease}
+    .nav-actions{display:flex; gap:8px; align-items:center; flex-shrink:0}
+    .btn{appearance:none; border:none; cursor:pointer; border-radius:12px; padding:10px 14px; font-weight:700; transition:transform .08s ease, box-shadow .2s ease, background .2s ease}
     .btn-primary{background:var(--brand); color:#fff; box-shadow:var(--shadow)}
     .btn-primary:hover{transform:translateY(-1px)}
     .btn-ghost{background:transparent; color:var(--link); outline:1px solid color-mix(in srgb, var(--link), transparent 50%)}
-    .more{position:relative}
-    .more>button{background:var(--panel-2); color:var(--text); border:1px solid rgba(20,40,72,.12)}
+    .more{position:relative; flex-shrink:0}
+    .more>button{background:var(--panel-2); color:var(--text); border:1px solid rgba(20,40,72,.12); border-radius:10px; padding:8px 10px}
     .more-menu{
       position:absolute; right:0; top:calc(100% + 8px); background:var(--panel); border:1px solid rgba(20,40,72,.12); border-radius:12px; box-shadow:var(--shadow);
-      padding:8px; display:none; min-width:220px
+      padding:8px; display:none; min-width:240px; max-height:60vh; overflow:auto
     }
     .more-menu a{display:block; padding:8px 10px; border-radius:8px}
     .more-menu a:hover{background:var(--panel-2)}
     .more[data-open="true"] .more-menu{display:block}
 
     /* HERO */
-    .hero{padding:38px 0 12px}
+    .hero{padding:24px 0 12px}
     .hero .hero-bg{
       width:100%; height:360px; border-radius:22px; display:block;
       background: radial-gradient(1200px 420px at 75% -20%, color-mix(in srgb, var(--brand), white 78%), transparent 60%), linear-gradient(180deg, #ffffff, #f3f7ff);
       border:1px solid rgba(20,40,72,.12);
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
       position:relative; overflow:hidden;
     }
     .chip-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px}
@@ -94,9 +99,9 @@
     .hl{color:var(--brand)}
     .hero h1{
       margin:14px 0 10px;
-      font-size: clamp(28px, 5vw, 48px);
+      font-size:clamp(28px, 5vw, 48px);
       line-height:1.08;
-      background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%);
+      background:linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%);
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
     .sub{color:var(--muted); max-width:70ch}
@@ -108,16 +113,18 @@
     .dash-slider .slide{display:none; padding:14px}
     .dash-slider .slide.active{display:block}
     .dash-slider .dots{display:flex; gap:6px; padding:0 12px 12px 12px}
-    .dash-slider .dots button{width:8px; height:8px; border-radius:50%; border:0; background:#d5deff}
+    .dash-slider .dots button{width:8px; height:8px; border-radius:50%; border:0; background:#d5deff; transition:opacity .2s ease}
     .dash-slider .dots button.active{background:var(--brand)}
 
-    /* FULL BLEED */
+    /* FULL BLEED helpers */
     .full-bleed-wrap{position:relative}
     .full-bleed{width:100%; max-width:none}
+    .full-bleed .container{width:100%; max-width:none; padding:0}
 
-    /* POP-ART */
+    /* POP-ART (full browser width) */
+    .sig-outer{width:100vw; margin-left:50%; transform:translateX(-50%)}
     .sig-rotator{position:relative; display:grid; place-items:center; overflow:hidden; min-height:clamp(220px, 42vw, 520px); background:var(--panel)}
-    .sig-rotator img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; visibility:hidden; transform:scale(1.02); transition:opacity .4s ease, visibility .4s ease, transform .5s ease}
+    .sig-rotator img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; visibility:hidden; transform:scale(1.02); transition:opacity .45s ease, visibility .45s ease, transform .6s ease}
     .sig-rotator img.is-active{opacity:1; visibility:visible; transform:none}
     .img-cap{color:var(--muted); text-align:center}
     #sigCapCenter{text-align:center}
@@ -127,21 +134,23 @@
     .eyebrow{font-size:12px; letter-spacing:.16em; color:var(--muted); text-transform:uppercase}
     .lead{color:var(--muted)}
     .grid{display:grid; gap:14px; grid-template-columns:repeat(4,minmax(0,1fr))}
+    .col-4{grid-column:span 1}
     .col-6{grid-column:span 2}
     .col-12{grid-column:span 4}
-    .card{background:var(--panel); border:1px solid rgba(20,40,72,.12); border-radius:14px; padding:16px; box-shadow: var(--shadow)}
+    .card{background:var(--panel); border:1px solid rgba(20,40,72,.12); border-radius:14px; padding:16px; box-shadow:var(--shadow); transition:transform .15s ease}
     .card:hover{transform:translateY(-1px)}
-    .muted{color:var(--muted)}
+    .card p,.card li{overflow-wrap:anywhere}
 
-    /* DASHBOARD — full width carousel */
+    /* DASHBOARD — full browser width carousel */
+    .showcase-outer{width:100vw; margin-left:50%; transform:translateX(-50%)}
     .showcase{border-radius:18px; overflow:hidden; border:1px solid rgba(20,40,72,.12)}
     .showcase-inner{position:relative}
-    .showcase-viewport{position:relative; width:100%; height: clamp(320px, 56vw, 820px)}
+    .showcase-viewport{position:relative; width:100%; height:clamp(320px, 56vw, 820px)}
     .showcase-viewport .slide{position:absolute; inset:0; margin:0; opacity:0; visibility:hidden; transition:opacity .5s ease}
     .showcase-viewport .slide.active{opacity:1; visibility:visible}
     .showcase-viewport img{width:100%; height:100%; object-fit:cover}
     .dash-arrows{position:absolute; inset:auto 0 12px 0; display:flex; gap:8px; justify-content:center}
-    .dash-arrows .btn-ghost{background:rgba(255,255,255,.86)}
+    .dash-arrows .btn-ghost{background:rgba(255,255,255,.92)}
     .showcase .dots{position:absolute; bottom:12px; left:12px; display:flex; gap:6px}
     .showcase .dots button{width:10px; height:10px; border-radius:50%; border:0; background:#e1e6ff}
     .showcase .dots button.active{background:var(--brand)}
@@ -151,26 +160,26 @@
     .table th,.table td{border:1px solid rgba(20,40,72,.12); padding:.6em .7em}
     .table th{background:#f0f3fa; color:var(--navy)}
 
-    /* ARCHITECTURE image constraints */
+    /* ARCHITECTURE */
     .arch-diagram img{width:100%; height:auto; border-radius:12px; border:1px solid rgba(20,40,72,.12)}
     .arch-diagram{max-width:900px}
 
-    /* CONTACT IFRAME */
+    /* CONTACT DOC */
     .prose-doc{width:min(100vw, 960px); max-height:min(90vh, 900px); overflow:auto; padding:22px 26px; border-radius:12px; background:#fff; color:var(--text); border:1px solid rgba(20,40,72,.18); box-shadow:var(--shadow); line-height:1.55}
 
-    /* OVERLAYS (guarded closed by default) */
-    .lightbox{position:fixed; inset:0; display:none !important; place-items:center; background:rgba(20,24,32,.65); backdrop-filter:blur(6px); z-index:1100}
+    /* OVERLAYS — force closed by default */
+    .lightbox{position:fixed; inset:0; display:none !important; place-items:center; background:rgba(20,24,32,.65); backdrop-filter:blur(6px); z-index:2100}
     .lightbox[aria-hidden="false"]{display:grid !important}
     .lightbox .close{position:absolute; top:20px; right:20px; background:#fff; border:0; width:44px; height:44px; border-radius:12px; box-shadow:var(--shadow)}
     #lightboxImg{max-width:min(96vw,1600px); max-height:90vh; border-radius:12px; box-shadow:var(--shadow); background:#000}
     .footer{padding:18px 0; border-top:1px solid rgba(20,40,72,.12); background:rgba(255,255,255,.7)}
 
-    /* GLYPH CLOCK (bold, glitch) */
+    /* GLYPH CLOCK — behind everything */
     #bg-clock{
-      position:fixed; inset:0; z-index:-2; pointer-events:none; display:grid; place-items:center; user-select:none; line-height:1;
+      position:fixed; inset:0; z-index:-10; pointer-events:none; display:grid; place-items:center; user-select:none; line-height:1;
       color:var(--glyph); opacity:var(--clock-opacity,.22);
       font-weight:800; letter-spacing:.04em;
-      filter: drop-shadow(0 12px 24px rgba(10,16,30,.18));
+      filter:drop-shadow(0 12px 24px rgba(10,16,30,.18));
     }
     .glitch{
       position:relative; display:inline-block;
@@ -179,17 +188,18 @@
        -2px 0 0 rgba(15,99,255,.18);
     }
 
-    /* CONTACT FAB (clean hover) */
+    /* CONTACT FAB — higher contrast, simple hover */
     .contact-fab{
       position:fixed; right:20px; top:50%; transform:translateY(-50%);
-      width:56px; height:56px; display:grid; place-items:center; border-radius:16px;
-      background:var(--brand); color:#fff; text-decoration:none; box-shadow:var(--shadow); z-index:900; overflow:hidden;
-      border:1px solid rgba(0,0,0,.04)
+      width:60px; height:60px; display:grid; place-items:center; border-radius:16px;
+      background:var(--brand); color:#fff; text-decoration:none; box-shadow:var(--shadow); z-index:2050; overflow:hidden;
+      border:1px solid rgba(0,0,0,.05)
     }
     .contact-fab img{width:28px; height:28px}
     .contact-fab .label{
-      position:absolute; right:56px; top:0; bottom:0; display:grid; place-items:center; padding:0 12px; background:rgba(255,255,255,.9);
-      color:var(--text-strong); border:1px solid rgba(20,40,72,.12); border-radius:12px 0 0 12px; transform:translateX(10px); opacity:0; transition:transform .18s ease, opacity .18s ease
+      position:absolute; right:64px; top:0; bottom:0; display:grid; place-items:center; padding:0 12px;
+      background:#fff; color:var(--text-strong); border:1px solid rgba(20,40,72,.12);
+      border-radius:12px 0 0 12px; transform:translateX(8px); opacity:0; transition:transform .18s ease, opacity .18s ease
     }
     .contact-fab:hover .label{transform:none; opacity:1}
 
@@ -202,6 +212,7 @@
       .col-6{grid-column:span 2}
       .col-12{grid-column:span 2}
       .showcase-viewport{height:clamp(280px,60vw,700px)}
+      .nav-links a{padding:8px 8px}
     }
     @media (max-width: 640px){
       .grid{grid-template-columns:1fr}
@@ -210,11 +221,11 @@
     }
 
     /* Background canvas layers (kept behind content) */
-    #dynamic-bg{position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden}
-    .tiles{position:fixed; inset:0; z-index:-6; pointer-events:none}
-    .sky{position:fixed; inset:0; z-index:-5; pointer-events:none}
-    .veil{position:fixed; inset:0; z-index:-4; pointer-events:none}
-    .spotlight{position:fixed; inset:0; z-index:-3; pointer-events:none}
+    #dynamic-bg{position:fixed; inset:0; z-index:-20; pointer-events:none; overflow:hidden}
+    .tiles{position:fixed; inset:0; z-index:-20; pointer-events:none}
+    .sky{position:fixed; inset:0; z-index:-20; pointer-events:none}
+    .veil{position:fixed; inset:0; z-index:-20; pointer-events:none}
+    .spotlight{position:fixed; inset:0; z-index:-20; pointer-events:none}
   </style>
 
   <!-- Favicons -->
@@ -232,46 +243,37 @@
   <div class="veil" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
 
-  <!-- GLYPH CLOCK (glitch/time) -->
+  <!-- GLYPH CLOCK -->
   <div id="bg-clock" aria-hidden="true"><span id="clockText" class="glitch">00:00</span></div>
 
-  <!-- Ribbon -->
-  <div id="topRibbon" class="ribbon ribbon-beta" role="status" style="position:relative;background:linear-gradient(0deg, rgba(0,0,0,.04), rgba(0,0,0,.04)), rgba(255,255,255,.82); border-bottom:1px solid rgba(20,40,72,.08)">
-    <div class="container ribbon-inner" style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0">
-      <div class="rb-copy"><strong>CerbiShield Dashboard</strong> — Beta preview available.</div>
-      <div class="rb-ctas">
-        <a class="btn btn-ghost btn-sm" href="#dashboards">See preview</a>
-        <a class="btn btn-primary btn-sm" href="https://form.jotform.com/252385904589067" target="_blank" rel="noopener">Request access</a>
-      </div>
-    </div>
-  </div>
-
   <!-- Nav -->
-  <header id="siteNav" class="nav">
+  <header id="siteNav" class="nav" role="banner">
     <div class="container nav-inner">
       <a href="#top" class="brand" aria-label="Cerbi — back to top">
         <img src="assets/CerbiLogo.png" alt="" decoding="async" fetchpriority="high" />
         <span>CerbiSuite</span>
       </a>
 
-      <nav id="primaryNav" class="nav-links" aria-label="Primary">
-        <!-- Keep order; JS will move overflow items to "More" -->
-        <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
-        <a href="#ecosystem">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
-        <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
-        <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
-        <a href="docs/company.md" class="doc-link">Company</a>
-        <a href="#contact">Contact</a>
-      </nav>
+      <div class="nav-wrap">
+        <nav id="primaryNav" class="nav-links" aria-label="Primary">
+          <!-- Keep order; JS will move overflow items to "More" -->
+          <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
+          <a href="#ecosystem">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
+          <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
+          <a href="#architecture">Architecture</a><a href="#interop">Interoperability</a><a href="#roadmap">Roadmap</a>
+          <a href="docs/company.md" class="doc-link">Company</a>
+          <a href="#contact">Contact</a>
+        </nav>
 
-      <div class="nav-actions">
-        <a class="btn btn-ghost" href="#contact" role="button">Contact</a>
-        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener" role="button">GitHub</a>
+        <div class="nav-actions">
+          <a class="btn btn-ghost" href="#contact" role="button">Contact</a>
+          <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener" role="button">GitHub</a>
 
-        <!-- "More" bucket (populated dynamically) -->
-        <div class="more" id="moreMenu">
-          <button type="button" aria-haspopup="menu" aria-expanded="false" title="More">More ▾</button>
-          <div class="more-menu" role="menu" aria-label="More links"></div>
+          <!-- "More" bucket (populated dynamically) -->
+          <div class="more" id="moreMenu">
+            <button type="button" aria-haspopup="menu" aria-expanded="false" title="More">More ▾</button>
+            <div class="more-menu" role="menu" aria-label="More links"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -282,7 +284,7 @@
 
   <main id="main">
     <!-- ===== HERO ===== -->
-    <section class="hero container" id="top">
+    <section class="hero container" id="top" aria-label="Hero">
       <div class="hero-bg" aria-hidden="true"></div>
 
       <div class="chip-row" role="list" aria-label="High level features">
@@ -333,14 +335,12 @@
       </div>
     </section>
 
-    <!-- SIGNATURE ART (POP ART) — FULL BLEED -->
-    <section id="hero-art" class="section full-bleed-wrap">
-      <div class="full-bleed">
-        <div class="container">
-          <div class="card" style="padding:0;border-radius:18px">
-            <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
-            <div class="img-cap" id="sigCapCenter" style="padding:10px 0 16px"><code>Cerbi.</code></div>
-          </div>
+    <!-- SIGNATURE ART (POP-ART) — FULL BROWSER WIDTH -->
+    <section id="hero-art" class="section full-bleed-wrap" aria-label="Signature art">
+      <div class="full-bleed sig-outer">
+        <div class="showcase">
+          <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
+          <div class="img-cap" id="sigCapCenter" style="padding:10px 0 16px"><code>Cerbi.</code></div>
         </div>
       </div>
     </section>
@@ -358,22 +358,6 @@
         <article class="col-4 card"><h3><span class="n">4.</span> Accelerate Incidents</h3><p class="muted">Consistent app/env/tenant/trace IDs → faster triage and MTTR.</p><ul><li>Joinable logs across services</li><li>Violation context included</li></ul></article>
         <article class="col-4 card"><h3><span class="n">5.</span> Ship ML-Ready Telemetry</h3><p class="muted">Clean, governed features for LLMs & models—without PII surprises.</p><ul><li>Tags, categories, enums</li><li>Consistent shapes for training</li></ul></article>
         <article class="col-4 card"><h3><span class="n">6.</span> Adopt Gradually</h3><p class="muted">Start with one domain (e.g., auth), run in relax-mode, then tighten.</p><ul><li>Keep your loggers/sinks</li><li>No vendor lock-in</li></ul></article>
-      </div>
-
-      <div class="card" style="padding:16px;margin-top:16px">
-        <h3 style="margin:0 0 6px">Business Use Case — Claims Platform (Regulated)</h3>
-        <p class="muted">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules). Developers see IDE diagnostics for forbidden fields; runtime applies redaction and flags violations instead of dropping events. Splunk dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
-        <ul style="margin-top:8px">
-          <li><strong>Why it helps:</strong> lower ingestion cost, faster incident triage, audit-ready evidence.</li>
-          <li><strong>How to roll out:</strong> enable analyzer in CI; deploy runtime validators in relax-mode; tighten over 2 sprints.</li>
-          <li><strong>Future state:</strong> CerbIQ normalizes cross-domain tags; CerbiSense flags anomalies on governed features.</li>
-        </ul>
-      </div>
-
-      <div class="hero-cta-row" style="justify-content:center;margin-top:10px">
-        <a class="btn btn-primary" href="#governance">See Governance in action</a>
-        <a class="btn btn-ghost" href="#packages">Pick your packages</a>
-        <a class="btn btn-ghost" href="#compare">Compare approaches</a>
       </div>
     </section>
 
@@ -446,15 +430,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </code></pre>
         <button class="btn btn-ghost" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
       </div>
-
-      <p style="margin-top:14px">
-        <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">View full docs on GitHub →</a>
-      </p>
-      <div class="hero-cta-row">
-        <a class="btn btn-ghost doc-link" href="docs/quickstart-dotnet.md">.NET Quick Start (MD)</a>
-        <a class="btn btn-ghost doc-link" href="docs/quickstart-mel-governance.md">MEL Governance Only</a>
-        <a class="btn btn-ghost doc-link" href="docs/case-study-claims.md">Case Study (Claims)</a>
-      </div>
     </section>
 
     <!-- ECOSYSTEM -->
@@ -526,55 +501,53 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS — FULL WIDTH SHOWCASE -->
-    <section id="dashboards" class="section full-bleed-wrap">
-      <div class="full-bleed">
-        <div class="container">
-          <div class="showcase card">
-            <div id="dashSlider" class="showcase-inner" aria-roledescription="carousel" tabindex="0">
-              <div class="sr-only" aria-live="polite"></div>
+    <!-- DASHBOARDS — FULL BROWSER WIDTH SHOWCASE -->
+    <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
+      <div class="full-bleed showcase-outer">
+        <div class="showcase">
+          <div id="dashSlider" class="showcase-inner" aria-roledescription="carousel" tabindex="0">
+            <div class="sr-only" aria-live="polite"></div>
 
-              <div class="showcase-viewport">
-                <figure class="slide active">
-                  <img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-                       srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
-                       sizes="100vw" alt="CerbiShield — Overview"
-                       data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
-                       loading="eager" decoding="async">
-                </figure>
+            <div class="showcase-viewport">
+              <figure class="slide active">
+                <img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg"
+                     srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
+                     sizes="100vw" alt="CerbiShield — Overview"
+                     data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
+                     loading="eager" decoding="async">
+              </figure>
 
-                <figure class="slide">
-                  <img width="1200" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-                       srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
-                       sizes="100vw" alt="CerbiShield — Profiles"
-                       data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
-                       loading="lazy" decoding="async">
-                </figure>
+              <figure class="slide">
+                <img width="1200" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
+                     srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
+                     sizes="100vw" alt="CerbiShield — Profiles"
+                     data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
+                     loading="lazy" decoding="async">
+              </figure>
 
-                <figure class="slide">
-                  <img width="1200" height="900" src="assets/screenshots/cerbishield-violations-1200x900.jpg"
-                       srcset="assets/screenshots/cerbishield-violations-1200x900.jpg 1x, assets/screenshots/cerbishield-violations-2400x1800.jpg 2x"
-                       sizes="100vw" alt="CerbiShield — Violations"
-                       data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-                       loading="lazy" decoding="async">
-                </figure>
+              <figure class="slide">
+                <img width="1200" height="900" src="assets/screenshots/cerbishield-violations-1200x900.jpg"
+                     srcset="assets/screenshots/cerbishield-violations-1200x900.jpg 1x, assets/screenshots/cerbishield-violations-2400x1800.jpg 2x"
+                     sizes="100vw" alt="CerbiShield — Violations"
+                     data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+                     loading="lazy" decoding="async">
+              </figure>
 
-                <figure class="slide">
-                  <img width="1600" height="900" src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
-                       sizes="100vw" alt="CerbiShield — Deploy"
-                       data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
-                       loading="lazy" decoding="async">
-                </figure>
-              </div>
-
-              <div class="dots" aria-label="Slide controls"></div>
-              <div class="dash-arrows">
-                <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
-                <button class="btn btn-ghost" type="button" data-next>Next →</button>
-              </div>
+              <figure class="slide">
+                <img width="1600" height="900" src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                     sizes="100vw" alt="CerbiShield — Deploy"
+                     data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+                     loading="lazy" decoding="async">
+              </figure>
             </div>
-            <div class="img-cap">Click any screenshot to open full-size preview. Use ←/→ or swipe to navigate.</div>
+
+            <div class="dots" aria-label="Slide controls"></div>
+            <div class="dash-arrows">
+              <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
+              <button class="btn btn-ghost" type="button" data-next>Next →</button>
+            </div>
           </div>
+          <div class="img-cap">Click any screenshot to open full-size preview. Use ←/→ or swipe to navigate.</div>
         </div>
       </div>
     </section>
@@ -645,12 +618,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="eyebrow">Install</div>
       <h2><span class="hl">NuGet Packages</span></h2>
       <div class="grid" style="gap:16px">
-        <article class="col-4 card"><h3>CerbiStream</h3><p class="muted">Core structured logger for .NET.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a></article>
-        <article class="col-4 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime governance for Microsoft.Extensions.Logging.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a></article>
-        <article class="col-4 card"><h3>CerbiStream.GovernanceAnalyzer</h3><p class="muted">Roslyn analyzer diagnostics for schema/PII.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a></article>
+        <article class="col-4 card"><h3>CerbiStream</h3><p class="muted">Structured logger with async buffer, encryption, and governance hooks.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a></article>
+        <article class="col-4 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime validator for Microsoft.Extensions.Logging; redaction & relax-mode.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a></article>
+        <article class="col-4 card"><h3>CerbiStream.GovernanceAnalyzer</h3><p class="muted">Roslyn analyzer diagnostics for schema/PII with CI-friendly IDs.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a></article>
 
-        <article class="col-4 card"><h3>Cerbi.Governance.Runtime</h3><p class="muted">Common runtime services.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a></article>
-        <article class="col-4 card"><h3>Cerbi.Governance.Core</h3><p class="muted">Core governance model & policy types.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a></article>
+        <article class="col-4 card"><h3>Cerbi.Governance.Runtime</h3><p class="muted">Runtime enforcement engine shared by plugins.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a></article>
+        <article class="col-4 card"><h3>Cerbi.Governance.Core</h3><p class="muted">Core models (profiles, results) + plugin contracts.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a></article>
         <article class="col-4 card"><h3>Cerbi.Serilog.GovernanceAnalyzer</h3><p class="muted">Analyzer support for Serilog projects.</p><a class="btn btn-primary" href="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a></article>
       </div>
     </section>
@@ -660,9 +633,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="eyebrow">Open Source</div>
       <h2><span class="hl">GitHub Repositories</span></h2>
       <div class="grid" style="gap:16px">
-        <article class="col-6 card"><h3>CerbiStream</h3><p class="muted">Reference implementation of the structured logger.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a></article>
-        <article class="col-6 card"><h3>CerbiStream.BenchmarkTests</h3><p class="muted">Benchmarks for throughput/allocations.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime validator package.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a></article>
+        <article class="col-6 card"><h3>CerbiStream</h3><p class="muted">Reference implementation of the structured logger (async channel, file fallback, governance hooks).</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a></article>
+        <article class="col-6 card"><h3>CerbiStream.BenchmarkTests</h3><p class="muted">Throughput/allocations microbenchmarks.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a></article>
+        <article class="col-6 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime validator package & demo.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a></article>
         <article class="col-6 card"><h3>Cerbi.MEL.Governance.Demo</h3><p class="muted">Demo app for validation and relax-mode.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a></article>
         <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalyzer</h3><p class="muted">Analyzer for Serilog projects.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a></article>
         <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3><p class="muted">Test harness for analyzer rules.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a></article>
@@ -763,7 +736,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </footer>
 
-  <!-- Command palette (kept; opens MD docs into modal) -->
+  <!-- Command palette (MD modal) -->
   <div class="cmdk-overlay" id="cmdkOverlay" aria-hidden="true" hidden>
     <div class="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
       <div class="header"><span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" /></div>
@@ -789,16 +762,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <article id="docboxContent" class="prose-doc"></article>
   </div>
 
-  <!-- Core libs you already referenced -->
+  <!-- Core libs -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
   <!-- ===================== PAGE JS ===================== -->
   <script>
-    // Guard overlays CLOSED on boot (fixes random veil/close button on page)
+    // Force overlays CLOSED on boot (fixes stray veil/close button)
     (function(){
       ['lightbox','docbox','cmdkOverlay'].forEach(id=>{
-        var el=document.getElementById(id);
-        if(!el) return;
+        var el=document.getElementById(id); if(!el) return;
         el.hidden=true; el.setAttribute('aria-hidden','true');
       });
     })();
@@ -806,14 +778,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Progress bar
+    // Scroll progress
     (function(){
       const bar=document.getElementById('progress'); if(!bar) return;
       const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
 
-    // Primary nav "More" bucket (no scrollbars; items overflow into menu)
+    // Primary nav "More" bucket — prevents overlap
     (function(){
       const nav=document.getElementById('primaryNav');
       const more=document.getElementById('moreMenu');
@@ -822,13 +794,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       function layout(){
         // reset: move any items back from more-menu
         [...bucket.querySelectorAll('a')].forEach(a=>nav.insertBefore(a, more));
-        // if it still overflows, move last items into "More" until it fits
-        const max = nav.parentElement.clientWidth - 240; // leave room for brand + actions
-        let w=0; let toMove=[];
+        // compute available width for links
+        const wrap = nav.parentElement;
+        const allowance = wrap.clientWidth - 320; // brand + actions space
+        let w=0; const toMove=[];
         [...nav.children].forEach(el=>{
           if(el===more) return;
           w += el.getBoundingClientRect().width + 8;
-          if(w > max) toMove.push(el);
+          if(w>allowance) toMove.push(el);
         });
         if(toMove.length){
           toMove.forEach(el=>bucket.appendChild(el));
@@ -837,7 +810,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           more.style.display='none';
         }
       }
-      layout(); addEventListener('resize', layout);
+      const ro = new ResizeObserver(layout);
+      ro.observe(document.querySelector('.nav-inner'));
+      layout();
       more.querySelector('button').addEventListener('click', ()=>{
         const open = more.getAttribute('data-open')==='true';
         more.setAttribute('data-open', String(!open));
@@ -846,7 +821,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) { more.setAttribute('data-open','false'); more.querySelector('button').setAttribute('aria-expanded','false'); }});
     })();
 
-    // Glyph clock — bold, navy, faster cycle, Love-Death-ROBOTS-style random letters + current time hold
+    // Glyph clock — navy, quick glitch, long time hold, always behind content
     (function(){
       const el=document.getElementById('clockText'); if(!el) return;
       function size(){
@@ -861,9 +836,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       let tick=0;
 
       function randomWord(){
-        // build a 5-letter variant with occasional swapped glyphs
-        let out="";
-        for(let i=0;i<WORD.length;i++){
+        let out=""; for(let i=0;i<WORD.length;i++){
           const c=WORD[i];
           if(Math.random()<0.3){ out += GLYPHS.charAt((Math.random()*GLYPHS.length)|0); }
           else if(Math.random()<0.2){ out += c.toLowerCase(); }
@@ -875,14 +848,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       function render(){
         const d=new Date();
         const time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        // cycle: 2 quick glitch frames, then hold time longer
         const phase = tick % 12;
-        if(phase<=2){ el.textContent = randomWord(); }
-        else { el.textContent = time; }
+        el.textContent = (phase<=2) ? randomWord() : time;
         tick++;
       }
       render();
-      setInterval(render, 500); // quick changes; time holds ~2s in the loop
+      setInterval(render, 500);
     })();
 
     // WHY slider dots + autoswitch
@@ -921,10 +892,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       prevBtn?.addEventListener('click',()=>show(i-1));
       nextBtn?.addEventListener('click',()=>show(i+1));
       show(i,false);
-      // autoslide
       let timer=null; const start=()=>{ stop(); timer=setInterval(()=>show(i+1,false), 4800); }; const stop=()=>{ if(timer) clearInterval(timer); timer=null; };
       slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start); start();
-      // lightbox
       const overlay=document.getElementById('lightbox'); const big=document.getElementById('lightboxImg');
       function open(src){ if(!overlay||!big) return; big.src=src; overlay.hidden=false; overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
       function close(){ if(!overlay||!big) return; overlay.setAttribute('aria-hidden','true'); overlay.hidden=true; big.removeAttribute('src'); document.body.style.overflow=''; }
@@ -934,7 +903,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src)));
     })();
 
-    // Pop-art rotator (centered caption)
+    // Pop-art rotator (full width)
     (function(){
       const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
       const sources = [
@@ -970,7 +939,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && modal.getAttribute('aria-hidden')==='false') close(); });
 
       async function fetchMd(path){
-        const local = path.replace(/^\/+/,'');
+        const local = path.replace(/^\/+/, '');
         try{ const r=await fetch(local, {cache:'no-store'}); if(r.ok) return await r.text(); }catch{}
         try{ const r2=await fetch(`https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/${local}`, {cache:'no-store'}); if(r2.ok) return await r2.text(); }catch{}
         return '# Not found';
@@ -988,18 +957,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', attach, {once:true}); } else { attach(); }
     })();
 
-    // Live Rule Check switch behavior
+    // Live Rule Check switch — fixed toggle
     (function(){
       const btn=document.getElementById('piiSwitch'); const knob=document.getElementById('piiKnob'); if(!btn||!knob) return;
       let on=false;
-      const sample=()=>({ userId: "12345", email: on ? "j***@corp.co" : "jane@corp.co", plan: "pro" });
+      const inputEl=document.getElementById('inputJson'); const evalEl=document.getElementById('evalJson');
+      const sample=()=>({ userId:"12345", email:on ? "j***@corp.co" : "jane@corp.co", plan:"pro" });
       const evalRes=()=>({
-        allowed:true, redactions: on? 1:0,
+        allowed:true, redactions: on?1:0,
         violations: on? [{ field:"email", policy:"PII", action:"redact"}] : []
       });
       function render(){
-        document.getElementById('inputJson').textContent = JSON.stringify(sample(), null, 2);
-        document.getElementById('evalJson').textContent  = JSON.stringify(evalRes(), null, 2);
+        if(inputEl) inputEl.textContent = JSON.stringify(sample(), null, 2);
+        if(evalEl)  evalEl.textContent  = JSON.stringify(evalRes(),  null, 2);
         knob.style.transform = on? 'translateX(26px)' : 'translateX(0)';
         btn.style.background = on? 'var(--brand)' : '#e8eefc';
         btn.style.borderColor = on? 'var(--brand)' : 'rgba(20,40,72,.18)';
