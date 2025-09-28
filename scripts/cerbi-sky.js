@@ -1,55 +1,47 @@
-/* Cerbi starfield / background canvas — stays behind content */
+/* Star/sky canvas kept firmly in the background */
+
 (function(){
-  const sky = document.getElementById('sky');
-  if (!sky) return;
-  const ctx = sky.getContext('2d');
+  const canvas = document.getElementById('sky');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
 
   function resize(){
-    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
-    sky.width  = Math.floor(innerWidth  * dpr);
-    sky.height = Math.floor(innerHeight * dpr);
-    sky.style.width  = innerWidth + 'px';
-    sky.style.height = innerHeight + 'px';
+    const w = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight||0);
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
     ctx.setTransform(dpr,0,0,dpr,0,0);
+    initStars(w, h);
   }
 
-  // build a light starfield with slight twinkle
-  const stars = [];
-  function initStars(){
-    stars.length = 0;
-    const count = Math.max(120, Math.floor((innerWidth * innerHeight) / 12000));
-    for (let i=0;i<count;i++){
-      stars.push({
-        x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight,
-        r: Math.random() * 1.5 + 0.3,
-        a: Math.random() * 0.5 + 0.3,
-        s: Math.random() * 0.8 + 0.2
-      });
-    }
+  function initStars(w,h){
+    const count = Math.round((w*h)/24000);
+    stars = Array.from({length: count}, ()=>({
+      x: Math.random()*w,
+      y: Math.random()*h,
+      r: Math.random()*1.6 + 0.2,
+      a: Math.random()*0.5 + 0.2,
+      tw: Math.random()*0.02 + 0.005
+    }));
   }
 
   function draw(){
-    ctx.clearRect(0,0,innerWidth,innerHeight);
-    // subtle vignette (keeps stars “in background” on light themes)
-    ctx.fillStyle = 'rgba(6,10,20,0.35)';
-    ctx.fillRect(0,0,innerWidth,innerHeight);
-
-    for (const st of stars){
-      st.a += (Math.random() - 0.5) * 0.04;
-      const alpha = Math.max(0.08, Math.min(0.45, st.a));
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    ctx.clearRect(0,0,w,h);
+    for (const s of stars){
+      s.a += s.tw; const op = 0.15 + 0.15*Math.sin(s.a*3.14);
       ctx.beginPath();
-      ctx.arc(st.x, st.y, st.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(230,240,255,${alpha})`;
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,235,255,${op})`;
       ctx.fill();
     }
     requestAnimationFrame(draw);
   }
 
-  function start(){
-    resize(); initStars(); draw();
-  }
-
-  addEventListener('resize', ()=>{ resize(); initStars(); }, {passive:true});
-  start();
+  resize(); draw();
+  addEventListener('resize', resize, {passive:true});
 })();
