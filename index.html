@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CerbiSuite — Unified Logging, Governance & Observability</title>
 
-<!-- Inter (clean, legible), falls back to system-ui -->
+<!-- Inter (clean, legible) -->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -14,18 +14,20 @@
    Cerbi — One Light Theme (Powder Blue accent + brand orange)
    ============================================================ */
 :root{
-  --brand:#ff4d00;                /* logo orange */
+  --brand:#ff4d00;                 /* logo orange */
   --brand-ink:#d64500;
-  --powder:#eaf2fb;               /* powder blue surface */
+  --powder:#eaf2fb;                /* powder blue surface */
   --bg:#f7fbff;
   --surface:#ffffff;
   --panel:#f2f6fc;
   --chip:#e6eef9;
   --kbd:#edf3fb;
-  --ink:#0b2338;                  /* body text */
-  --ink-soft:#475c75;             /* muted */
+  --ink:#0b2338;                   /* body text */
+  --ink-soft:#475c75;              /* muted */
   --heading: var(--brand);
-  --link:#145ea8;                 /* supporting blue */
+  --link:#145ea8;                  /* supporting blue */
+  --mint:#13bfa0;                  /* complementary for light accents */
+  --indigo:#2f55d4;                /* complementary for tiny highlights */
   --radius:14px;
   --shadow: 0 14px 36px rgba(15,40,70,.10), 0 2px 6px rgba(10,30,50,.06);
   --border:#dbe6f6;
@@ -33,7 +35,7 @@
   --btn: var(--brand);
   --btn-hover:#ff6a2b;
   --btn-text:#fff;
-  --clock: color-mix(in srgb, var(--brand), white 70%); /* stronger */
+  --clock: color-mix(in srgb, var(--brand), white 60%); /* brighter */
 }
 
 /* ===== Base ===== */
@@ -57,9 +59,7 @@ h1,h2{ font-weight: 900 }
 .container{ width:min(1200px, 92vw); margin-inline:auto }
 .section{ padding: 38px 0 44px }
 .full-bleed-wrap{ padding: 0; }
-/* Edge-to-edge full-bleed container */
 .full-bleed{ width:100vw; margin-left:50%; transform:translateX(-50%); }
-
 .row{ display:flex; gap:12px; flex-wrap:wrap }
 .grid{ display:grid; gap:14px; grid-template-columns: repeat(12, minmax(0,1fr)); }
 .col-4{ grid-column: span 4 }
@@ -101,7 +101,7 @@ h1,h2{ font-weight: 900 }
   appearance:none; border:none; cursor:pointer; user-select:none;
   border-radius:12px; padding:10px 14px; font-weight:800; letter-spacing:.2px;
   background: var(--panel); color: var(--ink); border:1px solid var(--border);
-  transition: transform .06s ease, filter .2s ease, background .2s ease, color .2s ease;
+  transition: transform .06s ease, filter .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
   text-decoration:none; display:inline-flex; align-items:center; gap:8px;
 }
 .btn:hover{ filter: brightness(1.02) }
@@ -113,12 +113,13 @@ h1,h2{ font-weight: 900 }
 .btn.btn-primary:hover{ background: var(--btn-hover) }
 .btn.btn-ghost{ background: transparent }
 
-/* ===== NAV ===== */
+/* ===== NAV (no scrollbar + overflow to "More") ===== */
 .nav{
   position: sticky; top:0; z-index:1000;
   backdrop-filter: blur(8px);
-  background: color-mix(in srgb, var(--bg), white 30%);
+  background: #fff;
   border-bottom:1px solid var(--border);
+  box-shadow: 0 10px 22px rgba(20,60,110,.06);
 }
 .nav-inner{
   display:flex; align-items:center; justify-content:space-between;
@@ -128,8 +129,8 @@ h1,h2{ font-weight: 900 }
 .brand img{ height:36px; width:auto; border-radius:8px; filter: drop-shadow(0 0 10px rgba(255,77,0,.25)) }
 .brand span{ font-weight:900; letter-spacing:.2px }
 .nav-links{
-  display:flex; gap:10px; align-items:center; overflow:auto hidden; padding: 2px;
-  mask-image: linear-gradient( to right, transparent 0, black 12px, black calc(100% - 12px), transparent 100% );
+  display:flex; gap:10px; align-items:center; padding: 2px;
+  overflow:visible; /* no scrollbar */
 }
 .nav-links a{
   white-space:nowrap; padding:8px 10px; border-radius:10px; color:#123; text-decoration:none;
@@ -138,9 +139,20 @@ h1,h2{ font-weight: 900 }
 .nav-links a:hover{ background: var(--panel); border-color: var(--border) }
 .nav-actions{ display:flex; gap:8px; align-items:center }
 
+/* "More" overflow dropdown */
+.more-wrap{ position:relative }
+.more-btn{ border:1px solid var(--border); background:linear-gradient(180deg, #fff, #f7fbff); }
+.more-menu{
+  position:absolute; right:0; top:110%; background:#fff; border:1px solid var(--border);
+  border-radius:12px; box-shadow: var(--shadow); padding:6px; display:none; min-width: 220px;
+}
+.more-menu a{ display:block; padding:8px 10px; color:#112; border-radius:8px; border:1px solid transparent }
+.more-menu a:hover{ background: var(--panel); border-color: var(--border) }
+.more-wrap.open .more-menu{ display:block }
+
 /* Progress bar */
 #progress{
-  position: fixed; top:0; left:0; height:3px; width:var(--progress,0%); background: var(--brand);
+  position: fixed; top:0; left:0; height:3px; width:var(--progress,0%); background: linear-gradient(90deg, var(--brand), var(--indigo));
   z-index:1100; box-shadow: 0 2px 6px rgba(255,77,0,.35);
 }
 
@@ -149,26 +161,33 @@ h1,h2{ font-weight: 900 }
 .ribbon-inner{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; }
 .rb-copy{ color:#253b53 }
 
-/* ===== HERO ===== */
-.hero{ padding: 38px 0 16px }
-.hero h1{ font-size: clamp(32px, 4.4vw, 54px); line-height:1.08; color: var(--ink) }
+/* ===== HERO (compact rotator) ===== */
+.hero{ padding: 28px 0 8px }
+.hero h1{ font-size: clamp(32px, 4.2vw, 52px); line-height:1.08; color: var(--ink) }
 .hero h1 .hl{ color: var(--brand) }
 .sub{ color:var(--ink-soft); max-width: 70ch }
-
-/* Remove old hero bg + chips */
+/* remove big decorative bg */
 .hero .hero-bg, .hero .chip-row{ display:none !important; }
 
-/* ===== GLYPH CLOCK (larger, bolder, glitch) ===== */
+/* Value rotator compact */
+.value-rotator{ padding: 10px 12px; }
+.value-rotator .slide h3{ margin:.1em 0 .25em; color: var(--indigo) }
+.value-rotator .slide ul{ margin:.4em 0 0 1.1em }
+.value-rotator .dots{ display:flex; gap:6px; padding:8px 2px 4px }
+.value-rotator .dots button{ width:9px; height:9px; border-radius:50%; border:1px solid var(--border); background: var(--chip) }
+.value-rotator .dots button.active{ background: var(--mint); border-color: var(--mint) }
+
+/* ===== GLYPH CLOCK (brighter + glitch) ===== */
 #bg-clock{
   position: fixed; inset:0; display:grid; place-items:center; pointer-events:none;
-  z-index: -1; line-height:1; opacity:.30; color: var(--clock); mix-blend-mode:multiply;
+  z-index: -1; line-height:1; opacity:.36; color: var(--clock); mix-blend-mode:multiply;
   transform: translateZ(0);
   font-weight: 900;
   text-shadow:
-    0 1px 0 rgba(255,255,255,.25),
-    0 10px 40px rgba(255,77,0,.18),
-    0 20px 60px rgba(10,30,60,.12);
-  -webkit-text-stroke: 1px rgba(255,77,0,.08);
+    0 1px 0 rgba(255,255,255,.28),
+    0 10px 40px rgba(255,77,0,.22),
+    0 20px 60px rgba(10,30,60,.14);
+  -webkit-text-stroke: 1px rgba(255,77,0,.10);
 }
 #bg-clock.glitch{ animation: clk-glitch .4s steps(2, end) 1; }
 @keyframes clk-glitch{
@@ -203,7 +222,7 @@ h1,h2{ font-weight: 900 }
 .showcase .dots button{ width:10px; height:10px; border-radius:50%; border:1px solid var(--border); background: var(--chip) }
 .showcase .dots button.active{ background: var(--brand); border-color: var(--brand) }
 
-/* ===== TABLES, KBD (higher contrast) ===== */
+/* ===== TABLES, KBD ===== */
 .table{ width:100%; border-collapse:separate; border-spacing:0 }
 .table thead th{
   position: sticky; top:0; background: color-mix(in srgb, var(--powder) 80%, white);
@@ -220,7 +239,7 @@ h1,h2{ font-weight: 900 }
   font-size: 14px;
 }
 
-/* ===== CONTACT FAB (tidy hover) ===== */
+/* ===== CONTACT FAB ===== */
 .contact-fab{
   position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
   z-index: 900; width:56px; height:56px; display:grid; place-items:center;
@@ -260,17 +279,12 @@ h1,h2{ font-weight: 900 }
 .partner-mini{ height: 22px; width: auto; opacity:.9 }
 
 /* ===== Accessibility ===== */
-:focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand), white 65%) }
+:focus-visible{ outline:none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--mint), white 60%) }
 
 /* Utilities */
 .img-frame{ overflow:hidden; border-radius: 12px; border:1px solid var(--border); background:var(--surface) }
 .arch-diagram img{ width:100%; height:auto; display:block; }
 .arch-diagram{ max-width: 900px; margin-left:auto; margin-right:auto } /* reduced size */
-
-/* Theme badge (dev only) */
-#theme-diag{ position:fixed; left:12px; bottom:12px; z-index:910; background:var(--surface); color:var(--ink); border:1px solid var(--border); border-radius:14px; padding:8px 10px; display:flex; gap:8px; align-items:center; box-shadow: var(--shadow) }
-#theme-diag button{ background:transparent; color:var(--ink); border:1px solid var(--border); border-radius:10px; padding:6px 10px }
-#theme-diag button:hover{ background: var(--panel) }
 </style>
 
 <!-- Favicons -->
@@ -308,12 +322,18 @@ h1,h2{ font-weight: 900 }
     </a>
 
     <nav id="primaryNav" class="nav-links" aria-label="Primary">
+      <!-- visible links filled in HTML, overflow moved to "More" via JS -->
       <a href="#why">Why</a><a href="#usecases">Use Cases</a><a href="#quickstart">Quick Start</a>
       <a href="#ecosystem" class="active">Ecosystem</a><a href="#governance">Governance</a><a href="#dashboards">Dashboards</a>
       <a href="#packages">Packages</a><a href="#repos">Repos</a><a href="#compare">Compare</a>
       <a href="#architecture">Architecture</a><a href="#roadmap">Roadmap</a><a href="#interop">Interoperability</a><a href="#partners">Partners</a>
       <a href="docs/company.md" class="doc-link">Company</a>
       <a href="#contact">Contact</a>
+
+      <span class="more-wrap" id="moreWrap">
+        <button class="btn more-btn" id="moreBtn" type="button">More ▾</button>
+        <div class="more-menu" id="moreMenu" role="menu" aria-label="More"></div>
+      </span>
     </nav>
 
     <div class="nav-actions">
@@ -333,10 +353,10 @@ h1,h2{ font-weight: 900 }
     <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
     <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
-    <!-- Value rotator (auto) -->
-    <div class="glass tilt reveal value-rotator" style="margin-top:16px">
+    <!-- Compact value rotator (auto) -->
+    <div class="glass value-rotator" style="margin-top:12px">
       <div class="glare" aria-hidden="true"></div>
-      <div id="whySlider" class="dash-slider" style="padding:8px 10px">
+      <div id="whySlider" class="dash-slider">
         <figure class="slide active" style="padding:10px">
           <h3>Lower Ingestion &amp; Storage Cost</h3>
           <p class="k">Normalize &amp; de-duplicate at the source; ship less noise to Splunk/ELK/Datadog.</p>
@@ -361,7 +381,7 @@ h1,h2{ font-weight: 900 }
       </div>
     </div>
 
-    <div class="row hero-cta-row" style="margin-top:14px">
+    <div class="row hero-cta-row" style="margin-top:12px">
       <a class="btn btn-primary" href="#governance">Explore Governance</a>
       <a class="btn" href="#ecosystem">See Ecosystem</a>
     </div>
@@ -376,10 +396,10 @@ h1,h2{ font-weight: 900 }
   <!-- SIGNATURE ART (POP ART) — FULL BLEED -->
   <section id="hero-art" class="section full-bleed-wrap">
     <div class="full-bleed">
-      <div class="glass tilt reveal" style="padding:0;border-radius:12px">
+      <div class="glass" style="padding:0;border-radius:12px">
         <div class="glare" aria-hidden="true"></div>
         <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
-        <div class="img-cap" style="padding:10px 12px 16px"><code>Cerbi</code>.</div>
+        <div class="img-cap" style="padding:10px 12px 16px; text-align:center"><code>Cerbi</code>.</div>
       </div>
     </div>
   </section>
@@ -391,39 +411,39 @@ h1,h2{ font-weight: 900 }
     <p class="lead">Short, concrete wins you can expect. Each can start small and expand safely across the org.</p>
 
     <div class="grid">
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">1.</span>Cut Log Spend</h3>
         <p class="k">Normalize fields, roll up noise, and de-duplicate before indexing.</p>
         <ul><li>Less high-cardinality churn</li><li>Smaller indexes, faster queries</li></ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">2.</span>Prove Compliance</h3>
         <p class="k">Versioned PII policy + redaction metadata you can hand to Risk/Legal.</p>
         <ul><li>Build-time rules + runtime enforcement</li><li>RBAC &amp; audit history in CerbiShield</li></ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">3.</span>Stabilize Dashboards</h3>
         <p class="k">Stop breaking charts every sprint due to field drift.</p>
         <ul><li>Stable names &amp; types</li><li>Durable alerts across releases</li></ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">4.</span>Accelerate Incidents</h3>
         <p class="k">Consistent app/env/tenant/trace IDs → faster triage and MTTR.</p>
         <ul><li>Joinable logs across services</li><li>Violation context included</li></ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">5.</span>Ship ML-Ready Telemetry</h3>
         <p class="k">Clean, governed features for LLMs &amp; models—without PII surprises.</p>
         <ul><li>Tags, categories, enums</li><li>Consistent shapes for training</li></ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card"><div class="glare"></div>
         <h3><span class="n">6.</span>Adopt Gradually</h3>
         <p class="k">Start with one domain (e.g., auth), run in relax-mode, then tighten.</p>
         <ul><li>Keep your loggers/sinks</li><li>No vendor lock-in</li></ul>
       </article>
     </div>
 
-    <div class="glass reveal" style="padding:16px;margin-top:16px">
+    <div class="glass" style="padding:16px;margin-top:16px">
       <h3 style="margin:0 0 6px">Business Use Case — Claims Platform (Regulated)</h3>
       <p class="k">A health insurer modernizes a claims platform across 20+ services. Logs are inconsistent and contain PII. Cerbi introduces a governed profile (<em>HIPAA starter</em> + team rules). Developers see IDE diagnostics for forbidden fields; runtime applies redaction and flags violations instead of dropping events. Splunk dashboards stop breaking, audit requests are answered with versioned policy history, and storage costs drop 28% from reduced high-cardinality fields.</p>
       <ul style="margin-top:8px">
@@ -447,7 +467,7 @@ h1,h2{ font-weight: 900 }
     <p class="lead">As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.</p>
 
     <div class="grid" style="margin-top:16px">
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card">
         <h3 style="margin-top:4px">What goes wrong without guardrails</h3>
         <ul>
           <li><strong>Same idea, many names:</strong> <span class="kbd">userId</span>, <span class="kbd">user_id</span>, <span class="kbd">uid</span>, <span class="kbd">customerId</span>.</li>
@@ -458,7 +478,7 @@ h1,h2{ font-weight: 900 }
           <li><strong>Cost bloat:</strong> noisy, duplicative fields can’t be rolled up or pruned.</li>
         </ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card">
         <h3 style="margin-top:4px">Cerbi’s approach: logs as governed data products</h3>
         <ul>
           <li><strong>Contract (schema + rules):</strong> required/forbidden fields, types, enums, PII policy.</li>
@@ -468,7 +488,7 @@ h1,h2{ font-weight: 900 }
           <li><strong>Analytics-ready metadata:</strong> app, env, tenant, correlation, tags, and categories.</li>
         </ul>
       </article>
-      <article class="col-4 card tilt reveal"><div class="glare"></div>
+      <article class="col-4 card">
         <h3 style="margin-top:4px">What changes for your teams</h3>
         <ul>
           <li><strong>Developers:</strong> clear, fixable IDE/CI diagnostics when logging violates policy.</li>
@@ -487,7 +507,7 @@ h1,h2{ font-weight: 900 }
     <h2>⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
     <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
 
-    <div class="glass tilt reveal" style="padding:18px;position:relative">
+    <div class="glass" style="padding:18px;position:relative">
       <div class="glare"></div>
 <pre class="codeblock"><code>// 1) Install
 dotnet add package CerbiStream
@@ -566,13 +586,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <h2><span class="hl">Governance</span> That Meets Teams Where They Are</h2>
     <p class="lead">Keep Serilog/NLog/MEL—add Cerbi governance today. Or go all-in with CerbiStream. Either way, the <strong>same governance profiles</strong> power build-time diagnostics and runtime enforcement.</p>
     <div class="grid">
-      <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer flags violations in IDE/CI with precise messages—before code ships.</p></div>
-      <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Runtime Enforcement</h3><p class="muted">Validators ensure emitted logs comply with your profiles. Redaction &amp; relax-mode keep visibility while preventing leaks.</p></div>
-      <div class="col-4 card tilt reveal"><div class="glare"></div><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
+      <div class="col-4 card"><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer flags violations in IDE/CI with precise messages—before code ships.</p></div>
+      <div class="col-4 card"><h3>Runtime Enforcement</h3><p class="muted">Validators ensure emitted logs comply with your profiles. Redaction &amp; relax-mode keep visibility while preventing leaks.</p></div>
+      <div class="col-4 card"><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
     </div>
 
     <!-- Live governance demo -->
-    <div class="glass reveal" style="padding:16px;margin-top:18px">
+    <div class="glass" style="padding:16px;margin-top:18px">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
         <h3 style="margin:0;color:var(--brand)">Live Rule Check (demo)</h3>
         <div style="display:flex;align-items:center;gap:8px">
@@ -593,7 +613,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
   <!-- DASHBOARDS -->
   <section id="dashboards" class="section full-bleed-wrap">
-    <div class="full-bleed glass tilt reveal img-frame showcase">
+    <div class="full-bleed glass img-frame showcase">
       <div class="glare" aria-hidden="true"></div>
 
       <div id="dashSlider" class="dash-slider showcase-inner" aria-roledescription="carousel" tabindex="0">
@@ -646,7 +666,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <h2>Reference <span class="hl">Architecture</span></h2>
     <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
     <div class="grid" style="align-items:start;gap:18px">
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <article class="col-6 card">
         <h3>Flow</h3>
         <ul>
           <li>Apps &amp; services emit events</li>
@@ -663,7 +683,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <li><strong>Encryption:</strong> AES/Base64/NoOp via <code>IEncryption</code>; file-fallback with rotation.</li>
         </ul>
       </article>
-      <figure class="col-6 img-frame arch-diagram reveal">
+      <figure class="col-6 img-frame arch-diagram">
         <img
           src="assets/architecture/cerbisuite-architecture-1600x900.png"
           srcset="assets/architecture/cerbisuite-architecture-1600x900.png 1x, assets/architecture/cerbisuite-architecture-1600x900.png 1.5x, assets/architecture/cerbisuite-architecture-1600x900.png 2x"
@@ -681,7 +701,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <div class="eyebrow k">Plays well with others</div>
     <h2><span class="hl">Interoperability</span> for Devs &amp; Execs</h2>
     <div class="grid" style="gap:18px">
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <article class="col-6 card">
         <h3>Keep your logger</h3>
         <ul>
           <li><strong>MEL (.NET):</strong> <code>builder.AddCerbiStream()</code> adds structured output + governance.</li>
@@ -689,7 +709,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <li><strong>Hybrid:</strong> keep sinks/formatters; Cerbi stabilizes field names/types and attaches correlation.</li>
         </ul>
       </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <article class="col-6 card">
         <h3>Keep your sinks</h3>
         <ul>
           <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data.</li>
@@ -701,7 +721,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <p class="k" style="margin-top:10px">Bottom line: familiar tools; cost control, auditability, faster incident response.</p>
   </section>
 
-  <!-- PACKAGES (zebra rows + sticky header + scroll) -->
+  <!-- PACKAGES -->
   <section id="packages" class="container section">
     <div class="eyebrow k">Install</div>
     <h2><span class="hl">NuGet Packages</span></h2>
@@ -746,7 +766,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     </div>
   </section>
 
-  <!-- REPOSITORIES (zebra rows + sticky header + scroll) -->
+  <!-- REPOSITORIES -->
   <section id="repos" class="container section">
     <div class="eyebrow k">Open Source</div>
     <h2><span class="hl">GitHub Repositories</span></h2>
@@ -814,7 +834,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <div class="eyebrow k">What’s shipping</div>
     <h2>Current <span class="hl">Phase</span> &amp; What’s Next</h2>
     <div class="grid" style="gap:18px">
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <article class="col-6 card">
         <h3>Phase 1 (Current)</h3>
         <ul>
           <li>CerbiStream GA (.NET structured logger)</li>
@@ -823,7 +843,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           <li>CerbiShield Beta — profiles, RBAC, audit history</li>
         </ul>
       </article>
-      <article class="col-6 card tilt reveal"><div class="glare"></div>
+      <article class="col-6 card">
         <h3>Phase 2 (Planned)</h3>
         <ul>
           <li>CerbIQ — routing, normalization, rollups, fan-out</li>
@@ -841,7 +861,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
 
     <div class="grid" style="align-items:start;gap:18px">
-      <div class="col-12 glass tilt" style="padding:16px">
+      <div class="col-12 glass" style="padding:16px">
         <div class="glare"></div>
         <iframe
           title="Contact Cerbi"
@@ -904,8 +924,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 <div class="cmdk-overlay lightbox" id="cmdkOverlay" aria-hidden="true" hidden>
   <div class="cmdk prose-doc" role="dialog" aria-modal="true" aria-label="Command palette" style="padding:0; max-width:740px">
     <div class="header" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--divider)">
-      <span class="kbd" aria-hidden="true">⌘K</span>
-      <input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" style="flex:1;border:0;outline:0;background:transparent;padding:8px;color:var(--ink)" />
+      <span class="kbd" aria-hidden="true">⌘K</span><input id="cmdkInput" type="text" placeholder="Search commands… (e.g., 'packages', 'governance')" style="flex:1;border:0;outline:0;background:transparent;padding:8px;color:var(--ink)" />
     </div>
     <div class="list" id="cmdkList" style="max-height:60vh;overflow:auto;padding:8px 10px"></div>
   </div>
@@ -935,9 +954,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 /* Year */
 document.getElementById('year').textContent = new Date().getFullYear();
 
-/* Smooth brand click */
-document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
-
 /* Progress bar */
 (function(){
   const bar=document.getElementById('progress'); if(!bar) return;
@@ -945,7 +961,49 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
 })();
 
-/* Glyph clock — bold, large, random ❤/🤖, glitch pulses */
+/* Nav overflow → "More" menu (no scrollbars) */
+(function(){
+  const nav = document.getElementById('primaryNav');
+  const moreWrap = document.getElementById('moreWrap');
+  const moreBtn = document.getElementById('moreBtn');
+  const moreMenu = document.getElementById('moreMenu');
+  if(!nav || !moreBtn || !moreMenu) return;
+
+  function collapse(){
+    // reset
+    const hidden = [...moreMenu.querySelectorAll('a')];
+    hidden.forEach(a => { moreMenu.removeChild(a); nav.insertBefore(a, moreWrap); });
+
+    const maxW = nav.clientWidth - moreWrap.offsetWidth - 12;
+    let used = 0;
+    const links = [...nav.querySelectorAll(':scope > a')];
+    const keep = [];
+    for (const a of links){
+      a.style.display = 'inline-flex';
+      const w = a.offsetWidth + 10;
+      if (used + w <= maxW){ used += w; keep.push(a); }
+      else { moreMenu.appendChild(a); }
+    }
+    moreWrap.style.display = moreMenu.children.length ? 'inline-flex' : 'none';
+  }
+
+  const ro = new ResizeObserver(collapse);
+  ro.observe(nav);
+  window.addEventListener('load', collapse);
+  window.addEventListener('resize', collapse, {passive:true});
+
+  moreBtn.addEventListener('click', ()=>{
+    moreWrap.classList.toggle('open');
+  });
+  document.addEventListener('click', (e)=>{
+    if(!moreWrap.contains(e.target)) moreWrap.classList.remove('open');
+  });
+})();
+
+/* Brand click scroll to top */
+document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefault(); history.replaceState(null,'','#top'); scrollTo({top:0, behavior:'smooth'}); });
+
+/* Glyph clock — brighter, random ❤/🤖, glitch pulses */
 (function(){
   const el = document.getElementById('bg-clock'); if(!el) return;
   const glyphs = ['❤','🤖'];
@@ -954,16 +1012,14 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
     const base = ['C','E','R','B','I'];
     const take = 2 + Math.floor(Math.random()*4); // 2..5
     const picked = shuffle(base.slice()).slice(0, take);
-    // sprinkle hearts/robots
     if(Math.random()<0.6){ picked.splice(Math.floor(Math.random()*picked.length),0, glyphs[Math.floor(Math.random()*glyphs.length)]); }
-    // occasional drops
     const drops = Math.floor(Math.random()*3);
     for(let k=0;k<drops;k++){ const idx = Math.floor(Math.random()*picked.length); picked[idx] = Math.random()<0.5 ? '·' : ''; }
     return picked.filter(Boolean).join(Math.random()<0.5 ? ' ' : ' ');
   }
   function size(){
     const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
-    const factor = vw < 820 ? 0.54 : 0.42; // larger
+    const factor = vw < 820 ? 0.54 : 0.42;
     el.style.fontSize = Math.min(Math.max(vw*factor,140),1100)+'px';
   }
   function render(){
@@ -971,19 +1027,18 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
     const showGlitch = (d.getSeconds() % 5 === 0) || Math.random() < 0.45;
     if(showGlitch){
       el.textContent = cerbiGlitch();
-      el.classList.remove('glitch'); void el.offsetWidth; el.classList.add('glitch'); // retrigger CSS glitch
+      el.classList.remove('glitch'); void el.offsetWidth; el.classList.add('glitch');
     }else{
       const t=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      // sometimes swap to a big glyph instead of time
       el.textContent = (Math.random()<0.18) ? glyphs[Math.floor(Math.random()*glyphs.length)] : t;
     }
   }
   function fade(){
     const sc = document.documentElement.scrollTop || document.body.scrollTop;
-    const base = .22, range = .22;
+    const base = .28, range = .26; // brighter overall
     el.style.opacity = (base + Math.min(1, sc / 1200) * range).toFixed(3);
   }
-  el.style.color = getComputedStyle(document.documentElement).getPropertyValue('--clock') || 'rgba(255,77,0,.24)';
+  el.style.color = getComputedStyle(document.documentElement).getPropertyValue('--clock') || 'rgba(255,77,0,.26)';
   el.style.mixBlendMode = 'multiply';
   size(); render(); fade();
   addEventListener('resize', size, {passive:true});
@@ -991,14 +1046,15 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   setInterval(render,900);
 })();
 
-/* WHY slider dots + autorotate */
+/* WHY slider dots + autorotate (compact) */
 (function(){
   const slider=document.getElementById('whySlider'); if(!slider) return;
   const slides=[...slider.querySelectorAll('.slide')];
-  const dotsBox=slider.querySelector('.dots'); dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+  const dotsBox=document.createElement('div'); dotsBox.className='dots'; slider.appendChild(dotsBox);
+  dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
   const dots=[...dotsBox.querySelectorAll('button')];
   let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-  const show=n=>{ i=(n+slides.length)%slides.length; slides.forEach((s,idx)=>s.classList.toggle('active',idx===i)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===i)); };
+  const show=n=>{ i=(n+slides.length)%slides.length; slides.forEach((s,idx)=>s.style.display=(idx===i?'block':'none')); dots.forEach((d,idx)=>d.classList.toggle('active',idx===i)); };
   dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
   show(i);
   const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1006,7 +1062,7 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start); start();
 })();
 
-/* Dash slider + lightbox (full-width, auto) */
+/* Dash slider + lightbox */
 (function(){
   const slider=document.getElementById('dashSlider'); if(!slider) return;
   const slides=[...slider.querySelectorAll('.slide')];
@@ -1063,7 +1119,7 @@ document.querySelector('.brand')?.addEventListener('click', (e)=>{ e.preventDefa
   start();
 })();
 
-/* POP-ART rotator — make sure images load and are edge-to-edge */
+/* POP-ART rotator — edge-to-edge */
 (function(){
   const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
   const sources = [
@@ -1160,7 +1216,7 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', attach, { once:true }); } else { attach(); }
 })();
 
-/* Live rule check demo switch (contrast-improved) */
+/* Live rule check demo switch */
 (function(){
   const sw=document.getElementById('piiSwitch'); if(!sw) return;
   const knob=sw.querySelector('span');
@@ -1180,22 +1236,6 @@ document.querySelector('[data-copy]')?.addEventListener('click', function(){
   let on=false; draw(on);
   sw.addEventListener('click', ()=>{ on=!on; draw(on); });
 })();
-
-/* Theme badge (single theme, label only) */
-(function(){
-  const badge=document.getElementById('theme-diag'); if(!badge) return;
-  const name=badge.querySelector('#theme-name');
-  const cycle=badge.querySelector('#theme-cycle');
-  name.textContent = 'Theme: cerbi-light';
-  cycle.addEventListener('click', ()=> name.textContent = 'Theme: cerbi-light' );
-})();
 </script>
-
-<!-- Theme diagnostic badge (dev aid, safe to remove) -->
-<div id="theme-diag" aria-hidden="false">
-  <span id="theme-name">Theme: cerbi-light</span>
-  <button id="theme-cycle" title="Cycle theme">Cycle</button>
-</div>
-
 </body>
 </html>
