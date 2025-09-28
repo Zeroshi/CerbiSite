@@ -289,3 +289,58 @@ html[data-live-demo] .demo-toggle-card{
   outline: 2px dashed var(--accent);
   outline-offset: 3px;
 }
+
+/* ======================= Cerbi size overrides (safe) ======================= */
+
+/* Slightly wider content column */
+.wrap{ width:min(1320px, 96vw); }
+
+/* Base text size up a notch (affects rem-based bits, browser UI balance) */
+html { font-size: 17px; }  /* was ~16px; +6% is noticeable but not jarring */
+
+/* Headings and hero scale (stay responsive, just larger ceilings) */
+.hero .hero-copy h1{
+  /* from clamp(28px, 3vw, 42px) */
+  font-size: clamp(32px, 4.8vw, 56px);
+}
+.hero .hero-copy p{ font-size: 1.05rem; }
+
+/* Section headings generally */
+h2{ font-size: clamp(24px, 3.2vw, 36px); line-height: 1.18; }
+h3{ font-size: clamp(18px, 2.2vw, 24px); line-height: 1.22; }
+
+/* Buttons + chips gain breathing room */
+.btn{
+  padding: 12px 18px;         /* was 10px 14px */
+  border-radius: 14px;        /* was 12px */
+  font-weight: 650;
+}
+.btn.ghost{ outline-width: 2px; }
+
+/* Cards feel roomier without looking empty */
+.card{
+  padding: 20px;              /* was 16px */
+  border-radius: 16px;        /* was var(--radius)=14px */
+}
+
+/* Feature grid spacing */
+.grid{ gap: 18px; }           /* was 14px */
+
+/* Contact FAB remains proportionate */
+.contact-fab{
+  width: 60px; height: 60px;  /* was 54px (or 48 on mobile) */
+  border-radius: 18px;
+  font-size: 24px;
+}
+@media (max-width: 640px){
+  .contact-fab{ width: 52px; height: 52px; font-size: 22px; }
+}
+
+/* Demo toggle card header—slightly larger label */
+.demo-toggle-card h2{ font-size: 19px; }
+
+/* Module cards body text */
+.card p{ font-size: 1.04rem; }
+
+/* Footer legibility bump */
+.site-footer small{ font-size: .95rem; }
