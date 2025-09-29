@@ -472,47 +472,84 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- DASHBOARDS -->
-    <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
-      <div class="full-bleed showcase-outer">
-        <div class="showcase">
-          <div id="dashSlider" class="showcase-inner" aria-roledescription="carousel" tabindex="0">
-            <div class="sr-only" aria-live="polite"></div>
+<!-- DASHBOARDS -->
+<section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
+  <div class="full-bleed showcase-outer">
+    <div class="showcase">
+      <div id="dashSlider" class="showcase-inner" aria-roledescription="carousel" tabindex="0">
+        <div class="sr-only" aria-live="polite"></div>
 
-            <div class="showcase-viewport">
-              <figure class="slide active">
-                <img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-                     srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Overview"
-                     data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
-                     loading="eager" decoding="async">
-              </figure>
-              <figure class="slide">
-                <img width="1200" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-                     srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Profiles"
-                     data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
-                     loading="lazy" decoding="async">
-              </figure>
-              <figure class="slide">
-                <img width="1200" height="900" src="assets/screenshots/cerbishield-violations-1200x900.jpg"
-                     srcset="assets/screenshots/cerbishield-violations-1200x900.jpg 1x, assets/screenshots/cerbishield-violations-2400x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Violations"
-                     data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-                     loading="lazy" decoding="async">
-              </figure>
-            </div>
+        <div class="showcase-viewport">
+          <!-- 1) Overview -->
+          <figure class="slide active">
+            <img
+              width="1600" height="900"
+              src="assets/screenshots/cerbishield-hero-1600x900.jpg"
+              srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
+              sizes="100vw"
+              alt="CerbiShield — Overview dashboard"
+              data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
+              loading="eager" decoding="async">
+          </figure>
 
-            <div class="dots" aria-label="Slide controls"></div>
-            <div class="dash-arrows">
-              <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
-              <button class="btn btn-ghost" type="button" data-next>Next →</button>
-            </div>
-          </div>
-          <div class="img-cap">Click any screenshot to open full-size preview. Use ←/→ or swipe to navigate.</div>
+          <!-- 2) Profiles -->
+          <figure class="slide">
+            <img
+              width="1200" height="900"
+              src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
+              srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
+              sizes="100vw"
+              alt="CerbiShield — Governance profiles"
+              data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
+              loading="lazy" decoding="async">
+          </figure>
+
+          <!-- 3) Violations -->
+          <figure class="slide">
+            <img
+              width="1200" height="900"
+              src="assets/screenshots/cerbishield-violations-1200x900.jpg"
+              srcset="assets/screenshots/cerbishield-violations-1200x900.jpg 1x, assets/screenshots/cerbishield-violations-2400x1800.jpg 2x"
+              sizes="100vw"
+              alt="CerbiShield — Policy violations view"
+              data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
+              loading="lazy" decoding="async">
+          </figure>
+
+          <!-- 4) Settings (no 2x provided; use 1x) -->
+          <figure class="slide">
+            <img
+              width="1200" height="900"
+              src="assets/screenshots/cerbishield-settings-1200x900.jpg"
+              sizes="100vw"
+              alt="CerbiShield — Settings & configuration"
+              data-full="assets/screenshots/cerbishield-settings-1200x900.jpg"
+              loading="lazy" decoding="async">
+          </figure>
+
+          <!-- 5) Deploy (only 1600×900 provided) -->
+          <figure class="slide">
+            <img
+              width="1600" height="900"
+              src="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+              sizes="100vw"
+              alt="CerbiShield — Deploy workflow"
+              data-full="assets/screenshots/cerbishield-Deploy-1600x900.jpg"
+              loading="lazy" decoding="async">
+          </figure>
+        </div>
+
+        <div class="dots" aria-label="Slide controls"></div>
+        <div class="dash-arrows">
+          <button class="btn btn-ghost" type="button" data-prev data-analytics='{"event":"carousel","label":"dash_prev"}'>← Prev</button>
+          <button class="btn btn-ghost" type="button" data-next data-analytics='{"event":"carousel","label":"dash_next"}'>Next →</button>
         </div>
       </div>
-    </section>
+      <div class="img-cap">Click any screenshot to open full-size preview. Use ←/→ or swipe to navigate.</div>
+    </div>
+  </div>
+</section>
+
 
     <!-- ARCHITECTURE -->
     <section id="architecture" class="container section">
