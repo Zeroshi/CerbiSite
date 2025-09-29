@@ -18,7 +18,7 @@
 
   <style>
     :root{
-      --brand:#FF4D00;
+      --brand:#FF4D00;                  /* Cerbi hot orange accent */
       --brand-10:rgba(255,77,0,.10);
       --brand-06:rgba(255,77,0,.06);
       --brand-04:rgba(255,77,0,.04);
@@ -29,7 +29,7 @@
       --muted:#5a6a88;
       --text:#182235;
       --text-strong:#0b1324;
-      --link:#0f63ff;
+      --link:#0f63ff;                   /* primary logo blue */
       --radius:14px;
       --shadow:0 14px 40px rgba(10,16,30,.12);
       --ring:0 0 0 4px color-mix(in srgb, var(--brand), white 70%);
@@ -37,6 +37,11 @@
 
       --nav-h:64px;
       --container:min(1200px,92vw);
+
+      /* glitch offsets (updated by JS) */
+      --gx1:-2px; --gy1:0px;
+      --gx2:2px;  --gy2:0px;
+      --gx3:-1px; --gy3:1px;
     }
 
     *{box-sizing:border-box}
@@ -47,8 +52,7 @@
       color:var(--text);
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; line-height:1.55;
-      /* keep content from sliding under fixed nav */
-      padding-top:var(--nav-h);
+      padding-top:var(--nav-h); /* keep content from sliding under fixed nav */
     }
     a{color:var(--link); text-decoration:none}
     a:hover{text-decoration:underline}
@@ -56,6 +60,18 @@
     h1,h2,h3,h4,h5{color:var(--text-strong); margin:.2em 0 .35em}
     .container{width:var(--container); margin-inline:auto}
     .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+
+    /* ===== GLOBAL BACKGROUND IMAGE (behind everything) ===== */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:url("https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/backgrounds/background01.png")
+                 center / cover no-repeat fixed;
+      opacity:.22;            /* tweak intensity here */
+      z-index:-100;           /* lowest layer */
+      filter:saturate(1.05) contrast(1.02);
+      pointer-events:none;
+    }
 
     /* ===== NAV: fixed, always visible ===== */
     .nav{
@@ -91,7 +107,6 @@
 
     /* ===== PAGE ELEMENTS ===== */
     .hero{padding:20px 0 8px}
-    /* remove blank block under nav */
     .hero .hero-bg{display:none}
 
     .chip-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
@@ -113,10 +128,10 @@
     .col-12{grid-column:span 4}
     .card{background:var(--panel); border:1px solid rgba(20,40,72,.12); border-radius:14px; padding:16px; box-shadow:var(--shadow); transition:transform .15s ease; overflow:hidden}
     .card:hover{transform:translateY(-1px)}
-    /* Fit text within cards/modules */
     .card h3{font-size:clamp(16px,2.1vw,22px); overflow-wrap:anywhere}
     .card p,.card li{overflow-wrap:anywhere; hyphens:auto}
     .card ul{padding-left:18px; margin:8px 0}
+    .mono{font-family:"Roboto Mono", ui-monospace, Menlo, Consolas, monospace}
 
     /* Full-bleed helpers */
     .full-bleed-wrap{position:relative}
@@ -130,7 +145,7 @@
     .sig-rotator img.is-active{opacity:1; visibility:visible; transform:none}
     .img-cap{color:var(--muted); text-align:center}
 
-    /* Showcase full width */
+    /* Showcase */
     .showcase-outer{width:100vw; margin-left:50%; transform:translateX(-50%)}
     .showcase{border-radius:18px; overflow:hidden; border:1px solid rgba(20,40,72,.12)}
     .showcase-inner{position:relative}
@@ -144,7 +159,7 @@
     .showcase .dots button{width:10px; height:10px; border-radius:50%; border:0; background:#e1e6ff}
     .showcase .dots button.active{background:var(--brand)}
 
-    /* Tables with brand striping */
+    /* Tables */
     .table{width:100%; border-collapse:separate; border-spacing:0}
     .table th,.table td{border:1px solid rgba(20,40,72,.12); padding:.6em .7em}
     .table th{background:#f0f3fa; color:var(--navy)}
@@ -155,21 +170,27 @@
     .arch-diagram img{width:100%; height:auto; border-radius:12px; border:1px solid rgba(20,40,72,.12)}
     .arch-diagram{max-width:900px}
 
-    /* ===== LOVE-DEATH-ROBOTS style GLYPH CLOCK ===== */
+    /* ===== LOVE-DEATH-ROBOTS style GLYPH CLOCK (with multi-offset glitch) ===== */
     #bg-clock{
       position:fixed; inset:0; z-index:-10; pointer-events:none; display:grid; place-items:center; user-select:none; line-height:1;
       color:var(--glyph); opacity:.22; font-weight:800; letter-spacing:.02em; mix-blend-mode:multiply;
     }
     #clockText{
       font-size: clamp(120px, 35vw, 880px);
-      position:relative; filter:drop-shadow(0 12px 24px rgba(10,16,30,.18));
+      position:relative;
+      filter:drop-shadow(0 12px 24px rgba(10,16,30,.18));
     }
+    /* two pseudo-layers + one shadow layer for stronger chromatic split */
     #clockText::before,#clockText::after{
       content:attr(data-glitch) "";
-      position:absolute; inset:0; mix-blend-mode:screen; opacity:.25; pointer-events:none;
+      position:absolute; inset:0; pointer-events:none; opacity:.28;
+      mix-blend-mode:screen;
     }
-    #clockText::before{transform:translateX(-2px); color:#ff2a2a}
-    #clockText::after{transform:translateX(2px); color:#2ab3ff}
+    #clockText::before{ color:#ff2a2a; transform:translate(var(--gx1), var(--gy1)); }
+    #clockText::after { color:#2ab3ff; transform:translate(var(--gx2), var(--gy2)); }
+    /* extra stroke/ghost via text-shadow */
+    #clockText{ text-shadow: var(--gx3) var(--gy3) 0 rgba(255,255,255,.12); }
+
     .scanline{
       position:fixed; left:0; right:0; height:3px;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
@@ -207,6 +228,14 @@
     .pkg-desc{min-height:3.2em}
     .pkg-badges{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
 
+    /* Typewriter panel */
+    .typebox{position:relative; min-height:132px}
+    .caret{
+      display:inline-block; width:.6ch; background:currentColor; margin-left:2px; height:1.05em; vertical-align:-.18em;
+      animation:blink .9s steps(1) infinite;
+    }
+    @keyframes blink{ 50%{opacity:0;} }
+
     /* Responsive */
     @media (max-width:980px){
       .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -221,7 +250,7 @@
       .contact-fab{right:12px; top:auto; bottom:14px; transform:none}
     }
 
-    /* Background layers always behind */
+    /* Background helper layers in your DOM stay behind */
     #dynamic-bg,.tiles,.sky,.veil,.spotlight{position:fixed; inset:0; z-index:-20; pointer-events:none}
   </style>
 
@@ -233,7 +262,7 @@
 </head>
 
 <body>
-  <!-- Dynamic background -->
+  <!-- Dynamic background placeholders (kept, but image sits even behind these) -->
   <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
@@ -268,7 +297,6 @@
           <a class="btn btn-ghost" href="#contact" role="button">Contact</a>
           <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener" role="button">GitHub</a>
 
-          <!-- "More" bucket -->
           <div class="more" id="moreMenu">
             <button type="button" aria-haspopup="menu" aria-expanded="false" title="More">More ▾</button>
             <div class="more-menu" role="menu" aria-label="More links"></div>
@@ -293,32 +321,12 @@
       <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
-      <!-- Value rotator with your copy -->
-      <div class="card" style="margin-top:10px">
-        <div id="whySlider" class="dash-slider">
-          <figure class="slide active">
-            <h3>Lower Ingestion &amp; Storage Cost</h3>
-            <p class="muted">Normalize &amp; de-duplicate at the source; ship less noise to Splunk/ELK/Datadog.</p>
-            <ul><li>Stable fields → smaller indexes &amp; faster queries</li><li>Rollups/tags → fewer high-cardinality surprises</li></ul>
-          </figure>
-          <figure class="slide">
-            <h3>Compliance Without Friction</h3>
-            <p class="muted">PII rules at build-time &amp; runtime. Redact &amp; flag—don’t drop critical signals.</p>
-            <ul><li>Versioned policies in CerbiShield (RBAC &amp; audit history)</li><li>Relax-mode for safe rollout in prod</li></ul>
-          </figure>
-          <figure class="slide">
-            <h3>Make Every Tool Better</h3>
-            <p class="muted">We’re not a sink—we improve what your sinks receive with richer, consistent context.</p>
-            <ul><li>Durable dashboards (no silent breakage)</li><li>ML-ready metadata for LLMs &amp; models</li></ul>
-          </figure>
-          <figure class="slide">
-            <h3>Faster Investigations</h3>
-            <p class="muted">Consistent correlation (app/env/tenant/trace) across services speeds triage.</p>
-            <ul><li>Clean joins through stable shapes</li><li>Actionable violation metadata</li></ul>
-          </figure>
-          <div class="dots" aria-label="slider controls"></div>
-        </div>
-      </div>
+      <!-- NEW: one-at-a-time typewriter rotator -->
+      <article class="card typebox" style="margin-top:10px">
+        <h3 id="typeTitle"></h3>
+        <div id="typeBody" class="muted mono"></div>
+        <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
+      </article>
     </section>
 
     <!-- SIGNATURE ART -->
@@ -428,17 +436,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- GOVERNANCE -->
-    <section id="governance" class="container section">
-      <div class="eyebrow">Policy, then telemetry</div>
-      <h2><span class="hl">Governance</span> That Meets Teams Where They Are</h2>
-      <div class="grid">
-        <div class="col-4 card"><h3>Build-Time Enforcement</h3><p class="muted">Roslyn analyzer flags violations in IDE/CI with precise messages—before code ships.</p></div>
-        <div class="col-4 card"><h3>Runtime Enforcement</h3><p class="muted">Validators ensure emitted logs comply with your profiles. Redaction & relax-mode keep visibility while preventing leaks.</p></div>
-        <div class="col-4 card"><h3>Compliance Starter Kits</h3><p class="muted">HIPAA/GDPR-aligned defaults you can tailor; versioned profiles; audit histories; rule plugins.</p></div>
-      </div>
-    </section>
-
     <!-- DASHBOARDS -->
     <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
       <div class="full-bleed showcase-outer">
@@ -528,7 +525,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <!-- PACKAGES (AUTO NUGET) -->
+    <!-- PACKAGES -->
     <section id="packages" class="container section">
       <div class="eyebrow">Install</div>
       <h2><span class="hl">NuGet Packages</span> (live)</h2>
@@ -647,25 +644,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
   <script>
-    // Keep overlays closed on boot
-    (function(){
-      ['lightbox','docbox'].forEach(id=>{
-        var el=document.getElementById(id); if(!el) return;
-        el.hidden=true; el.setAttribute('aria-hidden','true');
-      });
-    })();
-
-    // Footer year
+    /* ===== Housekeeping ===== */
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
-
-    // Scroll progress
     (function(){
       const bar=document.getElementById('progress'); if(!bar) return;
       const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
 
-    // Primary nav "More" bucket (prevents overlap)
+    /* ===== Primary nav "More" bucket ===== */
     (function(){
       const nav=document.getElementById('primaryNav');
       const more=document.getElementById('moreMenu');
@@ -699,54 +686,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) { more.setAttribute('data-open','false'); more.querySelector('button').setAttribute('aria-expanded','false'); }});
     })();
 
-    // WHY slider dots + autoswitch
-    (function(){
-      const slider=document.getElementById('whySlider'); if(!slider) return;
-      const slides=[...slider.querySelectorAll('.slide')];
-      const dotsBox=document.createElement('div'); dotsBox.className='dots';
-      dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
-      slider.appendChild(dotsBox);
-      const dots=[...dotsBox.querySelectorAll('button')];
-      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-      const show=n=>{i=(n+slides.length)%slides.length; slides.forEach((s,idx)=>s.classList.toggle('active',idx===i)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));};
-      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
-      let t=setInterval(()=>show(i+1),4500);
-      slider.addEventListener('mouseenter',()=>clearInterval(t));
-      slider.addEventListener('mouseleave',()=>t=setInterval(()=>show(i+1),4500));
-    })();
-
-    // Dash slider + lightbox
-    (function(){
-      const slider=document.getElementById('dashSlider'); if(!slider) return;
-      const slides=[...slider.querySelectorAll('.slide')];
-      const dotsBox=slider.querySelector('.dots');
-      const prevBtn=slider.querySelector('[data-prev]'); const nextBtn=slider.querySelector('[data-next]');
-      const sr=slider.querySelector('[aria-live]');
-      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
-      dotsBox.innerHTML=slides.map((_,n)=>`<button aria-label="Go to slide ${n+1}"></button>`).join('');
-      const dots=[...dotsBox.querySelectorAll('button')];
-      function show(n,announce=true){
-        i=(n+slides.length)%slides.length;
-        slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
-        dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
-        if(announce&&sr) sr.textContent=`Slide ${i+1} of ${slides.length}`;
-      }
-      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
-      prevBtn?.addEventListener('click',()=>show(i-1));
-      nextBtn?.addEventListener('click',()=>show(i+1));
-      show(i,false);
-      let timer=null; const start=()=>{ stop(); timer=setInterval(()=>show(i+1,false), 4800); }; const stop=()=>{ if(timer) clearInterval(timer); timer=null; };
-      slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start); start();
-      const overlay=document.getElementById('lightbox'); const big=document.getElementById('lightboxImg');
-      function open(src){ if(!overlay||!big) return; big.src=src; overlay.hidden=false; overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-      function close(){ if(!overlay||!big) return; overlay.setAttribute('aria-hidden','true'); overlay.hidden=true; big.removeAttribute('src'); document.body.style.overflow=''; }
-      overlay?.querySelector('.close')?.addEventListener('click', close);
-      overlay?.addEventListener('click', e=>{ if(e.target===overlay) close(); });
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay?.getAttribute('aria-hidden')==='false') close(); });
-      slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src)));
-    })();
-
-    // Pop-art rotator (full width)
+    /* ===== Pop-art rotator ===== */
     (function(){
       const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
       const sources = [
@@ -772,7 +712,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    // Docs modal (Markdown)
+    /* ===== Docs modal (Markdown) ===== */
     (function(){
       const modal=document.getElementById('docbox'); const content=document.getElementById('docboxContent'); if(!modal||!content) return;
       function open(){ modal.hidden=false; modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
@@ -800,7 +740,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', attach, {once:true}); } else { attach(); }
     })();
 
-    // CONTACT FAB interaction
+    /* ===== Contact FAB interactions ===== */
     (function(){
       const fab=document.getElementById('contactFab'); if(!fab) return;
       let hover=false, rx=0, ry=0, t=0, orb=0;
@@ -825,7 +765,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       fab.addEventListener('mouseleave', ()=>{ hover=false; rx=ry=0; fab.style.boxShadow='var(--shadow)'; });
     })();
 
-    // LOVE-DEATH-ROBOTS GLITCH CLOCK
+    /* ===== GLITCH CLOCK (extra offsets + jitter) ===== */
     (function(){
       const el=document.getElementById('clockText'); const scan=document.getElementById('scanline'); if(!el) return;
       const WORD="CERBI";
@@ -840,13 +780,24 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         }).join('');
       }
 
+      function jitter(){
+        const j = () => (Math.random()*4-2).toFixed(0)+'px';
+        document.documentElement.style.setProperty('--gx1', j());
+        document.documentElement.style.setProperty('--gy1', j());
+        document.documentElement.style.setProperty('--gx2', j());
+        document.documentElement.style.setProperty('--gy2', j());
+        document.documentElement.style.setProperty('--gx3', j());
+        document.documentElement.style.setProperty('--gy3', j());
+      }
+
       function update(){
         const d=new Date();
         const time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         // phases: 0-2 glitch, 3-11 hold time, 12-14 glitch/logo
         const phase = tick % 15;
         let out=time;
-        if(phase<=2 || phase>=12) out=scramble(WORD);
+        if(phase<=2 || phase>=12) { out=scramble(WORD); jitter(); }
+        else if(phase===5 || phase===9) { jitter(); }
 
         if(phase===1 || phase===12){
           scan.style.opacity='0.55'; scan.style.transition='none'; scan.style.top='-3px';
@@ -860,7 +811,102 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       setInterval(update, 500);
     })();
 
-    // NuGet live cards (version + downloads) — responsive and contained
+    /* ===== One-at-a-time TYPEWRITER ROTATOR ===== */
+    (function(){
+      const titleEl = document.getElementById('typeTitle');
+      const bodyEl  = document.getElementById('typeBody');
+      const caretEl = document.getElementById('typeCaret');
+      if(!titleEl || !bodyEl) return;
+
+      const items = [
+        {
+          t: "Lower Ingestion & Storage Cost",
+          b: [
+            "Normalize & de-duplicate at the source; ship less noise to Splunk/ELK/Datadog.",
+            "Stable fields → smaller indexes & faster queries",
+            "Rollups/tags → fewer high-cardinality surprises"
+          ]
+        },
+        {
+          t: "Compliance Without Friction",
+          b: [
+            "PII rules at build-time & runtime. Redact & flag—don’t drop critical signals.",
+            "Versioned policies in CerbiShield (RBAC & audit history)",
+            "Relax-mode for safe rollout in prod"
+          ]
+        },
+        {
+          t: "Make Every Tool Better",
+          b: [
+            "We’re not a sink—we improve what your sinks receive with richer, consistent context.",
+            "Durable dashboards (no silent breakage)",
+            "ML-ready metadata for LLMs & models"
+          ]
+        },
+        {
+          t: "Faster Investigations",
+          b: [
+            "Consistent correlation (app/env/tenant/trace) across services speeds triage.",
+            "Clean joins through stable shapes",
+            "Actionable violation metadata"
+          ]
+        }
+      ];
+
+      let i=0, typing=false;
+      const speed = 22;        // ms per char (typing)
+      const erase = 14;        // ms per char (deleting)
+      const hold  = 1200;      // ms to hold after full text
+
+      function typeText(el, text, cb){
+        typing=true; el.textContent=""; let p=0;
+        const tick=()=>{ if(p<=text.length){ el.textContent=text.slice(0,p++); setTimeout(tick, speed);} else { typing=false; cb&&cb(); } };
+        tick();
+      }
+      function eraseText(el, cb){
+        typing=true; let s=el.textContent; let p=s.length;
+        const tick=()=>{ if(p>=0){ el.textContent=s.slice(0,p--); setTimeout(tick, erase);} else { typing=false; cb&&cb(); } };
+        tick();
+      }
+      function typeBody(lines, cb){
+        typing=true; bodyEl.innerHTML=""; let line=0, acc="";
+        const nextLine=()=>{
+          if(line>=lines.length){ typing=false; return cb&&cb(); }
+          const text = (line? "\n• " : "• ") + lines[line++];
+          let p=0;
+          const tick=()=>{
+            if(p<=text.length){ acc += text[p++]||""; bodyEl.textContent=acc; setTimeout(tick, speed); }
+            else { setTimeout(nextLine, 120); }
+          };
+          tick();
+        };
+        nextLine();
+      }
+
+      function cycle(){
+        const {t,b}=items[i];
+        typeText(titleEl, t, ()=> typeBody(b, ()=>{
+          setTimeout(()=> {
+            // delete body then title
+            eraseText(bodyEl, ()=> eraseText(titleEl, ()=>{
+              i = (i+1)%items.length;
+              cycle();
+            }));
+          }, hold);
+        }));
+      }
+      cycle();
+
+      // optional pause on hover
+      const box = titleEl.closest('.typebox');
+      if(box){
+        let paused=false;
+        box.addEventListener('mouseenter', ()=>{ if(!paused){ paused=true; caretEl.style.visibility='hidden'; }});
+        box.addEventListener('mouseleave', ()=>{ if(paused){ paused=false; caretEl.style.visibility='visible'; }});
+      }
+    })();
+
+    /* ===== NuGet live cards ===== */
     (function(){
       const grid=document.getElementById('nugetGrid'); const tpl=document.getElementById('nugetCardTpl');
       if(!grid||!tpl) return;
@@ -899,7 +945,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads)+' downloads';
             node.querySelector('.pkg-updated').textContent = 'Updated '+updated;
           }
-        }catch(_){ /* if API fails, show static card */ }
+        }catch(_){ /* ignore API failure */ }
 
         grid.appendChild(node);
       });
