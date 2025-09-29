@@ -12,8 +12,13 @@
   <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
   <meta property="og:description" content="Bring order to log chaos. Enforce structure, enable audit-ready compliance, and feed ML-ready pipelines—without lock-in." />
   <meta property="og:image" content="assets/CerbiShield.png" />
+  <meta property="og:url" content="https://cerbi.io/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://cerbi.io/">
+  <meta name="robots" content="index,follow">
 
   <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -30,6 +35,7 @@
       --text:#182235;
       --text-strong:#0b1324;
       --link:#0f63ff;                   /* primary logo blue */
+      --logo:#1F6FFF;                   /* explicit logo blue */
       --radius:14px;
       --shadow:0 14px 40px rgba(10,16,30,.12);
       --ring:0 0 0 4px color-mix(in srgb, var(--brand), white 70%);
@@ -42,6 +48,9 @@
       --gx1:-2px; --gy1:0px;
       --gx2:2px;  --gy2:0px;
       --gx3:-1px; --gy3:1px;
+
+      /* background image (randomized via JS) */
+      --bg-img: url('assets/background/background01.png');
     }
 
     *{box-sizing:border-box}
@@ -65,12 +74,23 @@
     body::before{
       content:"";
       position:fixed; inset:0;
-      background:url("https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/backgrounds/background01.png")
-                 center / cover no-repeat fixed;
-      opacity:.22;            /* tweak intensity here */
-      z-index:-100;           /* lowest layer */
+      background: var(--bg-img) center / cover no-repeat fixed;
+      opacity:.24;                   /* tweak intensity */
+      z-index:-100;                  /* lowest layer */
       filter:saturate(1.05) contrast(1.02);
       pointer-events:none;
+    }
+
+    /* ===== THIN VERTICAL ACCENT BAR (next to scrollbar) ===== */
+    .accent-rail{
+      position:fixed; right:0; top:0; bottom:0; width:4px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--logo), white 10%), var(--logo));
+      box-shadow: 0 0 12px color-mix(in srgb, var(--logo), transparent 65%);
+      opacity:.95; z-index:6000; pointer-events:none;
+      border-left:1px solid color-mix(in srgb, var(--logo), black 25%);
+    }
+    @media (max-width: 640px){
+      .accent-rail{ width:3px; }
     }
 
     /* ===== NAV: fixed, always visible ===== */
@@ -162,7 +182,7 @@
     /* Tables */
     .table{width:100%; border-collapse:separate; border-spacing:0}
     .table th,.table td{border:1px solid rgba(20,40,72,.12); padding:.6em .7em}
-    .table th{background:#f0f3fa; color:var(--navy)}
+    .table th{background:#f0f3fa; color:#142848}
     .table tbody tr:nth-child(odd){background:var(--brand-04)}
     .table tbody tr:hover{background:var(--brand-06)}
 
@@ -179,8 +199,8 @@
       font-size: clamp(120px, 35vw, 880px);
       position:relative;
       filter:drop-shadow(0 12px 24px rgba(10,16,30,.18));
+      text-shadow: var(--gx3) var(--gy3) 0 rgba(255,255,255,.12); /* extra ghost */
     }
-    /* two pseudo-layers + one shadow layer for stronger chromatic split */
     #clockText::before,#clockText::after{
       content:attr(data-glitch) "";
       position:absolute; inset:0; pointer-events:none; opacity:.28;
@@ -188,13 +208,17 @@
     }
     #clockText::before{ color:#ff2a2a; transform:translate(var(--gx1), var(--gy1)); }
     #clockText::after { color:#2ab3ff; transform:translate(var(--gx2), var(--gy2)); }
-    /* extra stroke/ghost via text-shadow */
-    #clockText{ text-shadow: var(--gx3) var(--gy3) 0 rgba(255,255,255,.12); }
 
     .scanline{
       position:fixed; left:0; right:0; height:3px;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
       top:-3px; opacity:0; z-index:-9;
+    }
+
+    /* Reduced motion: no glitch/scanline */
+    @media (prefers-reduced-motion: reduce){
+      #clockText::before,#clockText::after{ display:none; }
+      .scanline{ display:none; }
     }
 
     /* CONTACT FAB — interactive orbit + tilt */
@@ -250,7 +274,7 @@
       .contact-fab{right:12px; top:auto; bottom:14px; transform:none}
     }
 
-    /* Background helper layers in your DOM stay behind */
+    /* Background helper layers behind */
     #dynamic-bg,.tiles,.sky,.veil,.spotlight{position:fixed; inset:0; z-index:-20; pointer-events:none}
   </style>
 
@@ -262,7 +286,10 @@
 </head>
 
 <body>
-  <!-- Dynamic background placeholders (kept, but image sits even behind these) -->
+  <!-- Thin logo-blue accent rail -->
+  <div class="accent-rail" aria-hidden="true"></div>
+
+  <!-- Dynamic background placeholders -->
   <div id="dynamic-bg" aria-hidden="true"><canvas id="bgCanvas"></canvas></div>
   <div class="tiles" aria-hidden="true"></div>
   <canvas id="sky" class="sky" aria-hidden="true"></canvas>
@@ -321,8 +348,8 @@
       <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
 
-      <!-- NEW: one-at-a-time typewriter rotator -->
-      <article class="card typebox" style="margin-top:10px">
+      <!-- One-at-a-time typewriter rotator -->
+      <article class="card typebox" style="margin-top:10px" aria-live="polite">
         <h3 id="typeTitle"></h3>
         <div id="typeBody" class="muted mono"></div>
         <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
@@ -594,6 +621,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       <div class="grid" style="align-items:start;gap:18px">
         <div class="col-12 card" style="padding:16px">
           <iframe title="Contact Cerbi" id="contact-iframe" src="https://form.jotform.com/252385904589067"
+                  loading="lazy"
                   style="width:100%;max-width:900px;min-height:900px;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"></iframe>
           <p class="muted" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
           <p class="muted" style="margin-top:6px;font-size:12px;opacity:.85">
@@ -643,16 +671,39 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
+  <!-- Random background picker -->
   <script>
-    /* ===== Housekeeping ===== */
+    (function(){
+      const files = [
+        'background01.png','background02.png','background03.png','background04.png',
+        'background05.png','background06.png','background07.png','background1.png'
+      ];
+      const pick = files[(Math.random()*files.length)|0];
+      const url = `assets/background/${pick}`;
+      document.documentElement.style.setProperty('--bg-img', `url('${url}')`);
+    })();
+  </script>
+
+  <script>
+    // Keep overlays closed on boot
+    (function(){
+      ['lightbox','docbox'].forEach(id=>{
+        var el=document.getElementById(id); if(!el) return;
+        el.hidden=true; el.setAttribute('aria-hidden','true');
+      });
+    })();
+
+    // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
+
+    // Scroll progress
     (function(){
       const bar=document.getElementById('progress'); if(!bar) return;
       const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
 
-    /* ===== Primary nav "More" bucket ===== */
+    // Primary nav "More" bucket
     (function(){
       const nav=document.getElementById('primaryNav');
       const more=document.getElementById('moreMenu');
@@ -686,7 +737,57 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) { more.setAttribute('data-open','false'); more.querySelector('button').setAttribute('aria-expanded','false'); }});
     })();
 
-    /* ===== Pop-art rotator ===== */
+    // WHY slider dots + autoswitch
+    (function(){
+      const slider=document.getElementById('dashSlider'); // reuse utilities for showcase
+      const hero=document.getElementById('whySlider'); // legacy id (if present)
+      if(hero){
+        const slides=[...hero.querySelectorAll('.slide')];
+        const dotsBox=document.createElement('div'); dotsBox.className='dots';
+        dotsBox.innerHTML=slides.map((_,i)=>`<button aria-label="Slide ${i+1}"></button>`).join('');
+        hero.appendChild(dotsBox);
+        const dots=[...dotsBox.querySelectorAll('button')];
+        let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
+        const show=n=>{i=(n+slides.length)%slides.length; slides.forEach((s,idx)=>s.classList.toggle('active',idx===i)); dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));};
+        dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx))); show(i);
+        let t=setInterval(()=>show(i+1),4500);
+        hero.addEventListener('mouseenter',()=>clearInterval(t));
+        hero.addEventListener('mouseleave',()=>t=setInterval(()=>show(i+1),4500));
+      }
+    })();
+
+    // Dash slider + lightbox
+    (function(){
+      const slider=document.getElementById('dashSlider'); if(!slider) return;
+      const slides=[...slider.querySelectorAll('.slide')];
+      const dotsBox=slider.querySelector('.dots');
+      const prevBtn=slider.querySelector('[data-prev]'); const nextBtn=slider.querySelector('[data-next]');
+      const sr=slider.querySelector('[aria-live]');
+      let i=slides.findIndex(s=>s.classList.contains('active')); if(i<0)i=0;
+      dotsBox.innerHTML=slides.map((_,n)=>`<button aria-label="Go to slide ${n+1}"></button>`).join('');
+      const dots=[...dotsBox.querySelectorAll('button')];
+      function show(n,announce=true){
+        i=(n+slides.length)%slides.length;
+        slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+        dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
+        if(announce&&sr) sr.textContent=`Slide ${i+1} of ${slides.length}`;
+      }
+      dots.forEach((d,idx)=>d.addEventListener('click',()=>show(idx)));
+      prevBtn?.addEventListener('click',()=>show(i-1));
+      nextBtn?.addEventListener('click',()=>show(i+1));
+      show(i,false);
+      let timer=null; const start=()=>{ stop(); timer=setInterval(()=>show(i+1,false), 4800); }; const stop=()=>{ if(timer) clearInterval(timer); timer=null; };
+      slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start); start();
+      const overlay=document.getElementById('lightbox'); const big=document.getElementById('lightboxImg');
+      function open(src){ if(!overlay||!big) return; big.src=src; overlay.hidden=false; overlay.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+      function close(){ if(!overlay||!big) return; overlay.setAttribute('aria-hidden','true'); overlay.hidden=true; big.removeAttribute('src'); document.body.style.overflow=''; }
+      overlay?.querySelector('.close')?.addEventListener('click', close);
+      overlay?.addEventListener('click', e=>{ if(e.target===overlay) close(); });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay?.getAttribute('aria-hidden')==='false') close(); });
+      slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src)));
+    })();
+
+    // Pop-art rotator (full width)
     (function(){
       const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
       const sources = [
@@ -712,7 +813,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    /* ===== Docs modal (Markdown) ===== */
+    // Docs modal (Markdown)
     (function(){
       const modal=document.getElementById('docbox'); const content=document.getElementById('docboxContent'); if(!modal||!content) return;
       function open(){ modal.hidden=false; modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
@@ -740,7 +841,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', attach, {once:true}); } else { attach(); }
     })();
 
-    /* ===== Contact FAB interactions ===== */
+    // CONTACT FAB interaction
     (function(){
       const fab=document.getElementById('contactFab'); if(!fab) return;
       let hover=false, rx=0, ry=0, t=0, orb=0;
@@ -765,8 +866,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       fab.addEventListener('mouseleave', ()=>{ hover=false; rx=ry=0; fab.style.boxShadow='var(--shadow)'; });
     })();
 
-    /* ===== GLITCH CLOCK (extra offsets + jitter) ===== */
+    // LOVE-DEATH-ROBOTS GLITCH CLOCK (reduced-motion aware)
     (function(){
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
       const el=document.getElementById('clockText'); const scan=document.getElementById('scanline'); if(!el) return;
       const WORD="CERBI";
       const GLYPHS=["C","E","R","B","I","Ͼ","Ɨ","Ɍ","Ɓ","ⵛ","1","8","|","◼","▮","▯"];
@@ -779,7 +881,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           return ch;
         }).join('');
       }
-
       function jitter(){
         const j = () => (Math.random()*4-2).toFixed(0)+'px';
         document.documentElement.style.setProperty('--gx1', j());
@@ -793,13 +894,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       function update(){
         const d=new Date();
         const time=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        // phases: 0-2 glitch, 3-11 hold time, 12-14 glitch/logo
-        const phase = tick % 15;
+        if(reduce){
+          el.textContent=time; el.setAttribute('data-glitch', time);
+          return;
+        }
+        const phase = tick % 15; // 0-2 glitch, 3-11 time, 12-14 glitch/logo
         let out=time;
-        if(phase<=2 || phase>=12) { out=scramble(WORD); jitter(); }
-        else if(phase===5 || phase===9) { jitter(); }
+        if(phase<=2 || phase>=12){ out=scramble(WORD); jitter(); }
+        else if(phase===5 || phase===9){ jitter(); }
 
-        if(phase===1 || phase===12){
+        if((phase===1 || phase===12) && scan){
           scan.style.opacity='0.55'; scan.style.transition='none'; scan.style.top='-3px';
           requestAnimationFrame(()=>{ scan.style.transition='top .45s ease, opacity .45s ease'; scan.style.top='100%'; scan.style.opacity='0';});
         }
@@ -808,10 +912,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         tick++;
       }
       update();
-      setInterval(update, 500);
+      setInterval(update, reduce ? 60000 : 500); // minute updates if reduced motion
     })();
 
-    /* ===== One-at-a-time TYPEWRITER ROTATOR ===== */
+    // One-at-a-time TYPEWRITER ROTATOR
     (function(){
       const titleEl = document.getElementById('typeTitle');
       const bodyEl  = document.getElementById('typeBody');
@@ -856,7 +960,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       let i=0, typing=false;
       const speed = 22;        // ms per char (typing)
       const erase = 14;        // ms per char (deleting)
-      const hold  = 1200;      // ms to hold after full text
+      const hold  = 1800;      // ms to hold after full text
 
       function typeText(el, text, cb){
         typing=true; el.textContent=""; let p=0;
@@ -887,7 +991,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         const {t,b}=items[i];
         typeText(titleEl, t, ()=> typeBody(b, ()=>{
           setTimeout(()=> {
-            // delete body then title
             eraseText(bodyEl, ()=> eraseText(titleEl, ()=>{
               i = (i+1)%items.length;
               cycle();
@@ -897,7 +1000,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
       cycle();
 
-      // optional pause on hover
+      // optional pause on hover (visual only)
       const box = titleEl.closest('.typebox');
       if(box){
         let paused=false;
@@ -906,7 +1009,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       }
     })();
 
-    /* ===== NuGet live cards ===== */
+    // NuGet live cards
     (function(){
       const grid=document.getElementById('nugetGrid'); const tpl=document.getElementById('nugetCardTpl');
       if(!grid||!tpl) return;
