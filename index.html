@@ -494,10 +494,25 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <li>Downstream sinks receive clean, consistent data</li>
           </ul>
         </article>
-        <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
-          <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
-          <figcaption class="img-cap">Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.</figcaption>
-        </figure>
+<figure class="col-6 img-frame arch-diagram card" style="padding:10px">
+  <a class="arch-pop"
+     href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png"
+     data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png"
+     title="Open full-size architecture">
+    <img
+      src="assets/architecture/cerbisuite-architecture-1600x900.png"
+      sizes="(max-width: 900px) 100vw, 900px"
+      alt="Cerbi reference architecture diagram"
+      loading="lazy" decoding="async">
+  </a>
+  <figcaption class="img-cap">
+    Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.
+    <a class="arch-pop"
+       href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png"
+       data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png">Open full size →</a>
+  </figcaption>
+</figure>
+
       </div>
     </section>
 
@@ -651,6 +666,38 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
+
+
+
+    (function(){
+  const overlay = document.getElementById('lightbox');
+  const big = document.getElementById('lightboxImg');
+  if (!overlay || !big) return;
+
+  function open(src){
+    big.src = src;
+    overlay.hidden = false;
+    overlay.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+    overlay.hidden = true;
+    overlay.setAttribute('aria-hidden','true');
+    big.removeAttribute('src');
+    document.body.style.overflow = '';
+  }
+
+  overlay.querySelector('.close')?.addEventListener('click', close);
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') close(); });
+
+  document.querySelectorAll('a.arch-pop').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      open(a.dataset.full || a.href);
+    });
+  });
+})();
 
     /* ===== Primary nav "More" bucket ===== */
     (function(){
