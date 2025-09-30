@@ -644,19 +644,101 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </template>
     </section>
 
-    <!-- REPOSITORIES -->
-    <section id="repos" class="container section">
-      <div class="eyebrow">Open Source</div>
-      <h2><span class="hl">GitHub Repositories</span></h2>
-      <div class="grid" style="gap:16px">
-        <article class="col-6 card"><h3>CerbiStream</h3><p class="muted">Reference implementation of the structured logger (async channel, file fallback, governance hooks).</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a></article>
-        <article class="col-6 card"><h3>CerbiStream.BenchmarkTests</h3><p class="muted">Throughput/allocations microbenchmarks.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime validator package & demo.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.MEL.Governance.Demo</h3><p class="muted">Demo app for validation and relax-mode.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalyzer</h3><p class="muted">Analyzer for Serilog projects.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3><p class="muted">Test harness for analyzer rules.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a></article>
-      </div>
-    </section>
+<!-- REPOSITORIES -->
+<section id="repos" class="container section">
+  <div class="eyebrow">Open Source</div>
+  <h2><span class="hl">GitHub Repositories</span></h2>
+  <div class="grid" style="gap:16px">
+
+    <!-- CerbiStream -->
+    <article class="col-6 card">
+      <h3>CerbiStream</h3>
+      <p class="muted">
+        High-performance .NET structured logger with an async channel and file-fallback. Designed to emit
+        <em>stable, governed</em> shapes that downstream tools can trust.
+      </p>
+      <ul>
+        <li>Source-level standardization (stable names/types; correlation IDs)</li>
+        <li>Governance hooks for build-time analyzers and runtime validators</li>
+        <li>Configurable sinks/formatters; minimal allocations on hot paths</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a>
+    </article>
+
+    <!-- Benchmarks -->
+    <article class="col-6 card">
+      <h3>CerbiStream.BenchmarkTests</h3>
+      <p class="muted">
+        Microbenchmarks that quantify throughput, latency, and allocations under realistic logging patterns.
+      </p>
+      <ul>
+        <li>Driven by BenchmarkDotNet with CI-friendly reports</li>
+        <li>Scenarios: hot-path logging, async buffer pressure, file-fallback</li>
+        <li>Compares config variants to guide performance trade-offs</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a>
+    </article>
+
+    <!-- MEL Governance Runtime -->
+    <article class="col-6 card">
+      <h3>Cerbi.MEL.Governance</h3>
+      <p class="muted">
+        Runtime governance for <code>Microsoft.Extensions.Logging</code> pipelines—apply redaction, flagging, and
+        relax-mode without changing your sinks.
+      </p>
+      <ul>
+        <li>Policy-driven validators (PII rules, field allow/deny, enums/tags)</li>
+        <li>Relax-mode: observe violations without dropping visibility</li>
+        <li>Emits violation metadata for fast investigations</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a>
+    </article>
+
+    <!-- MEL Governance Demo -->
+    <article class="col-6 card">
+      <h3>Cerbi.MEL.Governance.Demo</h3>
+      <p class="muted">
+        Runnable sample showing how to wire policies, toggle relax-mode, and see violations flow into dashboards.
+      </p>
+      <ul>
+        <li>End-to-end example with sample policies and events</li>
+        <li>Side-by-side output: raw vs. governed</li>
+        <li>Great starting point for pilot evaluations</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a>
+    </article>
+
+    <!-- Serilog Analyzer -->
+    <article class="col-6 card">
+      <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
+      <p class="muted">
+        Roslyn analyzer for Serilog projects—catches governance issues at build/IDE time before code ships.
+      </p>
+      <ul>
+        <li>Diagnostics for field drift, PII hazards, and schema violations</li>
+        <li>Actionable messages with rule IDs for CI gating</li>
+        <li>Complements runtime validation in mixed logger estates</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a>
+    </article>
+
+    <!-- Serilog Analyzer Test App -->
+    <article class="col-6 card">
+      <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
+      <p class="muted">
+        Harness with intentionally “bad” and “good” examples to verify analyzer rules and their messages.
+      </p>
+      <ul>
+        <li>Reproduces common violations (PII, field naming, shape drift)</li>
+        <li>Useful for onboarding and rule customization</li>
+        <li>Acts as regression suite for analyzer changes</li>
+      </ul>
+      <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a>
+    </article>
+
+  </div>
+</section>
+
 
     <!-- ROADMAP -->
     <section id="roadmap" class="container section">
