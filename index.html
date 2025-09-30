@@ -442,46 +442,95 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
-      <div class="full-bleed showcase-outer">
-        <div class="showcase">
-          <div id="dashSlider" class="showcase-inner" aria-roledescription="carousel" tabindex="0">
-            <div class="sr-only" aria-live="polite"></div>
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-            <div class="showcase-viewport">
-              <figure class="slide active">
-                <img width="1600" height="900" src="assets/screenshots/cerbishield-hero-1600x900.jpg"
-                     srcset="assets/screenshots/cerbishield-hero-1600x900.jpg 1x, assets/screenshots/cerbishield-hero-3200x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Overview"
-                     data-full="assets/screenshots/cerbishield-hero-3200x1800.jpg"
-                     loading="eager" decoding="async">
-              </figure>
-              <figure class="slide">
-                <img width="1200" height="900" src="assets/screenshots/cerbishield-profiles-1200x900.jpg"
-                     srcset="assets/screenshots/cerbishield-profiles-1200x900.jpg 1x, assets/screenshots/cerbishield-profiles-2400x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Profiles"
-                     data-full="assets/screenshots/cerbishield-profiles-2400x1800.jpg"
-                     loading="lazy" decoding="async">
-              </figure>
-              <figure class="slide">
-                <img width="1200" height="900" src="assets/screenshots/cerbishield-violations-1200x900.jpg"
-                     srcset="assets/screenshots/cerbishield-violations-1200x900.jpg 1x, assets/screenshots/cerbishield-violations-2400x1800.jpg 2x"
-                     sizes="100vw" alt="CerbiShield — Violations"
-                     data-full="assets/screenshots/cerbishield-violations-2400x1800.jpg"
-                     loading="lazy" decoding="async">
-              </figure>
-            </div>
+<section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
+  <div class="full-bleed showcase-outer">
+    <div class="showcase">
+      <h2 class="text-center">CerbiShield Dashboards</h2>
 
-            <div class="dots" aria-label="Slide controls"></div>
-            <div class="dash-arrows">
-              <button class="btn btn-ghost" type="button" data-prev>← Prev</button>
-              <button class="btn btn-ghost" type="button" data-next>Next →</button>
-            </div>
+      <!-- New Swiper Wrapper -->
+      <div class="swiper mySwiper" style="width:90%;max-width:1100px;margin:auto;">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" 
+                 alt="CerbiShield — Overview">
           </div>
-          <div class="img-cap">Click any screenshot to open full-size preview. Use ←/→ or swipe to navigate.</div>
+          <div class="swiper-slide">
+            <img src="assets/screenshots/cerbishield-profiles-2400x1800.jpg" 
+                 alt="CerbiShield — Profiles">
+          </div>
+          <div class="swiper-slide">
+            <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" 
+                 alt="CerbiShield — Violations">
+          </div>
+          <div class="swiper-slide">
+            <img src="assets/screenshots/cerbishield-settings-1200x900.jpg" 
+                 alt="CerbiShield — Settings">
+          </div>
+          <div class="swiper-slide">
+            <img src="assets/screenshots/cerbishield-deploy-1600x900.jpg" 
+                 alt="CerbiShield — Deploy">
+          </div>
         </div>
+
+        <!-- Pagination + Navigation -->
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
       </div>
-    </section>
+
+      <div class="img-cap text-center">
+        Click or swipe through to explore all dashboards. Use arrows or drag on desktop.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper(".mySwiper", {
+    effect: "coverflow",
+    grabCursor: true,
+    centeredSlides: true,
+    loop: true,
+    slidesPerView: "auto",
+    coverflowEffect: {
+      rotate: 30,
+      stretch: 0,
+      depth: 200,
+      modifier: 1,
+      slideShadows: true,
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+  });
+</script>
+
+<style>
+  .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .swiper-slide img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+  }
+</style>
 
 <!-- Sales & ROI Section -->
 <section id="sales-roi" class="section">
