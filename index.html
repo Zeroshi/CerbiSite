@@ -900,31 +900,58 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       slider.querySelectorAll('img').forEach(img=>img.addEventListener('click', ()=> open(img.dataset.full || img.currentSrc || img.src)));
     })();
 
-    // Pop-art rotator (full width)
-    (function(){
-      const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
-      const sources = [
-        'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
-        'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
-        'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png'
-      ];
-      el.innerHTML = '';
-      const imgs = sources.map((src, idx) => {
-        const im = new Image();
-        im.decoding = 'async';
-        im.loading = idx === 0 ? 'eager' : 'lazy';
-        im.src = src;
-        im.alt = 'Cerbi pop-art ' + (idx+1);
-        if (idx === 0) im.className = 'is-active';
-        el.appendChild(im);
-        return im;
-      });
-      let i = 0;
-      const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced && imgs.length > 1) {
-        setInterval(() => { imgs[i].classList.remove('is-active'); i = (i + 1) % imgs.length; imgs[i].classList.add('is-active'); }, 3500);
+ // Pop-art rotator (random order + random next)
+  (function () {
+    const el = document.getElementById('sigRotator');
+    if (!el || el.__cerbiPopArtInit) return;
+    el.__cerbiPopArtInit = true;
+
+    // 1) List of images
+    const sources = [
+      'assets/popart/popart-01.png','assets/popart/popart-02.png','assets/popart/popart-03.png',
+      'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
+      'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png'
+    ];
+
+    // 2) Shuffle helper (Fisher–Yates)
+    function shuffle(a){
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = (Math.random() * (i + 1)) | 0;
+        [a[i], a[j]] = [a[j], a[i]];
       }
-    })();
+      return a;
+    }
+
+    // 3) Build DOM from a shuffled list
+    el.innerHTML = '';
+    const order = shuffle([...sources]);
+    const imgs = order.map((src, idx) => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.loading = idx === 0 ? 'eager' : 'lazy';
+      im.src = src;
+      im.alt = 'Cerbi pop-art ' + (idx + 1);
+      if (idx === 0) im.className = 'is-active';
+      el.appendChild(im);
+      return im;
+    });
+
+    // 4) Rotate to a random different panel each time
+    let i = 0;
+    const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced && imgs.length > 1) {
+      const step = () => {
+        const prev = i;
+        // pick a random next index different from current
+        do { i = (Math.random() * imgs.length) | 0; } while (i === prev);
+        imgs[prev].classList.remove('is-active');
+        imgs[i].classList.add('is-active');
+        // randomize interval a bit (2.8s–4.2s)
+        setTimeout(step, 2800 + Math.random() * 1400);
+      };
+      setTimeout(step, 3000);
+    }
+  })();
 
     // Docs modal (Markdown)
     (function(){
