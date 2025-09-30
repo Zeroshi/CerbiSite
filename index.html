@@ -500,7 +500,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <h3>Cost Savings</h3>
         <canvas id="costSavingsChart"></canvas>
         <p style="margin-top:10px;">
-          Automating governance workflows reduces overhead and shrinks compliance audit costs by 
+          Automating governance workflows reduces audit costs by 
           up to <strong>40%</strong>.
         </p>
       </div>
@@ -510,7 +510,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <h3>Time Efficiency</h3>
         <canvas id="timeEfficiencyChart"></canvas>
         <p style="margin-top:10px;">
-          Teams spend less time on repetitive logging tasks. 
           Productivity boosts free up <strong>30% more engineering time</strong>.
         </p>
       </div>
@@ -520,7 +519,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <h3>ROI Growth</h3>
         <canvas id="roiGrowthChart"></canvas>
         <p style="margin-top:10px;">
-          Companies adopting CerbiShield see an average ROI increase of <strong>3x</strong> within the first year.
+          Companies adopting CerbiShield can see an average ROI increase of <strong>3x</strong>.
         </p>
       </div>
 
@@ -531,14 +530,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 <!-- Chart.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-  // Cost Savings Chart
+  const brandColor = "#FF4500";      // Orange-Red
+  const complementColor = "#00BAFF"; // Cyan-Blue
+
+  // Cost Savings
   new Chart(document.getElementById("costSavingsChart"), {
     type: "doughnut",
     data: {
       labels: ["Reduced Overhead", "Other Costs"],
       datasets: [{
         data: [40, 60],
-        backgroundColor: ["#4CAF50", "#E0E0E0"]
+        backgroundColor: [brandColor, complementColor]
       }]
     },
     options: {
@@ -546,14 +548,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     }
   });
 
-  // Time Efficiency Chart
+  // Time Efficiency
   new Chart(document.getElementById("timeEfficiencyChart"), {
     type: "doughnut",
     data: {
-      labels: ["Saved Time", "Remaining Tasks"],
+      labels: ["Saved Time", "Remaining Work"],
       datasets: [{
         data: [30, 70],
-        backgroundColor: ["#2196F3", "#E0E0E0"]
+        backgroundColor: [brandColor, complementColor]
       }]
     },
     options: {
@@ -561,14 +563,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     }
   });
 
-  // ROI Growth Chart
+  // ROI Growth
   new Chart(document.getElementById("roiGrowthChart"), {
     type: "doughnut",
     data: {
-      labels: ["ROI Increase", "Baseline"],
+      labels: ["ROI Growth", "Baseline"],
       datasets: [{
         data: [300, 100],
-        backgroundColor: ["#FF9800", "#E0E0E0"]
+        backgroundColor: [brandColor, complementColor]
       }]
     },
     options: {
