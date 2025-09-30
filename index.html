@@ -155,7 +155,11 @@
       background:linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%);
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
-    .sub{color:var(--muted); max-width:70ch}
+    .hero .sub{ max-width:70ch; }         /* keep comfy width on small screens */
+@media (min-width: 900px){
+  .hero .sub{ max-width:none; }       /* span full container on larger screens */
+}
+
 
     .section{padding:28px 0}
     .eyebrow{font-size:12px; letter-spacing:.16em; color:var(--muted); text-transform:uppercase}
