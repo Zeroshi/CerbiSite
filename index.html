@@ -269,6 +269,30 @@
       .contact-fab{right:12px; top:auto; bottom:14px; transform:none}
     }
 
+    #contactForm .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:720px){ #contactForm .form-row { grid-template-columns:1fr; } }
+
+  #contactForm label.mono { display:block; margin:6px 0 6px; }
+
+  #contactForm .form-control{
+    display:block; width:100%;
+    padding:10px; margin:0 0 12px;
+    border-radius:var(--radius);
+    border:1px solid rgba(20,40,72,.15);
+    background:var(--panel); color:var(--text);
+  }
+  #contactForm .form-control:focus{
+    outline:none; box-shadow:var(--ring);
+    border-color: color-mix(in srgb, var(--brand), #000 10%);
+  }
+  #contactForm textarea.form-control{ min-height:160px; resize:vertical; }
+
+  #contactForm .consent-row{
+    display:flex; gap:8px; align-items:flex-start; margin:6px 0 14px;
+  }
+  #contactForm .hp{ position:absolute; left:-5000px; opacity:0; height:0; width:0; }
+  #contactForm :invalid:focus{ box-shadow: var(--ring); }
+
     #dynamic-bg,.tiles,.sky,.veil,.spotlight{position:fixed; inset:0; z-index:-20; pointer-events:none}
   </style>
 
@@ -799,69 +823,85 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-<div class="col-12 card" style="padding:16px">
-  <form id="contactForm" action="https://formspree.io/f/mwprozjb" method="POST" novalidate>
-    <!-- Reason -->
-    <label class="mono" for="reason">Reason</label>
-    <select id="reason" name="reason" required style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
-      <option value="" selected disabled>Select a reason…</option>
-      <option>Enterprise inquiry</option>
-      <option>Azure Marketplace partnership</option>
-      <option>Pilot / trial</option>
-      <option>Press / speaking</option>
-      <option>Other</option>
-    </select>
+<section id="contact" class="container section">
+  <div class="eyebrow">Let’s talk</div>
+  <h2>Get in <span class="hl">Touch</span></h2>
+  <p class="lead">Questions, enterprise inquiries, partnerships, or funding conversations? Send a note and we’ll respond quickly.</p>
 
-    <!-- Name / Email row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div>
-        <label class="mono" for="name">Your name</label>
-        <input id="name" name="name" type="text" required autocomplete="name"
-               style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
-      </div>
-      <div>
-        <label class="mono" for="email">Your email</label>
-        <input id="email" name="email" type="email" required autocomplete="email"
-               style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
-      </div>
+  <div class="grid" style="align-items:start;gap:18px">
+    <!-- Card width matches rest of site; inner form is capped so lines don’t run too wide -->
+    <div class="col-12 card" style="padding:16px">
+      <form id="contactForm" action="https://formspree.io/f/mwprozjb" method="POST" novalidate style="max-width:900px;margin:0 auto">
+        <!-- Reason -->
+        <label class="mono" for="reason">Reason</label>
+        <select id="reason" name="reason" class="form-control" required autocomplete="off">
+          <option value="" selected disabled>Select a reason…</option>
+          <optgroup label="Cerbi Suite">
+            <option>Product questions</option>
+            <option>Pilot / POC</option>
+            <option>Enterprise pricing & procurement</option>
+            <option>Azure Marketplace listing / purchase</option>
+            <option>Technical support</option>
+            <option>Security & compliance (PII, RBAC, audits)</option>
+            <option>Architecture & implementation guidance</option>
+          </optgroup>
+          <optgroup label="Partners & Biz">
+            <option>Partnership / integration</option>
+            <option>OEM / licensing</option>
+            <option>Press / speaking</option>
+            <option>Careers / contracting</option>
+            <option>Funding / investors</option>
+            <option>Billing & invoices</option>
+          </optgroup>
+          <option>Other</option>
+        </select>
+
+        <!-- Name / Email -->
+        <div class="form-row">
+          <div>
+            <label class="mono" for="name">Your name</label>
+            <input id="name" name="name" type="text" class="form-control" required autocomplete="name" placeholder="Ada Lovelace">
+          </div>
+          <div>
+            <label class="mono" for="email">Your email</label>
+            <input id="email" name="email" type="email" class="form-control" required autocomplete="email" placeholder="you@company.com">
+          </div>
+        </div>
+
+        <!-- Company -->
+        <label class="mono" for="company">Company (optional)</label>
+        <input id="company" name="company" type="text" class="form-control" autocomplete="organization" placeholder="Acme Corp">
+
+        <!-- Message -->
+        <label class="mono" for="message">Message</label>
+        <textarea id="message" name="message" class="form-control" required rows="6" autocomplete="off" placeholder="How can we help?"></textarea>
+
+        <!-- Consent -->
+        <label class="consent-row">
+          <input type="checkbox" name="consent" required>
+          <span class="muted">I agree to the <a class="doc-link" href="docs/terms.md">Terms</a> and <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.</span>
+        </label>
+
+        <!-- Hidden helpers -->
+        <input type="hidden" name="_subject" value="Cerbi.io website contact">
+        <!-- Optional: redirect after success -->
+        <!-- <input type="hidden" name="_redirect" value="/thanks.html"> -->
+
+        <!-- Honeypot -->
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="btn btn-primary" type="submit" id="contactSubmit">Send</button>
+          <span id="contactStatus" class="muted" role="status" aria-live="polite"></span>
+        </div>
+
+        <!-- Small reassurance -->
+        <p class="muted" style="margin-top:10px">We’ll reply within a business day. No spam—ever.</p>
+      </form>
     </div>
+  </div>
+</section>
 
-    <!-- Company (optional) -->
-    <label class="mono" for="company">Company (optional)</label>
-    <input id="company" name="company" type="text" autocomplete="organization"
-           style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
-
-    <!-- Message -->
-    <label class="mono" for="message">Message</label>
-    <textarea id="message" name="message" required rows="6"
-              style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff"></textarea>
-
-    <!-- Consent -->
-    <label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0 14px">
-      <input type="checkbox" name="consent" required>
-      <span class="muted" style="line-height:1.4">I agree to the
-        <a class="doc-link" href="docs/terms.md">Terms</a> and
-        <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
-      </span>
-    </label>
-
-    <!-- Hidden helpers -->
-    <input type="hidden" name="_subject" value="Cerbi.io website contact">
-    <!-- Honeypot (bots fill this; humans don’t) -->
-    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
-           style="position:absolute;left:-5000px;opacity:0;height:0;width:0">
-
-    <!-- Submit -->
-    <button class="btn btn-primary" type="submit" id="contactSubmit">Send</button>
-    <span id="contactStatus" class="muted" role="status" aria-live="polite" style="margin-left:10px"></span>
-  </form>
-
-  <p class="muted" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-  <p class="muted" style="margin-top:6px;font-size:12px;opacity:.85">
-    By submitting, you agree to our <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our
-    <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
-  </p>
-</div>
 
   </main>
 
