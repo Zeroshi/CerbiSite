@@ -166,9 +166,37 @@
     .table tbody tr:nth-child(odd){background:var(--brand-04)}
     .table tbody tr:hover{background:var(--brand-06)}
 
-    /* ARCH */
+  /* ARCH */
     .arch-diagram img{width:100%; height:auto; border-radius:12px; border:1px solid rgba(20,40,72,.12)}
     .arch-diagram{max-width:900px}
+
+    /* --- Lightbox (required for the arch popups) --- */
+    .lightbox[hidden] { display: none !important; }
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 6000;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,.66);
+      padding: 24px;
+    }
+    .lightbox > .close {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(20,40,72,.15);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    #lightboxImg {
+      max-width: min(96vw, 1800px);
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      background: #fff;
+    }
 
     /* ===== LOVE-DEATH-ROBOTS style GLYPH CLOCK (with multi-offset glitch) ===== */
     #bg-clock{
