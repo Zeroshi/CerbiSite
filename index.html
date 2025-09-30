@@ -799,22 +799,70 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <section id="contact" class="container section">
-      <div class="eyebrow">Let’s talk</div>
-      <h2>Get in <span class="hl">Touch</span></h2>
-      <p class="lead">Questions, enterprise inquiries, or marketplace partnership? Reach out and we’ll respond quickly.</p>
+<div class="col-12 card" style="padding:16px">
+  <form id="contactForm" action="https://formspree.io/f/mwprozjb" method="POST" novalidate>
+    <!-- Reason -->
+    <label class="mono" for="reason">Reason</label>
+    <select id="reason" name="reason" required style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
+      <option value="" selected disabled>Select a reason…</option>
+      <option>Enterprise inquiry</option>
+      <option>Azure Marketplace partnership</option>
+      <option>Pilot / trial</option>
+      <option>Press / speaking</option>
+      <option>Other</option>
+    </select>
 
-      <div class="grid" style="align-items:start;gap:18px">
-        <div class="col-12 card" style="padding:16px">
-          <iframe title="Contact Cerbi" id="contact-iframe" src="https://form.jotform.com/252385904589067"
-                  style="width:100%;max-width:900px;min-height:900px;height:980px;border:0;border-radius:12px;background:rgba(255,255,255,.02);display:block;margin:0 auto"></iframe>
-          <p class="muted" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
-          <p class="muted" style="margin-top:6px;font-size:12px;opacity:.85">
-            By submitting, you agree to our <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
-          </p>
-        </div>
+    <!-- Name / Email row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label class="mono" for="name">Your name</label>
+        <input id="name" name="name" type="text" required autocomplete="name"
+               style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
       </div>
-    </section>
+      <div>
+        <label class="mono" for="email">Your email</label>
+        <input id="email" name="email" type="email" required autocomplete="email"
+               style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
+      </div>
+    </div>
+
+    <!-- Company (optional) -->
+    <label class="mono" for="company">Company (optional)</label>
+    <input id="company" name="company" type="text" autocomplete="organization"
+           style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff">
+
+    <!-- Message -->
+    <label class="mono" for="message">Message</label>
+    <textarea id="message" name="message" required rows="6"
+              style="display:block;width:100%;margin:6px 0 12px;padding:10px;border-radius:10px;border:1px solid rgba(20,40,72,.15);background:#fff"></textarea>
+
+    <!-- Consent -->
+    <label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0 14px">
+      <input type="checkbox" name="consent" required>
+      <span class="muted" style="line-height:1.4">I agree to the
+        <a class="doc-link" href="docs/terms.md">Terms</a> and
+        <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
+      </span>
+    </label>
+
+    <!-- Hidden helpers -->
+    <input type="hidden" name="_subject" value="Cerbi.io website contact">
+    <!-- Honeypot (bots fill this; humans don’t) -->
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true"
+           style="position:absolute;left:-5000px;opacity:0;height:0;width:0">
+
+    <!-- Submit -->
+    <button class="btn btn-primary" type="submit" id="contactSubmit">Send</button>
+    <span id="contactStatus" class="muted" role="status" aria-live="polite" style="margin-left:10px"></span>
+  </form>
+
+  <p class="muted" style="margin-top:10px">Prefer email? <a href="mailto:hello@cerbi.io">hello@cerbi.io</a></p>
+  <p class="muted" style="margin-top:6px;font-size:12px;opacity:.85">
+    By submitting, you agree to our <a class="doc-link" href="docs/terms.md">Terms</a> and acknowledge our
+    <a class="doc-link" href="docs/privacy.md">Privacy Policy</a>.
+  </p>
+</div>
+
   </main>
 
   <footer class="footer" style="padding:18px 0; border-top:1px solid rgba(20,40,72,.12); background:rgba(255,255,255,.7)">
@@ -862,6 +910,50 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const on=()=>{const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; const pct=max?(100*((h.scrollTop||document.body.scrollTop)/max)):0; bar.style.setProperty('--progress',pct+'%');};
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
+
+    (function(){
+  const form   = document.getElementById('contactForm');
+  if(!form) return;
+  const status = document.getElementById('contactStatus');
+  const btn    = document.getElementById('contactSubmit');
+
+  async function submitAjax(e){
+    e.preventDefault();
+    status.textContent = '';
+    btn.disabled = true;
+
+    // simple client-side validity check
+    if(!form.reportValidity()){
+      btn.disabled = false;
+      return;
+    }
+
+    try{
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+
+      if(res.ok){
+        // GA event (safe even if gtag not defined)
+        try { window.gtag && gtag('event','contact_submit',{method:'formspree'}); } catch(_){}
+        form.reset();
+        status.textContent = "Thanks — we’ll be in touch shortly.";
+        // Optional: swap the form for a thank-you block
+        // form.outerHTML = '<div class="muted">Thanks — we’ll be in touch shortly.</div>';
+      } else {
+        status.textContent = "Sorry, something went wrong. Please email hello@cerbi.io.";
+      }
+    } catch {
+      status.textContent = "Network error. Please try again or email hello@cerbi.io.";
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  form.addEventListener('submit', submitAjax);
+})();
 
     (function(){
       const overlay = document.getElementById('lightbox');
