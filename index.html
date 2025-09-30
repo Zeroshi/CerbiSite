@@ -2,14 +2,14 @@
 <html lang="en" data-theme="cerbi-light">
 <head>
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-  gtag('config', 'G-HQ6M9SCWYH');
-</script>
+    gtag('config', 'G-HQ6M9SCWYH');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CerbiSuite — Unified Logging, Governance & Observability</title>
@@ -51,6 +51,9 @@
       --gx1:-2px; --gy1:0px;
       --gx2:2px;  --gy2:0px;
       --gx3:-1px; --gy3:1px;
+
+      /* dynamic background url (set by JS) */
+      --bg-url: url("https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/backgrounds/background01.png");
     }
 
     *{box-sizing:border-box}
@@ -74,12 +77,13 @@
     body::before{
       content:"";
       position:fixed; inset:0;
-      background:url("https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/backgrounds/background01.png")
-                 center / cover no-repeat fixed;
+      /* changed to use CSS var so JS can randomize the image without touching layout */
+      background:var(--bg-url) center / cover no-repeat fixed;
       opacity:.22;            /* tweak intensity here */
       z-index:-100;           /* lowest layer */
       filter:saturate(1.05) contrast(1.02);
       pointer-events:none;
+      transition: opacity .45s ease;
     }
 
     /* ===== NAV: fixed, always visible ===== */
@@ -171,7 +175,7 @@
     /* Tables */
     .table{width:100%; border-collapse:separate; border-spacing:0}
     .table th,.table td{border:1px solid rgba(20,40,72,.12); padding:.6em .7em}
-    .table th{background:#f0f3fa; color:var(--navy)}
+    .table th{background:#f0f3fa; color:#navy}
     .table tbody tr:nth-child(odd){background:var(--brand-04)}
     .table tbody tr:hover{background:var(--brand-06)}
 
@@ -515,6 +519,27 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
+    <!-- Executive Charts (new, non-destructive addition) -->
+    <section id="exec-charts" class="container section" aria-label="Executive charts">
+      <div class="eyebrow">Snapshots</div>
+      <h2>Executive Metrics</h2>
+      <p class="lead">Readable doughnut charts for quick status at a glance.</p>
+      <div class="grid" style="gap:16px">
+        <article class="col-4 card">
+          <h3 class="muted" style="margin-top:0">Governance Coverage</h3>
+          <canvas id="chartCoverage" width="300" height="300" aria-label="Governance Coverage"></canvas>
+        </article>
+        <article class="col-4 card">
+          <h3 class="muted" style="margin-top:0">Indexed Cost Savings</h3>
+          <canvas id="chartSavings" width="300" height="300" aria-label="Cost Savings"></canvas>
+        </article>
+        <article class="col-4 card">
+          <h3 class="muted" style="margin-top:0">Adoption Readiness</h3>
+          <canvas id="chartReadiness" width="300" height="300" aria-label="Adoption Readiness"></canvas>
+        </article>
+      </div>
+    </section>
+
     <!-- ARCHITECTURE -->
     <section id="architecture" class="container section">
       <div class="eyebrow">How it fits</div>
@@ -693,6 +718,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <img id="lightboxImg" alt="" />
   </div>
 
+  <!-- Chart.js for executive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-p/cwYkH5kG9n4K9YlJwVw8i8XyT2yQkQexwZrW3e3xD8q0dYc2cQ3z0m3nq1rD1i" crossorigin="anonymous"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
 
   <script>
@@ -704,37 +732,36 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
 
-
-
+    /* ===== Lightbox for architecture & screenshots ===== */
     (function(){
-  const overlay = document.getElementById('lightbox');
-  const big = document.getElementById('lightboxImg');
-  if (!overlay || !big) return;
+      const overlay = document.getElementById('lightbox');
+      const big = document.getElementById('lightboxImg');
+      if (!overlay || !big) return;
 
-  function open(src){
-    big.src = src;
-    overlay.hidden = false;
-    overlay.setAttribute('aria-hidden','false');
-    document.body.style.overflow = 'hidden';
-  }
-  function close(){
-    overlay.hidden = true;
-    overlay.setAttribute('aria-hidden','true');
-    big.removeAttribute('src');
-    document.body.style.overflow = '';
-  }
+      function open(src){
+        big.src = src;
+        overlay.hidden = false;
+        overlay.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+      }
+      function close(){
+        overlay.hidden = true;
+        overlay.setAttribute('aria-hidden','true');
+        big.removeAttribute('src');
+        document.body.style.overflow = '';
+      }
 
-  overlay.querySelector('.close')?.addEventListener('click', close);
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') close(); });
+      overlay.querySelector('.close')?.addEventListener('click', close);
+      overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') close(); });
 
-  document.querySelectorAll('a.arch-pop').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      open(a.dataset.full || a.href);
-    });
-  });
-})();
+      document.querySelectorAll('a.arch-pop').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          open(a.dataset.full || a.href);
+        });
+      });
+    })();
 
     /* ===== Primary nav "More" bucket ===== */
     (function(){
@@ -770,7 +797,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) { more.setAttribute('data-open','false'); more.querySelector('button').setAttribute('aria-expanded','false'); }});
     })();
 
-    /* ===== Pop-art rotator ===== */
+    /* ===== Randomized background image (assets/backgrounds/background01..16.png) ===== */
+    (function(){
+      const count = 16;
+      const n = Math.floor(Math.random() * count) + 1;
+      const id = String(n).padStart(2, '0');
+      const url = `assets/backgrounds/background${id}.png`;
+      document.documentElement.style.setProperty('--bg-url', `url('${url}')`);
+    })();
+
+    /* ===== Pop-art rotator (randomized order) ===== */
     (function(){
       const el = document.getElementById('sigRotator'); if(!el || el.__cerbiPopArtInit) return; el.__cerbiPopArtInit = true;
       const sources = [
@@ -778,6 +814,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         'assets/popart/popart-04.png','assets/popart/popart-05.png','assets/popart/popart-06.png',
         'assets/popart/popart-07.png','assets/popart/popart-08.png','assets/popart/popart-09.png'
       ];
+      // shuffle order per load
+      for(let i=sources.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [sources[i],sources[j]]=[sources[j],sources[i]]; }
+
       el.innerHTML = '';
       const imgs = sources.map((src, idx) => {
         const im = new Image();
@@ -789,6 +828,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         el.appendChild(im);
         return im;
       });
+
       let i = 0;
       const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReduced && imgs.length > 1) {
@@ -1032,6 +1072,62 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         }catch(_){ /* ignore API failure */ }
 
         grid.appendChild(node);
+      });
+    })();
+
+    /* ===== Executive charts with Chart.js ===== */
+    (function(){
+      function makeDoughnut(canvasId, filled, total, colors) {
+        const el = document.getElementById(canvasId);
+        if (!el || !window.Chart) return;
+        const value = Math.max(0, Math.min(filled, total));
+        const remaining = Math.max(0, total - value);
+        const data = {
+          labels: ['Value', 'Remaining'],
+          datasets: [{
+            data: [value, remaining],
+            backgroundColor: colors || ['#6ce5b1', '#eaeef7'],
+            borderWidth: 0,
+            hoverOffset: 4,
+            cutout: '65%'
+          }]
+        };
+        const percent = total ? Math.round((value / total) * 100) : 0;
+
+        const chart = new Chart(el, {
+          type: 'doughnut',
+          data,
+          options: {
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: true }
+            }
+          }
+        });
+
+        const ctx = el.getContext('2d');
+        Chart.register({
+          id: 'centerText_' + canvasId,
+          afterDraw(c) {
+            if (c !== chart) return;
+            const { width, height } = c;
+            ctx.save();
+            ctx.font = '600 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+            ctx.fillStyle = '#182235';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(percent + '%', width / 2, height / 2);
+            ctx.restore();
+          }
+        });
+        chart.update();
+        return chart;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        makeDoughnut('chartCoverage', 76, 100, ['#6ce5b1', '#eef2f9']);
+        makeDoughnut('chartSavings', 42, 100, ['#5ea0ff', '#eef2f9']);
+        makeDoughnut('chartReadiness', 64, 100, ['#f5a524', '#eef2f9']);
       });
     })();
   </script>
