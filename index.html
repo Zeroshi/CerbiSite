@@ -448,30 +448,25 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
   <div class="full-bleed showcase-outer">
     <div class="showcase">
-      <h2 class="text-center">CerbiShield Dashboards</h2>
+      <h2 class="dashboards-title">CerbiShield Dashboards</h2>
 
-      <!-- New Swiper Wrapper -->
-      <div class="swiper mySwiper" style="width:90%;max-width:1100px;margin:auto;">
+      <!-- Full-width Swiper -->
+      <div class="swiper mySwiper">
         <div class="swiper-wrapper">
           <div class="swiper-slide">
-            <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" 
-                 alt="CerbiShield — Overview">
+            <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview">
           </div>
           <div class="swiper-slide">
-            <img src="assets/screenshots/cerbishield-profiles-2400x1800.jpg" 
-                 alt="CerbiShield — Profiles">
+            <img src="assets/screenshots/cerbishield-profiles-2400x1800.jpg" alt="CerbiShield — Profiles">
           </div>
           <div class="swiper-slide">
-            <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" 
-                 alt="CerbiShield — Violations">
+            <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations">
           </div>
           <div class="swiper-slide">
-            <img src="assets/screenshots/cerbishield-settings-1200x900.jpg" 
-                 alt="CerbiShield — Settings">
+            <img src="assets/screenshots/cerbishield-settings-1200x900.jpg" alt="CerbiShield — Settings">
           </div>
           <div class="swiper-slide">
-            <img src="assets/screenshots/cerbishield-Deploy-1600x900.jpg" 
-                 alt="CerbiShield — Deploy">
+            <img src="assets/screenshots/cerbishield-deploy-1600x900.jpg" alt="CerbiShield — Deploy">
           </div>
         </div>
 
@@ -496,7 +491,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     grabCursor: true,
     centeredSlides: true,
     loop: true,
-    slidesPerView: "auto",
+    slidesPerView: "auto", // uses slide width from CSS
     coverflowEffect: {
       rotate: 30,
       stretch: 0,
@@ -516,7 +511,36 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </script>
 
 <style>
+  /* Make the whole section bleed to full browser width, even inside a centered page container */
+  .full-bleed-wrap {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    width: 100vw;
+  }
+
+  /* Optional: inner spacing for the content above/below the slider */
+  .showcase {
+    padding: 2rem 0 1rem;
+  }
+
+  /* Center the header text */
+  .dashboards-title,
+  .text-center {
+    text-align: center;
+  }
+
+  /* Full-width Swiper track */
+  #dashboards .mySwiper {
+    width: 100vw;      /* span entire browser width */
+    margin: 0 auto;    /* keep it centered if parent adds transforms */
+  }
+
+  /* Each slide takes full viewport width up to a sensible max for big screens */
   .swiper-slide {
+    width: min(1200px, 100vw);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -524,13 +548,37 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     border-radius: 12px;
     overflow: hidden;
   }
+
+  /* Images fill their slide width */
   .swiper-slide img {
+    display: block;
     width: 100%;
     height: auto;
     border-radius: 12px;
     box-shadow: 0 6px 16px rgba(0,0,0,0.4);
   }
+
+  /* Keep captions readable */
+  .img-cap {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    opacity: 0.85;
+  }
+
+  /* Improve nav button tap targets a bit */
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 48px;
+    height: 48px;
+  }
+
+  @media (max-width: 640px) {
+    .showcase { padding: 1.25rem 0 0.5rem; }
+    .swiper-slide { border-radius: 10px; }
+    .swiper-slide img { border-radius: 10px; }
+  }
 </style>
+
 
 <!-- Sales & ROI Section -->
 <section id="sales-roi" class="section">
