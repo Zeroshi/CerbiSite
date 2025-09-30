@@ -831,7 +831,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
     /* Robust randomized background with fallback for GitHub Pages */
     (function(){
-      const numbered = Array.from({length:16}, (_,i)=>`assets/backgrounds/background${String(i+1).padStart(2,'0')}.png`);
+      const numbered = Array.from({length:16}, (_,i)=>`assets/background/background${String(i+1).padStart(2,'0')}.png`);
       const fallbacks = [
         'assets/background.png',
         'assets/background.jpg',
