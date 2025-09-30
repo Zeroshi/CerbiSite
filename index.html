@@ -483,25 +483,143 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </div>
     </section>
 
-    <section id="exec-charts" class="container section" aria-label="Executive charts">
-      <div class="eyebrow">Snapshots</div>
-      <h2>Executive Metrics</h2>
-      <p class="lead">Readable doughnut charts for quick status at a glance.</p>
-      <div class="grid" style="gap:16px">
-        <article class="col-4 card">
-          <h3 class="muted" style="margin-top:0">Governance Coverage</h3>
-          <canvas id="chartCoverage" width="300" height="300" aria-label="Governance Coverage"></canvas>
-        </article>
-        <article class="col-4 card">
-          <h3 class="muted" style="margin-top:0">Indexed Cost Savings</h3>
-          <canvas id="chartSavings" width="300" height="300" aria-label="Cost Savings"></canvas>
-        </article>
-        <article class="col-4 card">
-          <h3 class="muted" style="margin-top:0">Adoption Readiness</h3>
-          <canvas id="chartReadiness" width="300" height="300" aria-label="Adoption Readiness"></canvas>
-        </article>
-      </div>
-    </section>
+<section id="exec-charts" class="container section" aria-label="Sales & ROI snapshots">
+  <div class="eyebrow">Snapshots</div>
+  <h2>Sales & ROI</h2>
+  <p class="lead">Where Cerbi saves money and time—at a glance.</p>
+
+  <div class="grid" style="gap:16px">
+    <!-- Savings Sources -->
+    <article class="col-4 card">
+      <h3 class="muted" style="margin-top:0">Where Savings Come From</h3>
+      <canvas id="chartSavingsSources" width="300" height="300" aria-label="Savings Sources"></canvas>
+      <p class="small muted" style="margin-top:12px">
+        Cerbi reduces total cost by automating log governance and remediation: less manual triage and compliance prep,
+        fewer incidents, and optimized storage/ingest. Most customers see the biggest savings in
+        “Manual Effort” and “Incident Cost Avoided.”
+      </p>
+    </article>
+
+    <!-- Time Reallocation -->
+    <article class="col-4 card">
+      <h3 class="muted" style="margin-top:0">Time Saved & Reallocated</h3>
+      <canvas id="chartTime" width="300" height="300" aria-label="Time Saved and Reallocated"></canvas>
+      <p class="small muted" style="margin-top:12px">
+        Teams reclaim hours by eliminating repetitive tasks. That time shifts to higher-value work like reliability
+        engineering and feature delivery—accelerating roadmaps.
+      </p>
+    </article>
+
+    <!-- Cost Without Cerbi -->
+    <article class="col-4 card">
+      <h3 class="muted" style="margin-top:0">Cost of Not Using Cerbi</h3>
+      <canvas id="chartCostAvoided" width="300" height="300" aria-label="Cost Avoided"></canvas>
+      <p class="small muted" style="margin-top:12px">
+        Without Cerbi, spend concentrates in manual compliance, incident firefighting, and over-retained logs.
+        Cerbi compresses these categories, shifting budget toward innovation.
+      </p>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      if (!window.Chart) {
+        console.warn('Chart.js not loaded; ROI charts skipped.');
+        return;
+      }
+
+      // Shared styling
+      const baseOptions = {
+        type: 'doughnut',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '55%',
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 14 } },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const label = ctx.label || '';
+                  const value = ctx.parsed || 0;
+                  const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+                  const pct = total ? Math.round((value / total) * 100) : 0;
+                  return `${label}: ${value} (${pct}%)`;
+                }
+              }
+            },
+            title: { display: false },
+          },
+          animation: { animateRotate: true, animateScale: false }
+        }
+      };
+
+      // 1) Savings Sources (edit values to your case)
+      const savingsSourcesData = {
+        labels: [
+          'Manual Effort Reduced',
+          'Incident Cost Avoided',
+          'Storage/Ingress Optimized',
+          'Audit & Compliance Prep',
+          'Other'
+        ],
+        datasets: [{
+          data: [40, 25, 20, 10, 5], // % of total savings (example mix)
+          backgroundColor: ['#4CAF50','#FF7043','#42A5F5','#AB47BC','#90A4AE'],
+          borderWidth: 0
+        }]
+      };
+
+      // 2) Time Saved & Reallocated
+      const timeSavedData = {
+        labels: [
+          'Noise Reduction & Triage',
+          'Compliance Reporting',
+          'Root-Cause Acceleration',
+          'On-call Coordination',
+          'Other'
+        ],
+        datasets: [{
+          data: [35, 20, 25, 15, 5], // % of total hours reclaimed (example)
+          backgroundColor: ['#26C6DA','#FFA726','#66BB6A','#EF5350','#BDBDBD'],
+          borderWidth: 0
+        }]
+      };
+
+      // 3) Cost of Not Using Cerbi (what gets avoided)
+      const costAvoidedData = {
+        labels: [
+          'Manual Compliance Ops',
+          'Incident Firefighting',
+          'Over-Retained Logs',
+          'Ad-hoc Integrations',
+          'Other'
+        ],
+        datasets: [{
+          data: [30, 30, 20, 15, 5], // % of baseline cost (example)
+          backgroundColor: ['#29B6F6','#FF8A65','#8D6E63','#7E57C2','#A5D6A7'],
+          borderWidth: 0
+        }]
+      };
+
+      // Create charts
+      const c1 = document.getElementById('chartSavingsSources').getContext('2d');
+      new Chart(c1, { ...baseOptions, data: savingsSourcesData });
+
+      const c2 = document.getElementById('chartTime').getContext('2d');
+      new Chart(c2, { ...baseOptions, data: timeSavedData });
+
+      const c3 = document.getElementById('chartCostAvoided').getContext('2d');
+      new Chart(c3, { ...baseOptions, data: costAvoidedData });
+
+    })();
+  </script>
+
+  <!-- Optional: center text annotation for each donut -->
+  <style>
+    /* Simple utility: if you want center text overlays, wrap canvases in a positioned parent and add absolute center text */
+  </style>
+</section>
 
     <section id="architecture" class="container section">
       <div class="eyebrow">How it fits</div>
