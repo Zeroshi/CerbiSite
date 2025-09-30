@@ -576,28 +576,118 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 </section>
 
 
-    <!-- ARCHITECTURE -->
-    <section id="architecture" class="container section">
-      <div class="eyebrow">How it fits</div>
-      <h2>Reference <span class="hl">Architecture</span></h2>
-      <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
-      <div class="grid" style="align-items:start;gap:18px">
-        <article class="col-6 card">
-          <h3>Flow</h3>
-          <ul>
-            <li>Apps & services emit events</li>
-            <li>Build-time analyzers catch schema/PII violations pre-merge</li>
-            <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
-            <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
-            <li>Downstream sinks receive clean, consistent data</li>
-          </ul>
-        </article>
-        <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
-          <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
-          <figcaption class="img-cap">Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.</figcaption>
-        </figure>
-      </div>
-    </section>
+<!-- ARCHITECTURE -->
+<section id="architecture" class="container section">
+  <div class="eyebrow">How it fits</div>
+  <h2>Reference <span class="hl">Architecture</span></h2>
+  <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
+
+  <div class="grid" style="align-items:start;gap:18px">
+    <article class="col-6 card">
+      <h3>Flow</h3>
+      <ul>
+        <li>Apps & services emit events</li>
+        <li>Build-time analyzers catch schema/PII violations pre-merge</li>
+        <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
+        <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
+        <li>Downstream sinks receive clean, consistent data</li>
+      </ul>
+
+      <!-- Exec diagram (fits under Flow; capped height) -->
+      <figure class="container" style="margin:12px 0 0">
+        <svg viewBox="0 0 1200 250" width="100%" height="auto" role="img" aria-labelledby="execFlowTitle execFlowDesc"
+             style="display:block; max-height:260px; margin:0 auto;">
+          <title id="execFlowTitle">Cerbi — Executive flow</title>
+          <desc id="execFlowDesc">
+            Control plane (CerbiShield) outside the flow. Three stages: instrument at source with metadata separation,
+            enforce at runtime, deliver everywhere via CerbiStream (sinks, MQs, storage, telemetry).
+          </desc>
+          <style>
+            .t1{fill:#142848;font:700 14px Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+            .t2{fill:#5A6A88;font:400 12px Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+            .card{fill:rgba(255,255,255,.92);stroke:rgba(20,40,72,.12);stroke-width:1}
+            .rail{stroke:#1F6FFF;stroke-width:3}
+            .chev{fill:#1F6FFF}
+            .hint{stroke:rgba(20,40,72,.25);stroke-dasharray:4 3}
+            .dot{fill:#FF4D00}
+            .ic{fill:none;stroke:#142848;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+          </style>
+
+          <!-- Control plane (outside flow) -->
+          <g transform="translate(12,8)">
+            <rect class="card" rx="12" ry="12" width="420" height="72"/>
+            <text class="t1" x="14" y="26">CerbiShield — Control plane</text>
+            <text class="t2" x="14" y="46">Define/version policy (RBAC + audit). Published to apps; not in hot path.</text>
+            <circle class="dot" cx="404" cy="24" r="3.5"/>
+          </g>
+          <line class="hint" x1="444" y1="44" x2="1188" y2="44"/>
+          <text class="t2" x="1186" y="40" text-anchor="end">policy defined outside the flow</text>
+
+          <!-- Baseline -->
+          <line class="rail" x1="80" y1="210" x2="1120" y2="210"/>
+          <polygon class="chev" points="415,202 435,210 415,218"/>
+          <polygon class="chev" points="745,202 765,210 745,218"/>
+
+          <!-- 1) Instrument at the source -->
+          <g transform="translate(80,85)">
+            <rect class="card" rx="14" ry="14" width="320" height="110"/>
+            <text class="t1" x="14" y="26">Instrument at the source</text>
+            <text class="t2" x="14" y="48">Structured events with metadata separation</text>
+            <text class="t2" x="14" y="66">(business vs governance/correlation).</text>
+            <g transform="translate(274,22)">
+              <circle class="dot" cx="30" cy="0" r="3.5"/>
+              <rect class="ic" x="0" y="0" width="22" height="16" rx="2"/>
+              <rect class="ic" x="24" y="10" width="22" height="16" rx="2"/>
+              <line class="ic" x1="11" y1="8" x2="35" y2="18"/>
+            </g>
+          </g>
+
+          <!-- 2) Runtime validators -->
+          <g transform="translate(440,85)">
+            <rect class="card" rx="14" ry="14" width="320" height="110"/>
+            <text class="t1" x="14" y="26">Runtime validators (relax-mode)</text>
+            <text class="t2" x="14" y="48">Apply CerbiShield policy in-flight; redact/flag PII.</text>
+            <text class="t2" x="14" y="66">Stable shapes; relax-mode for safe rollout.</text>
+            <g transform="translate(276,22)">
+              <path class="ic" d="M12 0l8 4v8c0 8-8 12-8 12S4 20 4 12V4z"/>
+              <line class="ic" x1="6" y1="9" x2="18" y2="17"/>
+              <line class="ic" x1="4" y1="13" x2="20" y2="13" style="stroke:#FF4D00"/>
+            </g>
+          </g>
+
+          <!-- 3) Deliver everywhere (CerbiStream) -->
+          <g transform="translate(800,85)">
+            <rect class="card" rx="14" ry="14" width="320" height="110"/>
+            <text class="t1" x="14" y="26">Deliver everywhere (CerbiStream)</text>
+            <text class="t2" x="14" y="48">Auto-ship to sinks, MQs, storage, telemetry</text>
+            <text class="t2" x="14" y="66">(Splunk/ELK/OpenSearch/Datadog/CloudWatch).</text>
+            <g transform="translate(272,20)">
+              <path class="ic" d="M0 0h36l-10 10v10l-8 6-8-6V10z"/>
+              <rect class="ic" x="42" y="2" width="14" height="12" rx="2"/>
+              <rect class="ic" x="42" y="18" width="14" height="10" rx="2"/>
+              <circle class="ic" cx="49" cy="36" r="6"/>
+              <line class="ic" x1="26" y1="26" x2="42" y2="8"/>
+              <line class="ic" x1="26" y1="26" x2="42" y2="24"/>
+              <line class="ic" x1="26" y1="26" x2="49" y2="36"/>
+              <circle class="dot" cx="36" cy="0" r="3.5"/>
+            </g>
+          </g>
+        </svg>
+        <figcaption class="img-cap">Front-of-pipe governance: instrument → enforce → deliver everywhere.</figcaption>
+      </figure>
+      <!-- /Exec diagram -->
+    </article>
+
+    <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
+      <img src="assets/architecture/cerbisuite-architecture-1600x900.png"
+           sizes="(max-width: 900px) 100vw, 900px"
+           alt="Cerbi reference architecture diagram"
+           loading="lazy" decoding="async">
+      <figcaption class="img-cap">Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.</figcaption>
+    </figure>
+  </div>
+</section>
+
 
     <!-- INTEROP -->
     <section id="interop" class="container section">
@@ -712,7 +802,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <article class="col-6 card">
       <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
       <p class="muted">
-        Roslyn analyzer for Serilog projects—catches governance issues at build/IDE time before code ships.
+        Roslyn analyzer for Serilog projects—catches governance issues.
       </p>
       <ul>
         <li>Diagnostics for field drift, PII hazards, and schema violations</li>
