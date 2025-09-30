@@ -113,7 +113,16 @@
     .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text-strong); font-weight:800; flex-shrink:0}
     .brand img{height:36px; width:auto; border-radius:8px; filter:drop-shadow(0 0 10px rgba(255,77,0,.25))}
     .nav-wrap{display:flex; align-items:center; gap:12px; flex:1 1 auto; min-width:0}
-    .nav-links{display:flex; gap:8px; align-items:center; justify-content:center; flex:1 1 auto; min-width:0; overflow:hidden}
+.nav-links{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+  flex:1 1 auto;
+  min-width:0;
+  overflow:hidden;      /* hides anything beyond the edge */
+  white-space:nowrap;   /* prevents half-word wrapping */
+}
     .nav-links a{
       white-space:nowrap; padding:8px 10px; border-radius:10px; color:var(--navy); flex:0 0 auto;
       transition:background .2s ease;
@@ -749,39 +758,79 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       on(); addEventListener('scroll',on,{passive:true}); addEventListener('resize',on,{passive:true});
     })();
 
-    // Primary nav "More" bucket
-    (function(){
-      const nav=document.getElementById('primaryNav');
-      const more=document.getElementById('moreMenu');
-      if(!nav||!more) return;
-      const bucket=more.querySelector('.more-menu');
-      function layout(){
-        [...bucket.querySelectorAll('a')].forEach(a=>nav.insertBefore(a, more));
-        const wrap = nav.parentElement;
-        const allowance = wrap.clientWidth - 320; // space for brand + actions
-        let w=0; const toMove=[];
-        [...nav.children].forEach(el=>{
-          if(el===more) return;
-          w += el.getBoundingClientRect().width + 8;
-          if(w>allowance) toMove.push(el);
-        });
-        if(toMove.length){
-          toMove.forEach(el=>bucket.appendChild(el));
-          more.style.display='block';
+   // Primary nav "More" bucket — never show partial items
+  (function(){
+    const nav  = document.getElementById('primaryNav');
+    const more = document.getElementById('moreMenu');
+    if(!nav || !more) return;
+
+    const bucket = more.querySelector('.more-menu');
+    const inner  = document.querySelector('.nav-inner');
+    const brand  = inner.querySelector('.brand');
+    const actions= inner.querySelector('.nav-actions');
+
+    function width(el){
+      const r = el.getBoundingClientRect();
+      // include margin gap (≈8px) so we don't let the last item peek
+      return r.width + 8;
+    }
+
+    function layout(){
+      // 1) Reset: put everything back into the main row & show all
+      [...bucket.children].forEach(a => nav.insertBefore(a, more));
+      [...nav.children].forEach(el => { if(el !== more) el.style.display = ''; });
+
+      // 2) Compute exactly how much space the links row gets
+      const total   = inner.clientWidth;
+      const reserve = width(brand) + width(actions) + 24;   // brand + actions + cushion
+      let allowance = Math.max(0, total - reserve);
+
+      // 3) Walk links left→right and keep only those that fully fit
+      let used = 0;
+      const overflow = [];
+      [...nav.children].forEach(el=>{
+        if(el === more) return;
+        const w = width(el);
+        if (used + w <= allowance){
+          used += w;
         } else {
-          more.style.display='none';
+          overflow.push(el);
         }
-      }
-      const ro = new ResizeObserver(layout);
-      ro.observe(document.querySelector('.nav-inner'));
-      layout();
-      more.querySelector('button').addEventListener('click', ()=>{
-        const open = more.getAttribute('data-open')==='true';
-        more.setAttribute('data-open', String(!open));
-        more.querySelector('button').setAttribute('aria-expanded', String(!open));
       });
-      document.addEventListener('click', (e)=>{ if(!more.contains(e.target)) { more.setAttribute('data-open','false'); more.querySelector('button').setAttribute('aria-expanded','false'); }});
-    })();
+
+      // 4) If anything overflowed, show "More" and move them; else hide "More"
+      if (overflow.length){
+        overflow.forEach(el => bucket.appendChild(el));
+        more.style.display = 'block';
+      } else {
+        more.style.display = 'none';
+      }
+
+      // 5) Accessibility: update expanded state
+      more.querySelector('button').setAttribute('aria-expanded',
+        more.getAttribute('data-open') === 'true' ? 'true' : 'false');
+    }
+
+    // Toggle the More menu
+    more.querySelector('button').addEventListener('click', ()=>{
+      const open = more.getAttribute('data-open') === 'true';
+      more.setAttribute('data-open', String(!open));
+      more.querySelector('button').setAttribute('aria-expanded', String(!open));
+    });
+    document.addEventListener('click', (e)=>{
+      if(!more.contains(e.target)){
+        more.setAttribute('data-open','false');
+        more.querySelector('button').setAttribute('aria-expanded','false');
+      }
+    });
+
+    // Recalculate on resize, font load, and initial paint
+    const ro = new ResizeObserver(layout);
+    ro.observe(inner);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); }
+    window.addEventListener('load', layout, { once:true });
+    layout();
+  })();
 
     // WHY slider dots + autoswitch
     (function(){
