@@ -315,7 +315,8 @@
   }
   @media (max-width: 820px){ #vprogress{ right:4px; } }
 
-
+  .hero h1 { min-height: 2.4em; }     /* reserves roughly two lines at your clamp sizes */
+  .hero .sub { min-height: 2.2em; }   /* reserves one-two lines */
 
     #dynamic-bg,.tiles,.sky,.veil,.spotlight{position:fixed; inset:0; z-index:-20; pointer-events:none}
   </style>
@@ -381,6 +382,7 @@
 
       <h1>Unified Logging, <span class="hl">Governance</span> & <span class="hl">Observability</span></h1>
       <p class="sub">Bring order to log chaos. CerbiSuite enforces structure at the source, enables audit-ready compliance, and feeds ML-ready pipelines—without vendor lock-in.</p>
+
 
       <article class="card typebox" style="margin-top:10px">
         <h3 id="typeTitle"></h3>
@@ -1677,6 +1679,58 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         makeDoughnut('chartReadiness', 64, 100, ['#f5a524', '#eef2f9']);
       }
     })();
+
+
+    (function() {
+  const heroH1 = document.querySelector('.hero h1');
+  const heroSub = document.querySelector('.hero .sub');
+  if (!heroH1 || !heroSub) return;
+
+  // Variants tuned to your current line lengths so they fit cleanly
+  const variants = [
+    {
+      h1: "Stop log chaos. Governed, structured telemetry from the source.",
+      sub: "Cut ingestion cost 20–40%, keep PII out, and stabilize dashboards—without changing your sinks."
+    },
+    {
+      h1: "Govern logs at the source—no more drift, noise, or surprises.",
+      sub: "Normalize, redact, and tag before indexing to lower spend and keep dashboards stable."
+    },
+    {
+      h1: "Structured logging with governance built in.",
+      sub: "Reduce index churn 20–40%, prevent PII leaks, and keep existing ELK/Splunk/Datadog."
+    },
+    {
+      h1: "Make every sink better with cleaner, governed telemetry.",
+      sub: "Consistent fields, redaction metadata, and versioned policy—no vendor lock-in."
+    },
+    {
+      h1: "Compliance without friction for your logs.",
+      sub: "Versioned PII policy at build-time & runtime; stable metrics and lower ingestion cost."
+    },
+    {
+      h1: "Production-ready governance for .NET logging.",
+      sub: "Roslyn analyzers + runtime validation reduce noise and protect data—keep your current sinks."
+    },
+    {
+      h1: "Source-governed telemetry that your tools can trust.",
+      sub: "Stable schemas, safer data, faster triage—without rewiring your observability stack."
+    },
+    {
+      h1: "Cut log spend and stabilize dashboards—at the source.",
+      sub: "Normalize and de-duplicate pre-index to lower cost and keep charts from breaking."
+    }
+  ];
+
+  // Pick a random variant
+  const v = variants[Math.floor(Math.random() * variants.length)];
+
+  // Replace content (preserving your gradient spans on key words)
+  heroH1.innerHTML = v.h1
+    .replace(/Govern(ed|ance)?/i, '<span class="hl">$&</span>')
+    .replace(/telemetry|Observability/i, '<span class="hl">$&</span>');
+  heroSub.textContent = v.sub;
+})();
   </script>
 
 <script id="hs-script-loader" async defer src="https://js-na2.hs-scripts.com/244006641.js"></script>
