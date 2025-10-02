@@ -811,18 +811,153 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       </template>
     </section>
 
-    <section id="repos" class="container section">
-      <div class="eyebrow">Open Source</div>
-      <h2><span class="hl">GitHub Repositories</span></h2>
-      <div class="grid" style="gap:16px">
-        <article class="col-6 card"><h3>CerbiStream</h3><p class="muted">Reference implementation of the structured logger (async channel, file fallback, governance hooks).</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi-CerbiStream">GitHub →</a></article>
-        <article class="col-6 card"><h3>CerbiStream.BenchmarkTests</h3><p class="muted">Throughput/allocations microbenchmarks.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/CerbiStream.BenchmarkTests">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.MEL.Governance</h3><p class="muted">Runtime validator package & demo.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.MEL.Governance.Demo</h3><p class="muted">Demo app for validation and relax-mode.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalyzer</h3><p class="muted">Analyzer for Serilog projects.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer">GitHub →</a></article>
-        <article class="col-6 card"><h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3><p class="muted">Test harness for analyzer rules.</p><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalysizer.TestApp">GitHub →</a></article>
-      </div>
-    </section>
+<section class="cerbi-oss">
+  <h2 class="oss-title">Open Source · Cerbi Repositories</h2>
+
+  <!-- Item template -->
+  <article class="oss-item">
+    <header>
+      <h3>CerbiStream</h3>
+      <p class="tagline">Structured logger (async channel, file fallback, governance hooks)</p>
+      <a class="oss-link" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener">GitHub →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-1">More details</button>
+    </header>
+    <div id="oss-1" class="panel" hidden>
+      <ul class="details">
+        <li><strong>Status:</strong> Active; .NET 6–8 compatible.</li>
+        <li><strong>Highlights:</strong> Runtime governance via <code>Cerbi.Governance.Runtime</code>, <code>.Relax()</code> support, <code>[CerbiTopic]</code> tagging, queue-first routing, AES/Base64 encryption, async console via <code>Channel&lt;T&gt;</code>, file fallback/rotation.</li>
+        <li><strong>Where used:</strong> Foundation logger powering Cerbi demos and plugins.</li>
+        <li><strong>Links:</strong> <a href="https://nugetprodusnc.azure-api.net/packages/CerbiStream/" target="_blank" rel="noopener">NuGet</a> ·
+          <a href="https://dev.to/zeroshi/cerbistream-net-logging-with-governance-enforcement-queue-routing-and-developer-first-config-4108" target="_blank" rel="noopener">Intro post</a> ·
+          <a href="https://dev.to/zeroshi/cerbistream-real-time-governance-enforced-logging-for-net-1kc4" target="_blank" rel="noopener">Runtime governance post</a></li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="oss-item">
+    <header>
+      <h3>CerbiStream.BenchmarkTests</h3>
+      <p class="tagline">Throughput/allocations microbenchmarks</p>
+      <a class="oss-link" href="https://github.com/Zeroshi/Cerbi-CerbiStream#benchmark-vs-serilog" target="_blank" rel="noopener">Benchmarks →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-2">More details</button>
+    </header>
+    <div id="oss-2" class="panel" hidden>
+      <ul class="details">
+        <li><strong>Status:</strong> Referenced from CerbiStream README (benchmarks section).</li>
+        <li><strong>Scope:</strong> compares console/file/queue paths, async vs sync console, allocations per log; aims to show parity or advantage vs Serilog/NLog in burst traffic.</li>
+        <li><strong>Note:</strong> Dedicated repo may be private; public benchmark notes live in the CerbiStream README.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="oss-item">
+    <header>
+      <h3>Cerbi.MEL.Governance</h3>
+      <p class="tagline">Runtime validator for Microsoft.Extensions.Logging (MEL)</p>
+      <a class="oss-link" href="https://nugetprodusnc-northcentralus-01.regional.azure-api.net/packages/Cerbi.MEL.Governance/1.0.31" target="_blank" rel="noopener">NuGet →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-3">More details</button>
+    </header>
+    <div id="oss-3" class="panel" hidden>
+      <ul class="details">
+        <li><strong>What it does:</strong> Enforces structured governance profiles at runtime for any MEL-based app (ASP.NET Core, worker services, Functions).</li>
+        <li><strong>Features:</strong> required/forbidden fields, type/enum checks, violation tagging (not dropping logs), optional relax-mode, JSON profile loading from disk/blob/GitHub.</li>
+        <li><strong>Companion:</strong> Demo app + docs (see “Demo” item below).</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="oss-item">
+    <header>
+      <h3>Cerbi.MEL.Governance.Demo</h3>
+      <p class="tagline">Demo app for validation & relax-mode</p>
+      <a class="oss-link" href="https://cerbi.io/#" onclick="return false;">GitHub →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-4">More details</button>
+    </header>
+    <div id="oss-4" class="panel" hidden>
+      <ul class="details">
+        <li><strong>Status:</strong> Listed on cerbi.io; repo may be private/unpublished.</li>
+        <li><strong>Expect:</strong> sample policies, Monaco/JSON profile examples, side-by-side runs with and without relax-mode, violation output for inspection.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="oss-item">
+    <header>
+      <h3>Cerbi.Serilog.GovernanceAnalyzer</h3>
+      <p class="tagline">Roslyn analyzer for Serilog projects</p>
+      <a class="oss-link" href="https://nugetprodusnc-northcentralus-01.regional.azure-api.net/profiles/WakingForest" target="_blank" rel="noopener">NuGet profile →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-5">More details</button>
+    </header>
+    <div id="oss-5" class="panel" hidden>
+      <ul class="details">
+        <li><strong>What it does:</strong> Checks Serilog usage against governance profiles pre-merge: required fields present, forbidden fields blocked, types/enums correct.</li>
+        <li><strong>Ecosystem:</strong> Built on <code>Cerbi.Governance.Core</code>; complements runtime validators; similar in spirit to <em>SerilogAnalyzer</em> but governance-aware.</li>
+        <li><strong>Status:</strong> NuGet metadata visible; public GitHub repo not yet published.</li>
+      </ul>
+    </div>
+  </article>
+
+  <article class="oss-item">
+    <header>
+      <h3>Cerbi.Serilog.GovernanceAnalysizer.TestApp</h3>
+      <p class="tagline">Test harness for analyzer rules</p>
+      <a class="oss-link" href="https://cerbi.io/#" onclick="return false;">GitHub →</a>
+      <button class="toggle" aria-expanded="false" aria-controls="oss-6">More details</button>
+    </header>
+    <div id="oss-6" class="panel" hidden>
+      <ul class="details">
+        <li><strong>Purpose:</strong> Fixture app with intentionally good/bad logs to exercise analyzer diagnostics and code-fixes.</li>
+        <li><strong>Status:</strong> Listed on cerbi.io; repository may be private/unpublished.</li>
+      </ul>
+    </div>
+  </article>
+</section>
+
+<style>
+  .cerbi-oss{max-width:1100px;margin:2rem auto;padding:0 1rem}
+  .oss-title{margin:0 0 1rem 0}
+  .oss-item{background:var(--panel,#0d1325);color:var(--text,#e9edf6);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:1rem 1.25rem;margin:1rem 0;box-shadow:var(--shadow,0 12px 30px rgba(0,0,0,.25))}
+  .oss-item header{display:grid;grid-template-columns:1fr auto auto;gap:.75rem;align-items:center}
+  .oss-item h3{margin:.25rem 0}
+  .tagline{margin:0;opacity:.85;font-size:.95rem}
+  .oss-link{justify-self:end;text-decoration:none;border-bottom:1px dashed currentColor;opacity:.9}
+  .toggle{justify-self:end;border:0;background:var(--accent,#ff4d00);color:#fff;padding:.5rem .8rem;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+  .panel{overflow:hidden;transition:max-height .35s ease,opacity .25s ease;opacity:1;padding-top:.5rem}
+  .panel[hidden]{display:block;max-height:0;opacity:0;padding-top:0}
+  .details{margin:.25rem 0 0 0;padding-left:1.1rem;line-height:1.5}
+  @media (max-width:760px){
+    .oss-item header{grid-template-columns:1fr auto}
+    .oss-link{grid-column:1/2;justify-self:start}
+  }
+</style>
+
+<script>
+  // Accessible accordion with smooth slide
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.toggle');
+    if(!btn) return;
+    const panel = document.getElementById(btn.getAttribute('aria-controls'));
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    if(expanded){
+      // hide
+      panel.style.maxHeight = panel.scrollHeight + 'px'; // set current height
+      requestAnimationFrame(()=>{ panel.setAttribute('hidden',''); panel.style.maxHeight = '0px'; });
+    }else{
+      // show
+      panel.removeAttribute('hidden');
+      panel.style.maxHeight = '0px';
+      requestAnimationFrame(()=>{
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        // after transition, cleanup inline height so content can grow
+        panel.addEventListener('transitionend', function tidy(ev){
+          if(ev.propertyName === 'max-height'){ panel.style.maxHeight = ''; panel.removeEventListener('transitionend', tidy); }
+        });
+      });
+    }
+  });
+</script>
+
 
     <section id="roadmap" class="container section">
       <div class="eyebrow">What’s shipping</div>
