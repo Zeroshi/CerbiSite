@@ -635,212 +635,176 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
 <!-- Sales & ROI Section -->
 <section id="sales-roi" class="section">
-  <div class="container">
-    <h2 class="section-title">Sales & ROI Impact</h2>
-    <p class="section-subtitle">
-      Our SaaS platform delivers measurable business outcomes. 
-      The following charts illustrate how organizations benefit in terms of <strong>cost savings</strong>, 
-      <strong>time efficiency</strong>, and <strong>return on investment</strong>.
-    </p>
+ <div class="container">
+ <h2 class="section-title">Sales & ROI Impact</h2>
+ <p class="section-subtitle">
+ Our SaaS platform delivers measurable business outcomes. 
+ The following charts illustrate how organizations benefit in terms of <strong>cost savings</strong>, 
+ <strong>time efficiency</strong>, and <strong>return on investment</strong>.
+ </p>
 
-    <div class="charts-wrapper" style="display:flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top:30px;">
-      
-      <!-- Cost Savings Chart -->
-      <div style="width:300px; text-align:center;">
-        <h3>Cost Savings</h3>
-        <canvas id="costSavingsChart"></canvas>
-        <p style="margin-top:10px;">
-          Automating governance workflows reduces audit costs by 
-          up to <strong>40%</strong>.
-        </p>
-      </div>
+ <div class="charts-wrapper" style="display:flex; flex-wrap: wrap; justify-content: center; gap:40px; margin-top:30px;">
+ 
+ <!-- Cost Savings Chart -->
+ <div style="width:300px; text-align:center;">
+ <h3>Cost Savings</h3>
+ <canvas id="costSavingsChart"></canvas>
+ <p style="margin-top:10px;">
+ Automating governance workflows reduces audit costs by 
+ up to <strong>40%</strong>.
+ </p>
+ </div>
 
-      <!-- Time Efficiency Chart -->
-      <div style="width:300px; text-align:center;">
-        <h3>Time Efficiency</h3>
-        <canvas id="timeEfficiencyChart"></canvas>
-        <p style="margin-top:10px;">
-          Productivity boosts free up <strong>30% more engineering time</strong>.
-        </p>
-      </div>
+ <!-- Time Efficiency Chart -->
+ <div style="width:300px; text-align:center;">
+ <h3>Time Efficiency</h3>
+ <canvas id="timeEfficiencyChart"></canvas>
+ <p style="margin-top:10px;">
+ Productivity boosts free up <strong>30% more engineering time</strong>.
+ </p>
+ </div>
 
-      <!-- ROI Growth Chart -->
-      <div style="width:300px; text-align:center;">
-        <h3>ROI Growth</h3>
-        <canvas id="roiGrowthChart"></canvas>
-        <p style="margin-top:10px;">
-          Companies adopting CerbiShield can see an average ROI increase of <strong>3x</strong>.
-        </p>
-      </div>
+ <!-- ROI Growth Chart -->
+ <div style="width:300px; text-align:center;">
+ <h3>ROI Growth</h3>
+ <canvas id="roiGrowthChart"></canvas>
+ <p style="margin-top:10px;">
+ Companies adopting CerbiShield can see an average ROI increase of <strong>3x</strong>.
+ </p>
+ </div>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </section>
 
 <!-- Chart.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-  const brandColor = "#FF4500";      // Orange-Red
-  const complementColor = "#00BAFF"; // Cyan-Blue
+ // Theme-aligned colors
+ const csROI = getComputedStyle(document.documentElement);
+ const colorBrand = (csROI.getPropertyValue('--brand') || '#FF4D00').trim();
+ const colorLink = (csROI.getPropertyValue('--link') || '#0f63ff').trim();
+ const colorMuted = (csROI.getPropertyValue('--muted') || '#5a6a88').trim();
 
-  // Cost Savings
-  new Chart(document.getElementById("costSavingsChart"), {
-    type: "doughnut",
-    data: {
-      labels: ["Reduced Overhead", "Other Costs"],
-      datasets: [{
-        data: [40, 60],
-        backgroundColor: [brandColor, complementColor]
-      }]
-    },
-    options: {
-      plugins: { legend: { position: "bottom" } }
-    }
-  });
-
-  // Time Efficiency
-  new Chart(document.getElementById("timeEfficiencyChart"), {
-    type: "doughnut",
-    data: {
-      labels: ["Saved Time", "Remaining Work"],
-      datasets: [{
-        data: [30, 70],
-        backgroundColor: [brandColor, complementColor]
-      }]
-    },
-    options: {
-      plugins: { legend: { position: "bottom" } }
-    }
-  });
-
-  // ROI Growth
-  new Chart(document.getElementById("roiGrowthChart"), {
-    type: "doughnut",
-    data: {
-      labels: ["ROI Growth", "Baseline"],
-      datasets: [{
-        data: [300, 100],
-        backgroundColor: [brandColor, complementColor]
-      }]
-    },
-    options: {
-      plugins: { legend: { position: "bottom" } }
-    }
-  });
-</script>
-
-<!-- Benchmarks Section (executive-friendly) -->
-<section id="benchmarks" class="section">
- <div class="container">
- <h2>Performance Benchmarks</h2>
- <p class="lead">Executive summary: Cerbi delivers encryption with near‑zero overhead while matching or beating established .NET loggers in core scenarios. Data from BenchmarkDotNet (IterationCount=10, WarmupCount=3).</p>
-
- <div class="grid" style="gap:18px; align-items:start">
- <article class="col-6 card">
- <h3>Encrypted Logging — Mean Latency (ns) — lower is better</h3>
- <canvas id="chartEncMean" height="180" aria-label="Encrypted logging mean latency comparison" role="img"></canvas>
- <p class="muted" style="margin-top:8px">
- Why it matters: Encryption is required for compliance and safety, but it often adds latency. Cerbi encrypts events at ~88 ns—roughly the same as plain logging—while other popular loggers run ~370–401 ns (+4x). Result: you can keep encryption on by default without a performance tax.
- </p>
- </article>
-
- <article class="col-6 card">
- <h3>Encrypted Logging — Allocations (bytes) — lower is better</h3>
- <canvas id="chartEncAlloc" height="180" aria-label="Encrypted logging allocations comparison" role="img"></canvas>
- <p class="muted" style="margin-top:8px">
- Why it matters: Lower allocations mean fewer GC pauses and smoother tail latency. Cerbi allocates ~56 B per encrypted log vs ~296–328 B for others (≈5–6x lower), reducing CPU overhead at scale.
- </p>
- </article>
-
- <article class="col-6 card">
- <h3>Batch Logging (1000 events) — Mean (μs) — lower is better</h3>
- <canvas id="chartBatch" height="180" aria-label="Batch1000 mean runtime comparison" role="img"></canvas>
- <p class="muted" style="margin-top:8px">
- Why it matters: In bursty real‑world traffic, bulk writes dominate. Cerbi matches or leads (≈87,248 μs) versus Serilog (≈90,591 μs) and MS (≈91,635 μs). Impact: less time spent logging, more headroom for your application.
- </p>
- </article>
-
- <article class="col-6 card">
- <h3>Plain Logging — Mean Latency (ns) — lower is better</h3>
- <canvas id="chartPlainMean" height="180" aria-label="Plain logging mean latency comparison" role="img"></canvas>
- <p class="muted" style="margin-top:8px">
- Why it matters: Adopting governance shouldn’t slow you down. Cerbi is on‑par with the standard libraries on the plain path (≈85–95 ns across frameworks), so you don’t trade speed for structure.
- </p>
- </article>
- </div>
-
- <p class="muted" style="margin-top:10px">
- Notes: Lower is better in all charts. Results reflect the shared dataset in assets/benchmarks.bdn.json (IterationCount=10, WarmupCount=3). Variance/StdDev omitted for readability; see raw table for details.
- </p>
- </div>
-</section>
-
-<script>
-(async function(){
- if(!window.Chart) return;
- try{
- const res = await fetch('assets/benchmarks.bdn.json', { cache: 'no-store' });
- const data = await res.json();
-
- const brand = '#FF4D00';
- const gray = '#c7d2e9';
- const seriesColors = {
- MS: '#5b78c7',
- Serilog: '#7aa7ff',
- NLog: '#5ec2a9',
- Log4Net: '#b07cff',
- Cerbi: brand
- };
-
- function makeBar(elId, labels, values, title){
- const el = document.getElementById(elId);
- if(!el) return;
- new Chart(el, {
- type: 'bar',
+ // Cost Savings (Saved vs Remaining)
+ new Chart(document.getElementById("costSavingsChart"), {
+ type: "doughnut",
  data: {
- labels,
+ labels: ["Saved", "Remaining"],
  datasets: [{
- label: title,
- data: values,
- backgroundColor: labels.map(l => seriesColors[l] || gray),
+ data: [40,60],
+ backgroundColor: [colorBrand, colorMuted],
  borderWidth:0,
+ cutout: '65%'
  }]
  },
  options: {
- responsive: true,
- plugins: {
- legend: { display: false },
- tooltip: { enabled: true }
- },
- scales: {
- x: { grid: { display: false } },
- y: { grid: { color: 'rgba(20,40,72,.08)' }, beginAtZero: true }
+ plugins: { legend: { position: "bottom" } }
  }
+ });
+
+ // Time Efficiency (Saved Time vs Remaining Work)
+ new Chart(document.getElementById("timeEfficiencyChart"), {
+ type: "doughnut",
+ data: {
+ labels: ["Saved Time", "Remaining Work"],
+ datasets: [{
+ data: [30,70],
+ backgroundColor: [colorBrand, colorMuted],
+ borderWidth:0,
+ cutout: '65%'
+ }]
+ },
+ options: {
+ plugins: { legend: { position: "bottom" } }
+ }
+ });
+
+ // ROI Growth (Growth vs Baseline)
+ new Chart(document.getElementById("roiGrowthChart"), {
+ type: "doughnut",
+ data: {
+ labels: ["Growth", "Baseline"],
+ datasets: [{
+ data: [300,100],
+ backgroundColor: [colorBrand, colorMuted],
+ borderWidth:0,
+ cutout: '65%'
+ }]
+ },
+ options: {
+ plugins: { legend: { position: "bottom" } }
+ }
+ });
+</script>
+
+<!-- Quick Key Highlights under ROI -->
+<section id="roi-key-highlights" class="section">
+ <div class="container">
+ <h3 style="margin-bottom:10px">Key Highlights</h3>
+ <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start; justify-content:center">
+ <!-- Small brand-styled bar chart -->
+ <div style="width:min(360px,90vw)">
+ <canvas id="roiHighlightsBar" height="160" aria-label="Key metrics bar" role="img"></canvas>
+ </div>
+ <!-- Savings breakdown pie (more substantive than saved vs remaining) -->
+ <div style="width:260px; text-align:center">
+ <canvas id="roiHighlightsPie" height="160" aria-label="Savings breakdown by driver" role="img"></canvas>
+ <div class="muted" style="margin-top:6px">Savings breakdown by driver (example)</div>
+ </div>
+ <!-- Replace Venn with a concise ROI Levers card -->
+ <article class="card" style="width:min(420px,92vw); padding:14px">
+ <h4 style="margin:.2rem0 .6rem">ROI Levers</h4>
+ <ul style="margin:.2rem0; padding-left:1rem; line-height:1.55">
+ <li><strong>Pre-index normalization:</strong> send fewer, cleaner events → lower ingestion spend.</li>
+ <li><strong>Stable schemas:</strong> fewer broken charts/alerts → less rework and query churn.</li>
+ <li><strong>Policy + redaction:</strong> audit evidence inline → reduced compliance overhead.</li>
+ </ul>
+ </article>
+ </div>
+ </div>
+</section>
+<script>
+ (function(){
+ if(!window.Chart) return;
+ const styles = getComputedStyle(document.documentElement);
+ const brand = (styles.getPropertyValue('--brand')||'#FF4D00').trim();
+ const link = (styles.getPropertyValue('--link') ||'#0f63ff').trim();
+ const muted = (styles.getPropertyValue('--muted')||'#5a6a88').trim();
+
+ // Bar: normalize to a simple index (higher is better)
+ const bar = document.getElementById('roiHighlightsBar');
+ if(bar){
+ new Chart(bar,{
+ type:'bar',
+ data:{
+ labels:['Cost savings','Time efficiency','ROI multiplier'],
+ datasets:[{
+ data:[40,30,300],
+ backgroundColor:[brand, link, muted],
+ borderWidth:0
+ }]
+ },
+ options:{
+ plugins:{legend:{display:false}},
+ scales:{ x:{grid:{display:false}}, y:{beginAtZero:true, grid:{color:'rgba(20,40,72,.08)'}}}
  }
  });
  }
 
- // Chart: Encrypted mean (ns)
- const encLabels = ['MS','Serilog','NLog','Log4Net','Cerbi'];
- const encMeans = encLabels.map(k => data.encrypted[k] ? Number(data.encrypted[k].meanNs.toFixed(2)) : null);
- makeBar('chartEncMean', encLabels, encMeans, 'Encrypted Mean (ns)');
-
- // Chart: Encrypted allocations (bytes)
- const encAllocs = encLabels.map(k => data.encrypted[k] ? data.encrypted[k].allocB : null);
- makeBar('chartEncAlloc', encLabels, encAllocs, 'Encrypted Alloc (B)');
-
- // Chart: Batch1000 mean (μs) — only frameworks present in dataset
- const batchLabels = Object.keys(data.batch1000);
- const batchMeans = batchLabels.map(k => Number(data.batch1000[k].meanUs.toFixed(2)));
- makeBar('chartBatch', batchLabels, batchMeans, 'Batch1000 Mean (μs)');
-
- // Chart: Plain mean (ns)
- const plainLabels = Object.keys(data.plain);
- const plainMeans = plainLabels.map(k => Number(data.plain[k].meanNs.toFixed(2)));
- makeBar('chartPlainMean', plainLabels, plainMeans, 'Plain Mean (ns)');
-
- } catch { /* ignore fetch/parse issues to avoid breaking page */ }
-})();
+ // Pie: savings breakdown by driver (example split)
+ const pie = document.getElementById('roiHighlightsPie');
+ if(pie){
+ new Chart(pie,{
+ type:'doughnut',
+ data:{ 
+ labels:['Ingestion','Storage','Audit'], 
+ datasets:[{ data:[20,12,8], backgroundColor:[brand, link, muted], borderWidth:0, cutout:'65%' }] 
+ },
+ options:{ plugins:{ legend:{ position:'bottom' } } }
+ });
+ }
+ })();
 </script>
 
     <section id="architecture" class="container section">
@@ -1453,7 +1417,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const rotated = numbered.slice(start).concat(numbered.slice(0,start)).concat(fallbacks);
 
       function setBg(u){ document.documentElement.style.setProperty('--bg-url', `url('${u}')`); }
-      function tryList(i){
+      function tryList(i)
+      {
         if(i >= rotated.length){ return; }
         const src = rotated[i];
         const im = new Image();
