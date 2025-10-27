@@ -1,0 +1,6 @@
+[
+ { "name": "CerbiStream Read", "meanNs":82.1, "allocKB":3.2 },
+ { "name": "CerbiStream Write", "meanNs":94.7, "allocKB":3.5 },
+ { "name": "Baseline Read", "meanNs":131.4, "allocKB":6.0 },
+ { "name": "Baseline Write", "meanNs":158.2, "allocKB":6.7 }
+]

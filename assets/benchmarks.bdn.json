@@ -1,0 +1,47 @@
+{
+ "plain": {
+ "MS": { "meanNs":94.949, "allocB":56 },
+ "Serilog": { "meanNs":88.393, "allocB":56 },
+ "NLog": { "meanNs":92.739, "allocB":56 },
+ "Log4Net": { "meanNs":84.822, "allocB":56 },
+ "Cerbi": { "meanNs":89.392, "allocB":56 }
+ },
+ "encrypted": {
+ "MS": { "meanNs":391.317, "allocB":328 },
+ "Serilog": { "meanNs":376.31, "allocB":320 },
+ "NLog": { "meanNs":401.14, "allocB":296 },
+ "Log4Net": { "meanNs":368.832, "allocB":320 },
+ "Cerbi": { "meanNs":88.115, "allocB":56 }
+ },
+ "async": {
+ "Serilog": { "meanNs":86.32, "allocB":56 },
+ "Cerbi": { "meanNs":89.452, "allocB":56 }
+ },
+ "scenarios": {
+ "LargeMessage": {
+ "MS": { "meanNs":55.254, "allocB":32 },
+ "NLog": { "meanNs":54.335, "allocB":32 },
+ "Log4Net": { "meanNs":55.248, "allocB":32 },
+ "Serilog": { "meanNs":56.059, "allocB":32 },
+ "Cerbi": { "meanNs":56.288, "allocB":32 }
+ },
+ "Exception": {
+ "MS": { "meanNs":94.402, "allocB":56 },
+ "NLog": { "meanNs":88.501, "allocB":56 },
+ "Serilog": { "meanNs":93.801, "allocB":56 },
+ "Cerbi": { "meanNs":89.23, "allocB":56 }
+ },
+ "ManyProps": {
+ "MS": { "meanNs":70.555, "allocB":0 },
+ "NLog": { "meanNs":70.817, "allocB":0 },
+ "Serilog": { "meanNs":68.89, "allocB":0 },
+ "Cerbi": { "meanNs":69.345, "allocB":0 }
+ }
+ },
+ "batch1000": {
+ "MS": { "meanUs":91635.39, "allocB":88000 },
+ "NLog": { "meanUs":87440.41, "allocB":88000 },
+ "Serilog": { "meanUs":90590.68, "allocB":88000 },
+ "Cerbi": { "meanUs":87248.38, "allocB":88000 }
+ }
+}

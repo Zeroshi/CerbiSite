@@ -729,11 +729,119 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
   });
 </script>
 
-  <!-- Optional: center text annotation for each donut -->
-  <style>
-    /* Simple utility: if you want center text overlays, wrap canvases in a positioned parent and add absolute center text */
-  </style>
+<!-- Benchmarks Section (executive-friendly) -->
+<section id="benchmarks" class="section">
+ <div class="container">
+ <h2>Performance Benchmarks</h2>
+ <p class="lead">Executive summary: Cerbi delivers encryption with near‑zero overhead while matching or beating established .NET loggers in core scenarios. Data from BenchmarkDotNet (IterationCount=10, WarmupCount=3).</p>
+
+ <div class="grid" style="gap:18px; align-items:start">
+ <article class="col-6 card">
+ <h3>Encrypted Logging — Mean Latency (ns) — lower is better</h3>
+ <canvas id="chartEncMean" height="180" aria-label="Encrypted logging mean latency comparison" role="img"></canvas>
+ <p class="muted" style="margin-top:8px">
+ Why it matters: Encryption is required for compliance and safety, but it often adds latency. Cerbi encrypts events at ~88 ns—roughly the same as plain logging—while other popular loggers run ~370–401 ns (+4x). Result: you can keep encryption on by default without a performance tax.
+ </p>
+ </article>
+
+ <article class="col-6 card">
+ <h3>Encrypted Logging — Allocations (bytes) — lower is better</h3>
+ <canvas id="chartEncAlloc" height="180" aria-label="Encrypted logging allocations comparison" role="img"></canvas>
+ <p class="muted" style="margin-top:8px">
+ Why it matters: Lower allocations mean fewer GC pauses and smoother tail latency. Cerbi allocates ~56 B per encrypted log vs ~296–328 B for others (≈5–6x lower), reducing CPU overhead at scale.
+ </p>
+ </article>
+
+ <article class="col-6 card">
+ <h3>Batch Logging (1000 events) — Mean (μs) — lower is better</h3>
+ <canvas id="chartBatch" height="180" aria-label="Batch1000 mean runtime comparison" role="img"></canvas>
+ <p class="muted" style="margin-top:8px">
+ Why it matters: In bursty real‑world traffic, bulk writes dominate. Cerbi matches or leads (≈87,248 μs) versus Serilog (≈90,591 μs) and MS (≈91,635 μs). Impact: less time spent logging, more headroom for your application.
+ </p>
+ </article>
+
+ <article class="col-6 card">
+ <h3>Plain Logging — Mean Latency (ns) — lower is better</h3>
+ <canvas id="chartPlainMean" height="180" aria-label="Plain logging mean latency comparison" role="img"></canvas>
+ <p class="muted" style="margin-top:8px">
+ Why it matters: Adopting governance shouldn’t slow you down. Cerbi is on‑par with the standard libraries on the plain path (≈85–95 ns across frameworks), so you don’t trade speed for structure.
+ </p>
+ </article>
+ </div>
+
+ <p class="muted" style="margin-top:10px">
+ Notes: Lower is better in all charts. Results reflect the shared dataset in assets/benchmarks.bdn.json (IterationCount=10, WarmupCount=3). Variance/StdDev omitted for readability; see raw table for details.
+ </p>
+ </div>
 </section>
+
+<script>
+(async function(){
+ if(!window.Chart) return;
+ try{
+ const res = await fetch('assets/benchmarks.bdn.json', { cache: 'no-store' });
+ const data = await res.json();
+
+ const brand = '#FF4D00';
+ const gray = '#c7d2e9';
+ const seriesColors = {
+ MS: '#5b78c7',
+ Serilog: '#7aa7ff',
+ NLog: '#5ec2a9',
+ Log4Net: '#b07cff',
+ Cerbi: brand
+ };
+
+ function makeBar(elId, labels, values, title){
+ const el = document.getElementById(elId);
+ if(!el) return;
+ new Chart(el, {
+ type: 'bar',
+ data: {
+ labels,
+ datasets: [{
+ label: title,
+ data: values,
+ backgroundColor: labels.map(l => seriesColors[l] || gray),
+ borderWidth:0,
+ }]
+ },
+ options: {
+ responsive: true,
+ plugins: {
+ legend: { display: false },
+ tooltip: { enabled: true }
+ },
+ scales: {
+ x: { grid: { display: false } },
+ y: { grid: { color: 'rgba(20,40,72,.08)' }, beginAtZero: true }
+ }
+ }
+ });
+ }
+
+ // Chart: Encrypted mean (ns)
+ const encLabels = ['MS','Serilog','NLog','Log4Net','Cerbi'];
+ const encMeans = encLabels.map(k => data.encrypted[k] ? Number(data.encrypted[k].meanNs.toFixed(2)) : null);
+ makeBar('chartEncMean', encLabels, encMeans, 'Encrypted Mean (ns)');
+
+ // Chart: Encrypted allocations (bytes)
+ const encAllocs = encLabels.map(k => data.encrypted[k] ? data.encrypted[k].allocB : null);
+ makeBar('chartEncAlloc', encLabels, encAllocs, 'Encrypted Alloc (B)');
+
+ // Chart: Batch1000 mean (μs) — only frameworks present in dataset
+ const batchLabels = Object.keys(data.batch1000);
+ const batchMeans = batchLabels.map(k => Number(data.batch1000[k].meanUs.toFixed(2)));
+ makeBar('chartBatch', batchLabels, batchMeans, 'Batch1000 Mean (μs)');
+
+ // Chart: Plain mean (ns)
+ const plainLabels = Object.keys(data.plain);
+ const plainMeans = plainLabels.map(k => Number(data.plain[k].meanNs.toFixed(2)));
+ makeBar('chartPlainMean', plainLabels, plainMeans, 'Plain Mean (ns)');
+
+ } catch { /* ignore fetch/parse issues to avoid breaking page */ }
+})();
+</script>
 
     <section id="architecture" class="container section">
       <div class="eyebrow">How it fits</div>
@@ -1335,7 +1443,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
       const fallbacks = [
         'assets/background.png',
         'assets/background.jpg',
-        'assets/bg.jpg',
         'Cerbi-updated.png',
         'assets/CerbiShield.png',
         'assets/CerbiLogo.png',
@@ -1544,6 +1651,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           const text = (line? "\n• " : "• ") + lines[line++];
           let p=0;
           const tick=()=>{
+
             if(p<=text.length){ acc += text[p++]||""; bodyEl.textContent=acc; setTimeout(tick, speed); }
             else { setTimeout(nextLine, 120); }
           };
@@ -1557,6 +1665,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         typeText(titleEl, t, ()=> typeBody(b, ()=>{
           setTimeout(()=> {
             eraseText(bodyEl, ()=> eraseText(titleEl, ()=>{
+
               i = (i+1)%items.length;
               cycle();
             }));
@@ -1653,7 +1762,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             labels: ['Value', 'Remaining'],
             datasets: [{
               data: [value, remaining],
-              backgroundColor: colors || ['#6ce5b1', '#eaeef7'],
+              backgroundColor: colors || ['#6ce5b1', '#eef2f9'],
               borderWidth: 0,
               hoverOffset: 4,
               cutout: '65%'
