@@ -82,3 +82,8 @@ node_modules/
 *.snupkg
 *.nuspec
 packages/
+/.vs/CerbiSite.slnx/copilot-chat/00e789b1/sessions/f9d6b830-5d1f-448f-97f5-71e3a3051f4b
+/.vs/CerbiSite.slnx/v18/.wsuo
+/.vs/CerbiSite.slnx/v18/DocumentLayout.backup.json
+/.vs/CerbiSite.slnx/v18/DocumentLayout.json
+/.vs/slnx.sqlite
