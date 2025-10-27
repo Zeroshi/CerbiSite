@@ -1,38 +1,47 @@
-/* Subtle starfield / particles on <canvas id="sky"> */
+/* Star/sky canvas kept firmly in the background */
+
 (function(){
-  const cvs = document.getElementById('sky'); if(!cvs) return;
-  const ctx = cvs.getContext('2d');
-  let w=0,h=0, stars=[];
+  const canvas = document.getElementById('sky');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+
   function resize(){
-    w = cvs.width = window.innerWidth;
-    h = cvs.height = window.innerHeight;
-    // more stars for visibility
-    const count = Math.min(320, Math.floor((w*h)/9000));
+    const w = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
+    const h = Math.max(document.documentElement.clientHeight, window.innerHeight||0);
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    initStars(w, h);
+  }
+
+  function initStars(w,h){
+    const count = Math.round((w*h)/24000);
     stars = Array.from({length: count}, ()=>({
       x: Math.random()*w,
       y: Math.random()*h,
-      r: Math.random()*1.6 + 0.4,
-      a: Math.random()*0.7 + 0.2,
-      s: Math.random()*0.5 + 0.1
+      r: Math.random()*1.6 + 0.2,
+      a: Math.random()*0.5 + 0.2,
+      tw: Math.random()*0.02 + 0.005
     }));
   }
-  function tick(){
+
+  function draw(){
+    const w = canvas.clientWidth, h = canvas.clientHeight;
     ctx.clearRect(0,0,w,h);
-    ctx.save();
-    for(const s of stars){
-      s.a += (Math.random()-0.5)*0.02;
-      const alpha = Math.max(0.10, Math.min(0.6, s.a));
-      ctx.globalAlpha = alpha;
+    for (const s of stars){
+      s.a += s.tw; const op = 0.15 + 0.15*Math.sin(s.a*3.14);
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-      ctx.fillStyle = '#c7d8ff';
+      ctx.fillStyle = `rgba(220,235,255,${op})`;
       ctx.fill();
-      s.x += s.s*0.06;
-      if(s.x> w+5) s.x = -5;
     }
-    ctx.restore();
-    requestAnimationFrame(tick);
+    requestAnimationFrame(draw);
   }
-  window.addEventListener('resize', resize, {passive:true});
-  resize(); tick();
+
+  resize(); draw();
+  addEventListener('resize', resize, {passive:true});
 })();

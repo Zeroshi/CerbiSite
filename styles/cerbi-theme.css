@@ -1,291 +1,175 @@
 /* ============================================================
-   CerbiSite Theme System (Light-first, High-Contrast)
-   - Update --logo to your exact brand blue to propagate accents.
-   - Each theme defines readable bg/panel/text/link colors.
-   - Live Rule Check toggle pulls from --logo for instant match.
+   CerbiSite — Theme Tokens (matches your HTML preload list)
+   Light-first, with dark options. Buttons & accents = brand.
    ============================================================ */
 
 :root{
-  --logo: #1f9bff; /* <-- UPDATE to match your logo color exactly */
-  --radius: 14px;
-  --shadow: 0 12px 32px rgba(0,0,0,.12);
-  --ring: color-mix(in oklab, var(--logo), white 70%);
+  --brand:#ff4d00;
+  --radius:12px;
+  --shadow:0 10px 40px rgba(0,0,0,.45);
+  --focus:0 0 0 3px rgba(255,77,0,.35);
 
-  /* base fallbacks (light) */
-  --bg: #f7f9fc;
-  --panel: #ffffff;
-  --panel-2: #f2f5fb;
-  --text: #0c1222;          /* ~14:1 contrast on white */
-  --text-strong: #000000;
-  --muted: #5a6a88;
-  --accent: var(--logo);
-  --accent-2: color-mix(in oklab, var(--logo), white 20%);
-  --link: color-mix(in oklab, var(--logo), black 10%);
-  --ok:#15803d; --warn:#b45309; --danger:#b91c1c;
-}
+  /* safe fallbacks (overridden per theme) */
+  --bg:#0d1b2a;
+  --surface:#0f2233;
+  --card:#12283c;
+  --text:#e6eef8;
+  --heading:#ffffff;
+  --muted:#a7b4cf;
+  --accent:var(--brand);
+  --accent-contrast:#1a0b05;
+  --btn:#ff4d00;
+  --btn-hover:#ff6a2b;
+  --border:rgba(255,255,255,.08);
+  --divider:rgba(255,255,255,.12);
+  --nav-bg:rgba(6,10,20,.72);
+  --chip-bg:rgba(255,255,255,.08);
+  --chip-text:var(--text);
+  --kbd-bg:rgba(255,255,255,.08);
+  --kbd-text:var(--text);
+  --md-bg:rgba(10,14,24,.92);
+  --md-text:var(--text);
+  --glyph: rgba(255,77,0,0.12);
+  --glyph-strong: rgba(255,77,0,0.18);
 
-/* ===== Themes (light-first) ===== */
-
-/* Powder Blue (default bias) */
-html[data-theme="powder"]{
-  --bg:#eef4fb; --panel:#ffffff; --panel-2:#e7f0fb;
-  --text:#0b1424; --text-strong:#000; --muted:#445472;
-  --accent:#3aa3ff; --accent-2:#6ebcff; --link:#1477d6;
-}
-
-/* Celadon Frost */
-html[data-theme="celadon"]{
-  --bg:#eef7f3; --panel:#ffffff; --panel-2:#e6f3ee;
-  --text:#0c1512; --text-strong:#000; --muted:#3e5a52;
-  --accent:#2fbf9a; --accent-2:#7ddcc3; --link:#1d8e76;
+  --nav-h:64px;
+  --ribbon-h:0px;
 }
 
-/* Pearl */
-html[data-theme="pearl"]{
-  --bg:#fafafa; --panel:#ffffff; --panel-2:#f1f1f1;
-  --text:#0c0c0d; --text-strong:#000; --muted:#505056;
-  --accent:#6f77ff; --accent-2:#9aa0ff; --link:#4147d6;
+/* ---------------- Light themes ---------------- */
+html[data-theme="mist-light"], :root[data-theme="mist-light"]{
+  --bg:#f6fbff; --surface:#f2f7fd; --card:#ffffff;
+  --text:#133047; --heading:#0b1f33; --muted:#3f5b73;
+  --accent:#ff4d00; --accent-contrast:#fff7f2;
+  --btn:#ff4d00; --btn-hover:#ff6a2b;
+  --border:rgba(10,20,30,.10); --divider:rgba(10,20,30,.14);
+  --nav-bg:rgba(255,255,255,.86);
+  --chip-bg:#e9f2ff; --chip-text:#15324a;
+  --kbd-bg:#eef4fb; --kbd-text:#19354c;
+  --md-bg:#ffffff; --md-text:#0f2640;
+  --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
+}
+html[data-theme="celadon"], :root[data-theme="celadon"]{
+  --bg:#f7fff9; --surface:#effaf2; --card:#ffffff;
+  --text:#163226; --heading:#0a2a1d; --muted:#3e5a4e;
+  --accent:#ff4d00; --accent-contrast:#fff7f2;
+  --btn:#ff4d00; --btn-hover:#ff6a2b;
+  --border:rgba(10,30,20,.10); --divider:rgba(10,30,20,.14);
+  --nav-bg:rgba(255,255,255,.86);
+  --chip-bg:#e6f7ec; --chip-text:#163226;
+  --md-bg:#ffffff; --md-text:#15251d;
+  --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
+}
+html[data-theme="champagne"], :root[data-theme="champagne"]{
+  --bg:#fff9f5; --surface:#fff5ef; --card:#ffffff;
+  --text:#3b2a22; --heading:#281b15; --muted:#6b5144;
+  --accent:#ff4d00; --accent-contrast:#fff7f2;
+  --btn:#ff4d00; --btn-hover:#ff6a2b;
+  --border:rgba(40,20,10,.10); --divider:rgba(40,20,10,.14);
+  --nav-bg:rgba(255,255,255,.86);
+  --chip-bg:#ffefe6; --chip-text:#3b2a22;
+  --md-bg:#ffffff; --md-text:#2c1d16;
+  --glyph: rgba(255,77,0,0.08); --glyph-strong: rgba(255,77,0,0.15);
+}
+html[data-theme="greige"], :root[data-theme="greige"]{
+  --bg:#fbfbf9; --surface:#f4f3f0; --card:#ffffff;
+  --text:#252421; --heading:#181816; --muted:#585651;
+  --accent:#ff4d00; --accent-contrast:#fff7f2;
+  --btn:#ff4d00; --btn-hover:#ff6a2b;
+  --border:rgba(20,20,18,.14); --divider:rgba(20,20,18,.18);
+  --nav-bg:rgba(255,255,255,.86);
+  --chip-bg:#efeee9; --chip-text:#2b2a26;
+  --md-bg:#ffffff; --md-text:#1d1d1a;
+  --glyph: rgba(255,77,0,0.08); --glyph-strong: rgba(255,77,0,0.15);
+}
+html[data-theme="lilac"], :root[data-theme="lilac"]{
+  --bg:#fbf9ff; --surface:#f6f2ff; --card:#ffffff;
+  --text:#2b2434; --heading:#1a1520; --muted:#5e566a;
+  --accent:#ff4d00; --accent-contrast:#fff7f2;
+  --btn:#ff4d00; --btn-hover:#ff6a2b;
+  --border:rgba(26,21,32,.12); --divider:rgba(26,21,32,.16);
+  --nav-bg:rgba(255,255,255,.86);
+  --chip-bg:#f0eaff; --chip-text:#2b2434;
+  --md-bg:#ffffff; --md-text:#1c1723;
+  --glyph: rgba(255,77,0,0.07); --glyph-strong: rgba(255,77,0,0.12);
 }
 
-/* Sand */
-html[data-theme="sand"]{
-  --bg:#fbf8f2; --panel:#ffffff; --panel-2:#f4efe5;
-  --text:#14100b; --text-strong:#000; --muted:#6b6154;
-  --accent:#f8993a; --accent-2:#f6b269; --link:#cf6c0e;
+/* ---------------- Dark themes ---------------- */
+html[data-theme="pewter"], :root[data-theme="pewter"]{
+  --bg:#0f1a22; --surface:#132331; --card:#162a3b;
+  --text:#e5eef8; --heading:#ffffff; --muted:#a7b4cf;
+  --accent:#ff6a2b; --accent-contrast:#1a0b05;
+  --btn:#ff4d00; --btn-hover:#ff7a44;
+  --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
+  --nav-bg:rgba(6,10,20,.78);
+  --chip-bg:rgba(255,255,255,.08); --chip-text:#e5eef8;
+  --md-bg:rgba(10,14,24,.92); --md-text:#d9e2ff;
+  --glyph: rgba(255,77,0,0.12); --glyph-strong: rgba(255,77,0,0.18);
+}
+html[data-theme="midnight"], :root[data-theme="midnight"]{
+  --bg:#031e22; --surface:#072a2f; --card:#0d3036;
+  --text:#e7f7fb; --heading:#ffffff; --muted:#b7d7df;
+  --accent:#ff6a2b; --accent-contrast:#1a0b05;
+  --btn:#ff4d00; --btn-hover:#ff7a44;
+  --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
+  --nav-bg:rgba(1,16,18,.80);
+  --chip-bg:rgba(255,255,255,.10); --chip-text:#e7f7fb;
+  --md-bg:rgba(5,18,20,.92); --md-text:#e7f7fb;
+  --glyph: rgba(255,77,0,0.12); --glyph-strong: rgba(255,77,0,0.2);
+}
+html[data-theme="indigo"], :root[data-theme="indigo"]{
+  --bg:#101327; --surface:#151a34; --card:#181e3d;
+  --text:#e6e9ff; --heading:#ffffff; --muted:#b9c0ff;
+  --accent:#ff6a2b; --accent-contrast:#1a0b05;
+  --btn:#ff4d00; --btn-hover:#ff7a44;
+  --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
+  --nav-bg:rgba(8,10,30,.82);
+  --chip-bg:rgba(255,255,255,.10); --chip-text:#e6e9ff;
+  --md-bg:rgba(12,14,36,.92); --md-text:#e6e9ff;
+  --glyph: rgba(255,77,0,0.13); --glyph-strong: rgba(255,77,0,0.22);
+}
+html[data-theme="plum"], :root[data-theme="plum"]{
+  --bg:#1a1216; --surface:#22171f; --card:#291d26;
+  --text:#ffeaf3; --heading:#ffffff; --muted:#f3cfe0;
+  --accent:#ff6a2b; --accent-contrast:#1a0b05;
+  --btn:#ff4d00; --btn-hover:#ff7a44;
+  --border:rgba(255,255,255,.10); --divider:rgba(255,255,255,.14);
+  --nav-bg:rgba(18,10,14,.80);
+  --chip-bg:rgba(255,255,255,.12); --chip-text:#ffeaf3;
+  --md-bg:rgba(28,20,26,.92); --md-text:#ffeaf3;
+  --glyph: rgba(255,77,0,0.13); --glyph-strong: rgba(255,77,0,0.22);
+}
+html[data-theme="obsidian"], :root[data-theme="obsidian"]{
+  --bg:#0b1520; --surface:#0e1b29; --card:#102033;
+  --text:#dfeaff; --heading:#ffffff; --muted:#a9c2ff;
+  --accent:#ff6a2b; --accent-contrast:#1a0b05;
+  --btn:#ff4d00; --btn-hover:#ff7a44;
+  --border:rgba(255,255,255,.08); --divider:rgba(255,255,255,.12);
+  --nav-bg:rgba(6,10,20,.82);
+  --chip-bg:rgba(255,255,255,.10); --chip-text:#dfeaff;
+  --md-bg:rgba(10,14,24,.92); --md-text:#dfeaff;
+  --glyph: rgba(255,77,0,0.14); --glyph-strong: rgba(255,77,0,0.24);
 }
 
-/* Mint */
-html[data-theme="mint"]{
-  --bg:#f1fbf7; --panel:#ffffff; --panel-2:#e8f7f1;
-  --text:#0d1713; --text-strong:#000; --muted:#3d5b4f;
-  --accent:#1fcc89; --accent-2:#65e0b1; --link:#149a69;
-}
+/* ------------- Global application of tokens ------------- */
+html, body { background: var(--bg); color: var(--text); }
+a { color: var(--accent); }
+a:hover { opacity:.92; }
+h1,h2,h3,h4,h5,h6 { color: var(--heading); }
+.table th,.table td { border-color: var(--divider); }
+hr { border-color: var(--divider); }
 
-/* Rose (soft, still high-contrast) */
-html[data-theme="rose"]{
-  --bg:#fff2f4; --panel:#ffffff; --panel-2:#ffe6ea;
-  --text:#201014; --text-strong:#000; --muted:#6a3c46;
-  --accent:#f95a8b; --accent-2:#ff8fb0; --link:#c02c5a;
-}
+.btn{ background: var(--btn); color: var(--accent-contrast); border:1px solid transparent; }
+.btn:hover{ background: var(--btn-hover); }
+.btn.btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
+.btn.btn-ghost:hover { background: rgba(255,255,255,.06); }
 
-/* Iceberg */
-html[data-theme="iceberg"]{
-  --bg:#eff7ff; --panel:#ffffff; --panel-2:#e7f0ff;
-  --text:#0a1220; --text-strong:#000; --muted:#3f5474;
-  --accent:#4fb5ff; --accent-2:#86cdff; --link:#1a80d6;
-}
+.chip,.tag{ background: var(--chip-bg); color: var(--chip-text); border:1px solid var(--border); }
+.kbd, pre.codeblock, code[class*="language-"], pre[class*="language-"] { background: var(--kbd-bg); color: var(--kbd-text); }
+.card{ background: var(--card); border:1px solid var(--border); }
+.glass { background: color-mix(in srgb, var(--surface) 92%, transparent); border:1px solid var(--border); box-shadow: var(--shadow); }
 
-/* Peach */
-html[data-theme="peach"]{
-  --bg:#fff4ee; --panel:#ffffff; --panel-2:#ffebe1;
-  --text:#20130f; --text-strong:#000; --muted:#6a4d44;
-  --accent:#ff8a5c; --accent-2:#ffb094; --link:#db5b2a;
-}
+.nav { position: sticky; top: 0; z-index: 1000; background: var(--nav-bg); backdrop-filter: blur(10px); }
+.nav a, .nav .btn, .nav .theme-toggle { color: var(--text); }
 
-/* Slate-light (cool grayscale with logo accents) */
-html[data-theme="slate-light"]{
-  --bg:#f5f7fa; --panel:#ffffff; --panel-2:#edf1f7;
-  --text:#0b1324; --text-strong:#000; --muted:#4b5b74;
-  --accent: var(--logo); --accent-2: color-mix(in oklab, var(--logo), white 25%); --link: color-mix(in oklab, var(--logo), black 10%);
-}
-
-/* Violet Frost */
-html[data-theme="violet-frost"]{
-  --bg:#f6f2ff; --panel:#ffffff; --panel-2:#eee8ff;
-  --text:#140e20; --text-strong:#000; --muted:#5a4a77;
-  --accent:#7a73ff; --accent-2:#a49fff; --link:#4c44d6;
-}
-
-/* Aurora Dark (kept for users who prefer dark mode) */
-html[data-theme="aurora-dark"]{
-  --bg:#0a1224; --panel:#0f172a; --panel-2:#0b1325;
-  --text:#e9edf6; --text-strong:#ffffff; --muted:#9fb1d2;
-  --accent: var(--logo); --accent-2:#63bfff; --link:#7dc7ff;
-  --shadow: 0 18px 44px rgba(2,10,35,.45);
-  --ring: color-mix(in oklab, var(--logo), white 50%);
-}
-
-/* ====== Base Layout ====== */
-
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-body{
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-.wrap{
-  width:min(1200px, 92vw);
-  margin-inline:auto;
-}
-
-/* ===== Header ===== */
-.site-header{
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
-  background: color-mix(in oklab, var(--bg), transparent 35%);
-  border-bottom: 1px solid color-mix(in oklab, var(--panel-2), transparent 65%);
-}
-.site-header .wrap{
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 12px 0;
-}
-.brand{
-  display:flex; align-items:center; gap:10px; font-weight:800; text-decoration:none; color:var(--text);
-}
-.brand-mark{ font-size: 22px; }
-.brand-text{ letter-spacing:.2px; }
-.brand-accent{ color: var(--accent); }
-
-.nav{
-  display:flex; align-items:center; gap: 18px;
-}
-.nav a{
-  text-decoration:none; color: var(--text);
-  padding:8px 10px; border-radius:10px;
-}
-.nav a:hover{ background: var(--panel-2); }
-
-.btn{
-  appearance:none; border:none; cursor:pointer; border-radius:12px;
-  padding:10px 14px; font-weight:600;
-  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
-}
-.btn.primary{
-  background: var(--accent); color: white; box-shadow: var(--shadow);
-}
-.btn.primary:hover{ transform: translateY(-1px); }
-.btn.ghost{
-  background: transparent; color: var(--link); outline: 1px solid color-mix(in oklab, var(--link), transparent 50%);
-}
-.theme-btn{
-  background: var(--panel-2); color: var(--text);
-  outline: 1px solid color-mix(in oklab, var(--text), transparent 70%);
-}
-
-/* ===== Hero ===== */
-.hero{
-  padding: 48px 0 24px 0;
-}
-.hero-inner{
-  display:grid; grid-template-columns: 1.2fr .8fr; gap: 28px; align-items: stretch;
-}
-.hero-copy h1{
-  margin:0 0 10px 0; font-size: clamp(28px, 3vw, 42px); line-height:1.12; color: var(--text-strong);
-}
-.hero-copy p{ margin:0 0 16px 0; color: var(--muted); max-width: 60ch; }
-.cta-row{ display:flex; gap:12px; flex-wrap: wrap; }
-
-/* Demo toggle card */
-.demo-toggle-card{
-  background: var(--panel);
-  border: 1px solid color-mix(in oklab, var(--text), transparent 85%);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
-  align-self: start;
-}
-.demo-head{
-  display:flex; align-items:center; justify-content:space-between; gap: 12px;
-}
-.demo-toggle-card h2{
-  margin:0; font-size: 18px; line-height: 1.2; color: var(--text-strong);
-}
-.demo-note{ margin: 10px 0 0 0; color: var(--muted); }
-
-/* ===== Switch (uses --logo for accent) ===== */
-.switch{
-  --track: color-mix(in oklab, var(--panel-2), black 5%);
-  --on: var(--logo);  /* <- brand color here */
-  position: relative; display: inline-flex; align-items: center; gap:10px;
-  width: 54px; height: 30px; border-radius: 999px;
-}
-.switch input{ position:absolute; inset:0; margin:0; opacity:0; cursor:pointer; }
-.switch .track{
-  position:absolute; inset:0; background: var(--track); border-radius:999px;
-  border: 1px solid color-mix(in oklab, var(--track), black 6%);
-  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-.switch .knob{
-  position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%;
-  background:white; box-shadow: 0 4px 12px rgba(0,0,0,.18);
-  transition: transform .22s ease;
-}
-.switch input:focus-visible + .track{ box-shadow: 0 0 0 5px var(--ring); }
-.switch input:checked + .track{ background: var(--on); border-color: var(--on); }
-.switch input:checked ~ .knob{ transform: translateX(24px); }
-
-/* ===== Modules ===== */
-.modules{ position: relative; padding: 18px 0 64px 0; }
-.grid{
-  display:grid; gap: 14px;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-}
-.card{
-  background: var(--panel);
-  border: 1px solid color-mix(in oklab, var(--text), transparent 85%);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-}
-.card h3{ margin: 0 0 6px 0; color: var(--text-strong); }
-.card p{ margin: 0 0 10px 0; color: var(--muted); }
-.card .link{ color: var(--link); text-decoration: none; font-weight: 600; }
-.card .link:hover{ text-decoration: underline; }
-
-/* ===== Contact FAB (right of modules) ===== */
-.contact-fab{
-  position: fixed;
-  right: clamp(12px, 2vw, 24px);
-  top: 0; /* we set vertical position via --fab-y in JS */
-  transform: translateY(calc(var(--fab-y, 60vh) - 50%));
-  width: 54px; height: 54px; display:grid; place-items:center;
-  background: var(--accent); color: white; text-decoration:none; font-size: 22px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  outline: 2px solid color-mix(in oklab, var(--accent), white 40%);
-}
-.contact-fab:hover{ filter: brightness(1.05); transform: translateY(calc(var(--fab-y, 60vh) - 50%)) scale(1.02); }
-.contact-fab:active{ transform: translateY(calc(var(--fab-y, 60vh) - 50%)) scale(.98); }
-
-/* ===== Contact Section ===== */
-.contact{ padding: 32px 0 64px 0; }
-.contact h2{ margin:0 0 8px 0; color: var(--text-strong); }
-.contact p{ margin:0; color: var(--muted); }
-.contact-embed{
-  width: 100%; height: 720px; border: none; margin-top: 16px;
-  background: var(--panel);
-  border: 1px solid color-mix(in oklab, var(--text), transparent 85%);
-  border-radius: var(--radius);
-}
-
-/* ===== Footer ===== */
-.site-footer{
-  padding: 18px 0;
-  border-top: 1px solid color-mix(in oklab, var(--panel-2), transparent 65%);
-  background: color-mix(in oklab, var(--bg), transparent 35%);
-}
-.site-footer small{ color: var(--muted); }
-
-/* ===== Responsive ===== */
-@media (max-width: 980px){
-  .hero-inner{ grid-template-columns: 1fr; }
-  .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-}
-@media (max-width: 640px){
-  .grid{ grid-template-columns: 1fr; }
-  .contact-fab{ right: 12px; width: 48px; height: 48px; font-size: 20px; }
-}
-
-/* ===== Optional: live demo global hook ===== */
-html[data-live-demo] .demo-toggle-card{
-  outline: 2px dashed var(--accent);
-  outline-offset: 3px;
-}
+:focus-visible{ outline:none; box-shadow: var(--focus); border-radius:6px; }

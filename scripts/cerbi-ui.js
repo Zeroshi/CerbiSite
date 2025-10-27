@@ -1,121 +1,136 @@
-/* ===== Utilities ===== */
-const qs = (sel, el=document)=>el.querySelector(sel);
-const qsa = (sel, el=document)=>[...el.querySelectorAll(sel)];
+/* ============================================================
+   Cerbi UI helpers — small, targeted JS to fix UX without DOM churn
+   - Priority+ nav: auto-collapses into a “More” menu as space shrinks
+   - Dashboard auto-slider: full-width autoplay with pause on hover/focus
+   - Safe to load after your existing scripts; no HTML changes required
+   ============================================================ */
 
-/* ===== Year stamp ===== */
-(() => {
-  const y = qs('#year'); if (y) y.textContent = new Date().getFullYear();
-})();
+(function priorityNav(){
+  const nav = document.getElementById('primaryNav');
+  if(!nav) return;
 
-/* ===== Theme toggle (persisted) ===== */
-const setTheme = t => {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('cerbi-theme', t);
-  const meta = qs('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t==='light' ? '#ffffff' : '#0a1224');
-};
-(() => {
-  const saved = localStorage.getItem('cerbi-theme');
-  if (saved) setTheme(saved);
-  qs('#themeBtn')?.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-    setTheme(cur === 'dark' ? 'light' : 'dark');
+  // Build (or reuse) a “More” dropdown at the end of #primaryNav
+  let more = nav.querySelector('.nav-more');
+  if(!more){
+    more = document.createElement('div');
+    more.className = 'nav-more';
+    more.innerHTML = `
+      <button type="button" aria-haspopup="true" aria-expanded="false">More ▾</button>
+      <div class="menu" role="menu"></div>
+    `;
+    nav.appendChild(more);
+  }
+  const moreBtn = more.querySelector('button');
+  const menu = more.querySelector('.menu');
+
+  // Keep a stable list of link items (skip the “More” itself)
+  const items = [...nav.querySelectorAll('a')].filter(a => !a.closest('.nav-more'));
+  const hidden = new Set();
+
+  function layout(){
+    // Put everything back first
+    for(const a of items){
+      if(hidden.has(a)){
+        menu.removeChild(a);
+        hidden.delete(a);
+        nav.insertBefore(a, more);
+      }
+    }
+
+    // If width overflows, move items (from right to left) into More
+    const navRect = nav.getBoundingClientRect();
+    const max = navRect.width - (more.offsetWidth + 12); // leave room for "More"
+    let needMore = false;
+
+    // Measure by cumulative width
+    let total = 0;
+    for(const a of items){
+      total += a.offsetWidth + 10;
+      if(total > max){
+        needMore = true;
+        // move this and the rest into menu
+        const startIdx = items.indexOf(a);
+        for(let i=items.length-1;i>=startIdx;i--){
+          const it = items[i];
+          if(!hidden.has(it)){
+            hidden.add(it);
+            menu.insertBefore(it, menu.firstChild);
+          }
+        }
+        break;
+      }
+    }
+
+    more.style.display = needMore ? 'inline-block' : 'none';
+    moreBtn.setAttribute('aria-expanded', 'false');
+    more.classList.remove('open');
+  }
+
+  layout();
+  window.addEventListener('resize', ()=>requestAnimationFrame(layout), { passive:true });
+
+  // simple open/close
+  moreBtn.addEventListener('click', ()=>{
+    const open = !more.classList.contains('open');
+    more.classList.toggle('open', open);
+    moreBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', (e)=>{
+    if(!more.contains(e.target)) more.classList.remove('open');
   });
 })();
 
-/* ===== Sticky progress ===== */
-const progressBar = qs('#progress');
-const onScroll = () => {
-  const h = document.documentElement;
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
-  if (progressBar) progressBar.style.width = (scrolled * 100).toFixed(2) + '%';
-};
-window.addEventListener('scroll', onScroll, {passive:true});
+/* ---------- Dashboard: full-width auto slider (uses existing markup) ---------- */
+(function dashboardAutoSlider(){
+  const slider = document.getElementById('dashSlider');
+  if(!slider) return;
 
-/* ===== Mobile nav ===== */
-qs('#navToggle')?.addEventListener('click', () => {
-  const nav = qs('#primaryNav');
-  const open = nav.classList.toggle('open');
-  qs('#navToggle').setAttribute('aria-expanded', String(open));
-});
+  const slides = [...slider.querySelectorAll('.slide')];
+  const dotsBox = slider.querySelector('.dots');
+  const prevBtn = slider.querySelector('[data-prev]');
+  const nextBtn = slider.querySelector('[data-next]');
+  const live = slider.querySelector('[aria-live]');
 
-/* ===== Command palette (simple) ===== */
-(() => {
-  const overlay = qs('#cmdkOverlay');
-  if (!overlay) return;
-  const input = qs('#cmdkInput');
-  const list = qs('#cmdkList');
-  const items = [
-    {label:'Why', href:'#why'},
-    {label:'Ecosystem', href:'#ecosystem'},
-    {label:'Governance', href:'#governance'},
-    {label:'Packages', href:'#packages'},
-    {label:'Repositories', href:'#repos'},
-    {label:'Compare', href:'#compare'},
-    {label:'Architecture', href:'#architecture'},
-    {label:'Contact', href:'#contact'},
-  ];
-  list.innerHTML = items.map(i=>`<div class="item"><span>${i.label}</span><span>${i.href}</span></div>`).join('');
-  list.addEventListener('click', e=>{
-    const item = e.target.closest('.item'); if(!item) return;
-    location.hash = item.lastChild.textContent.trim();
-    overlay.classList.remove('open');
-  });
-  const open = ()=>{ overlay.classList.add('open'); input.value=''; input.focus(); };
-  const close = ()=>overlay.classList.remove('open');
-  qs('#cmdBtn')?.addEventListener('click', open);
-  window.addEventListener('keydown', e=>{
-    if ((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k') { e.preventDefault(); open(); }
-    if (e.key==='Escape') close();
-  });
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) close(); });
-})();
+  if(!slides.length) return;
 
-/* ===== Copy buttons ===== */
-qsa('[data-copy]').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const el = qs(btn.getAttribute('data-copy'));
-    if (!el) return;
-    const text = el.innerText || el.textContent || '';
-    navigator.clipboard.writeText(text);
-    btn.textContent = 'Copied!';
-    setTimeout(()=>btn.textContent='Copy', 1200);
-  });
-});
+  // Dots
+  dotsBox.innerHTML = slides.map((_,i)=>`<button aria-label="Go to slide ${i+1}"></button>`).join('');
+  const dots = [...dotsBox.querySelectorAll('button')];
 
-/* ===== Reveal on scroll ===== */
-const obs = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
-},{threshold:.12});
-qsa('.reveal').forEach(el=>obs.observe(el));
+  let i = slides.findIndex(s=>s.classList.contains('active')); if(i<0) i=0;
 
-/* ===== Pop-Art crossfade ===== */
-(() => {
-  const slides = qsa('.popart-slide');
-  if (slides.length <= 1) return;
-  let i = 0, t = null;
+  function show(n, announce=true){
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s,idx)=>s.classList.toggle('active', idx===i));
+    dots.forEach((d,idx)=>d.classList.toggle('active', idx===i));
+    if(announce && live) live.textContent = `Slide ${i+1} of ${slides.length}`;
+  }
 
-  const show = (idx) => {
-    slides.forEach((s, n) => s.classList.toggle('active', n === idx));
-  };
+  dots.forEach((d,idx)=>d.addEventListener('click', ()=>show(idx)));
+  prevBtn?.addEventListener('click', ()=>show(i-1));
+  nextBtn?.addEventListener('click', ()=>show(i+1));
+  show(i,false);
 
-  const play = () => {
-    stop();
-    t = setInterval(() => {
-      i = (i + 1) % slides.length;
-      show(i);
-    }, 5000);
-  };
-  const stop = () => { if (t) { clearInterval(t); t = null; } };
+  // Autoplay with pause on hover/focus
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let t = null;
+  const start = ()=>{ if(prefersReduced) return; stop(); t = setInterval(()=>show(i+1,false), 4800); };
+  const stop  = ()=>{ if(t) clearInterval(t); t=null; };
 
-  const stage = qs('.popart-stage');
-  const io = new IntersectionObserver((ents)=>{
-    ents.forEach(ent => ent.isIntersecting ? play() : stop());
-  }, {threshold:.15});
-  if (stage) io.observe(stage);
+  slider.addEventListener('mouseenter', stop);
+  slider.addEventListener('mouseleave', start);
+  slider.addEventListener('focusin', stop);
+  slider.addEventListener('focusout', start);
 
-  // pause on hover
-  const block = qs('#brand-canvas');
-  block?.addEventListener('mouseenter', stop);
-  block?.addEventListener('mouseleave', play);
+  // Swipe support
+  let x0=null;
+  slider.addEventListener('touchstart', e=>{ x0=e.touches[0].clientX; }, { passive:true });
+  slider.addEventListener('touchend', e=>{
+    if(x0==null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 40){ dx>0 ? show(i-1) : show(i+1); }
+    x0=null;
+  }, { passive:true });
+
+  start();
 })();
