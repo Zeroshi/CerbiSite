@@ -883,6 +883,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <span class="chip pkg-downloads">0 downloads</span>
             <span class="chip pkg-updated">Updated —</span>
           </div>
+          <details class="pkg-updates" style="margin-top:10px">
+ <summary class="mono">Recent updates</summary>
+ <ul class="updates-list" style="margin:.4rem00; padding-left:1.1rem"></ul>
+ </details>
         </article>
       </template>
     </section>
@@ -1667,6 +1671,39 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         return String(n);
       }
 
+      function truncate(text, max){
+        if(!text) return '';
+        const t = String(text).trim();
+        return t.length>max ? t.slice(0,max-1)+'…' : t;
+      }
+
+      async function fetchNuGetUpdates(id){
+        try{
+          const base = 'https://api.nuget.org/v3/registration5-gz-semver2/';
+          const idxUrl = base + encodeURIComponent(id.toLowerCase()) + '/index.json';
+          const idx = await fetch(idxUrl, { cache:'no-store' }).then(r=>r.ok?r.json():null);
+          if(!idx || !Array.isArray(idx.items) || idx.items.length===0) return [];
+          const lastPage = idx.items[idx.items.length-1];
+          let page = lastPage;
+          if(!Array.isArray(lastPage.items)){
+            page = await fetch(lastPage['@id'], { cache:'no-store' }).then(r=>r.ok?r.json():{items:[]});
+          }
+          const entries = (page.items||[])
+          .map(it=>it.catalogEntry)
+          .filter(Boolean)
+          .sort((a,b)=> new Date(b.published) - new Date(a.published))
+          .filter(e => e && typeof e.version==='string' && !e.version.includes('-'))
+          .slice(0,3)
+          .map(e=>({
+            version: e.version,
+            published: e.published,
+            notes: typeof e.releaseNotes==='string' ? e.releaseNotes
+            : (e.releaseNotes && typeof e.releaseNotes.url==='string' ? e.releaseNotes.url : '')
+          }));
+          return entries;
+        }catch{ return []; }
+      }
+
       pkgs.forEach(async pkg=>{
         const node = tpl.content.firstElementChild.cloneNode(true);
         node.querySelector('.pkg-title').textContent = pkg.id;
@@ -1679,13 +1716,33 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
           const item = (j.data && j.data[0]) || null;
           if(item){
             const version = item.version || (item.versions?.slice(-1)[0]?.version) || '—';
-            const downloads = item.totalDownloads || 0;
+            const downloads = item.totalDownloads ||0;
             const updated = item.published ? new Date(item.published).toLocaleDateString() : '—';
             node.querySelector('.pkg-version').textContent = 'v'+version;
             node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads)+' downloads';
             node.querySelector('.pkg-updated').textContent = 'Updated '+updated;
           }
         }catch(_){ /* ignore API failure */ }
+
+        // Recent updates (versions + notes)
+        try{
+          const updates = await fetchNuGetUpdates(pkg.id);
+          const details = node.querySelector('.pkg-updates');
+          const ul = node.querySelector('.updates-list');
+          if(updates && updates.length){
+            ul.innerHTML = '';
+            updates.forEach(u => {
+              const li = document.createElement('li');
+              const date = u.published ? new Date(u.published).toLocaleDateString() : '';
+              const hasUrl = u.notes && /^https?:\/\//i.test(u.notes);
+              const notesText = hasUrl ? '' : truncate(u.notes,140);
+              li.innerHTML = `<strong>v${u.version}</strong> — ${date}` + (hasUrl ? ` — <a href="${u.notes}" target="_blank" rel="noopener">Release notes</a>` : (notesText? ` — ${notesText}` : ''));
+              ul.appendChild(li);
+            });
+          } else {
+            details.hidden = true;
+          }
+        }catch(_){ /* ignore updates failure */ }
 
         grid.appendChild(node);
       });
