@@ -1732,7 +1732,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             /* Video Library Gallery */
             .youtube-latest {
-                margin: 8px auto 32px;
+                margin: 8px auto 24px;
                 max-width: 980px;
             }
 
@@ -1740,7 +1740,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                margin-bottom: 10px;
+                margin-bottom: 12px;
                 color: var(--muted);
                 font-size: 13px;
                 letter-spacing: 0.08em;
@@ -1752,11 +1752,51 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 color: var(--brand);
             }
 
+            .youtube-slider-shell {
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .youtube-slider-shell:has(.youtube-nav:focus-visible) {
+                outline: var(--ring);
+                outline-offset: 6px;
+                border-radius: 16px;
+            }
+
+            .youtube-nav {
+                background: rgba(255, 255, 255, 0.86);
+                border: 1px solid rgba(20,40,72,.12);
+                border-radius: 50%;
+                width: 38px;
+                height: 38px;
+                display: grid;
+                place-items: center;
+                color: var(--text);
+                cursor: pointer;
+                box-shadow: 0 6px 16px rgba(20,40,72,.12);
+                transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+            }
+
+            .youtube-nav:hover {
+                transform: translateY(-2px);
+                border-color: rgba(255,77,0,.35);
+                box-shadow: 0 10px 24px rgba(20,40,72,.16);
+            }
+
+            .youtube-nav:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                box-shadow: none;
+                transform: none;
+            }
+
             .youtube-latest-row {
                 display: flex;
-                gap: 12px;
+                gap: 10px;
                 overflow-x: auto;
-                padding: 6px 4px;
+                padding: 8px 6px;
                 scroll-snap-type: x mandatory;
             }
 
@@ -1770,7 +1810,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
 
             .youtube-latest-card {
-                flex: 0 0 200px;
+                flex: 0 0 170px;
                 background: linear-gradient(180deg, #f8fafc 0%, #f1f4f9 100%);
                 border: 1px solid rgba(20,40,72,.08);
                 border-radius: 12px;
@@ -1783,8 +1823,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
 
             .youtube-latest-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 24px rgba(20,40,72,.12);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(20,40,72,.12);
                 border-color: rgba(255,77,0,.35);
             }
 
@@ -1811,37 +1851,21 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
 
             .youtube-meta {
-                padding: 10px 12px 12px;
+                padding: 9px 11px 11px;
                 display: grid;
-                gap: 6px;
+                gap: 5px;
             }
 
             .youtube-title {
                 font-weight: 700;
-                font-size: 14px;
+                font-size: 13px;
                 line-height: 1.35;
                 color: var(--text);
             }
 
             .youtube-date {
-                font-size: 12px;
+                font-size: 11px;
                 color: var(--muted);
-            }
-
-            .youtube-cta-card {
-                display: grid;
-                grid-template-rows: auto 1fr;
-                align-content: stretch;
-            }
-
-            .youtube-cta-card .youtube-meta {
-                gap: 8px;
-            }
-
-            .youtube-cta-note {
-                font-size: 13px;
-                color: var(--muted);
-                line-height: 1.5;
             }
 
             .video-filters {
@@ -2442,34 +2466,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </svg>
                     <span>Latest from YouTube</span>
                 </div>
-                <div id="youtubeFeed" class="youtube-latest-row" data-channel-id="UC_x5XG1OV2P6uZZ5FSM9Ttw">
-                    <a id="youtubeSubscribeFallback" class="youtube-latest-card youtube-cta-card" href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener">
-                        <div class="youtube-thumb" aria-hidden="true">
-                            <img src="assets/CerbiLogo.png" alt="CerbiSuite logo" loading="lazy" decoding="async" />
-                        </div>
-                        <div class="youtube-meta">
-                            <div class="youtube-title">Subscribe on YouTube</div>
-                            <p class="youtube-cta-note">Catch new tutorials and product walk-throughs as soon as they drop.</p>
-                            <div style="display:flex;gap:8px;align-items:center;color:var(--brand);font-weight:700;font-size:13px;">
-                                <span>Open channel</span>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                    <path d="M14 3h7v7h-2V6.414l-9.293 9.293-1.414-1.414L17.586 5H14V3z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </a>
+                <div class="youtube-slider-shell">
+                    <button class="youtube-nav" type="button" aria-label="Previous video" data-dir="-1">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                        </svg>
+                    </button>
+                    <div id="youtubeFeed" class="youtube-latest-row" data-channel-handle="@cerbihello"></div>
+                    <button class="youtube-nav" type="button" aria-label="Next video" data-dir="1">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="m10 6-1.41 1.41L13.17 12l-4.58 4.59L10 18l6-6z" />
+                        </svg>
+                    </button>
                 </div>
-            </div>
-            <p style="text-align:center;max-width:780px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
-                Curated walkthroughs, demos, and strategy clips. Filter by topic or open our full YouTube playlist to see the latest releases.
-            </p>
-            <div style="text-align:center;margin-bottom:3rem">
-                <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                    Subscribe on YouTube
-                </a>
             </div>
 
             <!-- Video Filter Tabs -->
@@ -3268,12 +3277,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             const feedContainer = document.getElementById('youtubeFeed');
             if (!feedContainer) return;
 
-            const fallbackCard = document.getElementById('youtubeSubscribeFallback');
-            const channelId = (feedContainer.dataset.channelId || '').trim();
-            if (!channelId) return;
+            const sliderShell = feedContainer.closest('.youtube-slider-shell');
+            const navButtons = sliderShell ? sliderShell.querySelectorAll('.youtube-nav') : [];
 
-            const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${encodeURIComponent(channelId)}`;
-            const proxiedFeedUrl = `https://cors.isomorphic-git.org/${feedUrl}`;
+            const handle = (feedContainer.dataset.channelHandle || '').replace(/^@/, '');
+            const presetChannelId = (feedContainer.dataset.channelId || '').trim();
 
             const formatDate = (value) => {
                 try {
@@ -3283,8 +3291,28 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 }
             };
 
+            const resolveChannelId = async () => {
+                if (presetChannelId) return presetChannelId;
+                if (!handle) return '';
+
+                const target = `https://www.youtube.com/@${handle}/about`;
+                const sources = [target, `https://cors.isomorphic-git.org/${target}`];
+
+                for (const url of sources) {
+                    try {
+                        const res = await fetch(url, { cache: 'no-store' });
+                        if (!res.ok) continue;
+                        const text = await res.text();
+                        const match = text.match(/"channelId"\s*:\s*"(UC[^"]+)"/);
+                        if (match && match[1]) return match[1];
+                    } catch (_) { /* ignore */ }
+                }
+
+                return '';
+            };
+
             const buildCards = (xmlDoc) => {
-                const entries = Array.from(xmlDoc.querySelectorAll('entry')).slice(0, 4);
+                const entries = Array.from(xmlDoc.querySelectorAll('entry')).slice(0, 6);
                 if (!entries.length) return false;
 
                 feedContainer.innerHTML = '';
@@ -3312,9 +3340,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     feedContainer.appendChild(card);
                 });
 
-                if (feedContainer.children.length === 0) return false;
-                if (fallbackCard) fallbackCard.hidden = true;
-                return true;
+                return feedContainer.children.length > 0;
             };
 
             const fetchFeed = (url) => fetch(url, { cache: 'no-store' }).then(res => {
@@ -3326,11 +3352,39 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 if (!buildCards(xml)) throw new Error('No entries rendered');
             });
 
-            fetchFeed(feedUrl)
-                .catch(() => fetchFeed(proxiedFeedUrl))
-                .catch(err => {
-                    console.warn('YouTube feed unavailable; showing subscribe CTA.', err);
+            const initSliderNav = () => {
+                if (!sliderShell) return;
+                const scrollRow = (dir) => {
+                    const cards = feedContainer.querySelectorAll('.youtube-latest-card');
+                    if (!cards.length) return;
+                    const cardWidth = cards[0].offsetWidth + 10; // include gap
+                    feedContainer.scrollBy({ left: dir * cardWidth * 2, behavior: 'smooth' });
+                };
+
+                navButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const dir = Number(btn.dataset.dir || 0);
+                        scrollRow(dir);
+                    });
                 });
+            };
+
+            const hydrateFeed = async () => {
+                const channelId = await resolveChannelId();
+                if (!channelId) return;
+
+                const feedUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${encodeURIComponent(channelId)}`;
+                const proxiedFeedUrl = `https://cors.isomorphic-git.org/${feedUrl}`;
+
+                return fetchFeed(feedUrl)
+                    .catch(() => fetchFeed(proxiedFeedUrl))
+                    .then(initSliderNav)
+                    .catch(err => {
+                        console.warn('YouTube feed unavailable; skipping slider.', err);
+                    });
+            };
+
+            hydrateFeed();
         })();
 
         // Video Library functionality
