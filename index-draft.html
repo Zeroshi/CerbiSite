@@ -1967,6 +1967,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 padding: 20px;
             }
 
+            .video-modal[hidden] {
+                display: none !important;
+            }
+
             .video-modal-backdrop {
                 position: absolute;
                 inset: 0;
@@ -3112,6 +3116,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             const modalClose = document.querySelector('.video-modal-close');
             const modalBackdrop = document.querySelector('.video-modal-backdrop');
 
+            function closeModal() {
+                modal.hidden = true;
+                document.body.style.overflow = '';
+                modalVideo.pause();
+                modalVideo.currentTime = 0;
+            }
+
+            // Ensure modal starts off-screen
+            closeModal();
+
             // Filter functionality
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -3156,13 +3170,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             });
 
             // Close modal functionality
-            function closeModal() {
-                modal.hidden = true;
-                document.body.style.overflow = '';
-                modalVideo.pause();
-                modalVideo.currentTime = 0;
-            }
-
             if (modalClose) modalClose.addEventListener('click', closeModal);
             if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
             
