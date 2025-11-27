@@ -100,11 +100,11 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             text-shadow: none;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(24, 34, 53, 0.08);
             display: inline-block;
             padding: 6px 10px;
             border-radius: 999px;
-            border: 1px solid rgba(20,40,72,.1);
+            border: 1px solid rgba(24,34,53,.18);
         }
 
         /* Hero CTAs */
@@ -3191,23 +3191,50 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 const flipCard = node;
                 const flipClose = node.querySelector('.flip-close');
                 const copyBtn = node.querySelector('.copy-btn');
+                const pkgLinkBack = node.querySelector('.pkg-link-back');
+                const downloadsEl = node.querySelector('.pkg-total-downloads');
+                let downloads = 0;
+                let downloadsReady = false;
+                let shouldAnimateDownloads = false;
+                let downloadsAnimated = false;
 
-                function toggleFlip(e) {
-                    if (e && (e.target.closest('.flip-close') || e.target.closest('.copy-btn'))) return;
-                    flipCard.classList.toggle('flipped');
+                const tryAnimateDownloads = () => {
+                    if (!downloadsEl || downloadsAnimated || !downloadsReady || !shouldAnimateDownloads) return;
+                    downloadsAnimated = true;
+                    setTimeout(() => animateNumber(downloadsEl, downloads), 300);
+                };
+
+                function flipOpen() {
+                    if (flipCard.classList.contains('flipped')) return;
+                    flipCard.classList.add('flipped');
+                    shouldAnimateDownloads = true;
+                    tryAnimateDownloads();
                 }
 
-                flipCard.addEventListener('click', toggleFlip);
+                function flipBack() {
+                    if (!flipCard.classList.contains('flipped')) return;
+                    flipCard.classList.remove('flipped');
+                }
+
+                flipCard.addEventListener('click', (e) => {
+                    const blocked = e.target.closest('.flip-close') || e.target.closest('.copy-btn') || e.target.closest('.pkg-link-back');
+                    if (blocked) return;
+                    flipOpen();
+                });
                 flipCard.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        toggleFlip();
+                        flipCard.classList.contains('flipped') ? flipBack() : flipOpen();
+                    }
+                    if (e.key === 'Escape') {
+                        flipBack();
                     }
                 });
 
                 flipClose.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    flipCard.classList.remove('flipped');
+                    flipBack();
+                    flipCard.focus();
                 });
 
                 copyBtn.addEventListener('click', async (e) => {
@@ -3228,27 +3255,20 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     const item = (j.data && j.data[0]) || null;
                     if (item) {
                         const version = item.version || (item.versions?.slice(-1)[0]?.version) || '—';
-                        const downloads = item.totalDownloads || 0;
+                        downloads = item.totalDownloads || 0;
                         const updated = item.published ? new Date(item.published).toLocaleDateString() : '—';
                         const authors = item.authors || 'Cerbi';
-                        
+
                         // Front card
                         node.querySelector('.pkg-version').textContent = 'v' + version;
                         node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads);
-                        
+
                         // Back card - animate downloads
-                        const downloadsEl = node.querySelector('.pkg-total-downloads');
                         node.querySelector('.pkg-latest-version').textContent = 'v' + version;
                         node.querySelector('.pkg-last-updated').textContent = updated;
                         node.querySelector('.pkg-authors').textContent = authors;
-                        
-                        // Trigger animation when flipped
-                        flipCard.addEventListener('click', function animateOnce() {
-                            if (flipCard.classList.contains('flipped')) {
-                                setTimeout(() => animateNumber(downloadsEl, downloads), 300);
-                                flipCard.removeEventListener('click', animateOnce);
-                            }
-                        });
+                        downloadsReady = true;
+                        tryAnimateDownloads();
                     }
                 } catch (_) { }
 
