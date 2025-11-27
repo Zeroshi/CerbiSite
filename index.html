@@ -3299,9 +3299,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 'assets/screenshots/cerbishield-hero-1600x900.jpg'
             ];
             const candidates = numbered.concat(extras);
-            const stored = sessionStorage.getItem('cerbi-bg');
-            const start = Math.floor(Math.random() * candidates.length);
-            const rotated = (stored ? [stored] : []).concat(candidates.slice(start), candidates.slice(0, start), fallbacks);
+            const lastBg = sessionStorage.getItem('cerbi-bg');
+            const lastIndex = lastBg ? candidates.indexOf(lastBg) : -1;
+            const randomStart = Math.floor(Math.random() * candidates.length);
+            const nextIndex = lastIndex >= 0 ? (lastIndex + 1) % candidates.length : randomStart;
+            const rotated = candidates.slice(nextIndex).concat(candidates.slice(0, nextIndex), fallbacks);
 
             function setBg(u) {
                 document.documentElement.style.setProperty('--bg-url', `url('${u}')`);
