@@ -425,6 +425,18 @@
             text-align: center
         }
 
+        .arch-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .arch-diagram img {
+                width: 100%;
+                max-height: 420px;
+                object-fit: contain;
+            }
+
         .showcase-outer {
             width: 100vw;
             margin-left: 50%;
@@ -2081,7 +2093,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
         /* Robust randomized background with fallback for GitHub Pages */
         (function () {
-            const numbered = Array.from({ length: 16 }, (_, i) => `assets/background/background${String(i + 1).padStart(2, '0')}.png`);
+            const numbered = [
+                'assets/background/background1.png',
+                ...Array.from({ length: 16 }, (_, i) => `assets/background/background${String(i + 1).padStart(2, '0')}.png`)
+            ];
             const fallbacks = [
                 'assets/background.png',
                 'assets/background.jpg',
@@ -2091,8 +2106,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 'assets/screenshots/cerbishield-hero-1600x900.jpg'
             ];
             // start at a random point in the numbered list
-            const start = Math.floor(Math.random() * numbered.length);
-            const rotated = numbered.slice(start).concat(numbered.slice(0, start)).concat(fallbacks);
+            const unique = Array.from(new Set(numbered));
+            const start = Math.floor(Math.random() * unique.length);
+            const rotated = unique.slice(start).concat(unique.slice(0, start)).concat(fallbacks);
 
             function setBg(u) { document.documentElement.style.setProperty('--bg-url', `url('${u}')`); }
             function tryList(i) {

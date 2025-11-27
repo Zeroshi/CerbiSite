@@ -551,6 +551,9 @@
         .img-cap { margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.85; text-align: center; color: var(--muted); }
         .swiper-button-next, .swiper-button-prev { width: 48px; height: 48px; }
 
+        .arch-diagram { display: flex; flex-direction: column; gap: 10px; }
+        .arch-diagram img { width: 100%; max-height: 420px; object-fit: contain; }
+
         /* Signature art rotator */
         .sig-outer { width: 100vw; margin-left: 50%; transform: translateX(-50%) }
         .sig-rotator { min-height: clamp(260px, 48vw, 425px); position: relative; }
@@ -1336,7 +1339,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <!-- Central hub -->
                 <div class="ecosystem-hub">
                     <div class="hub-logo">
-                        <img src="assets/CerbiLogo.png" alt="Cerbi" style="width:64px;height:64px;border-radius:12px;filter:drop-shadow(0 0 16px rgba(255,77,0,.4))">
+                        <img src="assets/CerbiLogo.png" alt="Cerbi" class="hub-logo-img">
                     </div>
                     <div class="hub-title">CerbiSuite</div>
                     <div class="hub-subtitle">Unified Logging Ecosystem</div>
@@ -1436,11 +1439,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             /* Ecosystem visualization */
             .repo-ecosystem {
                 position: relative;
-                min-height: 600px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 40px 0;
+                min-height: 620px;
+                display: grid;
+                place-items: center;
+                margin: 40px auto;
+                padding: 12px;
+                max-width: 1100px;
             }
 
             /* Central hub */
@@ -1449,32 +1453,35 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 z-index: 10;
                 text-align: center;
                 background: white;
-                border: 3px solid var(--brand);
-                border-radius: 50%;
-                width: 180px;
-                height: 180px;
-                display: flex;
-                flex-direction: column;
+                border: 2px solid var(--brand);
+                border-radius: 22px;
+                width: min(260px, 48vw);
+                min-height: 220px;
+                padding: 18px 16px;
+                display: grid;
                 align-items: center;
-                justify-content: center;
+                justify-items: center;
+                gap: 6px;
                 box-shadow: 0 12px 40px rgba(255,77,0,.25);
-                animation: pulse 3s ease-in-out infinite;
             }
 
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
+            .hub-logo { margin: 0; }
+            .hub-logo-img {
+                width: 76px;
+                height: 76px;
+                border-radius: 16px;
+                filter: drop-shadow(0 0 16px rgba(255,77,0,.4));
+                object-fit: contain;
             }
-
-            .hub-logo { margin-bottom: 8px; }
-            .hub-title { font-weight: 800; font-size: 18px; color: var(--text-strong); }
-            .hub-subtitle { font-size: 12px; color: var(--muted); }
+            .hub-title { font-weight: 800; font-size: 20px; color: var(--text-strong); }
+            .hub-subtitle { font-size: 13px; color: var(--muted); line-height: 1.35; text-wrap: balance; max-width: 220px; }
 
             /* Repository orbit */
             .repo-orbit {
                 position: relative;
-                width: 100%;
-                height: 600px;
+                width: min(960px, 100%);
+                height: 620px;
+                margin: 0 auto;
             }
 
             /* NuGet Flip Cards */
@@ -2410,8 +2417,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             @media (max-width: 768px) {
                 .repo-ecosystem { min-height: 700px; }
                 .repo-orbit { height: 700px; }
-                .ecosystem-hub { width: 140px; height: 140px; }
-                .hub-title { font-size: 16px; }
+                .ecosystem-hub { width: min(220px, 70vw); min-height: 200px; }
+                .hub-title { font-size: 18px; }
                 .repo-node { width: 130px; padding: 12px; }
                 .repo-node:nth-child(1) { top: 0; }
                 .repo-node:nth-child(2) { top: 20%; right: 5%; }
@@ -2428,8 +2435,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
-                width: 400px;
-                height: 400px;
+                width: clamp(320px, 45vw, 460px);
+                height: clamp(320px, 45vw, 460px);
                 border: 2px dashed rgba(255,77,0,.15);
                 border-radius: 50%;
                 pointer-events: none;
@@ -2437,8 +2444,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             @media (max-width: 768px) {
                 .repo-orbit::before {
-                    width: 300px;
-                    height: 300px;
+                    width: clamp(260px, 70vw, 360px);
+                    height: clamp(260px, 70vw, 360px);
                 }
             }
         </style>
