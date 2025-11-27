@@ -2460,8 +2460,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </a>
                 </div>
             </div>
-            <p style="text-align:center;max-width:700px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
-                Explore our complete collection of tutorials, demos, and insights. New videos added regularly.
+            <p style="text-align:center;max-width:780px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
+                Curated walkthroughs, demos, and strategy clips. Filter by topic or open our full YouTube playlist to see the latest releases.
             </p>
             <div style="text-align:center;margin-bottom:3rem">
                 <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px">
@@ -2483,7 +2483,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <!-- Video Grid -->
             <div class="video-grid">
                 <!-- Video Card 1: Brief Overview -->
-                <article class="video-card" data-category="overview" data-duration="3:45">
+                <article class="video-card" data-category="overview" data-duration="3:45" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4">
                     <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4#t=2" type="video/mp4" />
@@ -2507,7 +2507,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
 
                 <!-- Video Card 2: CerbiStream Demo -->
-                <article class="video-card" data-category="demo" data-duration="5:20">
+                <article class="video-card" data-category="demo" data-duration="5:20" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4">
                     <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4#t=2" type="video/mp4" />
@@ -2531,7 +2531,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
 
                 <!-- Video Card 3: Philosophy -->
-                <article class="video-card" data-category="deep-dive" data-duration="8:15">
+                <article class="video-card" data-category="deep-dive" data-duration="8:15" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4">
                     <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4#t=2" type="video/mp4" />
@@ -2554,24 +2554,47 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </div>
                 </article>
 
-                <!-- Placeholder for future videos -->
-                <article class="video-card video-card-placeholder">
+                <!-- Video Card 4: PII-safe Scoring -->
+                <article class="video-card" data-category="demo" data-duration="6:05" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__PII-Safe-Scoring_Logging.mp4">
+                    <div class="video-thumbnail">
+                        <video class="thumbnail-video" preload="metadata" muted playsinline>
+                            <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__PII-Safe-Scoring_Logging.mp4#t=2" type="video/mp4" />
+                        </video>
+                        <div class="video-play-overlay">
+                            <svg class="play-icon" width="64" height="64" viewBox="0 0 24 24" fill="white">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        <span class="video-duration">6:05</span>
+                        <span class="video-badge badge-demo">Demo</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Logging PII-safe Scoring</h3>
+                        <p class="video-description">How Cerbi keeps sensitive scoring data governed end-to-end while preserving observability fidelity.</p>
+                        <div class="video-meta">
+                            <span class="video-date">📅 New</span>
+                            <span class="video-views">🛡️ Compliance</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Video Card 5: YouTube Playlist -->
+                <article class="video-card" data-category="overview" data-duration="YouTube" data-url="https://www.youtube.com/@CerbiSuite/videos">
                     <div class="video-thumbnail placeholder-thumb">
                         <div class="placeholder-icon">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/>
-                                <line x1="12" y1="8" x2="12" y2="12"/>
-                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" />
                             </svg>
                         </div>
-                        <span class="video-badge badge-coming">Coming Soon</span>
+                        <span class="video-badge badge-overview">YouTube</span>
                     </div>
                     <div class="video-info">
-                        <h3 class="video-title">More Videos Coming Soon</h3>
-                        <p class="video-description">Subscribe to our YouTube channel to be notified when we release new tutorials and demos.</p>
-                        <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="subscribe-link">
-                            Subscribe Now →
-                        </a>
+                        <h3 class="video-title">See the Full YouTube Library</h3>
+                        <p class="video-description">Browse every walkthrough, webinar, and launch clip directly on our channel. New uploads appear here automatically.</p>
+                        <div class="video-meta">
+                            <span class="video-date">▶️ Stream on YouTube</span>
+                            <span class="video-views">🔔 Subscribe for updates</span>
+                        </div>
                     </div>
                 </article>
             </div>
@@ -3207,6 +3230,39 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             });
         })();
 
+        /* Robust randomized background with fallback for GitHub Pages */
+        (function () {
+            const numbered = Array.from({ length: 16 }, (_, i) => `assets/background/background${String(i + 1).padStart(2, '0')}.png`);
+            const extras = ['assets/background/background1.png'];
+            const fallbacks = [
+                'assets/background.png',
+                'assets/background.jpg',
+                'Cerbi-updated.png',
+                'assets/CerbiShield.png',
+                'assets/CerbiLogo.png',
+                'assets/screenshots/cerbishield-hero-1600x900.jpg'
+            ];
+            const candidates = numbered.concat(extras);
+            const stored = sessionStorage.getItem('cerbi-bg');
+            const start = Math.floor(Math.random() * candidates.length);
+            const rotated = (stored ? [stored] : []).concat(candidates.slice(start), candidates.slice(0, start), fallbacks);
+
+            function setBg(u) {
+                document.documentElement.style.setProperty('--bg-url', `url('${u}')`);
+                sessionStorage.setItem('cerbi-bg', u);
+            }
+
+            function tryList(i) {
+                if (i >= rotated.length) { return; }
+                const src = rotated[i];
+                const im = new Image();
+                im.onload = () => setBg(src);
+                im.onerror = () => tryList(i + 1);
+                im.src = src;
+            }
+            tryList(0);
+        })();
+
         // YouTube feed teaser
         (function () {
             const feedContainer = document.getElementById('youtubeFeed');
@@ -3280,7 +3336,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         // Video Library functionality
         (function () {
             const filterBtns = document.querySelectorAll('.video-filter-btn');
-            const videoCards = document.querySelectorAll('.video-card:not(.video-card-placeholder)');
+            const videoCards = document.querySelectorAll('.video-card');
             const modal = document.getElementById('videoModal');
             const modalVideo = document.getElementById('modalVideo');
             const modalTitle = document.getElementById('modalVideoTitle');
@@ -3302,11 +3358,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const filter = btn.dataset.filter;
-                    
+
                     // Update active button
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    
+
                     // Filter cards
                     videoCards.forEach(card => {
                         const category = card.dataset.category;
@@ -3321,30 +3377,39 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             // Video card click functionality
             videoCards.forEach(card => {
+                const externalUrl = card.dataset.url;
+                const videoSrc = card.dataset.videoSrc;
+
                 card.addEventListener('click', () => {
-                    const videoSrc = card.querySelector('.thumbnail-video source').src.replace('#t=2', '');
-                    const title = card.querySelector('.video-title').textContent;
-                    const desc = card.querySelector('.video-description').textContent;
-                    
+                    if (externalUrl) {
+                        window.open(externalUrl, '_blank', 'noopener');
+                        return;
+                    }
+
+                    if (!videoSrc) return;
+
+                    const title = card.querySelector('.video-title')?.textContent || '';
+                    const desc = card.querySelector('.video-description')?.textContent || '';
+
                     // Set modal content
                     modalVideo.querySelector('source').src = videoSrc;
                     modalVideo.load();
                     modalTitle.textContent = title;
                     modalDesc.textContent = desc;
-                    
+
                     // Show modal
                     modal.hidden = false;
                     document.body.style.overflow = 'hidden';
-                    
+
                     // Play video
-                    modalVideo.play();
+                    modalVideo.play().catch(() => {});
                 });
             });
 
             // Close modal functionality
             if (modalClose) modalClose.addEventListener('click', closeModal);
             if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
-            
+
             // ESC key to close
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !modal.hidden) {
@@ -3357,13 +3422,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             thumbnailVideos.forEach(video => {
                 const card = video.closest('.video-card');
                 if (!card) return;
-                
+
                 card.addEventListener('mouseenter', () => {
                     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
                         video.play().catch(() => {});
                     }
                 });
-                
+
                 card.addEventListener('mouseleave', () => {
                     video.pause();
                     video.currentTime = 0;
