@@ -95,10 +95,11 @@
 
         .stat-label {
             font-size: clamp(12px, 1.2vw, 14px);
-            color: var(--muted);
+            color: #0b1324;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-shadow: 0 1px 6px rgba(255,255,255,.7);
         }
 
         /* Hero CTAs */
@@ -221,17 +222,16 @@
         }
 
         .security-card {
-            background: rgba(255,255,255,.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255,255,255,.92);
+            border: 1px solid rgba(20,40,72,.1);
             border-radius: 16px;
             padding: 28px 24px;
             transition: all .3s;
         }
 
         .security-card:hover {
-            background: rgba(255,255,255,.15);
-            border-color: rgba(255,255,255,.4);
+            background: #ffffff;
+            border-color: rgba(20,40,72,.2);
             transform: translateY(-4px);
         }
 
@@ -243,14 +243,14 @@
         .security-card h3 {
             font-size: 20px;
             font-weight: 700;
-            color: white;
+            color: var(--text-strong);
             margin: 0 0 12px;
         }
 
         .security-card p {
             font-size: 15px;
             line-height: 1.6;
-            color: rgba(255,255,255,.85);
+            color: var(--muted);
             margin: 0;
         }
 
@@ -266,18 +266,18 @@
             align-items: center;
             gap: 8px;
             padding: 12px 20px;
-            background: rgba(255,255,255,.15);
-            border: 2px solid rgba(255,255,255,.3);
+            background: rgba(20,40,72,.06);
+            border: 1px solid rgba(20,40,72,.16);
             border-radius: 999px;
-            color: white;
+            color: var(--text-strong);
             font-size: 14px;
             font-weight: 700;
             transition: all .3s;
         }
 
         .compliance-badge:hover {
-            background: rgba(255,255,255,.25);
-            border-color: rgba(255,255,255,.5);
+            background: rgba(255,255,255,.85);
+            border-color: rgba(20,40,72,.3);
             transform: scale(1.05);
         }
 
@@ -608,7 +608,7 @@
     <header id="siteNav" class="nav" role="banner">
         <div class="container nav-inner">
             <a href="#top" class="brand" aria-label="Cerbi — back to top">
-                <img src="assets/CerbiLogo.png" alt="" decoding="async" fetchpriority="high" />
+                <img src="assets/CerbiLogoEmblem.png" alt="" decoding="async" fetchpriority="high" />
                 <span>CerbiSuite</span>
             </a>
 
@@ -795,10 +795,10 @@
         </section>
 
         <!-- Security & Compliance Section -->
-        <section id="security" class="container section" style="background:linear-gradient(135deg, #142848 0%, #1a3a5f 100%);color:white;border-radius:20px;padding:64px 48px;margin:48px auto">
-            <div class="eyebrow" style="color:rgba(255,255,255,.7)">Enterprise-Grade Security</div>
-            <h2 style="color:white">Built for <span class="hl">Compliance</span> from Day One</h2>
-            <p class="lead" style="color:rgba(255,255,255,.9);max-width:800px;margin:0 auto 3rem">
+        <section id="security" class="container section" style="background:linear-gradient(135deg, rgba(255,77,0,.08) 0%, rgba(20,40,72,.06) 100%);color:var(--text-strong);border-radius:20px;padding:64px 48px;margin:48px auto;border:1px solid rgba(20,40,72,.08);box-shadow:0 22px 60px rgba(20,40,72,.08)">
+            <div class="eyebrow" style="color:rgba(20,40,72,.75)">Enterprise-Grade Security</div>
+            <h2 style="color:var(--text-strong)">Built for <span class="hl">Compliance</span> from Day One</h2>
+            <p class="lead" style="color:rgba(24,34,53,.9);max-width:800px;margin:0 auto 3rem">
                 CerbiSuite was designed by security-conscious engineers for security-conscious organizations. Every feature prioritizes data protection, audit trails, and regulatory compliance.
             </p>
 
@@ -1192,7 +1192,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
                     <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" title="Open full-size architecture">
-                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
+                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async" style="max-height:360px;width:100%;object-fit:contain;">
                     </a>
                     <figcaption class="img-cap">
                         Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.
@@ -1336,7 +1336,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <!-- Central hub -->
                 <div class="ecosystem-hub">
                     <div class="hub-logo">
-                        <img src="assets/CerbiLogo.png" alt="Cerbi" style="width:72px;height:72px;border-radius:16px;filter:drop-shadow(0 0 16px rgba(255,77,0,.4))">
+                        <img src="assets/CerbiLogoEmblem.png" alt="Cerbi" style="width:72px;height:72px;border-radius:16px;filter:drop-shadow(0 0 16px rgba(255,77,0,.4))">
                     </div>
                     <div class="hub-title">CerbiSuite</div>
                     <div class="hub-subtitle">Unified Logging Ecosystem</div>
@@ -2805,7 +2805,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <div class="container">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px">
                 <div>
-                    <img src="assets/CerbiLogo.png" alt="CerbiSuite" width="48" height="48" style="margin-bottom:1rem;border-radius:8px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
+                    <img src="assets/CerbiLogoEmblem.png" alt="CerbiSuite" width="48" height="48" style="margin-bottom:1rem;border-radius:8px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
                     <p style="color:var(--muted);font-size:14px;line-height:1.6;max-width:280px">
                         Enterprise-grade governance &amp; compliance for .NET, with structured logging, real-time analytics, and automated policy enforcement.
                     </p>
