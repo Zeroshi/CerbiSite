@@ -2523,30 +2523,31 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </a>
                 </div>
             </div>
-            <div class="video-grid-intro">
-                <div class="video-filters" aria-label="Filter videos by type">
-                    <button class="video-filter-btn active" data-filter="all">All Videos</button>
-                    <button class="video-filter-btn" data-filter="overview">Overviews</button>
-                    <button class="video-filter-btn" data-filter="demo">Demos & Tutorials</button>
-                    <button class="video-filter-btn" data-filter="deep-dive">Deep Dives</button>
-                    <button class="video-filter-btn" data-filter="youtube">YouTube Exclusives</button>
-                </div>
-                <div class="video-cta">
-                    <span class="video-cta-note">Want the full catalog?</span>
-                    <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                        Watch on YouTube
-                    </a>
-                </div>
+            <p style="text-align:center;max-width:780px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
+                Curated walkthroughs, demos, and strategy clips. Filter by topic or open our full YouTube playlist to see the latest releases.
+            </p>
+            <div style="text-align:center;margin-bottom:3rem">
+                <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    Subscribe on YouTube
+                </a>
+            </div>
+
+            <!-- Video Filter Tabs -->
+            <div class="video-filters">
+                <button class="video-filter-btn active" data-filter="all">All Videos</button>
+                <button class="video-filter-btn" data-filter="overview">Overviews</button>
+                <button class="video-filter-btn" data-filter="demo">Demos & Tutorials</button>
+                <button class="video-filter-btn" data-filter="deep-dive">Deep Dives</button>
             </div>
 
             <div class="video-subtitle">Featured walkthroughs</div>
             <div class="video-grid">
                 <!-- Video Card 1: Brief Overview -->
-                <article class="video-card" data-category="overview" data-duration="3:45">
-                    <div class="video-thumbnail" data-random-bg>
+                <article class="video-card" data-category="overview" data-duration="3:45" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4">
+                    <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4#t=2" type="video/mp4" />
                         </video>
@@ -2569,8 +2570,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
 
                 <!-- Video Card 2: CerbiStream Demo -->
-                <article class="video-card" data-category="demo" data-duration="5:20">
-                    <div class="video-thumbnail" data-random-bg>
+                <article class="video-card" data-category="demo" data-duration="5:20" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4">
+                    <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4#t=2" type="video/mp4" />
                         </video>
@@ -2593,8 +2594,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
 
                 <!-- Video Card 3: Philosophy -->
-                <article class="video-card" data-category="deep-dive" data-duration="8:15">
-                    <div class="video-thumbnail" data-random-bg>
+                <article class="video-card" data-category="deep-dive" data-duration="8:15" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4">
+                    <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4#t=2" type="video/mp4" />
                         </video>
@@ -2616,9 +2617,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </div>
                 </article>
 
-                <!-- Video Card 4: PII-Safe Logging -->
-                <article class="video-card" data-category="deep-dive" data-duration="6:05">
-                    <div class="video-thumbnail" data-random-bg>
+                <!-- Video Card 4: PII-safe Scoring -->
+                <article class="video-card" data-category="demo" data-duration="6:05" data-video-src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__PII-Safe-Scoring_Logging.mp4">
+                    <div class="video-thumbnail">
                         <video class="thumbnail-video" preload="metadata" muted playsinline>
                             <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__PII-Safe-Scoring_Logging.mp4#t=2" type="video/mp4" />
                         </video>
@@ -2628,14 +2629,34 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                             </svg>
                         </div>
                         <span class="video-duration">6:05</span>
-                        <span class="video-badge badge-deepdive">Deep Dive</span>
+                        <span class="video-badge badge-demo">Demo</span>
                     </div>
                     <div class="video-info">
-                        <h3 class="video-title">PII-Safe Scoring & Logging</h3>
-                        <p class="video-description">How Cerbi keeps sensitive data compliant while enabling analytics and scoring workflows.</p>
+                        <h3 class="video-title">Logging PII-safe Scoring</h3>
+                        <p class="video-description">How Cerbi keeps sensitive scoring data governed end-to-end while preserving observability fidelity.</p>
                         <div class="video-meta">
-                            <span class="video-date">📅 Featured</span>
+                            <span class="video-date">📅 New</span>
                             <span class="video-views">🛡️ Compliance</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Video Card 5: YouTube Playlist -->
+                <article class="video-card" data-category="overview" data-duration="YouTube" data-url="https://www.youtube.com/@CerbiSuite/videos">
+                    <div class="video-thumbnail placeholder-thumb">
+                        <div class="placeholder-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" />
+                            </svg>
+                        </div>
+                        <span class="video-badge badge-overview">YouTube</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">See the Full YouTube Library</h3>
+                        <p class="video-description">Browse every walkthrough, webinar, and launch clip directly on our channel. New uploads appear here automatically.</p>
+                        <div class="video-meta">
+                            <span class="video-date">▶️ Stream on YouTube</span>
+                            <span class="video-views">🔔 Subscribe for updates</span>
                         </div>
                     </div>
                 </article>
@@ -3275,29 +3296,38 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             });
         })();
 
-        const CERBI_THUMB_GRADIENTS = [
-            'linear-gradient(135deg, #0f63ff 0%, #52e5ff 100%)',
-            'linear-gradient(135deg, #ff4d00 0%, #ff9a5f 100%)',
-            'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-            'linear-gradient(135deg, #06beb6 0%, #48b1bf 100%)',
-            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
-        ];
+        /* Robust randomized background with fallback for GitHub Pages */
+        (function () {
+            const numbered = Array.from({ length: 16 }, (_, i) => `assets/background/background${String(i + 1).padStart(2, '0')}.png`);
+            const extras = ['assets/background/background1.png'];
+            const fallbacks = [
+                'assets/background.png',
+                'assets/background.jpg',
+                'Cerbi-updated.png',
+                'assets/CerbiShield.png',
+                'assets/CerbiLogo.png',
+                'assets/screenshots/cerbishield-hero-1600x900.jpg'
+            ];
+            const candidates = numbered.concat(extras);
+            const stored = sessionStorage.getItem('cerbi-bg');
+            const start = Math.floor(Math.random() * candidates.length);
+            const rotated = (stored ? [stored] : []).concat(candidates.slice(start), candidates.slice(0, start), fallbacks);
 
-        function applyRandomThumbBackgrounds(scope = document) {
-            const targets = Array.from(scope.querySelectorAll('[data-random-bg]'));
-            if (!targets.length) return;
+            function setBg(u) {
+                document.documentElement.style.setProperty('--bg-url', `url('${u}')`);
+                sessionStorage.setItem('cerbi-bg', u);
+            }
 
-            let pool = [...CERBI_THUMB_GRADIENTS];
-            targets.forEach(target => {
-                if (pool.length === 0) pool = [...CERBI_THUMB_GRADIENTS];
-                const idx = Math.floor(Math.random() * pool.length);
-                const gradient = pool.splice(idx, 1)[0];
-                target.style.setProperty('--thumb-bg', gradient);
-            });
-        }
-
-        applyRandomThumbBackgrounds();
+            function tryList(i) {
+                if (i >= rotated.length) { return; }
+                const src = rotated[i];
+                const im = new Image();
+                im.onload = () => setBg(src);
+                im.onerror = () => tryList(i + 1);
+                im.src = src;
+            }
+            tryList(0);
+        })();
 
         // YouTube feed teaser
         (function () {
@@ -3420,6 +3450,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         // Video Library functionality
         (function () {
             const filterBtns = document.querySelectorAll('.video-filter-btn');
+            const videoCards = document.querySelectorAll('.video-card');
             const modal = document.getElementById('videoModal');
             const modalVideo = document.getElementById('modalVideo');
             const modalTitle = document.getElementById('modalVideoTitle');
@@ -3498,30 +3529,75 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 btn.addEventListener('click', () => {
                     const filter = btn.dataset.filter;
 
+                    // Update active button
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
 
-                    getVideoCards().forEach(card => {
+                    // Filter cards
+                    videoCards.forEach(card => {
                         const category = card.dataset.category;
                         card.style.display = (filter === 'all' || category === filter) ? '' : 'none';
                     });
                 });
             });
 
-            getVideoCards().forEach(attachCardHandlers);
+            // Video card click functionality
+            videoCards.forEach(card => {
+                const externalUrl = card.dataset.url;
+                const videoSrc = card.dataset.videoSrc;
 
-            document.addEventListener('cerbi:youtube-cards', (ev) => {
-                const cards = ev.detail || [];
-                cards.forEach(attachCardHandlers);
+                card.addEventListener('click', () => {
+                    if (externalUrl) {
+                        window.open(externalUrl, '_blank', 'noopener');
+                        return;
+                    }
+
+                    if (!videoSrc) return;
+
+                    const title = card.querySelector('.video-title')?.textContent || '';
+                    const desc = card.querySelector('.video-description')?.textContent || '';
+
+                    // Set modal content
+                    modalVideo.querySelector('source').src = videoSrc;
+                    modalVideo.load();
+                    modalTitle.textContent = title;
+                    modalDesc.textContent = desc;
+
+                    // Show modal
+                    modal.hidden = false;
+                    document.body.style.overflow = 'hidden';
+
+                    // Play video
+                    modalVideo.play().catch(() => {});
+                });
             });
 
             if (modalClose) modalClose.addEventListener('click', closeModal);
             if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
 
+            // ESC key to close
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && !modal.hidden) {
                     closeModal();
                 }
+            });
+
+            // Thumbnail video hover preview
+            const thumbnailVideos = document.querySelectorAll('.thumbnail-video');
+            thumbnailVideos.forEach(video => {
+                const card = video.closest('.video-card');
+                if (!card) return;
+
+                card.addEventListener('mouseenter', () => {
+                    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        video.play().catch(() => {});
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
             });
         })();
 
