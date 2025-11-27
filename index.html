@@ -526,12 +526,15 @@
         .arch-diagram img {
             width: 100%;
             height: auto;
+            max-height: 520px;
+            object-fit: contain;
             border-radius: 12px;
             border: 1px solid rgba(20,40,72,.12)
         }
 
         .arch-diagram {
-            max-width: 900px
+            max-width: 760px;
+            margin-inline: auto;
         }
 
         .lightbox[hidden] {
@@ -2082,6 +2085,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         /* Robust randomized background with fallback for GitHub Pages */
         (function () {
             const numbered = Array.from({ length: 16 }, (_, i) => `assets/background/background${String(i + 1).padStart(2, '0')}.png`);
+            const extras = ['assets/background/background1.png'];
             const fallbacks = [
                 'assets/background.png',
                 'assets/background.jpg',
@@ -2090,19 +2094,24 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 'assets/CerbiLogo.png',
                 'assets/screenshots/cerbishield-hero-1600x900.jpg'
             ];
-            // start at a random point in the numbered list
-            const start = Math.floor(Math.random() * numbered.length);
-            const rotated = numbered.slice(start).concat(numbered.slice(0, start)).concat(fallbacks);
+            const candidates = numbered.concat(extras);
+            const stored = sessionStorage.getItem('cerbi-bg');
+            // start at a random point in the numbered list so subsequent fallbacks rotate
+            const start = Math.floor(Math.random() * candidates.length);
+            const rotated = (stored ? [stored] : []).concat(candidates.slice(start), candidates.slice(0, start), fallbacks);
 
-            function setBg(u) { document.documentElement.style.setProperty('--bg-url', `url('${u}')`); }
+            function setBg(u) {
+                document.documentElement.style.setProperty('--bg-url', `url('${u}')`);
+                sessionStorage.setItem('cerbi-bg', u);
+            }
+
             function tryList(i) {
                 if (i >= rotated.length) { return; }
                 const src = rotated[i];
                 const im = new Image();
                 im.onload = () => setBg(src);
                 im.onerror = () => tryList(i + 1);
-                // cache-bust only if not on CDN
-                im.src = src + (src.startsWith('http') ? '' : `?v=${Date.now()}`);
+                im.src = src;
             }
             tryList(0);
         })();
