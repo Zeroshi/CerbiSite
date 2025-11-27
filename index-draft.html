@@ -1503,11 +1503,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 transform: rotateY(180deg);
             }
 
-            .nuget-flip-front,
-            .nuget-flip-back {
-                position: absolute;
-                width: 100%;
-                height: 100%;
+        .nuget-flip-front,
+        .nuget-flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
                 backface-visibility: hidden;
                 -webkit-backface-visibility: hidden;
                 border-radius: 16px;
@@ -1517,12 +1517,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 min-height: 380px;
             }
 
-            .nuget-flip-front {
-                background: white;
-                border: 2px solid rgba(20,40,72,.1);
-                box-shadow: 0 4px 12px rgba(20,40,72,.08);
-                transition: all .3s ease;
-            }
+        .nuget-flip-front {
+            background: white;
+            border: 2px solid rgba(20,40,72,.1);
+            box-shadow: 0 4px 12px rgba(20,40,72,.08);
+            transition: all .3s ease;
+        }
+
+        /* Avoid the global `.card:hover` transform interfering with the flip */
+        .nuget-flip-card .nuget-flip-front.card:hover,
+        .nuget-flip-card .nuget-flip-back.card:hover {
+            transform: none;
+        }
 
         .nuget-flip-card:not(.flipped):hover .nuget-flip-front {
             border-color: var(--brand);
@@ -1540,12 +1546,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             cursor: default;
         }
 
-            .nuget-flip-back {
-                background: linear-gradient(135deg, #142848 0%, #1a3a5f 100%);
-                color: white;
-                transform: rotateY(180deg);
-                box-shadow: 0 8px 32px rgba(0,0,0,.3);
-            }
+        .nuget-flip-back {
+            background: linear-gradient(135deg, #142848 0%, #1a3a5f 100%);
+            color: white;
+            transform: rotateY(180deg);
+            box-shadow: 0 8px 32px rgba(0,0,0,.3);
+        }
+
+        .nuget-flip-card.flipped .nuget-flip-back.card:hover {
+            transform: rotateY(180deg);
+        }
 
             .pkg-icon {
                 font-size: 48px;
