@@ -1,0 +1,3654 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cerbi-light">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-HQ6M9SCWYH');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CerbiSuite — Unified Logging, Governance & Observability</title>
+
+    <meta name="theme-color" content="#fffdf7" />
+    <meta name="description" content="CerbiSuite: Unified logging with governance and observability. Compliance-ready, ML-friendly, and portable." />
+    <meta name="keywords" content="Cerbi, CerbiSuite, logging, governance, observability, compliance, .NET, Roslyn analyzer, runtime validation" />
+    <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
+    <meta property="og:description" content="Bring order to log chaos. Enforce structure, enable audit-ready compliance, and feed ML-ready pipelines—without lock-in." />
+    <meta property="og:image" content="assets/CerbiShield.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        :root {
+            --brand: #FF4D00;
+            --brand-10: rgba(255,77,0,.10);
+            --brand-06: rgba(255,77,0,.06);
+            --brand-04: rgba(255,77,0,.04);
+            --navy: #142848;
+            --bg: #fffdf7;
+            --panel: #ffffff;
+            --panel-2: #f6f8fb;
+            --muted: #5a6a88;
+            --text: #182235;
+            --text-strong: #0b1324;
+            --link: #0f63ff;
+            --radius: 14px;
+            --shadow: 0 14px 40px rgba(10,16,30,.12);
+            --ring: 0 0 0 4px color-mix(in srgb, var(--brand), white 70%);
+            --glyph: #1b3159;
+            --nav-h: 64px;
+            --container: min(1200px,92vw);
+            --bg-url: url("assets/CerbiShield.png");
+        }
+
+        * { box-sizing: border-box }
+        html, body { height: 100% }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            line-height: 1.55;
+            padding-top: var(--nav-h);
+        }
+        a { color: var(--link); text-decoration: none }
+        a:hover { text-decoration: underline }
+        code, pre { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
+        h1, h2, h3, h4, h5 { color: var(--text-strong); margin: .2em 0 .35em }
+        .container { width: var(--container); margin-inline: auto }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0 }
+
+        /* Hero Stats Banner */
+        .stats-banner {
+            display: flex;
+            gap: clamp(24px, 5vw, 48px);
+            justify-content: center;
+            align-items: center;
+            margin: 40px auto 32px;
+            padding: 32px;
+            background: linear-gradient(135deg, rgba(255,77,0,.05) 0%, rgba(15,99,255,.05) 100%);
+            border-radius: 16px;
+            border: 2px solid rgba(255,77,0,.15);
+            max-width: 900px;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            color: var(--brand);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: clamp(12px, 1.2vw, 14px);
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hero CTAs */
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 32px auto 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 17px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 240px;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-strong);
+            border: 2px solid var(--brand);
+        }
+
+        .btn-secondary:hover {
+            background: var(--brand);
+            color: white;
+        }
+
+        /* Audience Pills */
+        .audience-pills {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 32px auto;
+            flex-wrap: wrap;
+            max-width: 1000px;
+        }
+
+        .audience-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: white;
+            border: 2px solid rgba(20,40,72,.1);
+            border-radius: 12px;
+            transition: all .3s;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .audience-pill:hover {
+            border-color: var(--brand);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,77,0,.15);
+        }
+
+        .audience-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .audience-text {
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: left;
+        }
+
+        .audience-text strong {
+            display: block;
+            color: var(--text-strong);
+            margin-bottom: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-banner {
+                flex-direction: column;
+                gap: 24px;
+                padding: 24px 16px;
+            }
+
+            .stat-item {
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(20,40,72,.1);
+            }
+
+            .stat-item:last-child {
+                border-bottom: none;
+            }
+
+            .hero-ctas {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-large {
+                width: 100%;
+            }
+
+            .audience-pills {
+                flex-direction: column;
+            }
+
+            .audience-pill {
+                min-width: auto;
+            }
+        }
+
+        /* Security & Compliance Section */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 3rem;
+        }
+
+        .security-card {
+            background: rgba(255,255,255,.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 16px;
+            padding: 28px 24px;
+            transition: all .3s;
+        }
+
+        .security-card:hover {
+            background: rgba(255,255,255,.15);
+            border-color: rgba(255,255,255,.4);
+            transform: translateY(-4px);
+        }
+
+        .security-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .security-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin: 0 0 12px;
+        }
+
+        .security-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(255,255,255,.85);
+            margin: 0;
+        }
+
+        .compliance-badges {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .compliance-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,.15);
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 999px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all .3s;
+        }
+
+        .compliance-badge:hover {
+            background: rgba(255,255,255,.25);
+            border-color: rgba(255,255,255,.5);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .security-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* FAQ Section */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 2px solid rgba(20,40,72,.1);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all .3s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--brand);
+            box-shadow: 0 4px 16px rgba(255,77,0,.1);
+        }
+
+        .faq-item.active {
+            border-color: var(--brand);
+        }
+
+        .faq-question {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            user-select: none;
+        }
+
+        .faq-question h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-strong);
+            margin: 0;
+            flex: 1;
+        }
+
+        .faq-icon {
+            font-size: 28px;
+            font-weight: 300;
+            color: var(--brand);
+            transition: transform .3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s ease, padding .4s ease;
+            padding: 0 24px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 24px 24px;
+        }
+
+        .faq-answer p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .faq-answer a {
+            color: var(--link);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .faq-answer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Global background image layer */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: var(--bg-url) center / cover no-repeat fixed;
+            opacity: .22;
+            z-index: -100;
+            filter: saturate(1.05) contrast(1.02);
+            pointer-events: none;
+            transition: opacity .45s ease, background-image .2s ease;
+        }
+
+        .nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 5000;
+            background: rgba(255,255,255,.95);
+            backdrop-filter: saturate(1.2) blur(12px);
+            border-bottom: 1px solid rgba(20,40,72,.08);
+        }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0; min-height: var(--nav-h) }
+        .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-strong); font-weight: 800; flex-shrink: 0 }
+        .brand img { height: 36px; width: auto; border-radius: 8px; filter: drop-shadow(0 0 10px rgba(255,77,0,.25)) }
+        .nav-wrap { display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0 }
+        .nav-links { display: flex; gap: 8px; align-items: center; justify-content: center; flex: 1 1 auto; min-width: 0; overflow: hidden }
+        .nav-links a { white-space: nowrap; padding: 8px 10px; border-radius: 10px; color: var(--navy); flex: 0 0 auto; transition: background .2s ease; }
+        .nav-links a:hover { background: var(--panel-2) }
+        .nav-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0 }
+        .btn { appearance: none; border: none; cursor: pointer; border-radius: 12px; padding: 10px 14px; font-weight: 700; transition: transform .08s ease, box-shadow .2s ease, background .2s ease }
+        .btn-primary { background: var(--brand); color: #fff; box-shadow: var(--shadow) }
+        .btn-primary:hover { transform: translateY(-1px) }
+        .btn-ghost { background: transparent; color: var(--link); outline: 1px solid color-mix(in srgb, var(--link), transparent 50%) }
+        .more { position: relative; flex-shrink: 0 }
+        .more > button { background: var(--panel-2); color: var(--text); border: 1px solid rgba(20,40,72,.12); border-radius: 10px; padding: 8px 10px }
+        .more-menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--panel); border: 1px solid rgba(20,40,72,.12); border-radius: 12px; box-shadow: var(--shadow); padding: 8px; display: none; min-width: 240px; max-height: 60vh; overflow: auto }
+        .more-menu a { display: block; padding: 8px 10px; border-radius: 8px }
+        .more-menu a:hover { background: var(--panel-2) }
+        .more[data-open="true"] .more-menu { display: block }
+
+        .hero { padding: 20px 0 8px }
+        .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px }
+        .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
+        .hl { color: var(--brand) }
+        .hero h1 { margin: 10px 0 8px; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; }
+        .section { padding: 28px 0 }
+        .eyebrow { font-size: 12px; letter-spacing: .16em; color: var(--muted); text-transform: uppercase }
+        .lead { color: var(--muted) }
+        .grid { display: grid; gap: 14px; grid-template-columns: repeat(4,minmax(0,1fr)) }
+        .col-4 { grid-column: span 1 }
+        .col-6 { grid-column: span 2 }
+        .col-12 { grid-column: span 4 }
+        .card { background: var(--panel); border: 1px solid rgba(20,40,72,.12); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); transition: transform .15s ease; overflow: hidden }
+        .card:hover { transform: translateY(-1px) }
+        .card h3 { font-size: clamp(16px,2.1vw,22px); overflow-wrap: anywhere }
+        .card p, .card li { overflow-wrap: anywhere; hyphens: auto }
+        .card ul { padding-left: 18px; margin: 8px 0 }
+        .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
+
+        .table { width: 100%; border-collapse: separate; border-spacing: 0 }
+        .table th, .table td { border: 1px solid rgba(20,40,72,.12); padding: .6em .7em }
+        .table th { background: #f0f3fa; color: #navy }
+        .table tbody tr:nth-child(odd) { background: var(--brand-04) }
+        .table tbody tr:hover { background: var(--brand-06) }
+
+        .lightbox[hidden] { display: none !important; }
+        .lightbox { position: fixed; inset: 0; z-index: 6000; display: grid; place-items: center; background: rgba(0,0,0,.66); padding: 24px; }
+        .lightbox > .close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); border: 1px solid rgba(20,40,72,.15); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
+        #lightboxImg { max-width: min(96vw, 1800px); max-height: 90vh; border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,.35); background: #fff; }
+
+        .typebox { position: relative; min-height: 132px }
+        .caret { display: inline-block; width: .6ch; background: currentColor; margin-left: 2px; height: 1.05em; vertical-align: -.18em; animation: blink .9s steps(1) infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        #vprogress { position: fixed; right: 6px; top: calc(var(--nav-h) + 8px); bottom: 12px; width: 4px; border-radius: 999px; background: rgba(15,99,255,.12); z-index: 4000; pointer-events: none; }
+        #vprogress .bar { position: absolute; left: 0; bottom: 0; width: 100%; height: var(--vprogress, 0%); border-radius: 999px; background: linear-gradient(180deg, #0f63ff, var(--brand)); box-shadow: 0 0 10px rgba(15,99,255,.35); }
+
+        /* Glitch clock background */
+        #bg-clock {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            pointer-events: none;
+            display: grid;
+            place-items: center;
+            user-select: none;
+            line-height: 1;
+            color: var(--glyph);
+            opacity: .22;
+            font-weight: 800;
+            letter-spacing: .02em;
+            mix-blend-mode: multiply;
+        }
+
+        #clockText {
+            font-size: clamp(120px, 35vw, 880px);
+            position: relative;
+            filter: drop-shadow(0 12px 24px rgba(10,16,30,.18));
+            text-shadow: var(--gx3) var(--gy3) 0 rgba(255,255,255,.12);
+        }
+
+        #clockText::before, #clockText::after {
+            content: attr(data-glitch) "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: .28;
+            mix-blend-mode: screen;
+        }
+
+        #clockText::before {
+            color: #ff2a2a;
+            transform: translate(var(--gx1), var(--gy1));
+        }
+
+        #clockText::after {
+            color: #2ab3ff;
+            transform: translate(var(--gx2), var(--gy2));
+        }
+
+        .scanline {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent);
+            top: -3px;
+            opacity: 0;
+            z-index: -9;
+        }
+
+        /* Governance Flow Nodes */
+        .flow-nodes { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .flow-node { position: relative; background: var(--panel-2); border: 2px solid rgba(20,40,72,.12); border-radius: 14px; padding: 16px; width: min(180px, 100%); cursor: pointer; transition: all .25s ease; text-align: center; }
+        .flow-node:hover, .flow-node:focus { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(255,77,0,.25); border-color: var(--brand); outline: none; }
+        .flow-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .flow-step-num { position: absolute; top: 8px; right: 8px; background: var(--brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+        .flow-title { font-weight: 600; color: var(--text-strong); margin-top: 4px; }
+        .flow-details { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; background: white; border: 2px solid var(--brand); border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 12px 32px rgba(255,77,0,.2); z-index: 100; text-align: left; }
+        .flow-details h4 { margin: 0 0 8px 0; color: var(--brand); font-size: 16px; }
+        .flow-details p { margin: 0 0 8px 0; font-size: 14px; }
+        .flow-details ul { margin: 0; padding-left: 18px; font-size: 13px; }
+
+        /* Video containers */
+        .video-container { display: flex; justify-content: center; margin: 20px 0; }
+        .video-container video { width: 100%; max-width: 960px; border-radius: 14px; box-shadow: var(--shadow); background: #000; }
+
+        @media (max-width:980px) {
+            .grid { grid-template-columns: repeat(2,minmax(0,1fr)) }
+            .col-6 { grid-column: span 2 }
+            .col-12 { grid-column: span 2 }
+            .nav-links a { padding: 8px 8px }
+        }
+        @media (max-width:640px) {
+            .grid { grid-template-columns: 1fr }
+            .col-6, .col-12 { grid-column: span 1 }
+            .flow-node { width: calc(50% - 6px); }
+            .flow-details { width: 90vw; left: 50vw; transform: translateX(-50%); }
+        }
+
+        /* Swiper styles */
+        .full-bleed-wrap { position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; width: 100vw; }
+        .showcase { padding: 2rem 0 1rem; }
+        .dashboards-title, .text-center { text-align: center; }
+        #dashboards .mySwiper { width: 100vw; margin: 0 auto; }
+        .swiper-slide { width: min(1200px, 100vw); display: flex; justify-content: center; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
+        .swiper-slide img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+        .img-cap { margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.85; text-align: center; color: var(--muted); }
+        .swiper-button-next, .swiper-button-prev { width: 48px; height: 48px; }
+
+        /* Signature art rotator */
+        .sig-outer { width: 100vw; margin-left: 50%; transform: translateX(-50%) }
+        .sig-rotator { min-height: clamp(260px, 48vw, 425px); position: relative; }
+        @media (min-width: 900px) { .sig-rotator { min-height: clamp(360px, 56vw, 525px); } }
+        .sig-rotator img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; visibility: hidden; transform: scale(1.02); transition: opacity .45s ease, visibility .45s ease, transform .6s ease }
+        .sig-rotator img.is-active { opacity: 1; visibility: visible; transform: none }
+
+        #nugetGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        #nugetGrid .card { display: flex; flex-direction: column }
+        .pkg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px }
+        .pkg-title { margin: 0; font-size: clamp(16px,2.4vw,22px); line-height: 1.25; overflow: hidden; text-overflow: ellipsis }
+        .pkg-link { position: static !important; flex: 0 0 auto }
+        .pkg-desc { min-height: 3.2em }
+        .pkg-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px }
+
+        #contactForm .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width:720px) { #contactForm .form-row { grid-template-columns: 1fr; } }
+        #contactForm label.mono { display: block; margin: 6px 0 6px; }
+        #contactForm .form-control { display: block; width: 100%; padding: 10px; margin: 0 0 12px; border-radius: var(--radius); border: 1px solid rgba(20,40,72,.15); background: var(--panel); color: var(--text); }
+        #contactForm .form-control:focus { outline: none; box-shadow: var(--ring); border-color: color-mix(in srgb, var(--brand), #000 10%); }
+        #contactForm textarea.form-control { min-height: 160px; resize: vertical; }
+        #contactForm .consent-row { display: flex; gap: 8px; align-items: flex-start; margin: 6px 0 14px; }
+        #contactForm .hp { position: absolute; left: -5000px; opacity: 0; height: 0; width: 0; }
+
+        /* OSS repos section */
+        .cerbi-oss { margin: 2.25rem auto; }
+        .oss-title { margin: 0 0 1rem 0; font-weight: 700; }
+        .oss-card { background: var(--panel); color: var(--text); border: 1px solid rgba(20,40,72,.12); border-radius: var(--radius); padding: 1rem 1.25rem .5rem; margin: 1rem 0; box-shadow: var(--shadow); position: relative; }
+        .oss-head { display: grid; grid-template-columns: 1fr auto; gap: .75rem; align-items: center; }
+        .oss-name { margin: .1rem 0 .2rem; font-size: 1.15rem; }
+        .oss-tag { margin: 0; opacity: .88; font-size: .95rem; }
+        .oss-link { text-decoration: none; color: var(--link); border-bottom: 1px dashed currentColor; opacity: .95; white-space: nowrap; }
+        .oss-expand { margin: .85rem -1.25rem 0; width: calc(100% + 2.5rem); display: flex; align-items: center; justify-content: center; gap: .5rem; border: 0; cursor: pointer; padding: .55rem 1rem; background: linear-gradient(90deg, var(--brand), #ff8a00); color: #fff; font-weight: 600; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.15); position: relative; }
+        .oss-expand .chev { transform: rotate(0deg); transition: transform .25s ease; }
+        .oss-expand[aria-expanded="true"] .chev { transform: rotate(180deg); }
+        .oss-panel { overflow: hidden; transition: max-height .35s ease, opacity .22s ease; opacity: 1; padding: .75rem .25rem 0; }
+        .oss-panel[hidden] { display: block; max-height: 0; opacity: 0; padding-top: 0; }
+        .oss-details { margin: .25rem 0 .4rem 0; padding-left: 1.2rem; line-height: 1.55; }
+        .oss-details code { background: rgba(20,40,72,.08); padding: .1rem .35rem; border-radius: 6px; }
+    </style>
+
+    <link rel="icon" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/refs/heads/main/assets/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="150x150" href="https://github.com/Zeroshi/CerbiSite/raw/main/assets/mstile-150x150.png" />
+</head>
+
+<body>
+    <div id="vprogress" aria-hidden="true"><span class="bar"></span></div>
+
+    <div id="bg-clock" aria-hidden="true">
+        <span id="clockText" data-glitch="CERBI">CERBI</span>
+    </div>
+    <div class="scanline" id="scanline" aria-hidden="true"></div>
+
+    <header id="siteNav" class="nav" role="banner">
+        <div class="container nav-inner">
+            <a href="#top" class="brand" aria-label="Cerbi — back to top">
+                <img src="assets/CerbiLogo.png" alt="" decoding="async" fetchpriority="high" />
+                <span>CerbiSuite</span>
+            </a>
+
+            <div class="nav-wrap">
+                <nav id="primaryNav" class="nav-links" aria-label="Primary">
+                    <a href="#why">Why</a>
+                    <a href="#usecases">Use Cases</a>
+                    <a href="#quickstart">Quick Start</a>
+                    <a href="#ecosystem">Ecosystem</a>
+                    <a href="#governance">Governance</a>
+                    <a href="#dashboards">Dashboards</a>
+                    <a href="#packages">Packages</a>
+                    <a href="#repos">Repos</a>
+                    <a href="#architecture">Architecture</a>
+                    <a href="#roadmap">Roadmap</a>
+                    <a href="#contact">Contact</a>
+                </nav>
+
+                <div class="nav-actions">
+                    <a class="btn btn-ghost" href="#contact" role="button">Contact</a>
+                    <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener" role="button">GitHub</a>
+
+                    <div class="more" id="moreMenu">
+                        <button type="button" aria-haspopup="menu" aria-expanded="false" title="More">More ▾</button>
+                        <div class="more-menu" role="menu" aria-label="More links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero container" id="top" aria-label="Hero">
+            <div class="chip-row" role="list" aria-label="High level features">
+                <span class="chip">Structured Logging</span>
+                <span class="chip">Governance (Build & Runtime)</span>
+                <span class="chip">Cloud-Native & Portable</span>
+                <span class="chip">Modular</span>
+                <span class="chip">Hybrid-Ready</span>
+                <span class="chip">ML-Friendly</span>
+            </div>
+
+            <h1>Cut Log Costs 40%. <span class="hl">Prove Compliance</span> in Minutes.</h1>
+            <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enterprise .NET logging with built-in governance. Deploy in hours, not months. Turn your logs into compliant, ML-ready assets.</p>
+
+            <!-- Executive Stats Banner -->
+            <div class="stats-banner">
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Avg Log Cost Reduction</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Compliance Pass Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Faster Incident Resolution</div>
+                </div>
+            </div>
+
+            <!-- Dual CTAs -->
+            <div class="hero-ctas">
+                <a href="#quickstart" class="btn btn-primary btn-large">
+                    ⚡ Try CerbiStream in 60 Seconds
+                </a>
+                <a href="#contact" class="btn btn-secondary btn-large">
+                    📅 Request Enterprise Demo
+                </a>
+            </div>
+            <p class="hero-trust" style="text-align:center;color:var(--muted);font-size:14px;margin-top:16px">
+                Free for open source. Enterprise licenses available.
+            </p>
+
+            <!-- Who Is This For -->
+            <div class="audience-pills">
+                <div class="audience-pill">
+                    <span class="audience-icon">👔</span>
+                    <div class="audience-text">
+                        <strong>For CTOs:</strong> Cut costs, ensure compliance
+                    </div>
+                </div>
+                <div class="audience-pill">
+                    <span class="audience-icon">👨‍💻</span>
+                    <div class="audience-text">
+                        <strong>For Developers:</strong> Ship faster with governance built-in
+                    </div>
+                </div>
+                <div class="audience-pill">
+                    <span class="audience-icon">🛡️</span>
+                    <div class="audience-text">
+                        <strong>For CISOs:</strong> Automate compliance, sleep better
+                    </div>
+                </div>
+            </div>
+
+            <article class="card typebox" style="margin-top:32px">
+                <h3 id="typeTitle"></h3>
+                <div id="typeBody" class="muted mono"></div>
+                <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
+            </article>
+        </section>
+
+        <!-- Signature Art Rotator -->
+        <section id="hero-art" class="section full-bleed-wrap" aria-label="Signature art">
+            <div class="full-bleed sig-outer">
+                <div class="showcase">
+                    <div id="sigRotator" class="sig-rotator" role="img" aria-label="Cerbi signature pop-art panels"></div>
+                    <div class="img-cap" id="sigCapCenter" style="padding:10px 0 16px"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brief Overview Video -->
+        <section id="brief-overview-video" class="container section">
+            <div class="eyebrow">Overview</div>
+            <h2>Cerbi — <span class="hl">Brief Overview</span></h2>
+            <p class="lead">Short walkthrough of what Cerbi is, why it exists, and how it fits into your observability stack.</p>
+            <div class="card" style="padding:16px;">
+                <div class="video-container">
+                    <video controls preload="metadata" playsinline>
+                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section id="usecases" class="container section">
+            <div class="eyebrow">Real outcomes</div>
+            <h2><span class="hl">Use Cases</span> (for teams & execs)</h2>
+            <p class="lead">Short, concrete wins you can expect. Each can start small and expand safely across the org.</p>
+
+            <div class="grid">
+                <article class="col-4 card">
+                    <h3>1. Cut Log Spend</h3>
+                    <p class="muted">Normalize fields, roll up noise, and de-duplicate before indexing.</p>
+                    <ul>
+                        <li>Less high-cardinality churn</li>
+                        <li>Smaller indexes, faster queries</li>
+                    </ul>
+                </article>
+                <article class="col-4 card">
+                    <h3>2. Prove Compliance</h3>
+                    <p class="muted">Versioned PII policy + redaction metadata you can hand to Risk/Legal.</p>
+                    <ul>
+                        <li>Build-time rules + runtime enforcement</li>
+                        <li>RBAC & audit history in CerbiShield</li>
+                    </ul>
+                </article>
+                <article class="col-4 card">
+                    <h3>3. Stabilize Dashboards</h3>
+                    <p class="muted">Stop breaking charts every sprint due to field drift.</p>
+                    <ul>
+                        <li>Stable names & types</li>
+                        <li>Durable alerts across releases</li>
+                    </ul>
+                </article>
+                <article class="col-4 card">
+                    <h3>4. Accelerate Incidents</h3>
+                    <p class="muted">Consistent app/env/tenant/trace IDs → faster triage and MTTR.</p>
+                    <ul>
+                        <li>Joinable logs across services</li>
+                        <li>Violation context included</li>
+                    </ul>
+                </article>
+                <article class="col-4 card">
+                    <h3>5. Ship ML-Ready Telemetry</h3>
+                    <p class="muted">Clean, governed features for LLMs & models—without PII surprises.</p>
+                    <ul>
+                        <li>Tags, categories, enums</li>
+                        <li>Consistent shapes for training</li>
+                    </ul>
+                </article>
+                <article class="col-4 card">
+                    <h3>6. Adopt Gradually</h3>
+                    <p class="muted">Start with one domain, run in relax-mode, then tighten.</p>
+                    <ul>
+                        <li>Keep your loggers/sinks</li>
+                        <li>No vendor lock-in</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- Security & Compliance Section -->
+        <section id="security" class="container section" style="background:linear-gradient(135deg, #142848 0%, #1a3a5f 100%);color:white;border-radius:20px;padding:64px 48px;margin:48px auto">
+            <div class="eyebrow" style="color:rgba(255,255,255,.7)">Enterprise-Grade Security</div>
+            <h2 style="color:white">Built for <span class="hl">Compliance</span> from Day One</h2>
+            <p class="lead" style="color:rgba(255,255,255,.9);max-width:800px;margin:0 auto 3rem">
+                CerbiSuite was designed by security-conscious engineers for security-conscious organizations. Every feature prioritizes data protection, audit trails, and regulatory compliance.
+            </p>
+
+            <div class="security-grid">
+                <div class="security-card">
+                    <div class="security-icon">🔒</div>
+                    <h3>Encryption at Rest & In Transit</h3>
+                    <p>AES-256 encryption with configurable key rotation. TLS 1.3 for all data transmission. Your logs stay secure from source to storage.</p>
+                </div>
+                
+                <div class="security-card">
+                    <div class="security-icon">🛡️</div>
+                    <h3>Automatic PII Redaction</h3>
+                    <p>ML-powered detection identifies and redacts sensitive data before it's logged. Policy enforcement prevents PII leakage across your entire codebase.</p>
+                </div>
+                
+                <div class="security-card">
+                    <div class="security-icon">✅</div>
+                    <h3>Compliance Ready</h3>
+                    <p>Built-in audit trails meet SOC 2 Type II, HIPAA, GDPR, and ISO 27001 requirements. Generate compliance reports in minutes, not weeks.</p>
+                </div>
+                
+                <div class="security-card">
+                    <div class="security-icon">📊</div>
+                    <h3>Real-Time Violation Alerts</h3>
+                    <p>Catch governance violations as they happen. Automated alerts notify your team before issues become incidents or audit failures.</p>
+                </div>
+
+                <div class="security-card">
+                    <div class="security-icon">🔐</div>
+                    <h3>Your Infrastructure, Your Control</h3>
+                    <p>Your logs never leave your environment. No data sent to third-party services. Complete control over retention, access, and deletion.</p>
+                </div>
+
+                <div class="security-card">
+                    <div class="security-icon">📝</div>
+                    <h3>Immutable Audit Logs</h3>
+                    <p>Tamper-proof audit trails track every access, change, and export. Perfect for forensics, compliance audits, and incident response.</p>
+                </div>
+            </div>
+
+            <div class="compliance-badges">
+                <span class="compliance-badge">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    SOC 2 Type II Ready
+                </span>
+                <span class="compliance-badge">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    HIPAA Compliant
+                </span>
+                <span class="compliance-badge">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    GDPR Ready
+                </span>
+                <span class="compliance-badge">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    ISO 27001
+                </span>
+            </div>
+
+            <div style="text-align:center;margin-top:3rem">
+                <a href="#contact" class="btn btn-primary btn-large" style="background:white;color:var(--brand)">
+                    🔒 Request Security Whitepaper
+                </a>
+            </div>
+        </section>
+
+        <section id="why" class="container section">
+            <div class="eyebrow">THE PROBLEM</div>
+            <h2>Why <span class="hl">CerbiStream</span> Exists</h2>
+            <p class="lead">As organizations scale across internal squads, contractors, and third-party libraries, logging becomes a patchwork—hard to trust, hard to use, and risky. Cerbi turns logs into governed, reliable <em>data products</em>.</p>
+
+            <div class="card" style="padding:12px">
+                <table class="table">
+                    <thead>
+                        <tr><th>Approach</th><th>Pros</th><th>Cons</th><th>Best when…</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>"Just log more"</strong></td><td>Fast to start</td><td>Inconsistent fields, PII risk, higher cost</td><td>Tiny apps, prototypes</td></tr>
+                        <tr><td><strong>Downstream normalization</strong></td><td>No app changes</td><td>Late fixes, fragile</td><td>Short-term stopgap</td></tr>
+                        <tr><td><strong>Cerbi governance</strong></td><td>Stable schema, redaction, versioned policy</td><td>Define profiles; add analyzers/validators</td><td>Multi-team apps, compliance</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="quickstart" class="container section">
+            <div class="eyebrow">Get started</div>
+            <h2>⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
+            <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
+
+            <div class="card" style="padding:18px;position:relative">
+<pre class="kbd" style="white-space:pre-wrap"><code>// 1) Install
+dotnet add package CerbiStream
+dotnet add package Cerbi.MEL.Governance
+dotnet add package CerbiStream.GovernanceAnalyzer
+
+// 2) Configure in Program.cs (MEL)
+using CerbiStream;
+var logger = LoggerFactory.Create(builder =>
+{
+  builder.AddCerbiStream(options =>
+  {
+    options.WithFileFallback();
+    options.UseGovernance("cerbi_governance.json");
+  });
+}).CreateLogger&lt;Program&gt;();
+
+// 3) Log safely with governance validation
+logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
+</code></pre>
+                <button class="btn btn-ghost" data-copy="#quickstart code" style="position:absolute;top:12px;right:12px">Copy</button>
+            </div>
+        </section>
+
+        <section id="ecosystem" class="container section">
+            <div class="eyebrow">What's included</div>
+            <h2>The <span class="hl">Cerbi</span> Ecosystem</h2>
+            <p class="lead">A cohesive suite where each component addresses a critical aspect of enterprise logging.</p>
+
+            <div class="card" style="padding:8px 12px;overflow-x:auto">
+                <table aria-label="Cerbi components matrix" class="table">
+                    <thead><tr><th>Component</th><th>Status</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CerbiStream</strong></td>
+                            <td><span class="chip">GA</span></td>
+                            <td>Core .NET logger with structured output and optional encryption. Works with governance analyzers (build-time) and runtime validators.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CerbiStream.GovernanceAnalyzer</strong></td>
+                            <td><span class="chip">GA</span></td>
+                            <td>Roslyn analyzer that flags governance issues during build (IDE/CI). Reads project governance profiles.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cerbi.MEL.Governance</strong></td>
+                            <td><span class="chip">GA</span></td>
+                            <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines; applies redaction/flagging based on profiles.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CerbiShield</strong></td>
+                            <td><span class="chip">Beta</span></td>
+                            <td>Governance dashboard & APIs. Profile authoring, RBAC, audit history, environment-aware deployments, and profile versioning.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Governance Scoring Flow -->
+        <section id="governance" class="container section">
+            <div class="eyebrow">How governance works</div>
+            <h2 id="scoring-flow">Governance Scoring <span class="hl">Flow</span></h2>
+            <p class="lead">From runtime validation to dashboard visualization—track the journey of every governance score.</p>
+
+            <div class="card" style="padding:18px; overflow:visible; position:relative">
+                <div class="flow-nodes" role="list" aria-label="Governance flow steps">
+                    <div class="flow-node" tabindex="0">
+                        <div class="flow-icon">🔍</div>
+                        <div class="flow-step-num">1</div>
+                        <div class="flow-title">Runtime Validation</div>
+                        <div class="flow-details" hidden>
+                            <h4>Plugin Validates Event</h4>
+                            <p>Governance plugin checks log against profile rules and computes impact score.</p>
+                            <ul>
+                                <li>Severity-weighted scoring</li>
+                                <li>Plugin contributions</li>
+                                <li>Relax-mode support</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-node" tabindex="0">
+                        <div class="flow-icon">📤</div>
+                        <div class="flow-step-num">2</div>
+                        <div class="flow-title">Async Ship</div>
+                        <div class="flow-details" hidden>
+                            <h4>Background Transmission</h4>
+                            <p>Score data ships to GovernanceApi asynchronously—non-blocking and batched.</p>
+                            <ul>
+                                <li>Non-blocking</li>
+                                <li>Batched</li>
+                                <li>Resilient retry</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-node" tabindex="0">
+                        <div class="flow-icon">💾</div>
+                        <div class="flow-step-num">3</div>
+                        <div class="flow-title">Storage</div>
+                        <div class="flow-details" hidden>
+                            <h4>Persist to Store</h4>
+                            <p>GovernanceApi persists scores to CerbiShield with RBAC and timestamps.</p>
+                            <ul>
+                                <li>EF migrations</li>
+                                <li>RBAC-aware storage</li>
+                                <li>UTC timestamps</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-node" tabindex="0">
+                        <div class="flow-icon">📊</div>
+                        <div class="flow-step-num">4</div>
+                        <div class="flow-title">Aggregate</div>
+                        <div class="flow-details" hidden>
+                            <h4>Reporting Rollups</h4>
+                            <p>ReportingApi rolls up scores by service, environment, team, and time window.</p>
+                            <ul>
+                                <li>Flexible grouping</li>
+                                <li>Trend analysis</li>
+                                <li>Multi-dimensional rollups</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flow-node" tabindex="0">
+                        <div class="flow-icon">📈</div>
+                        <div class="flow-step-num">5</div>
+                        <div class="flow-title">Dashboard</div>
+                        <div class="flow-details" hidden>
+                            <h4>Visualize Compliance</h4>
+                            <p>CerbiShield displays trends, violations, and scorecards with drill-downs.</p>
+                            <ul>
+                                <li>Realtime metrics</li>
+                                <li>Violation drill-down</li>
+                                <li>Team scorecards</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pitch cards -->
+        <section id="pitch" class="container section">
+            <div class="eyebrow">For Decision Makers</div>
+            <h2>The Challenge <span style="color:var(--brand);padding:0 .3em">→</span> Our Solution</h2>
+            <p class="lead">Clear problems, concrete solutions—for executives, security teams, and developers.</p>
+
+            <div class="pitch-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px">
+                <div class="card">
+                    <h3>The Problem</h3>
+                    <p class="muted">Audit Nightmares: manual log reviews and missing proof of PII redaction.</p>
+                    <h3>Our Solution</h3>
+                    <p>Automated compliance: build-time + runtime governance, versioned policies and audit trails.</p>
+                </div>
+
+                <div class="card">
+                    <h3>The Problem</h3>
+                    <p class="muted">Runaway Log Costs: high-cardinality fields explode your index size.</p>
+                    <h3>Our Solution</h3>
+                    <p>Pre-index normalization and rollups reduce ingestion and storage costs.</p>
+                </div>
+
+                <div class="card">
+                    <h3>The Problem</h3>
+                    <p class="muted">Dashboard Drift: field changes break charts and alerts.</p>
+                    <h3>Our Solution</h3>
+                    <p>Governance profiles enforce stable schemas so dashboards remain durable.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboards with Swiper -->
+        <section id="dashboards" class="section full-bleed-wrap" aria-label="Dashboards">
+            <div class="full-bleed showcase-outer" style="width:100vw;margin-left:50%;transform:translateX(-50%)">
+                <div class="showcase">
+                    <h2 class="dashboards-title">CerbiShield Dashboards</h2>
+
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="assets/screenshots/cerbishield-profiles-2400x1800.jpg" alt="CerbiShield — Profiles">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="assets/screenshots/cerbishield-violations-2400x1800.jpg" alt="CerbiShield — Violations">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="assets/screenshots/cerbishield-settings-1200x900.jpg" alt="CerbiShield — Settings">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="assets/screenshots/cerbishield-Deploy-1600x900.jpg" alt="CerbiShield — Deploy">
+                            </div>
+                        </div>
+
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+
+                    <div class="img-cap">
+                        Click or swipe through to explore all dashboards. Use arrows or drag on desktop.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sales & ROI Charts -->
+        <section id="sales-roi" class="section">
+            <div class="container">
+                <h2 class="section-title">Sales & ROI Impact</h2>
+                <p class="section-subtitle">
+                    Our SaaS platform delivers measurable business outcomes.
+                    The following charts illustrate how organizations benefit in terms of <strong>cost savings</strong>,
+                    <strong>time efficiency</strong>, and <strong>return on investment</strong>.
+                </p>
+
+                <div class="charts-wrapper" style="display:flex; flex-wrap: wrap; justify-content: center; gap:40px; margin-top:30px;">
+                    <div style="width:300px; text-align:center;">
+                        <h3>Cost Savings</h3>
+                        <canvas id="costSavingsChart"></canvas>
+                        <p style="margin-top:10px;">
+                            Automating governance workflows reduces audit costs by up to <strong>40%</strong>.
+                        </p>
+                    </div>
+
+                    <div style="width:300px; text-align:center;">
+                        <h3>Time Efficiency</h3>
+                        <canvas id="timeEfficiencyChart"></canvas>
+                        <p style="margin-top:10px;">
+                            Productivity boosts free up <strong>30% more engineering time</strong>.
+                        </p>
+                    </div>
+
+                    <div style="width:300px; text-align:center;">
+                        <h3>ROI Growth</h3>
+                        <canvas id="roiGrowthChart"></canvas>
+                        <p style="margin-top:10px;">
+                            Companies adopting CerbiShield can see an average ROI increase of <strong>3x</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROI Key Highlights -->
+        <section id="roi-key-highlights" class="section">
+            <div class="container">
+                <h3 style="margin-bottom:10px">Key Highlights</h3>
+                <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start; justify-content:center">
+                    <div style="width:min(360px,90vw)">
+                        <canvas id="roiHighlightsBar" height="160" aria-label="Key metrics bar" role="img"></canvas>
+                    </div>
+                    <div style="width:260px; text-align:center">
+                        <canvas id="roiHighlightsPie" height="160" aria-label="Savings breakdown by driver" role="img"></canvas>
+                        <div class="muted" style="margin-top:6px">Savings breakdown by driver (example)</div>
+                    </div>
+                    <article class="card" style="width:min(420px,92vw); padding:14px">
+                        <h4 style="margin:.2rem0 .6rem">ROI Levers</h4>
+                        <ul style="margin:.2rem0; padding-left:1rem; line-height:1.55">
+                            <li><strong>Pre-index normalization:</strong> send fewer, cleaner events → lower ingestion spend.</li>
+                            <li><strong>Stable schemas:</strong> fewer broken charts/alerts → less rework and query churn.</li>
+                            <li><strong>Policy + redaction:</strong> audit evidence inline → reduced compliance overhead.</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="container section">
+            <div class="eyebrow">How it fits</div>
+            <h2>Reference <span class="hl">Architecture</span></h2>
+            <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
+            <div class="grid" style="align-items:start;gap:18px">
+                <article class="col-6 card">
+                    <h3>Flow</h3>
+                    <ul>
+                        <li>Apps & services emit events</li>
+                        <li>Build-time analyzers catch schema/PII violations pre-merge</li>
+                        <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
+                        <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
+                        <li>Downstream sinks receive clean, consistent data</li>
+                    </ul>
+                </article>
+                <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
+                    <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" title="Open full-size architecture">
+                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
+                    </a>
+                    <figcaption class="img-cap">
+                        Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.
+                        <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png">Open full size →</a>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section id="interop" class="container section">
+            <div class="eyebrow">Plays well with others</div>
+            <h2><span class="hl">Interoperability</span> for Devs & Execs</h2>
+            <div class="grid" style="gap:18px">
+                <article class="col-6 card">
+                    <h3>Keep your logger</h3>
+                    <ul>
+                        <li><strong>MEL (.NET):</strong> <code>builder.AddCerbiStream()</code> adds structured output + governance.</li>
+                        <li><strong>Serilog / NLog:</strong> use analyzers at build-time and validators at runtime.</li>
+                        <li><strong>Hybrid:</strong> keep sinks/formatters; Cerbi stabilizes field names/types and attaches correlation.</li>
+                    </ul>
+                </article>
+                <article class="col-6 card">
+                    <h3>Keep your sinks</h3>
+                    <ul>
+                        <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data.</li>
+                        <li><strong>Durable dashboards:</strong> governed field names/types avoid chart breakage.</li>
+                        <li><strong>ML-ready:</strong> consistent, PII-safe features feed analytics/LLMs.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section id="packages" class="container section">
+            <div class="eyebrow">Install</div>
+            <h2><span class="hl">NuGet Packages</span> (live)</h2>
+            <p style="text-align:center;max-width:700px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
+                Click any package card to flip and reveal install commands & live statistics from NuGet.org
+            </p>
+            <div id="nugetGrid"></div>
+            <template id="nugetCardTpl">
+                <article class="nuget-flip-card" tabindex="0" role="button" aria-label="Click to flip card">
+                    <div class="nuget-flip-inner">
+                        <!-- Front of card -->
+                        <div class="nuget-flip-front card">
+                            <div class="pkg-icon">📦</div>
+                            <h3 class="pkg-title">Package</h3>
+                            <p class="muted pkg-desc">Description</p>
+                            <div class="pkg-badges">
+                                <span class="badge badge-version pkg-version">v0.0.0</span>
+                                <span class="badge badge-downloads pkg-downloads">0</span>
+                            </div>
+                            <div class="flip-hint">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                                    <path d="M21 3v5h-5"/>
+                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                                    <path d="M3 21v-5h5"/>
+                                </svg>
+                                Click to flip
+                            </div>
+                        </div>
+                        <!-- Back of card -->
+                        <div class="nuget-flip-back card">
+                            <div class="pkg-stats-header">
+                                <h3 class="pkg-title-back">Package</h3>
+                                <button class="flip-close" aria-label="Flip back">✕</button>
+                            </div>
+                            <div class="pkg-install-section">
+                                <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text-strong)">📋 Install Command</div>
+                                <div class="pkg-install-cmd">
+                                    <code class="pkg-cmd-text">dotnet add package PackageName</code>
+                                    <button class="copy-btn" aria-label="Copy command">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="pkg-stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-label">Total Downloads</div>
+                                    <div class="stat-value pkg-total-downloads">—</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Latest Version</div>
+                                    <div class="stat-value pkg-latest-version">—</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Last Updated</div>
+                                    <div class="stat-value pkg-last-updated">—</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-label">Authors</div>
+                                    <div class="stat-value pkg-authors">—</div>
+                                </div>
+                            </div>
+                            <a class="btn btn-primary pkg-link-back" target="_blank" rel="noopener" style="width:100%;margin-top:16px">
+                                View on NuGet.org →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </template>
+                    <details class="pkg-updates" style="margin-top:10px">
+                        <summary class="mono">Recent updates</summary>
+                        <ul class="updates-list" style="margin:.4rem00; padding-left:1.1rem"></ul>
+                    </details>
+                </article>
+            </template>
+        </section>
+
+        <!-- CerbiStream Demo Video -->
+        <section id="cerbistream-demo-video" class="container section">
+            <div class="eyebrow">See it in action</div>
+            <h2>CerbiStream — <span class="hl">Demo Overview</span></h2>
+            <p class="lead">A deeper walk-through of the CerbiStream implementation, file fallback, governance hooks, and async logging pipeline.</p>
+            <div class="card" style="padding:16px;">
+                <div class="video-container">
+                    <video controls preload="metadata" playsinline>
+                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+            <p class="lead">
+                Repo:
+                <a href="https://github.com/Zeroshi/Cerbi.CerbiStream-Implementation" target="_blank" rel="noopener">
+                    CerbiStream Demo Implementation
+                </a>
+            </p>
+        </section>
+
+        <!-- Open Source Repos - Creative Interactive Design -->
+        <section id="repos" class="container section">
+            <div class="eyebrow">Open Source</div>
+            <h2><span class="hl">Explore</span> the Cerbi Ecosystem</h2>
+            <p class="lead">Dive into our open-source repositories. Click any component to explore its role in the architecture.</p>
+
+            <div class="repo-ecosystem">
+                <!-- Central hub -->
+                <div class="ecosystem-hub">
+                    <div class="hub-logo">
+                        <img src="assets/CerbiLogo.png" alt="Cerbi" style="width:64px;height:64px;border-radius:12px;filter:drop-shadow(0 0 16px rgba(255,77,0,.4))">
+                    </div>
+                    <div class="hub-title">CerbiSuite</div>
+                    <div class="hub-subtitle">Unified Logging Ecosystem</div>
+                </div>
+
+                <!-- Repository cards arranged in orbit -->
+                <div class="repo-orbit">
+                    <!-- CerbiStream -->
+                    <article class="repo-node" data-repo="cerbistream" tabindex="0">
+                        <div class="repo-icon">🚀</div>
+                        <h3 class="repo-name">CerbiStream</h3>
+                        <p class="repo-tagline">Core Logger</p>
+                        <div class="repo-status">
+                            <span class="badge badge-ga">GA</span>
+                            <span class="badge badge-net">.NET 6-8</span>
+                        </div>
+                    </article>
+
+                    <!-- Governance Analyzer -->
+                    <article class="repo-node" data-repo="analyzer" tabindex="0">
+                        <div class="repo-icon">🔍</div>
+                        <h3 class="repo-name">GovernanceAnalyzer</h3>
+                        <p class="repo-tagline">Build-Time Checks</p>
+                        <div class="repo-status">
+                            <span class="badge badge-ga">GA</span>
+                            <span class="badge badge-roslyn">Roslyn</span>
+                        </div>
+                    </article>
+
+                    <!-- MEL Governance -->
+                    <article class="repo-node" data-repo="mel" tabindex="0">
+                        <div class="repo-icon">⚡</div>
+                        <h3 class="repo-name">MEL.Governance</h3>
+                        <p class="repo-tagline">Runtime Validation</p>
+                        <div class="repo-status">
+                            <span class="badge badge-ga">GA</span>
+                            <span class="badge badge-mel">MEL</span>
+                        </div>
+                    </article>
+
+                    <!-- CerbiShield -->
+                    <article class="repo-node" data-repo="shield" tabindex="0">
+                        <div class="repo-icon">🛡️</div>
+                        <h3 class="repo-name">CerbiShield</h3>
+                        <p class="repo-tagline">Dashboard & APIs</p>
+                        <div class="repo-status">
+                            <span class="badge badge-beta">Beta</span>
+                            <span class="badge badge-web">Web</span>
+                        </div>
+                    </article>
+
+                    <!-- Serilog Analyzer -->
+                    <article class="repo-node" data-repo="serilog" tabindex="0">
+                        <div class="repo-icon">📊</div>
+                        <h3 class="repo-name">Serilog.Analyzer</h3>
+                        <p class="repo-tagline">Serilog Support</p>
+                        <div class="repo-status">
+                            <span class="badge badge-ga">GA</span>
+                            <span class="badge badge-serilog">Serilog</span>
+                        </div>
+                    </article>
+
+                    <!-- Governance Core -->
+                    <article class="repo-node" data-repo="core" tabindex="0">
+                        <div class="repo-icon">⚙️</div>
+                        <h3 class="repo-name">Governance.Core</h3>
+                        <p class="repo-tagline">Shared Models</p>
+                        <div class="repo-status">
+                            <span class="badge badge-ga">GA</span>
+                            <span class="badge badge-lib">Library</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Expandable detail panel -->
+            <div id="repoDetail" class="repo-detail-panel" hidden>
+                <button class="repo-detail-close" aria-label="Close details">✕</button>
+                <div class="repo-detail-content">
+                    <div class="repo-detail-header">
+                        <div class="repo-detail-icon"></div>
+                        <div>
+                            <h3 class="repo-detail-title"></h3>
+                            <p class="repo-detail-tagline"></p>
+                        </div>
+                    </div>
+                    <div class="repo-detail-body">
+                        <div class="repo-detail-description"></div>
+                        <div class="repo-detail-features"></div>
+                        <div class="repo-detail-links"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            /* Ecosystem visualization */
+            .repo-ecosystem {
+                position: relative;
+                min-height: 600px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 40px 0;
+            }
+
+            /* Central hub */
+            .ecosystem-hub {
+                position: absolute;
+                z-index: 10;
+                text-align: center;
+                background: white;
+                border: 3px solid var(--brand);
+                border-radius: 50%;
+                width: 180px;
+                height: 180px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 12px 40px rgba(255,77,0,.25);
+                animation: pulse 3s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+            }
+
+            .hub-logo { margin-bottom: 8px; }
+            .hub-title { font-weight: 800; font-size: 18px; color: var(--text-strong); }
+            .hub-subtitle { font-size: 12px; color: var(--muted); }
+
+            /* Repository orbit */
+            .repo-orbit {
+                position: relative;
+                width: 100%;
+                height: 600px;
+            }
+
+            /* NuGet Flip Cards */
+            .nuget-flip-card {
+                background: transparent;
+                perspective: 1000px;
+                cursor: pointer;
+                min-height: 380px;
+            }
+
+            .nuget-flip-inner {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+                transform-style: preserve-3d;
+            }
+
+            .nuget-flip-card.flipped .nuget-flip-inner {
+                transform: rotateY(180deg);
+            }
+
+            .nuget-flip-front,
+            .nuget-flip-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                border-radius: 16px;
+                padding: 28px 24px;
+                display: flex;
+                flex-direction: column;
+                min-height: 380px;
+            }
+
+            .nuget-flip-front {
+                background: white;
+                border: 2px solid rgba(20,40,72,.1);
+                box-shadow: 0 4px 12px rgba(20,40,72,.08);
+                transition: all .3s ease;
+            }
+
+            .nuget-flip-card:hover .nuget-flip-front {
+                border-color: var(--brand);
+                box-shadow: 0 8px 24px rgba(255,77,0,.15);
+                transform: translateY(-4px);
+            }
+
+            .nuget-flip-back {
+                background: linear-gradient(135deg, #142848 0%, #1a3a5f 100%);
+                color: white;
+                transform: rotateY(180deg);
+                box-shadow: 0 8px 32px rgba(0,0,0,.3);
+            }
+
+            .pkg-icon {
+                font-size: 48px;
+                margin-bottom: 16px;
+                animation: pkgBounce 2s ease-in-out infinite;
+            }
+
+            @keyframes pkgBounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+            }
+
+            .pkg-title {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--text-strong);
+                margin: 0 0 12px;
+            }
+
+            .pkg-desc {
+                font-size: 14px;
+                line-height: 1.5;
+                margin: 0 0 auto;
+                flex: 1;
+            }
+
+            .pkg-badges {
+                display: flex;
+                gap: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 20px;
+            }
+
+            .badge-version {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .badge-downloads {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+            }
+
+            .flip-hint {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                justify-content: center;
+                margin-top: 16px;
+                font-size: 13px;
+                color: var(--muted);
+                opacity: 0.7;
+                transition: opacity .3s;
+            }
+
+            .nuget-flip-card:hover .flip-hint {
+                opacity: 1;
+                color: var(--brand);
+            }
+
+            .flip-hint svg {
+                animation: rotateHint 2s linear infinite;
+            }
+
+            @keyframes rotateHint {
+                0%, 100% { transform: rotate(0deg); }
+                25% { transform: rotate(15deg); }
+                75% { transform: rotate(-15deg); }
+            }
+
+            .pkg-stats-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 16px;
+                border-bottom: 1px solid rgba(255,255,255,.2);
+            }
+
+            .pkg-title-back {
+                font-size: 18px;
+                font-weight: 700;
+                color: white;
+                margin: 0;
+            }
+
+            .flip-close {
+                background: rgba(255,255,255,.1);
+                border: 1px solid rgba(255,255,255,.2);
+                color: white;
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all .2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+            }
+
+            .flip-close:hover {
+                background: rgba(255,255,255,.2);
+                transform: rotate(90deg);
+            }
+
+            .pkg-install-section {
+                background: rgba(255,255,255,.1);
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 20px;
+            }
+
+            .pkg-install-cmd {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(0,0,0,.3);
+                border-radius: 8px;
+                padding: 10px 12px;
+            }
+
+            .pkg-cmd-text {
+                flex: 1;
+                font-family: 'Courier New', monospace;
+                font-size: 13px;
+                color: #6ce5b1;
+                text-align: left;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .copy-btn {
+                background: rgba(255,255,255,.1);
+                border: 1px solid rgba(255,255,255,.2);
+                color: white;
+                padding: 6px 8px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all .2s;
+                flex-shrink: 0;
+            }
+
+            .copy-btn:hover {
+                background: rgba(255,255,255,.2);
+                transform: scale(1.1);
+            }
+
+            .pkg-stats-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                margin-bottom: auto;
+            }
+
+            .stat-item {
+                background: rgba(255,255,255,.1);
+                border-radius: 10px;
+                padding: 14px;
+                text-align: left;
+            }
+
+            .stat-label {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: rgba(255,255,255,.6);
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            .stat-value {
+                font-size: 16px;
+                font-weight: 700;
+                color: white;
+            }
+
+            .pkg-link-back {
+                background: white;
+                color: var(--brand);
+                border: none;
+            }
+
+            .pkg-link-back:hover {
+                background: rgba(255,255,255,.9);
+                transform: translateY(-2px);
+            }
+
+            @media (max-width: 768px) {
+                .nuget-flip-front,
+                .nuget-flip-back {
+                    min-height: 420px;
+                    padding: 24px 20px;
+                }
+
+                .pkg-stats-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Video Library Gallery */
+            .video-filters {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-bottom: 3rem;
+            }
+
+            .video-filter-btn {
+                padding: 10px 24px;
+                border: 2px solid rgba(20,40,72,.15);
+                background: white;
+                color: var(--text);
+                border-radius: 999px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all .3s;
+            }
+
+            .video-filter-btn:hover {
+                border-color: var(--brand);
+                color: var(--brand);
+                transform: translateY(-2px);
+            }
+
+            .video-filter-btn.active {
+                background: var(--brand);
+                border-color: var(--brand);
+                color: white;
+            }
+
+            .video-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 28px;
+            }
+
+            .video-card {
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(20,40,72,.08);
+                transition: all .3s ease;
+                cursor: pointer;
+                border: 2px solid transparent;
+            }
+
+            .video-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 28px rgba(20,40,72,.15);
+                border-color: var(--brand);
+            }
+
+            .video-card[data-category]:not([style*="display: none"]) {
+                animation: videoCardFadeIn .4s ease;
+            }
+
+            @keyframes videoCardFadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .video-thumbnail {
+                position: relative;
+                width: 100%;
+                padding-top: 56.25%; /* 16:9 aspect ratio */
+                background: linear-gradient(135deg, #142848 0%, #1a3a5f 100%);
+                overflow: hidden;
+            }
+
+            .thumbnail-video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform .3s;
+            }
+
+            .video-card:hover .thumbnail-video {
+                transform: scale(1.05);
+            }
+
+            .video-play-overlay {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0,0,0,.3);
+                transition: all .3s;
+            }
+
+            .video-card:hover .video-play-overlay {
+                background: rgba(0,0,0,.5);
+            }
+
+            .play-icon {
+                filter: drop-shadow(0 4px 12px rgba(0,0,0,.4));
+                transition: transform .3s;
+            }
+
+            .video-card:hover .play-icon {
+                transform: scale(1.15);
+            }
+
+            .video-duration {
+                position: absolute;
+                bottom: 12px;
+                right: 12px;
+                background: rgba(0,0,0,.8);
+                color: white;
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .video-badge {
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                padding: 5px 12px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .badge-overview {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+
+            .badge-demo {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+            }
+
+            .badge-deepdive {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+            }
+
+            .badge-coming {
+                background: linear-gradient(135deg, #ffd666 0%, #ffaa00 100%);
+                color: #664d00;
+            }
+
+            .video-info {
+                padding: 20px;
+            }
+
+            .video-title {
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--text-strong);
+                margin: 0 0 10px;
+                line-height: 1.3;
+            }
+
+            .video-description {
+                font-size: 14px;
+                line-height: 1.6;
+                color: var(--muted);
+                margin: 0 0 12px;
+            }
+
+            .video-meta {
+                display: flex;
+                gap: 16px;
+                font-size: 13px;
+                color: var(--muted);
+            }
+
+            .video-meta span {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            /* Placeholder Card */
+            .video-card-placeholder {
+                cursor: default;
+                border: 2px dashed rgba(20,40,72,.2);
+            }
+
+            .video-card-placeholder:hover {
+                transform: none;
+                box-shadow: 0 4px 12px rgba(20,40,72,.08);
+                border-color: var(--brand);
+            }
+
+            .placeholder-thumb {
+                background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .placeholder-icon {
+                color: var(--muted);
+                opacity: 0.5;
+            }
+
+            .subscribe-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                color: var(--brand);
+                font-weight: 600;
+                font-size: 14px;
+                text-decoration: none;
+                transition: gap .2s;
+            }
+
+            .subscribe-link:hover {
+                gap: 10px;
+            }
+
+            /* Video Modal */
+            .video-modal {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            .video-modal-backdrop {
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,.9);
+                animation: fadeIn .3s ease;
+            }
+
+            .video-modal-content {
+                position: relative;
+                width: 100%;
+                max-width: 1200px;
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                animation: modalSlideIn .4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes modalSlideIn {
+                from { opacity: 0; transform: translateY(40px) scale(0.95); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+
+            .video-modal-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                z-index: 10;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(0,0,0,.7);
+                color: white;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                transition: all .2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .video-modal-close:hover {
+                background: rgba(0,0,0,.9);
+                transform: rotate(90deg);
+            }
+
+            .video-modal-player {
+                position: relative;
+                width: 100%;
+                padding-top: 56.25%;
+                background: #000;
+            }
+
+            .video-modal-player video {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .video-modal-info {
+                padding: 24px;
+            }
+
+            .video-modal-info h3 {
+                font-size: 24px;
+                font-weight: 700;
+                margin: 0 0 12px;
+                color: var(--text-strong);
+            }
+
+            .video-modal-info p {
+                font-size: 15px;
+                line-height: 1.6;
+                color: var(--muted);
+                margin: 0;
+            }
+
+            @media (max-width: 768px) {
+                .video-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .video-filters {
+                    gap: 8px;
+                }
+
+                .video-filter-btn {
+                    padding: 8px 16px;
+                    font-size: 13px;
+                }
+
+                .video-modal {
+                    padding: 10px;
+                }
+
+                .video-modal-info {
+                    padding: 16px;
+                }
+
+                .video-modal-info h3 {
+                    font-size: 20px;
+                }
+            }
+
+            .repo-node {
+                position: absolute;
+                width: 160px;
+                background: white;
+                border: 2px solid rgba(20,40,72,.15);
+                border-radius: 16px;
+                padding: 16px;
+                text-align: center;
+                cursor: pointer;
+                transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 4px 16px rgba(10,16,30,.08);
+            }
+
+            .repo-node:hover, .repo-node:focus {
+                transform: translateY(-8px) scale(1.05);
+                border-color: var(--brand);
+                box-shadow: 0 12px 32px rgba(255,77,0,.25);
+                outline: none;
+                z-index: 20;
+            }
+
+            .repo-node:hover .repo-icon {
+                transform: scale(1.2) rotate(5deg);
+            }
+
+            /* Position nodes in a circular pattern */
+            .repo-node:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+            .repo-node:nth-child(2) { top: 15%; right: 10%; }
+            .repo-node:nth-child(3) { top: 45%; right: 0; }
+            .repo-node:nth-child(4) { bottom: 15%; right: 10%; }
+            .repo-node:nth-child(5) { top: 45%; left: 0; }
+            .repo-node:nth-child(6) { top: 15%; left: 10%; }
+
+            .repo-icon {
+                font-size: 2.5rem;
+                margin-bottom: 8px;
+                transition: transform .3s ease;
+            }
+
+            .repo-name {
+                margin: 8px 0 4px;
+                font-size: 16px;
+                color: var(--text-strong);
+            }
+
+            .repo-tagline {
+                font-size: 13px;
+                color: var(--muted);
+                margin: 0 0 8px;
+            }
+
+            .repo-status {
+                display: flex;
+                gap: 4px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .badge {
+                font-size: 10px;
+                padding: 3px 8px;
+                border-radius: 999px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: .03em;
+            }
+
+            .badge-ga { background: #6ce5b1; color: #0b4d2f; }
+            .badge-beta { background: #ffd666; color: #664d00; }
+            .badge-net { background: #e8f0ff; color: #1b3159; }
+            .badge-roslyn { background: #e3e8ff; color: #2a3b99; }
+            .badge-mel { background: #ffe8f0; color: #991b4d; }
+            .badge-web { background: #f0e8ff; color: #4d1b99; }
+            .badge-serilog { background: #fff0e8; color: #994d1b; }
+            .badge-lib { background: #f5f5f5; color: #666; }
+
+            /* Detail panel */
+            .repo-detail-panel {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.9);
+                width: min(600px, 90vw);
+                max-height: 80vh;
+                background: white;
+                border: 2px solid var(--brand);
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,.3);
+                z-index: 6000;
+                opacity: 0;
+                transition: all .3s ease;
+                overflow: hidden;
+            }
+
+            .repo-detail-panel:not([hidden]) {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            .repo-detail-close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                background: var(--panel-2);
+                border: 1px solid rgba(20,40,72,.12);
+                border-radius: 8px;
+                width: 32px;
+                height: 32px;
+                display: grid;
+                place-items: center;
+                cursor: pointer;
+                z-index: 10;
+                transition: all .2s ease;
+            }
+
+            .repo-detail-close:hover {
+                background: var(--brand);
+                color: white;
+                transform: rotate(90deg);
+            }
+
+            .repo-detail-content {
+                padding: 24px;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+
+            .repo-detail-header {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 2px solid var(--brand-10);
+            }
+
+            .repo-detail-icon {
+                font-size: 3rem;
+                width: 80px;
+                height: 80px;
+                background: var(--brand-10);
+                border-radius: 16px;
+                display: grid;
+                place-items: center;
+            }
+
+            .repo-detail-title {
+                margin: 0;
+                font-size: 24px;
+                color: var(--brand);
+            }
+
+            .repo-detail-tagline {
+                margin: 4px 0 0;
+                color: var(--muted);
+            }
+
+            .repo-detail-description {
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+
+            .repo-detail-features {
+                margin-bottom: 20px;
+            }
+
+            .repo-detail-features h4 {
+                margin: 0 0 12px;
+                color: var(--text-strong);
+            }
+
+            .repo-detail-features ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+
+            .repo-detail-features li {
+                margin-bottom: 8px;
+                line-height: 1.5;
+            }
+
+            .repo-detail-links {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .repo-detail-links a {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 10px 16px;
+                background: var(--brand);
+                color: white;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: all .2s ease;
+            }
+
+            .repo-detail-links a:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255,77,0,.3);
+            }
+
+            .repo-detail-links a.secondary {
+                background: var(--panel-2);
+                color: var(--text);
+                border: 1px solid rgba(20,40,72,.12);
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .repo-ecosystem { min-height: 700px; }
+                .repo-orbit { height: 700px; }
+                .ecosystem-hub { width: 140px; height: 140px; }
+                .hub-title { font-size: 16px; }
+                .repo-node { width: 130px; padding: 12px; }
+                .repo-node:nth-child(1) { top: 0; }
+                .repo-node:nth-child(2) { top: 20%; right: 5%; }
+                .repo-node:nth-child(3) { top: 50%; right: 0; }
+                .repo-node:nth-child(4) { bottom: 20%; right: 5%; }
+                .repo-node:nth-child(5) { top: 50%; left: 0; }
+                .repo-node:nth-child(6) { top: 20%; left: 5%; }
+            }
+
+            /* Connection lines (optional decorative element) */
+            .repo-orbit::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 400px;
+                height: 400px;
+                border: 2px dashed rgba(255,77,0,.15);
+                border-radius: 50%;
+                pointer-events: none;
+            }
+
+            @media (max-width: 768px) {
+                .repo-orbit::before {
+                    width: 300px;
+                    height: 300px;
+                }
+            }
+        </style>
+
+        <section id="roadmap" class="container section">
+            <div class="eyebrow">What's shipping</div>
+            <h2>Current <span class="hl">Phase</span> & What's Next</h2>
+            <div class="grid" style="gap:18px">
+                <article class="col-6 card">
+                    <h3>Phase 1 (Current)</h3>
+                    <ul>
+                        <li>CerbiStream GA (.NET structured logger)</li>
+                        <li>Governance analyzers (Roslyn)</li>
+                        <li>Runtime validators (redaction, relax-mode)</li>
+                        <li>CerbiShield Beta — profiles, RBAC, audit history</li>
+                    </ul>
+                </article>
+                <article class="col-6 card">
+                    <h3>Phase 2 (Planned)</h3>
+                    <ul>
+                        <li>CerbIQ — routing, normalization, rollups, fan-out</li>
+                        <li>CerbiSense — ML anomaly detection & trend forecasting</li>
+                        <li>Marketplace integrations (Azure/AWS/GCP)</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- Video Library Gallery -->
+        <section id="videos" class="container section">
+            <div class="eyebrow">Learn & Explore</div>
+            <h2><span class="hl">Video Library</span></h2>
+            <p style="text-align:center;max-width:700px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
+                Explore our complete collection of tutorials, demos, and insights. New videos added regularly.
+            </p>
+            <div style="text-align:center;margin-bottom:3rem">
+                <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                    Subscribe on YouTube
+                </a>
+            </div>
+
+            <!-- Video Filter Tabs -->
+            <div class="video-filters">
+                <button class="video-filter-btn active" data-filter="all">All Videos</button>
+                <button class="video-filter-btn" data-filter="overview">Overviews</button>
+                <button class="video-filter-btn" data-filter="demo">Demos & Tutorials</button>
+                <button class="video-filter-btn" data-filter="deep-dive">Deep Dives</button>
+            </div>
+
+            <!-- Video Grid -->
+            <div class="video-grid">
+                <!-- Video Card 1: Brief Overview -->
+                <article class="video-card" data-category="overview" data-duration="3:45">
+                    <div class="video-thumbnail">
+                        <video class="thumbnail-video" preload="metadata" muted playsinline>
+                            <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4#t=2" type="video/mp4" />
+                        </video>
+                        <div class="video-play-overlay">
+                            <svg class="play-icon" width="64" height="64" viewBox="0 0 24 24" fill="white">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        <span class="video-duration">3:45</span>
+                        <span class="video-badge badge-overview">Overview</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">Cerbi — Brief Overview</h3>
+                        <p class="video-description">Quick introduction to CerbiSuite's enterprise governance platform and its core capabilities.</p>
+                        <div class="video-meta">
+                            <span class="video-date">📅 Featured</span>
+                            <span class="video-views">🎯 Essential</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Video Card 2: CerbiStream Demo -->
+                <article class="video-card" data-category="demo" data-duration="5:20">
+                    <div class="video-thumbnail">
+                        <video class="thumbnail-video" preload="metadata" muted playsinline>
+                            <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4#t=2" type="video/mp4" />
+                        </video>
+                        <div class="video-play-overlay">
+                            <svg class="play-icon" width="64" height="64" viewBox="0 0 24 24" fill="white">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        <span class="video-duration">5:20</span>
+                        <span class="video-badge badge-demo">Demo</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">CerbiStream — Demo Overview</h3>
+                        <p class="video-description">Hands-on demonstration of CerbiStream's structured logging capabilities and real-time monitoring.</p>
+                        <div class="video-meta">
+                            <span class="video-date">📅 Featured</span>
+                            <span class="video-views">⚡ Technical</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Video Card 3: Philosophy -->
+                <article class="video-card" data-category="deep-dive" data-duration="8:15">
+                    <div class="video-thumbnail">
+                        <video class="thumbnail-video" preload="metadata" muted playsinline>
+                            <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4#t=2" type="video/mp4" />
+                        </video>
+                        <div class="video-play-overlay">
+                            <svg class="play-icon" width="64" height="64" viewBox="0 0 24 24" fill="white">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                        <span class="video-duration">8:15</span>
+                        <span class="video-badge badge-deepdive">Deep Dive</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">CerbiSuite — A New Philosophy</h3>
+                        <p class="video-description">Explore the philosophy behind CerbiSuite's approach to enterprise governance and compliance.</p>
+                        <div class="video-meta">
+                            <span class="video-date">📅 Featured</span>
+                            <span class="video-views">💡 Strategy</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Placeholder for future videos -->
+                <article class="video-card video-card-placeholder">
+                    <div class="video-thumbnail placeholder-thumb">
+                        <div class="placeholder-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </div>
+                        <span class="video-badge badge-coming">Coming Soon</span>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">More Videos Coming Soon</h3>
+                        <p class="video-description">Subscribe to our YouTube channel to be notified when we release new tutorials and demos.</p>
+                        <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" class="subscribe-link">
+                            Subscribe Now →
+                        </a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Video Modal -->
+            <div id="videoModal" class="video-modal" hidden>
+                <div class="video-modal-backdrop"></div>
+                <div class="video-modal-content">
+                    <button class="video-modal-close" aria-label="Close video">✕</button>
+                    <div class="video-modal-player">
+                        <video id="modalVideo" controls playsinline>
+                            <source src="" type="video/mp4" />
+                        </video>
+                    </div>
+                    <div class="video-modal-info">
+                        <h3 id="modalVideoTitle"></h3>
+                        <p id="modalVideoDescription"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CerbiSuite Philosophy Video -->
+        <section id="cerbisuite-philosophy-video" class="container section">
+            <div class="eyebrow">Vision</div>
+            <h2>CerbiSuite — <span class="hl">A New Philosophy</span></h2>
+            <p class="lead">High-level story for leaders and architects on how CerbiSuite approaches logging, governance, and observability.</p>
+            <div class="card" style="padding:16px;">
+                <div class="video-container">
+                    <video controls preload="metadata" playsinline>
+                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="container section">
+            <div class="eyebrow">Common Questions</div>
+            <h2>Frequently Asked <span class="hl">Questions</span></h2>
+            <p class="lead" style="text-align:center;max-width:700px;margin:0 auto 3rem">
+                Get quick answers to common questions about CerbiSuite. Still have questions? Contact us below.
+            </p>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is this just another logger?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No. CerbiStream is a governance-first logger. While traditional loggers focus on capturing data, CerbiStream adds built-in governance, compliance validation, PII redaction, and ML-ready structured output. Think of it as a logger + compliance engine + data quality platform in one.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How hard is migration from Serilog or NLog?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Most teams migrate in under 2 hours. CerbiStream uses familiar .NET logging abstractions and provides migration scripts. You can run CerbiStream alongside your existing logger during the transition. Our documentation includes step-by-step migration guides for Serilog, NLog, and Microsoft.Extensions.Logging.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Where is my data stored? Do you have access to it?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Your logs never leave your infrastructure. CerbiStream writes to your chosen destination (files, databases, queues) within your environment. We never see, store, or transmit your data. You maintain complete control over retention, access, and deletion policies.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What about performance? Will this slow down my application?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>CerbiStream adds <2ms latency on average. We use async Channel<T> buffering to ensure logging never blocks your application threads. Governance validation runs asynchronously. In many cases, CerbiStream performs better than traditional loggers because of intelligent batching and compression.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Do you support .NET Framework, .NET Core, and .NET 6+?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes. CerbiStream supports .NET 6, .NET 7, .NET 8, and .NET 9+. We also support ASP.NET Core, Azure Functions, Blazor, gRPC services, and more. Check our documentation for specific framework compatibility details.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is CerbiSuite open source? What's the licensing model?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>CerbiStream core is open source (Apache 2.0). Governance analyzers and compliance features are available under a dual license: free for open source projects, paid for commercial use. Enterprise licenses include priority support, SLAs, and advanced features. Contact us for pricing.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What makes CerbiSuite different from Datadog or ELK?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Datadog and ELK are observability platforms that consume logs. CerbiSuite focuses on log creation and governance at the source. Use CerbiStream to create high-quality, compliant logs, then send them to Datadog, ELK, or any other platform. We complement observability tools; we don't replace them.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I try it before committing? Is there a demo environment?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! Use our <a href="#quickstart">60-second Quick Start</a> to install CerbiStream via NuGet and try it locally. For enterprise features, <a href="#contact">request a demo</a> and we'll set up a sandbox environment with your data. No commitment required.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="container section">
+            <div class="eyebrow">Let's talk</div>
+            <h2>Get in <span class="hl">Touch</span></h2>
+            <p class="lead">Questions, enterprise inquiries, partnerships, or funding conversations? Send a note and we'll respond quickly.</p>
+
+            <div class="grid" style="align-items:start;gap:18px">
+                <div class="col-12 card" style="padding:16px">
+                    <form id="contactForm" action="https://formspree.io/f/mwprozjb" method="POST" novalidate style="max-width:900px;margin:0 auto">
+                        <label class="mono" for="reason">Reason</label>
+                        <select id="reason" name="reason" class="form-control" required autocomplete="off">
+                            <option value="" selected disabled>Select a reason…</option>
+                            <optgroup label="Cerbi Suite">
+                                <option>Product questions</option>
+                                <option>Pilot / POC</option>
+                                <option>Enterprise pricing & procurement</option>
+                                <option>Azure Marketplace listing / purchase</option>
+                                <option>Technical support</option>
+                                <option>Security & compliance (PII, RBAC, audits)</option>
+                                <option>Architecture & implementation guidance</option>
+                            </optgroup>
+                            <optgroup label="Partners & Biz">
+                                <option>Partnership / integration</option>
+                                <option>OEM / licensing</option>
+                                <option>Press / speaking</option>
+                                <option>Careers / contracting</option>
+                                <option>Funding / investors</option>
+                                <option>Billing & invoices</option>
+                            </optgroup>
+                            <option>Other</option>
+                        </select>
+
+                        <div class="form-row">
+                            <div>
+                                <label class="mono" for="name">Your name</label>
+                                <input id="name" name="name" type="text" class="form-control" required autocomplete="name" placeholder="Ada Lovelace">
+                            </div>
+                            <div>
+                                <label class="mono" for="email">Your email</label>
+                                <input id="email" name="email" type="email" class="form-control" required autocomplete="email" placeholder="you@company.com">
+                            </div>
+                        </div>
+
+                        <label class="mono" for="company">Company (optional)</label>
+                        <input id="company" name="company" type="text" class="form-control" autocomplete="organization" placeholder="Acme Corp">
+
+                        <label class="mono" for="message">Message</label>
+                        <textarea id="message" name="message" class="form-control" required rows="6" autocomplete="off" placeholder="How can we help?"></textarea>
+
+                        <label class="consent-row">
+                            <input type="checkbox" name="consent" required>
+                            <span class="muted">I agree to the <a href="docs/terms.md">Terms</a> and <a href="docs/privacy.md">Privacy Policy</a>.</span>
+                        </label>
+
+                        <input type="hidden" name="_subject" value="Cerbi.io website contact">
+                        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <button class="btn btn-primary" type="submit" id="contactSubmit">Send</button>
+                            <span id="contactStatus" class="muted" role="status" aria-live="polite"></span>
+                        </div>
+
+                        <p class="muted" style="margin-top:10px">We'll reply within a business day. No spam—ever.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer" style="padding:48px 0 24px; border-top:1px solid rgba(20,40,72,.12); background:rgba(255,255,255,.7)">
+        <div class="container">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px">
+                <div>
+                    <img src="assets/CerbiLogo.png" alt="CerbiSuite" width="48" height="48" style="margin-bottom:1rem;border-radius:8px;filter:drop-shadow(0 0 8px rgba(255,77,0,.35))" loading="lazy" decoding="async" />
+                    <p style="color:var(--muted);font-size:14px;line-height:1.6;max-width:280px">
+                        Enterprise-grade governance &amp; compliance for .NET, with structured logging, real-time analytics, and automated policy enforcement.
+                    </p>
+                </div>
+                <div>
+                    <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:var(--text-strong)">Product</h4>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                        <a class="chip" href="#usecases" style="width:fit-content">Use Cases</a>
+                        <a class="chip" href="#ecosystem" style="width:fit-content">Ecosystem</a>
+                        <a class="chip" href="#dashboards" style="width:fit-content">Dashboards</a>
+                        <a class="chip" href="#architecture" style="width:fit-content">Architecture</a>
+                        <a class="chip" href="#roadmap" style="width:fit-content">Roadmap</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:var(--text-strong)">Resources</h4>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                        <a class="chip" href="#packages" style="width:fit-content">NuGet Packages</a>
+                        <a class="chip" href="#opensource" style="width:fit-content">Open Source</a>
+                        <a class="chip" href="https://github.com/Zeroshi" target="_blank" rel="noopener" style="width:fit-content">GitHub</a>
+                        <a class="chip" href="https://www.nuget.org/profiles/Cerbi" target="_blank" rel="noopener" style="width:fit-content">NuGet Profile</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:var(--text-strong)">Connect</h4>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                        <a class="chip" href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" style="width:fit-content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:4px">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                            YouTube
+                        </a>
+                        <a class="chip" href="https://x.com/CerbiSuite" target="_blank" rel="noopener" style="width:fit-content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:4px">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                            X (Twitter)
+                        </a>
+                        <a class="chip" href="https://bsky.app/profile/cerbisuite.bsky.social" target="_blank" rel="noopener" style="width:fit-content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:4px">
+                                <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/>
+                            </svg>
+                            Bluesky
+                        </a>
+                        <a class="chip" href="https://www.linkedin.com/company/cerbisuite" target="_blank" rel="noopener" style="width:fit-content">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:4px">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            LinkedIn
+                        </a>
+                        <a class="chip" href="#contact" style="width:fit-content">Contact</a>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(20,40,72,.08);gap:16px;flex-wrap:wrap">
+                <span class="muted" style="font-size:14px">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
+                <div style="display:flex;gap:16px">
+                    <a href="https://github.com/Zeroshi" target="_blank" rel="noopener" aria-label="GitHub" style="color:var(--muted);transition:color .2s">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/@CerbiSuite" target="_blank" rel="noopener" aria-label="YouTube" style="color:var(--muted);transition:color .2s">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/CerbiSuite" target="_blank" rel="noopener" aria-label="X" style="color:var(--muted);transition:color .2s">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+                    <a href="https://bsky.app/profile/cerbisuite.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" style="color:var(--muted);transition:color .2s">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/company/cerbisuite" target="_blank" rel="noopener" aria-label="LinkedIn" style="color:var(--muted);transition:color .2s">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="lightbox" class="lightbox" aria-hidden="true" hidden>
+        <button class="close" aria-label="Close preview">✕</button>
+        <img id="lightboxImg" alt="" />
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        // Year in footer
+        (function () { const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear(); })();
+
+        // Vertical progress bar
+        (function () {
+            const vbar = document.getElementById('vprogress');
+            if (!vbar) return;
+            const on = () => {
+                const h = document.documentElement;
+                const max = h.scrollHeight - h.clientHeight;
+                const pct = max ? (100 * ((h.scrollTop || document.body.scrollTop) / max)) : 0;
+                vbar.style.setProperty('--vprogress', pct + '%');
+            };
+            on();
+            addEventListener('scroll', on, { passive: true });
+            addEventListener('resize', on, { passive: true });
+        })();
+
+        // Contact form
+        (function () {
+            const form = document.getElementById('contactForm');
+            if (!form) return;
+            const status = document.getElementById('contactStatus');
+            const btn = document.getElementById('contactSubmit');
+
+            async function submitAjax(e) {
+                e.preventDefault();
+                status.textContent = '';
+                btn.disabled = true;
+
+                if (!form.reportValidity()) {
+                    btn.disabled = false;
+                    return;
+                }
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json' },
+                        body: new FormData(form)
+                    });
+
+                    if (res.ok) {
+                        try { window.gtag && gtag('event', 'contact_submit', { method: 'formspree' }); } catch (_) { }
+                        form.reset();
+                        status.textContent = "Thanks — we'll be in touch shortly.";
+                    } else {
+                        status.textContent = "Sorry, something went wrong. Please email hello@cerbi.io.";
+                    }
+                } catch {
+                    status.textContent = "Network error. Please try again or email hello@cerbi.io.";
+                } finally {
+                    btn.disabled = false;
+                }
+            }
+
+            form.addEventListener('submit', submitAjax);
+        })();
+
+        // Lightbox for architecture diagram
+        (function () {
+            const overlay = document.getElementById('lightbox');
+            const big = document.getElementById('lightboxImg');
+            if (!overlay || !big) return;
+
+            function open(src) {
+                big.src = src;
+                overlay.hidden = false;
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+            function close() {
+                overlay.hidden = true;
+                overlay.setAttribute('aria-hidden', 'true');
+                big.removeAttribute('src');
+                document.body.style.overflow = '';
+            }
+
+            overlay.querySelector('.close')?.addEventListener('click', close);
+            overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.getAttribute('aria-hidden') === 'false') close(); });
+
+            document.querySelectorAll('a.arch-pop').forEach(a => {
+                a.addEventListener('click', e => {
+                    e.preventDefault();
+                    open(a.dataset.full || a.href);
+                });
+            });
+        })();
+
+        // Responsive nav overflow
+        (function () {
+            const nav = document.getElementById('primaryNav');
+            const more = document.getElementById('moreMenu');
+            if (!nav || !more) return;
+            const bucket = more.querySelector('.more-menu');
+            function layout() {
+                [...bucket.querySelectorAll('a')].forEach(a => nav.insertBefore(a, more));
+                const wrap = nav.parentElement;
+                const allowance = wrap.clientWidth - 320;
+                let w = 0; const toMove = [];
+                [...nav.children].forEach(el => {
+                    if (el === more) return;
+                    w += el.getBoundingClientRect().width + 8;
+                    if (w > allowance) toMove.push(el);
+                });
+                if (toMove.length) {
+                    toMove.forEach(el => bucket.appendChild(el));
+                    more.style.display = 'block';
+                } else {
+                    more.style.display = 'none';
+                }
+            }
+            const ro = new ResizeObserver(layout);
+            ro.observe(document.querySelector('.nav-inner'));
+            layout();
+            more.querySelector('button').addEventListener('click', () => {
+                const open = more.getAttribute('data-open') === 'true';
+                more.setAttribute('data-open', String(!open));
+                more.querySelector('button').setAttribute('aria-expanded', String(!open));
+            });
+            document.addEventListener('click', (e) => { if (!more.contains(e.target)) { more.setAttribute('data-open', 'false'); more.querySelector('button').setAttribute('aria-expanded', 'false'); } });
+        })();
+
+        // Typewriter effect
+        (function () {
+            const titleEl = document.getElementById('typeTitle');
+            const bodyEl = document.getElementById('typeBody');
+            const caretEl = document.getElementById('typeCaret');
+            if (!titleEl || !bodyEl) return;
+
+            const items = [
+                {
+                    t: "Lower Ingestion & Storage Cost",
+                    b: [
+                        "Normalize & de-duplicate at the source; ship less noise to Splunk/ELK/Datadog.",
+                        "Stable fields → smaller indexes & faster queries",
+                        "Rollups/tags → fewer high-cardinality surprises"
+                    ]
+                },
+                {
+                    t: "Compliance Without Friction",
+                    b: [
+                        "PII rules at build-time & runtime. Redact & flag—don't drop critical signals.",
+                        "Versioned policies in CerbiShield (RBAC & audit history)",
+                        "Relax-mode for safe rollout in prod"
+                    ]
+                },
+                {
+                    t: "Make Every Tool Better",
+                    b: [
+                        "We're not a sink—we improve what your sinks receive with richer, consistent context.",
+                        "Durable dashboards (no silent breakage)",
+                        "ML-ready metadata for LLMs & models"
+                    ]
+                },
+                {
+                    t: "Faster Investigations",
+                    b: [
+                        "Consistent correlation (app/env/tenant/trace) across services speeds triage.",
+                        "Clean joins through stable shapes",
+                        "Actionable violation metadata"
+                    ]
+                }
+            ];
+
+            let i = 0;
+            const speed = 22;
+            const erase = 14;
+            const hold = 1200;
+
+            function typeText(el, text, cb) {
+                el.textContent = ""; let p = 0;
+                const tick = () => { if (p <= text.length) { el.textContent = text.slice(0, p++); setTimeout(tick, speed); } else { cb && cb(); } };
+                tick();
+            }
+            function eraseText(el, cb) {
+                let s = el.textContent; let p = s.length;
+                const tick = () => { if (p >= 0) { el.textContent = s.slice(0, p--); setTimeout(tick, erase); } else { cb && cb(); } };
+                tick();
+            }
+            function typeBody(lines, cb) {
+                bodyEl.innerHTML = ""; let line = 0, acc = "";
+                const nextLine = () => {
+                    if (line >= lines.length) { return cb && cb(); }
+                    const text = (line ? "\n• " : "• ") + lines[line++];
+                    let p = 0;
+                    const tick = () => {
+                        if (p <= text.length) { acc += text[p++] || ""; bodyEl.textContent = acc; setTimeout(tick, speed); }
+                        else { setTimeout(nextLine, 120); }
+                    };
+                    tick();
+                };
+                nextLine();
+            }
+
+            function cycle() {
+                const { t, b } = items[i];
+                typeText(titleEl, t, () => typeBody(b, () => {
+                    setTimeout(() => {
+                        eraseText(bodyEl, () => eraseText(titleEl, () => {
+                            i = (i + 1) % items.length;
+                            cycle();
+                        }));
+                    }, hold);
+                }));
+            }
+            cycle();
+
+            const box = titleEl.closest('.typebox');
+            if (box) {
+                let paused = false;
+                box.addEventListener('mouseenter', () => { if (!paused) { paused = true; caretEl.style.visibility = 'hidden'; } });
+                box.addEventListener('mouseleave', () => { if (paused) { paused = false; caretEl.style.visibility = 'visible'; } });
+            }
+        })();
+
+        // NuGet packages
+        (function () {
+            const grid = document.getElementById('nugetGrid'); const tpl = document.getElementById('nugetCardTpl');
+            if (!grid || !tpl) return;
+
+            const pkgs = [
+                { id: 'CerbiStream', desc: 'Structured logger with async buffer, encryption, and governance hooks.' },
+                { id: 'Cerbi.MEL.Governance', desc: 'Runtime governance for Microsoft.Extensions.Logging; redaction & relax-mode.' },
+                { id: 'CerbiStream.GovernanceAnalyzer', desc: 'Roslyn analyzer diagnostics for schema/PII with CI-friendly IDs.' },
+                { id: 'Cerbi.Governance.Runtime', desc: 'Runtime enforcement engine shared by plugins.' },
+                { id: 'Cerbi.Governance.Core', desc: 'Core models (profiles, results) + plugin contracts.' },
+                { id: 'Cerbi.Serilog.GovernanceAnalyzer', desc: 'Analyzer support for Serilog projects.' }
+            ];
+
+            function fmtDownloads(n) {
+                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+                if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
+                return String(n);
+            }
+
+            function animateNumber(element, target) {
+                const duration = 1000;
+                const start = 0;
+                const startTime = performance.now();
+                
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(start + (target - start) * easeOut);
+                    element.textContent = fmtDownloads(current);
+                    if (progress < 1) requestAnimationFrame(update);
+                }
+                requestAnimationFrame(update);
+            }
+
+            pkgs.forEach(async pkg => {
+                const node = tpl.content.firstElementChild.cloneNode(true);
+                
+                // Front of card
+                node.querySelector('.pkg-title').textContent = pkg.id;
+                node.querySelector('.pkg-desc').textContent = pkg.desc;
+                
+                // Back of card
+                node.querySelector('.pkg-title-back').textContent = pkg.id;
+                node.querySelector('.pkg-cmd-text').textContent = `dotnet add package ${pkg.id}`;
+                node.querySelector('.pkg-link-back').href = `https://www.nuget.org/packages/${pkg.id}`;
+
+                // Flip card interaction
+                const flipCard = node;
+                const flipClose = node.querySelector('.flip-close');
+                const copyBtn = node.querySelector('.copy-btn');
+
+                function toggleFlip(e) {
+                    if (e && (e.target.closest('.flip-close') || e.target.closest('.copy-btn'))) return;
+                    flipCard.classList.toggle('flipped');
+                }
+
+                flipCard.addEventListener('click', toggleFlip);
+                flipCard.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleFlip();
+                    }
+                });
+
+                flipClose.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    flipCard.classList.remove('flipped');
+                });
+
+                copyBtn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    const cmd = node.querySelector('.pkg-cmd-text').textContent;
+                    try {
+                        await navigator.clipboard.writeText(cmd);
+                        copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+                        setTimeout(() => {
+                            copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+                        }, 2000);
+                    } catch (_) { }
+                });
+
+                try {
+                    const r = await fetch(`https://api-v2v3search-0.nuget.org/query?q=packageid:${encodeURIComponent(pkg.id)}&prerelease=false`);
+                    const j = await r.json();
+                    const item = (j.data && j.data[0]) || null;
+                    if (item) {
+                        const version = item.version || (item.versions?.slice(-1)[0]?.version) || '—';
+                        const downloads = item.totalDownloads || 0;
+                        const updated = item.published ? new Date(item.published).toLocaleDateString() : '—';
+                        const authors = item.authors || 'Cerbi';
+                        
+                        // Front card
+                        node.querySelector('.pkg-version').textContent = 'v' + version;
+                        node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads);
+                        
+                        // Back card - animate downloads
+                        const downloadsEl = node.querySelector('.pkg-total-downloads');
+                        node.querySelector('.pkg-latest-version').textContent = 'v' + version;
+                        node.querySelector('.pkg-last-updated').textContent = updated;
+                        node.querySelector('.pkg-authors').textContent = authors;
+                        
+                        // Trigger animation when flipped
+                        flipCard.addEventListener('click', function animateOnce() {
+                            if (flipCard.classList.contains('flipped')) {
+                                setTimeout(() => animateNumber(downloadsEl, downloads), 300);
+                                flipCard.removeEventListener('click', animateOnce);
+                            }
+                        });
+                    }
+                } catch (_) { }
+
+                grid.appendChild(node);
+            });
+        })();
+
+        // Video Library functionality
+        (function () {
+            const filterBtns = document.querySelectorAll('.video-filter-btn');
+            const videoCards = document.querySelectorAll('.video-card:not(.video-card-placeholder)');
+            const modal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const modalTitle = document.getElementById('modalVideoTitle');
+            const modalDesc = document.getElementById('modalVideoDescription');
+            const modalClose = document.querySelector('.video-modal-close');
+            const modalBackdrop = document.querySelector('.video-modal-backdrop');
+
+            // Filter functionality
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.dataset.filter;
+                    
+                    // Update active button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Filter cards
+                    videoCards.forEach(card => {
+                        const category = card.dataset.category;
+                        if (filter === 'all' || category === filter) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Video card click functionality
+            videoCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const videoSrc = card.querySelector('.thumbnail-video source').src.replace('#t=2', '');
+                    const title = card.querySelector('.video-title').textContent;
+                    const desc = card.querySelector('.video-description').textContent;
+                    
+                    // Set modal content
+                    modalVideo.querySelector('source').src = videoSrc;
+                    modalVideo.load();
+                    modalTitle.textContent = title;
+                    modalDesc.textContent = desc;
+                    
+                    // Show modal
+                    modal.hidden = false;
+                    document.body.style.overflow = 'hidden';
+                    
+                    // Play video
+                    modalVideo.play();
+                });
+            });
+
+            // Close modal functionality
+            function closeModal() {
+                modal.hidden = true;
+                document.body.style.overflow = '';
+                modalVideo.pause();
+                modalVideo.currentTime = 0;
+            }
+
+            if (modalClose) modalClose.addEventListener('click', closeModal);
+            if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+            
+            // ESC key to close
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.hidden) {
+                    closeModal();
+                }
+            });
+
+            // Thumbnail video hover preview
+            const thumbnailVideos = document.querySelectorAll('.thumbnail-video');
+            thumbnailVideos.forEach(video => {
+                const card = video.closest('.video-card');
+                if (!card) return;
+                
+                card.addEventListener('mouseenter', () => {
+                    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        video.play().catch(() => {});
+                    }
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+            });
+        })();
+
+        // FAQ accordion
+        (function () {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    // Close all
+                    faqItems.forEach(i => i.classList.remove('active'));
+                    // Open clicked one if it wasn't active
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+        })();
+
+        // Chart.js ROI charts
+        (function () {
+            if (!window.Chart) return;
+            const csROI = getComputedStyle(document.documentElement);
+            const colorBrand = (csROI.getPropertyValue('--brand') || '#FF4D00').trim();
+            const colorLink = (csROI.getPropertyValue('--link') || '#0f63ff').trim();
+            const colorMuted = (csROI.getPropertyValue('--muted') || '#5a6a88').trim();
+
+            new Chart(document.getElementById("costSavingsChart"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Saved", "Remaining"],
+                    datasets: [{
+                        data: [40, 60],
+                        backgroundColor: [colorBrand, colorMuted],
+                        borderWidth: 0,
+                        cutout: '65%'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: "bottom" } }
+                }
+            });
+
+            new Chart(document.getElementById("timeEfficiencyChart"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Saved Time", "Remaining Work"],
+                    datasets: [{
+                        data: [30, 70],
+                        backgroundColor: [colorBrand, colorMuted],
+                        borderWidth: 0,
+                        cutout: '65%'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: "bottom" } }
+                }
+            });
+
+            new Chart(document.getElementById("roiGrowthChart"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Growth", "Baseline"],
+                    datasets: [{
+                        data: [300, 100],
+                        backgroundColor: [colorBrand, colorMuted],
+                        borderWidth: 0,
+                        cutout: '65%'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: "bottom" } }
+                }
+            });
+
+            const bar = document.getElementById('roiHighlightsBar');
+            if (bar) {
+                new Chart(bar, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cost savings', 'Time efficiency', 'ROI multiplier'],
+                        datasets: [{
+                            data: [40, 30, 300],
+                            backgroundColor: [colorBrand, colorLink, colorMuted],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(20,40,72,.08)' } } }
+                    }
+                });
+            }
+
+            const pie = document.getElementById('roiHighlightsPie');
+            if (pie) {
+                new Chart(pie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Ingestion', 'Storage', 'Audit'],
+                        datasets: [{ data: [20, 12, 8], backgroundColor: [colorBrand, colorLink, colorMuted], borderWidth: 0, cutout: '65%' }]
+                    },
+                    options: { plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+        })();
+
+        // Swiper initialization
+        (function () {
+            if (!window.Swiper) return;
+            try {
+                new Swiper(".mySwiper", {
+                    effect: "coverflow",
+                    grabCursor: true,
+                    centeredSlides: true,
+                    loop: true,
+                    slidesPerView: "auto",
+                    coverflowEffect: {
+                        rotate: 30,
+                        stretch: 0,
+                        depth: 200,
+                        modifier: 1,
+                        slideShadows: true,
+                    },
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                });
+            } catch (e) { console.warn('Swiper init failed', e); }
+        })();
+
+        // Signature art rotator
+        (function () {
+            const el = document.getElementById('sigRotator'); 
+            if (!el || el.__cerbiPopArtInit) return; 
+            el.__cerbiPopArtInit = true;
+            const sources = [
+                'assets/popart/popart-01.png', 'assets/popart/popart-02.png', 'assets/popart/popart-03.png',
+                'assets/popart/popart-04.png', 'assets/popart/popart-05.png', 'assets/popart/popart-06.png',
+                'assets/popart/popart-07.png', 'assets/popart/popart-08.png', 'assets/popart/popart-09.png'
+            ];
+            for (let i = sources.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1));
+                [sources[i], sources[j]] = [sources[j], sources[i]]; 
+            }
+
+            el.innerHTML = '';
+            const imgs = sources.map((src, idx) => {
+                const im = new Image();
+                im.decoding = 'async';
+                im.loading = idx === 0 ? 'eager' : 'lazy';
+                im.src = src;
+                im.alt = 'Cerbi pop-art ' + (idx + 1);
+                if (idx === 0) im.className = 'is-active';
+                el.appendChild(im);
+                return im;
+            });
+
+            let i = 0;
+            const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!prefersReduced && imgs.length > 1) {
+                setInterval(() => { 
+                    imgs[i].classList.remove('is-active'); 
+                    i = (i + 1) % imgs.length; 
+                    imgs[i].classList.add('is-active'); 
+                }, 3500);
+            }
+        })();
+
+        // Glitch clock animation
+        (function () {
+            const el = document.getElementById('clockText'); 
+            const scan = document.getElementById('scanline'); 
+            if (!el) return;
+            const WORD = "CERBI";
+            const GLYPHS = ["C", "E", "R", "B", "I", "Ͼ", "Ɨ", "Ɍ", "Ɓ", "ⵛ", "1", "8", "|", "◼", "▮", "▯"];
+            let tick = 0;
+
+            function scramble(base) {
+                return base.split('').map(ch => {
+                    if (Math.random() < 0.32) return GLYPHS[(Math.random() * GLYPHS.length) | 0];
+                    if (Math.random() < 0.18) return ch.toLowerCase();
+                    return ch;
+                }).join('');
+            }
+
+            function jitter() {
+                const j = () => (Math.random() * 4 - 2).toFixed(0) + 'px';
+                document.documentElement.style.setProperty('--gx1', j());
+                document.documentElement.style.setProperty('--gy1', j());
+                document.documentElement.style.setProperty('--gx2', j());
+                document.documentElement.style.setProperty('--gy2', j());
+                document.documentElement.style.setProperty('--gx3', j());
+                document.documentElement.style.setProperty('--gy3', j());
+            }
+
+            function update() {
+                const d = new Date();
+                const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                const phase = tick % 15;
+                let out = time;
+                if (phase <= 2 || phase >= 12) { out = scramble(WORD); jitter(); }
+                else if (phase === 5 || phase === 9) { jitter(); }
+
+                if (phase === 1 || phase === 12) {
+                    scan.style.opacity = '0.55'; scan.style.transition = 'none'; scan.style.top = '-3px';
+                    requestAnimationFrame(() => { scan.style.transition = 'top .45s ease, opacity .45s ease'; scan.style.top = '100%'; scan.style.opacity = '0'; });
+                }
+                el.textContent = out;
+                el.setAttribute('data-glitch', out);
+                tick++;
+            }
+            update();
+            setInterval(update, 500);
+        })();
+
+        // Interactive governance flow nodes
+        document.addEventListener('DOMContentLoaded', function () {
+            const nodes = document.querySelectorAll('.flow-node');
+
+            nodes.forEach(node => {
+                const details = node.querySelector('.flow-details');
+
+                function showDetails() {
+                    document.querySelectorAll('.flow-details').forEach(d => d.hidden = true);
+                    if (details) details.hidden = false;
+                }
+
+                function hideDetails() {
+                    if (details) details.hidden = true;
+                }
+
+                node.addEventListener('mouseenter', showDetails);
+                node.addEventListener('focus', showDetails);
+                node.addEventListener('mouseleave', hideDetails);
+                node.addEventListener('blur', hideDetails);
+
+                node.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (details && !details.hidden) {
+                        hideDetails();
+                    } else {
+                        showDetails();
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.flow-details').forEach(d => d.hidden = true);
+            });
+        });
+
+        // OSS repo expand/collapse
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.oss-expand');
+            if (!btn) return;
+            const panel = document.getElementById(btn.getAttribute('aria-controls'));
+            const open = btn.getAttribute('aria-expanded') === 'true';
+
+            btn.setAttribute('aria-expanded', String(!open));
+            if (open) {
+                panel.style.maxHeight = panel.scrollHeight + 'px';
+                requestAnimationFrame(() => { panel.setAttribute('hidden', ''); panel.style.maxHeight = '0px'; });
+            } else {
+                panel.removeAttribute('hidden');
+                panel.style.maxHeight = '0px';
+                requestAnimationFrame(() => {
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                    const tidy = (ev) => { if (ev.propertyName === 'max-height') { panel.style.maxHeight = ''; panel.removeEventListener('transitionend', tidy); } };
+                    panel.addEventListener('transitionend', tidy);
+                });
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('oss-expand')) {
+                e.preventDefault(); e.target.click();
+            }
+        });
+
+        // Interactive repository ecosystem
+        (function() {
+            const repoData = {
+                cerbistream: {
+                    icon: '🚀',
+                    title: 'CerbiStream',
+                    tagline: 'Core .NET Logger with Structured Output',
+                    description: 'High-performance structured logger with async Channel&lt;T&gt; pipeline, encrypted file rotation, and governance hooks. Production-ready for .NET 6, 7, and 8.',
+                    features: [
+                        'Channel&lt;T&gt; async path for non-blocking writes',
+                        'File fallback with encrypted rotation',
+                        'Governance hooks: [CerbiTopic] attributes, .Relax() mode',
+                        'Redaction & violation tagging',
+                        'Queue-first routing with configurable batching'
+                    ],
+                    links: [
+                        { text: 'View on GitHub', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream', primary: true },
+                        { text: 'NuGet Package', url: 'https://www.nuget.org/packages/CerbiStream', primary: false },
+                        { text: 'Benchmarks', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream#benchmarks', primary: false }
+                    ]
+                },
+                analyzer: {
+                    icon: '🔍',
+                    title: 'CerbiStream.GovernanceAnalyzer',
+                    tagline: 'Build-Time Governance Validation',
+                    description: 'Roslyn analyzer that flags governance violations during build and in your IDE. Catches schema/PII issues before they reach production.',
+                    features: [
+                        'Real-time diagnostics in Visual Studio / VS Code',
+                        'CI/CD integration for automated checks',
+                        'Reads project governance profiles',
+                        'CI-friendly diagnostic IDs',
+                        'Code fix suggestions for common violations'
+                    ],
+                    links: [
+                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer', primary: true },
+                        { text: 'Documentation', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream#governance-analyzer', primary: false }
+                    ]
+                },
+                mel: {
+                    icon: '⚡',
+                    title: 'Cerbi.MEL.Governance',
+                    tagline: 'Runtime Validation for Microsoft.Extensions.Logging',
+                    description: 'Runtime governance plugin that enforces JSON profiles, tags violations, and supports relax-mode for safe production rollout.',
+                    features: [
+                        'Enforces required/forbidden fields, types, enums',
+                        'Tags violations without dropping logs',
+                        'Relax-mode for gradual adoption',
+                        'Load profiles from disk, blob, or Git',
+                        'Environment-specific overrides'
+                    ],
+                    links: [
+                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/Cerbi.MEL.Governance', primary: true },
+                        { text: 'Demo App', url: 'https://github.com/Zeroshi/Cerbi.MEL.Governance.Demo', primary: false }
+                    ]
+                },
+                shield: {
+                    icon: '🛡️',
+                    title: 'CerbiShield',
+                    tagline: 'Governance Dashboard & Management APIs',
+                    description: 'Central dashboard for profile authoring, RBAC, audit history, and environment-aware deployments. Visualize compliance trends and drill into violations.',
+                    features: [
+                        'Profile authoring with Monaco editor',
+                        'RBAC with team-based permissions',
+                        'Audit history & change tracking',
+                        'Environment-aware profile deployments',
+                        'Real-time compliance scorecards'
+                    ],
+                    links: [
+                        { text: 'Coming Soon', url: '#', primary: true }
+                    ]
+                },
+                serilog: {
+                    icon: '📊',
+                    title: 'Cerbi.Serilog.GovernanceAnalyzer',
+                    tagline: 'Governance Validation for Serilog',
+                    description: 'Roslyn analyzer that brings governance checks to Serilog projects. Compatible with all existing Serilog sinks and enrichers.',
+                    features: [
+                        'Checks Serilog logs against governance profiles',
+                        'Diagnostics for required/forbidden fields',
+                        'Type and enum mismatch detection',
+                        'Built on Cerbi.Governance.Core',
+                        'Works with all Serilog sinks'
+                    ],
+                    links: [
+                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer', primary: true },
+                        { text: 'Test App', url: 'https://github.com/Zeroshi/Cerbi.Serilog.GovernanceAnalyzer.TestApp', primary: false }
+                    ]
+                },
+                core: {
+                    icon: '⚙️',
+                    title: 'Cerbi.Governance.Core',
+                    tagline: 'Shared Models & Plugin Contracts',
+                    description: 'Core library with shared models for profiles, validation results, and plugin contracts. Foundation for all governance components.',
+                    features: [
+                        'Profile schema definitions',
+                        'Validation result models',
+                        'Plugin contract interfaces',
+                        'Shared enums & constants',
+                        'Serialization helpers'
+                    ],
+                    links: [
+                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/Cerbi.Governance.Core', primary: true }
+                    ]
+                }
+            };
+
+            const detailPanel = document.getElementById('repoDetail');
+            const closeBtn = detailPanel?.querySelector('.repo-detail-close');
+            
+            function showRepoDetail(repoKey) {
+                const data = repoData[repoKey];
+                if (!data || !detailPanel) return;
+
+                // Populate content
+                detailPanel.querySelector('.repo-detail-icon').textContent = data.icon;
+                detailPanel.querySelector('.repo-detail-title').textContent = data.title;
+                detailPanel.querySelector('.repo-detail-tagline').textContent = data.tagline;
+                detailPanel.querySelector('.repo-detail-description').innerHTML = '<p>' + data.description + '</p>';
+                
+                // Features
+                const featuresHtml = '<h4>Key Features</h4><ul>' + 
+                    data.features.map(f => '<li>' + f + '</li>').join('') + 
+                    '</ul>';
+                detailPanel.querySelector('.repo-detail-features').innerHTML = featuresHtml;
+                
+                // Links
+                const linksHtml = data.links.map(link => 
+                    '<a href="' + link.url + '" target="_blank" rel="noopener" class="' + 
+                    (link.primary ? '' : 'secondary') + '">' + link.text + ' →</a>'
+                ).join('');
+                detailPanel.querySelector('.repo-detail-links').innerHTML = linksHtml;
+
+                // Show panel
+                detailPanel.hidden = false;
+                document.body.style.overflow = 'hidden';
+            }
+
+            function hideRepoDetail() {
+                if (detailPanel) {
+                    detailPanel.hidden = true;
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Attach click handlers
+            document.querySelectorAll('.repo-node').forEach(node => {
+                node.addEventListener('click', () => {
+                    const repoKey = node.getAttribute('data-repo');
+                    showRepoDetail(repoKey);
+                });
+                
+                node.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const repoKey = node.getAttribute('data-repo');
+                        showRepoDetail(repoKey);
+                    }
+                });
+            });
+
+            closeBtn?.addEventListener('click', hideRepoDetail);
+            detailPanel?.addEventListener('click', (e) => {
+                if (e.target === detailPanel) hideRepoDetail();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !detailPanel?.hidden) hideRepoDetail();
+            });
+        })();
+    </script>
+
+    <script id="hs-script-loader" async defer src="https://js-na2.hs-scripts.com/244006641.js"></script>
+
+    <elevenlabs-convai agent-id="agent_4401k82dbmg4fp1rxvbfxnr4d2rb"></elevenlabs-convai>
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+</body>
+</html>
