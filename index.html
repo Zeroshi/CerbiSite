@@ -60,6 +60,7 @@
             text-rendering: optimizeLegibility;
             line-height: 1.55;
             padding-top: var(--nav-h);
+            overflow-x: hidden;
         }
         a { color: var(--link); text-decoration: none }
         a:hover { text-decoration: underline }
@@ -635,6 +636,11 @@
             .flow-details { width: 90vw; left: 50vw; transform: translateX(-50%); }
         }
 
+        @media (max-width:480px) {
+            .flow-node { width: 100%; }
+            .flow-details { width: 92vw; }
+        }
+
         /* Swiper styles */
         .full-bleed-wrap { position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; width: 100vw; }
         .showcase { padding: 2rem 0 1rem; }
@@ -651,6 +657,51 @@
         @media (min-width: 900px) { .sig-rotator { min-height: clamp(360px, 56vw, 525px); } }
         .sig-rotator img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; visibility: hidden; transform: scale(1.02); transition: opacity .45s ease, visibility .45s ease, transform .6s ease }
         .sig-rotator img.is-active { opacity: 1; visibility: visible; transform: none }
+
+        @media (max-width: 820px) {
+            .full-bleed-wrap {
+                left: auto;
+                right: auto;
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+
+            .showcase-outer {
+                width: 100% !important;
+                margin-left: 0 !important;
+                transform: none !important;
+                padding-inline: 14px;
+                box-sizing: border-box;
+            }
+
+            #dashboards .mySwiper {
+                width: 100%;
+                padding-inline: 6px;
+                box-sizing: border-box;
+            }
+
+            .swiper-slide {
+                width: 100%;
+            }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                display: none;
+            }
+
+            .img-cap {
+                padding-inline: 10px;
+            }
+
+            .sig-outer {
+                width: 100%;
+                margin-left: 0;
+                transform: none;
+                padding-inline: 14px;
+                box-sizing: border-box;
+            }
+        }
 
         #nugetGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
         #nugetGrid .card { display: flex; flex-direction: column }
