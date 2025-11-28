@@ -68,41 +68,49 @@
 
         /* Hero Stats Banner */
         .stats-banner {
-            display: flex;
-            gap: clamp(24px, 5vw, 48px);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: clamp(18px, 3vw, 28px);
             justify-content: center;
-            align-items: center;
+            align-items: stretch;
             margin: 40px auto 32px;
-            padding: 32px;
-            background: linear-gradient(135deg, rgba(255,77,0,.05) 0%, rgba(15,99,255,.05) 100%);
-            border-radius: 16px;
-            border: 2px solid rgba(255,77,0,.15);
-            max-width: 900px;
+            padding: clamp(24px, 4vw, 36px);
+            background: linear-gradient(135deg, rgba(255,77,0,.12) 0%, rgba(15,99,255,.12) 100%);
+            border-radius: 18px;
+            border: 1px solid rgba(255,77,0,.18);
+            max-width: 980px;
+            box-shadow: 0 18px 40px rgba(12, 22, 44, 0.12);
         }
 
         .stat-item {
             text-align: center;
-            flex: 1;
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 14px;
+            padding: clamp(14px, 2.2vw, 20px);
+            border: 1px solid rgba(24, 34, 53, 0.08);
+            display: grid;
+            gap: 8px;
+            align-content: center;
         }
 
         .stat-number {
-            font-size: clamp(36px, 5vw, 56px);
+            font-size: clamp(38px, 5.8vw, 60px);
             font-weight: 800;
             color: var(--brand);
             line-height: 1;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: clamp(12px, 1.2vw, 14px);
+            font-size: clamp(14px, 1.4vw, 16px);
             color: var(--text-strong);
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             text-shadow: none;
             background: rgba(24, 34, 53, 0.08);
             display: inline-block;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 999px;
             border: 1px solid rgba(24,34,53,.18);
         }
