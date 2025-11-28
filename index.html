@@ -2558,30 +2558,16 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 display: flex;
                 gap: 12px;
                 flex-wrap: wrap;
+                margin-top: 8px;
             }
 
             .repo-detail-links a {
                 display: inline-flex;
                 align-items: center;
+                justify-content: center;
                 gap: 6px;
-                padding: 10px 16px;
-                background: var(--brand);
-                color: white;
-                border-radius: 10px;
                 text-decoration: none;
-                font-weight: 600;
-                transition: all .2s ease;
-            }
-
-            .repo-detail-links a:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(255,77,0,.3);
-            }
-
-            .repo-detail-links a.secondary {
-                background: var(--panel-2);
-                color: var(--text);
-                border: 1px solid rgba(20,40,72,.12);
+                width: fit-content;
             }
 
             /* Responsive adjustments */
@@ -2592,6 +2578,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 .hub-title { font-size: 16px; }
                 .hub-subtitle { font-size: 12px; }
                 .repo-node { padding: 12px; }
+                .repo-detail-links { flex-direction: column; align-items: stretch; }
+                .repo-detail-links a { width: 100%; justify-content: center; }
             }
         </style>
 
@@ -3904,6 +3892,20 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         // Interactive repository ecosystem
         (function() {
             const repoData = {
+                suite: {
+                    icon: '🧭',
+                    title: 'CerbiSuite',
+                    tagline: 'Unified logging, governance, and scoring for .NET teams.',
+                    description: 'End-to-end ecosystem that connects source logs, governance profiles, scoring, and dashboards so teams can govern every signal without losing developer velocity.',
+                    features: [
+                        'Source logging, analyzers, and runtime validators working together',
+                        'Governed data pipelines that preserve developer-friendly ergonomics',
+                        'Centralized scorecards and governance health across teams',
+                        'Tenant-hosted governance plane with RBAC and audit history',
+                        'Shared contracts to keep every component in sync'
+                    ],
+                    github: 'https://github.com/Zeroshi'
+                },
                 cerbistream: {
                     icon: '🚀',
                     title: 'CerbiStream',
@@ -3916,10 +3918,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'Redaction & violation tagging',
                         'Queue-first routing with configurable batching'
                     ],
-                    links: [
-                        { text: 'View on GitHub', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream', primary: true },
-                        { text: 'NuGet Package', url: 'https://www.nuget.org/packages/CerbiStream', primary: false },
-                        { text: 'Benchmarks', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream#benchmarks', primary: false }
+                    github: 'https://github.com/Zeroshi/Cerbi-CerbiStream',
+                    nuget: 'https://www.nuget.org/packages/CerbiStream',
+                    extraLinks: [
+                        { text: 'View benchmarks', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream#benchmarks', primary: false }
                     ]
                 },
                 analyzer: {
@@ -3934,10 +3936,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'CI-friendly diagnostic IDs',
                         'Code fix suggestions for common violations'
                     ],
-                    links: [
-                        { text: 'View on GitHub', url: 'https://github.com/Zeroshi/Cerbi-CerbiStream', primary: true },
-                        { text: 'NuGet Package', url: 'https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer', primary: false }
-                    ]
+                    github: 'https://github.com/Zeroshi/Cerbi-CerbiStream',
+                    nuget: 'https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer'
                 },
                 mel: {
                     icon: '⚡',
@@ -3951,10 +3951,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'Load profiles from disk, blob, or Git',
                         'Environment-specific overrides'
                     ],
-                    links: [
-                        { text: 'View on GitHub', url: 'https://github.com/Zeroshi/Cerbi.MEL.Governance', primary: true },
-                        { text: 'NuGet Package', url: 'https://www.nuget.org/packages/Cerbi.MEL.Governance', primary: false }
-                    ]
+                    github: 'https://github.com/Zeroshi/Cerbi.MEL.Governance',
+                    nuget: 'https://www.nuget.org/packages/Cerbi.MEL.Governance'
+                },
+                runtime: {
+                    icon: '🧮',
+                    title: 'Cerbi.Governance.Runtime',
+                    tagline: 'Shared governance engine for validators and adapters.',
+                    description: 'Runtime governance engine that evaluates Cerbi profiles, tags violations, and computes impact scores for any Cerbi-aware logger.',
+                    features: [
+                        'Profile evaluation for required and forbidden fields',
+                        'Violation tagging without dropping critical events',
+                        'Impact scoring for governed logs',
+                        'Relax/strict modes to pace adoption',
+                        'Shared logic for MEL, Serilog, and future adapters'
+                    ],
+                    nuget: 'https://www.nuget.org/packages/Cerbi.Governance.Runtime'
                 },
                 shield: {
                     icon: '🛡️',
@@ -3968,9 +3980,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'Environment-aware profile deployments',
                         'Real-time compliance scorecards'
                     ],
-                    links: [
-                        { text: 'Cerbi GitHub Org', url: 'https://github.com/Zeroshi', primary: true }
-                    ]
+                    github: 'https://github.com/Zeroshi'
                 },
                 serilog: {
                     icon: '📊',
@@ -3984,9 +3994,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'Built on Cerbi.Governance.Core',
                         'Works with all Serilog sinks'
                     ],
-                    links: [
-                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer', primary: true }
-                    ]
+                    nuget: 'https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer'
                 },
                 core: {
                     icon: '⚙️',
@@ -4000,9 +4008,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'Shared enums & constants',
                         'Serialization helpers'
                     ],
-                    links: [
-                        { text: 'View on NuGet', url: 'https://www.nuget.org/packages/Cerbi.Governance.Core', primary: true }
-                    ]
+                    nuget: 'https://www.nuget.org/packages/Cerbi.Governance.Core'
                 }
             };
 
@@ -4042,16 +4048,28 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 detailPanel.querySelector('.repo-detail-description').innerHTML = '<p>' + data.description + '</p>';
                 
                 // Features
-                const featuresHtml = '<h4>Key Features</h4><ul>' + 
-                    data.features.map(f => '<li>' + f + '</li>').join('') + 
+                const featuresHtml = '<h4>Key Features</h4><ul>' +
+                    data.features.map(f => '<li>' + f + '</li>').join('') +
                     '</ul>';
                 detailPanel.querySelector('.repo-detail-features').innerHTML = featuresHtml;
-                
-                // Links
-                const linksHtml = data.links.map(link => 
-                    '<a href="' + link.url + '" target="_blank" rel="noopener" class="' + 
-                    (link.primary ? '' : 'secondary') + '">' + link.text + ' →</a>'
-                ).join('');
+
+                // Actions
+                const actions = [];
+                if (data.github) {
+                    actions.push({ text: 'View on GitHub', url: data.github, primary: true });
+                }
+                if (data.nuget) {
+                    actions.push({ text: 'View on NuGet', url: data.nuget, primary: false });
+                }
+                if (data.extraLinks?.length) {
+                    actions.push(...data.extraLinks);
+                }
+
+                const linksHtml = actions.map(action => {
+                    const classes = ['btn', action.primary ? 'btn-primary' : 'btn-secondary'];
+                    return '<a href="' + action.url + '" target="_blank" rel="noreferrer noopener" class="' + classes.join(' ') + '">' + action.text + '</a>';
+                }).join('');
+
                 detailPanel.querySelector('.repo-detail-links').innerHTML = linksHtml;
 
                 // Show panel
