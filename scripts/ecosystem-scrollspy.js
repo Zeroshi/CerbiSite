@@ -6,6 +6,20 @@
     function EcosystemScrollSpy() {
         const [activeStage, setActiveStage] = useState(1);
 
+        const moveHighlight = (stageValue) => {
+            const highlight = document.querySelector('.pipeline-stage-highlight');
+            const wrapper = document.querySelector('.pipeline-stages-wrapper');
+            if (!highlight || !wrapper) return;
+
+            const styles = getComputedStyle(wrapper);
+            const itemHeight = parseFloat(styles.getPropertyValue('--pipeline-stage-height')) || 88;
+            const itemGap = parseFloat(styles.getPropertyValue('--pipeline-stage-gap')) || 14;
+            const offset = Math.max(0, stageValue - 1) * (itemHeight + itemGap);
+
+            highlight.style.height = `${itemHeight}px`;
+            highlight.style.transform = `translateY(${offset}px)`;
+        };
+
         useEffect(() => {
             const sections = [1, 2, 3, 4, 5]
                 .map((n) => document.getElementById(`ecosystem-stage-${n}`))
@@ -35,6 +49,7 @@
         useEffect(() => {
             const buttons = Array.from(document.querySelectorAll('.pipeline-stage'));
             document.body.dataset.ecosystemActiveStage = activeStage ? String(activeStage) : '';
+            moveHighlight(activeStage);
 
             buttons.forEach((btn) => {
                 const stageNumber = parseInt(btn.dataset.stage || '', 10);
