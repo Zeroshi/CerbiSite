@@ -3099,6 +3099,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="scripts/hero-metrics.js"></script>
+    <script src="scripts/ecosystem-scrollspy.js"></script>
 
     <script>
         // Year in footer
@@ -4055,12 +4056,25 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             function setActiveStage(stageKey) {
                 pipelineStages.forEach(stage => {
-                    stage.classList.toggle('is-active', !!stageKey && stage.dataset.stage === stageKey);
+                    const isActive = !!stageKey && stage.dataset.stage === stageKey;
+                    stage.classList.toggle('is-active', isActive);
+                    if (isActive) {
+                        stage.setAttribute('aria-current', 'step');
+                        stage.setAttribute('aria-pressed', 'true');
+                    } else {
+                        stage.removeAttribute('aria-current');
+                        stage.setAttribute('aria-pressed', 'false');
+                    }
                 });
             }
 
             function clearActiveStage() {
-                setActiveStage(null);
+                const fallbackStage = document.body?.dataset?.ecosystemActiveStage;
+                if (fallbackStage) {
+                    setActiveStage(fallbackStage);
+                } else {
+                    setActiveStage(null);
+                }
             }
 
             document.querySelectorAll('.pipeline-stack[data-stage] .repo-node').forEach(card => {
