@@ -1496,40 +1496,50 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <div class="pipeline-column">
                     <div class="ecosystem-stages">
                         <ol class="pipeline-stages" aria-label="Cerbi pipeline stages">
-                            <li class="pipeline-stage" data-stage="1">
-                                <div class="stage-number" aria-hidden="true">1</div>
-                                <div class="stage-copy">
-                                    <p class="stage-kicker">Stage 1</p>
-                                    <p class="stage-title">Source logging</p>
-                                </div>
+                            <li>
+                                <button type="button" class="pipeline-stage" data-stage="1">
+                                    <div class="stage-number" aria-hidden="true">1</div>
+                                    <div class="stage-copy">
+                                        <p class="stage-kicker">Stage 1</p>
+                                        <p class="stage-title">Source logging</p>
+                                    </div>
+                                </button>
                             </li>
-                            <li class="pipeline-stage" data-stage="2">
-                                <div class="stage-number" aria-hidden="true">2</div>
-                                <div class="stage-copy">
-                                    <p class="stage-kicker">Stage 2</p>
-                                    <p class="stage-title">Build-time guardrails</p>
-                                </div>
+                            <li>
+                                <button type="button" class="pipeline-stage" data-stage="2">
+                                    <div class="stage-number" aria-hidden="true">2</div>
+                                    <div class="stage-copy">
+                                        <p class="stage-kicker">Stage 2</p>
+                                        <p class="stage-title">Build-time guardrails</p>
+                                    </div>
+                                </button>
                             </li>
-                            <li class="pipeline-stage" data-stage="3">
-                                <div class="stage-number" aria-hidden="true">3</div>
-                                <div class="stage-copy">
-                                    <p class="stage-kicker">Stage 3</p>
-                                    <p class="stage-title">Runtime governance &amp; scoring</p>
-                                </div>
+                            <li>
+                                <button type="button" class="pipeline-stage" data-stage="3">
+                                    <div class="stage-number" aria-hidden="true">3</div>
+                                    <div class="stage-copy">
+                                        <p class="stage-kicker">Stage 3</p>
+                                        <p class="stage-title">Runtime governance &amp; scoring</p>
+                                    </div>
+                                </button>
                             </li>
-                            <li class="pipeline-stage" data-stage="4">
-                                <div class="stage-number" aria-hidden="true">4</div>
-                                <div class="stage-copy">
-                                    <p class="stage-kicker">Stage 4</p>
-                                    <p class="stage-title">Shared contracts</p>
-                                </div>
+                            <li>
+                                <button type="button" class="pipeline-stage" data-stage="4">
+                                    <div class="stage-number" aria-hidden="true">4</div>
+                                    <div class="stage-copy">
+                                        <p class="stage-kicker">Stage 4</p>
+                                        <p class="stage-title">Shared contracts</p>
+                                    </div>
+                                </button>
                             </li>
-                            <li class="pipeline-stage" data-stage="5">
-                                <div class="stage-number" aria-hidden="true">5</div>
-                                <div class="stage-copy">
-                                    <p class="stage-kicker">Stage 5</p>
-                                    <p class="stage-title">Dashboards &amp; reporting</p>
-                                </div>
+                            <li>
+                                <button type="button" class="pipeline-stage" data-stage="5">
+                                    <div class="stage-number" aria-hidden="true">5</div>
+                                    <div class="stage-copy">
+                                        <p class="stage-kicker">Stage 5</p>
+                                        <p class="stage-title">Dashboards &amp; reporting</p>
+                                    </div>
+                                </button>
                             </li>
                         </ol>
                     </div>
@@ -1555,7 +1565,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack" data-stage="1">
+                    <div class="pipeline-stack" data-stage="1" id="ecosystem-stage-1">
                         <div class="stack-header">
                             <p class="stage-label">Stage 1</p>
                             <h3 class="stack-title">Source logging</h3>
@@ -1574,7 +1584,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack" data-stage="2">
+                    <div class="pipeline-stack" data-stage="2" id="ecosystem-stage-2">
                         <div class="stack-header">
                             <p class="stage-label">Stage 2</p>
                             <h3 class="stack-title">Build-time guardrails</h3>
@@ -1593,7 +1603,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack" data-stage="3">
+                    <div class="pipeline-stack" data-stage="3" id="ecosystem-stage-3">
                         <div class="stack-header">
                             <p class="stage-label">Stage 3</p>
                             <h3 class="stack-title">Runtime governance &amp; scoring</h3>
@@ -1634,7 +1644,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack" data-stage="4">
+                    <div class="pipeline-stack" data-stage="4" id="ecosystem-stage-4">
                         <div class="stack-header">
                             <p class="stage-label">Stage 4</p>
                             <h3 class="stack-title">Shared contracts</h3>
@@ -1653,7 +1663,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack" data-stage="5">
+                    <div class="pipeline-stack" data-stage="5" id="ecosystem-stage-5">
                         <div class="stack-header">
                             <p class="stage-label">Stage 5</p>
                             <h3 class="stack-title">Dashboards &amp; reporting</h3>
@@ -1750,6 +1760,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 background: linear-gradient(120deg, rgba(255,77,0,.04) 0%, rgba(255,77,0,.02) 100%);
                 box-shadow: 0 6px 18px rgba(12,22,44,.06);
                 transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease, transform 160ms ease;
+                display: block;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                appearance: none;
             }
 
             .pipeline-stage::after {
@@ -4031,6 +4046,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             const pipelineStages = Array.from(document.querySelectorAll('.pipeline-stage'));
 
+            const scrollToStage = (id) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+
             function setActiveStage(stageKey) {
                 pipelineStages.forEach(stage => {
                     stage.classList.toggle('is-active', !!stageKey && stage.dataset.stage === stageKey);
@@ -4050,7 +4072,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 card.addEventListener('mouseleave', clearActiveStage);
                 card.addEventListener('blur', clearActiveStage);
             });
-            
+
+            pipelineStages.forEach(stage => {
+                const stageKey = stage.dataset.stage;
+                stage.addEventListener('click', () => {
+                    if (!stageKey) return;
+                    scrollToStage(`ecosystem-stage-${stageKey}`);
+                });
+            });
+
             function showRepoDetail(repoKey) {
                 const data = repoData[repoKey];
                 if (!data || !detailPanel) return;
