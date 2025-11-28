@@ -47,6 +47,11 @@
             --nav-h: 64px;
             --container: min(1200px,92vw);
             --bg-url: url("assets/CerbiShield.png");
+            --layer-progress: 4000;
+            --layer-nav: 5000;
+            --layer-dropdown: 6500;
+            --layer-overlay: 9000;
+            --layer-modal: 9500;
         }
 
         * { box-sizing: border-box }
@@ -171,7 +176,7 @@
             box-shadow: 0 14px 34px rgba(12,22,44,0.32);
             font-size: 13px;
             line-height: 1.45;
-            z-index: 4;
+            z-index: var(--layer-dropdown);
         }
 
         .tooltip-bubble::after {
@@ -491,7 +496,7 @@
             left: 0;
             right: 0;
             top: 0;
-            z-index: 5000;
+            z-index: var(--layer-nav);
             background: rgba(255,255,255,.95);
             backdrop-filter: saturate(1.2) blur(12px);
             border-bottom: 1px solid rgba(20,40,72,.08);
@@ -510,7 +515,7 @@
         .btn-ghost { background: transparent; color: var(--link); outline: 1px solid color-mix(in srgb, var(--link), transparent 50%) }
         .more { position: relative; flex-shrink: 0 }
         .more > button { background: var(--panel-2); color: var(--text); border: 1px solid rgba(20,40,72,.12); border-radius: 10px; padding: 8px 10px }
-        .more-menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--panel); border: 1px solid rgba(20,40,72,.12); border-radius: 12px; box-shadow: var(--shadow); padding: 8px; display: none; min-width: 240px; max-height: 60vh; overflow: auto }
+        .more-menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--panel); border: 1px solid rgba(20,40,72,.12); border-radius: 12px; box-shadow: var(--shadow); padding: 8px; display: none; min-width: 240px; max-height: 60vh; overflow: auto; z-index: var(--layer-dropdown); }
         .more-menu a { display: block; padding: 8px 10px; border-radius: 8px }
         .more-menu a:hover { background: var(--panel-2) }
         .more[data-open="true"] .more-menu { display: block }
@@ -542,7 +547,7 @@
         .table tbody tr:hover { background: var(--brand-06) }
 
         .lightbox[hidden] { display: none !important; }
-        .lightbox { position: fixed; inset: 0; z-index: 6000; display: grid; place-items: center; background: rgba(0,0,0,.66); padding: 24px; }
+        .lightbox { position: fixed; inset: 0; z-index: var(--layer-overlay); display: grid; place-items: center; background: rgba(0,0,0,.66); padding: 24px; }
         .lightbox > .close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); border: 1px solid rgba(20,40,72,.15); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
         #lightboxImg { max-width: min(96vw, 1800px); max-height: 90vh; border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,.35); background: #fff; }
 
@@ -550,7 +555,7 @@
         .caret { display: inline-block; width: .6ch; background: currentColor; margin-left: 2px; height: 1.05em; vertical-align: -.18em; animation: blink .9s steps(1) infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        #vprogress { position: fixed; right: 6px; top: calc(var(--nav-h) + 8px); bottom: 12px; width: 4px; border-radius: 999px; background: rgba(15,99,255,.12); z-index: 4000; pointer-events: none; }
+        #vprogress { position: fixed; right: 6px; top: calc(var(--nav-h) + 8px); bottom: 12px; width: 4px; border-radius: 999px; background: rgba(15,99,255,.12); z-index: var(--layer-progress); pointer-events: none; }
         #vprogress .bar { position: absolute; left: 0; bottom: 0; width: 100%; height: var(--vprogress, 0%); border-radius: 999px; background: linear-gradient(180deg, #0f63ff, var(--brand)); box-shadow: 0 0 10px rgba(15,99,255,.35); }
 
         /* Glitch clock background */
@@ -614,7 +619,7 @@
         .flow-icon { font-size: 2.5rem; margin-bottom: 8px; }
         .flow-step-num { position: absolute; top: 8px; right: 8px; background: var(--brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
         .flow-title { font-weight: 600; color: var(--text-strong); margin-top: 4px; }
-        .flow-details { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; background: white; border: 2px solid var(--brand); border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 12px 32px rgba(255,77,0,.2); z-index: 100; text-align: left; }
+        .flow-details { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; background: white; border: 2px solid var(--brand); border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 12px 32px rgba(255,77,0,.2); z-index: var(--layer-dropdown); text-align: left; }
         .flow-details h4 { margin: 0 0 8px 0; color: var(--brand); font-size: 16px; }
         .flow-details p { margin: 0 0 8px 0; font-size: 14px; }
         .flow-details ul { margin: 0; padding-left: 18px; font-size: 13px; }
@@ -2267,7 +2272,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             .video-modal {
                 position: fixed;
                 inset: 0;
-                z-index: 9999;
+                z-index: var(--layer-modal);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -2282,6 +2287,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 position: absolute;
                 inset: 0;
                 background: rgba(0,0,0,.9);
+                z-index: 0;
                 animation: fadeIn .3s ease;
             }
 
@@ -2292,6 +2298,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 background: white;
                 border-radius: 16px;
                 overflow: hidden;
+                z-index: 1;
                 animation: modalSlideIn .4s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
@@ -2469,7 +2476,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 border: 2px solid var(--brand);
                 border-radius: 20px;
                 box-shadow: 0 20px 60px rgba(0,0,0,.3);
-                z-index: 6000;
+                z-index: var(--layer-overlay);
                 opacity: 0;
                 transition: all .3s ease;
                 overflow: hidden;
