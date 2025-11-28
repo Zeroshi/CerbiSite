@@ -1480,26 +1480,62 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
         <section id="packages" class="container section">
             <div class="eyebrow">Install</div>
-            <h2><span class="hl">NuGet Packages</span> (live)</h2>
-            <div id="nugetGrid"></div>
-            <template id="nugetCardTpl">
-                <article class="card">
+            <h2>Install from NuGet: <span class="hl">Cerbi Packages</span> (live)</h2>
+            <p style="text-align:center;max-width:820px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
+                Install the core Cerbi packages directly from NuGet using the commands below.
+            </p>
+            <div id="nugetGrid">
+                <article class="card nuget-card">
                     <div class="pkg-head">
-                        <h3 class="pkg-title">Package</h3>
-                        <a class="btn btn-primary pkg-link" target="_blank" rel="noopener">NuGet →</a>
+                        <h3 class="pkg-title">CerbiStream</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a>
                     </div>
-                    <p class="muted pkg-desc">Description</p>
-                    <div class="pkg-badges">
-                        <span class="chip pkg-version">v0.0.0</span>
-                        <span class="chip pkg-downloads">0 downloads</span>
-                        <span class="chip pkg-updated">Updated —</span>
+                    <p class="muted pkg-desc">Governance-enforced structured logging for .NET with optional file fallback and encryption.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package CerbiStream</span>
                     </div>
-                    <details class="pkg-updates" style="margin-top:10px">
-                        <summary class="mono">Recent updates</summary>
-                        <ul class="updates-list" style="margin:.4rem00; padding-left:1.1rem"></ul>
-                    </details>
                 </article>
-            </template>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">CerbiStream.GovernanceAnalyzer</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Roslyn analyzer that enforces Cerbi governance rules at build time.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package CerbiStream.GovernanceAnalyzer</span>
+                    </div>
+                </article>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.MEL.Governance</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Runtime governance adapter for Microsoft.Extensions.Logging (MEL).</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.MEL.Governance</span>
+                    </div>
+                </article>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.Governance.Core</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Shared contracts and enums that keep analyzers, runtime validators, and dashboards aligned.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.Governance.Core</span>
+                    </div>
+                </article>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.Governance.Runtime</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Runtime governance engine that evaluates Cerbi profiles and emits violation metadata.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.Governance.Runtime</span>
+                    </div>
+                </article>
+            </div>
         </section>
 
         <!-- CerbiStream demo video AFTER NuGet packages -->
@@ -2348,103 +2384,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 box.addEventListener('mouseenter', () => { if (!paused) { paused = true; caretEl.style.visibility = 'hidden'; } });
                 box.addEventListener('mouseleave', () => { if (paused) { paused = false; caretEl.style.visibility = 'visible'; } });
             }
-        })();
-
-        (function () {
-            const grid = document.getElementById('nugetGrid'); const tpl = document.getElementById('nugetCardTpl');
-            if (!grid || !tpl) return;
-
-            const pkgs = [
-                { id: 'CerbiStream', desc: 'Structured logger with async buffer, encryption, and governance hooks.' },
-                { id: 'Cerbi.MEL.Governance', desc: 'Runtime governance for Microsoft.Extensions.Logging; redaction & relax-mode.' },
-                { id: 'CerbiStream.GovernanceAnalyzer', desc: 'Roslyn analyzer diagnostics for schema/PII with CI-friendly IDs.' },
-                { id: 'Cerbi.Governance.Runtime', desc: 'Runtime enforcement engine shared by plugins.' },
-                { id: 'Cerbi.Governance.Core', desc: 'Core models (profiles, results) + plugin contracts.' },
-                { id: 'Cerbi.Serilog.GovernanceAnalyzer', desc: 'Analyzer support for Serilog projects.' }
-            ];
-
-            function fmtDownloads(n) {
-                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
-                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-                if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
-                return String(n);
-            }
-
-            function truncate(text, max) {
-                if (!text) return '';
-                const t = String(text).trim();
-                return t.length > max ? t.slice(0, max - 1) + '…' : t;
-            }
-
-            async function fetchNuGetUpdates(id) {
-                try {
-                    const base = 'https://api.nuget.org/v3/registration5-gz-semver2/';
-                    const idxUrl = base + encodeURIComponent(id.toLowerCase()) + '/index.json';
-                    const idx = await fetch(idxUrl, { cache: 'no-store' }).then(r => r.ok ? r.json() : null);
-                    if (!idx || !Array.isArray(idx.items) || idx.items.length === 0) return [];
-                    const lastPage = idx.items[idx.items.length - 1];
-                    let page = lastPage;
-                    if (!Array.isArray(lastPage.items)) {
-                        page = await fetch(lastPage['@id'], { cache: 'no-store' }).then(r => r.ok ? r.json() : { items: [] });
-                    }
-                    const entries = (page.items || [])
-                        .map(it => it.catalogEntry)
-                        .filter(Boolean)
-                        .sort((a, b) => new Date(b.published) - new Date(a.published))
-                        .filter(e => e && typeof e.version === 'string' && !e.version.includes('-'))
-                        .slice(0, 3)
-                        .map(e => ({
-                            version: e.version,
-                            published: e.published,
-                            notes: typeof e.releaseNotes === 'string' ? e.releaseNotes
-                                : (e.releaseNotes && typeof e.releaseNotes.url === 'string' ? e.releaseNotes.url : '')
-                        }));
-                    return entries;
-                } catch { return []; }
-            }
-
-            pkgs.forEach(async pkg => {
-                const node = tpl.content.firstElementChild.cloneNode(true);
-                node.querySelector('.pkg-title').textContent = pkg.id;
-                node.querySelector('.pkg-desc').textContent = pkg.desc;
-                node.querySelector('.pkg-link').href = `https://www.nuget.org/packages/${pkg.id}`;
-
-                try {
-                    const r = await fetch(`https://api-v2v3search-0.nuget.org/query?q=packageid:${encodeURIComponent(pkg.id)}&prerelease=false`);
-                    const j = await r.json();
-                    const item = (j.data && j.data[0]) || null;
-                    if (item) {
-                        const version = item.version || (item.versions?.slice(-1)[0]?.version) || '—';
-                        const downloads = item.totalDownloads || 0;
-                        const updated = item.published ? new Date(item.published).toLocaleDateString() : '—';
-                        node.querySelector('.pkg-version').textContent = 'v' + version;
-                        node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads) + ' downloads';
-                        node.querySelector('.pkg-updated').textContent = 'Updated ' + updated;
-                    }
-                } catch (_) { /* ignore API failure */ }
-
-                // Recent updates (versions + notes)
-                try {
-                    const updates = await fetchNuGetUpdates(pkg.id);
-                    const details = node.querySelector('.pkg-updates');
-                    const ul = node.querySelector('.updates-list');
-                    if (updates && updates.length) {
-                        ul.innerHTML = '';
-                        updates.forEach(u => {
-                            const li = document.createElement('li');
-                            const date = u.published ? new Date(u.published).toLocaleDateString() : '';
-                            const hasUrl = u.notes && /^https?:\/\//i.test(u.notes);
-                            const notesText = hasUrl ? '' : truncate(u.notes, 140);
-                            li.innerHTML = `<strong>v${u.version}</strong> — ${date}` + (hasUrl ? ` — <a href="${u.notes}" target="_blank" rel="noopener">Release notes</a>` : (notesText ? ` — ${notesText}` : ''));
-                            ul.appendChild(li);
-                        });
-                    } else {
-                        details.hidden = true;
-                    }
-                } catch (_) { /* ignore updates failure */ }
-
-                grid.appendChild(node);
-            });
         })();
 
         /* Chart.js doughnuts with center text */
