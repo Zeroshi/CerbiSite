@@ -1494,43 +1494,45 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             <div class="repo-ecosystem pipeline-layout">
                 <div class="pipeline-column">
-                    <ol class="pipeline-stages" aria-label="Cerbi pipeline stages">
-                        <li class="pipeline-stage" data-stage="1">
-                            <div class="stage-number" aria-hidden="true">1</div>
-                            <div class="stage-copy">
-                                <p class="stage-kicker">Stage 1</p>
-                                <p class="stage-title">Source logging</p>
-                            </div>
-                        </li>
-                        <li class="pipeline-stage" data-stage="2">
-                            <div class="stage-number" aria-hidden="true">2</div>
-                            <div class="stage-copy">
-                                <p class="stage-kicker">Stage 2</p>
-                                <p class="stage-title">Build-time guardrails</p>
-                            </div>
-                        </li>
-                        <li class="pipeline-stage" data-stage="3">
-                            <div class="stage-number" aria-hidden="true">3</div>
-                            <div class="stage-copy">
-                                <p class="stage-kicker">Stage 3</p>
-                                <p class="stage-title">Runtime governance &amp; scoring</p>
-                            </div>
-                        </li>
-                        <li class="pipeline-stage" data-stage="4">
-                            <div class="stage-number" aria-hidden="true">4</div>
-                            <div class="stage-copy">
-                                <p class="stage-kicker">Stage 4</p>
-                                <p class="stage-title">Shared contracts</p>
-                            </div>
-                        </li>
-                        <li class="pipeline-stage" data-stage="5">
-                            <div class="stage-number" aria-hidden="true">5</div>
-                            <div class="stage-copy">
-                                <p class="stage-kicker">Stage 5</p>
-                                <p class="stage-title">Dashboards &amp; reporting</p>
-                            </div>
-                        </li>
-                    </ol>
+                    <div class="ecosystem-stages">
+                        <ol class="pipeline-stages" aria-label="Cerbi pipeline stages">
+                            <li class="pipeline-stage" data-stage="1">
+                                <div class="stage-number" aria-hidden="true">1</div>
+                                <div class="stage-copy">
+                                    <p class="stage-kicker">Stage 1</p>
+                                    <p class="stage-title">Source logging</p>
+                                </div>
+                            </li>
+                            <li class="pipeline-stage" data-stage="2">
+                                <div class="stage-number" aria-hidden="true">2</div>
+                                <div class="stage-copy">
+                                    <p class="stage-kicker">Stage 2</p>
+                                    <p class="stage-title">Build-time guardrails</p>
+                                </div>
+                            </li>
+                            <li class="pipeline-stage" data-stage="3">
+                                <div class="stage-number" aria-hidden="true">3</div>
+                                <div class="stage-copy">
+                                    <p class="stage-kicker">Stage 3</p>
+                                    <p class="stage-title">Runtime governance &amp; scoring</p>
+                                </div>
+                            </li>
+                            <li class="pipeline-stage" data-stage="4">
+                                <div class="stage-number" aria-hidden="true">4</div>
+                                <div class="stage-copy">
+                                    <p class="stage-kicker">Stage 4</p>
+                                    <p class="stage-title">Shared contracts</p>
+                                </div>
+                            </li>
+                            <li class="pipeline-stage" data-stage="5">
+                                <div class="stage-number" aria-hidden="true">5</div>
+                                <div class="stage-copy">
+                                    <p class="stage-kicker">Stage 5</p>
+                                    <p class="stage-title">Dashboards &amp; reporting</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
                 </div>
 
                 <div class="pipeline-stacks">
@@ -1712,6 +1714,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 overflow: hidden;
             }
 
+            .ecosystem-stages {
+                position: sticky;
+                top: 96px;
+                align-self: flex-start;
+            }
+
             .pipeline-stages {
                 list-style: none;
                 display: flex;
@@ -1877,6 +1885,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                 .pipeline-stacks {
                     order: 2;
+                }
+
+                .ecosystem-stages {
+                    position: static;
+                    top: auto;
                 }
             }
 
