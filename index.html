@@ -4047,13 +4047,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             const pipelineStages = Array.from(document.querySelectorAll('.pipeline-stage'));
 
-            const scrollToStage = (id) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            };
-
             function setActiveStage(stageKey) {
                 pipelineStages.forEach(stage => {
                     const isActive = !!stageKey && stage.dataset.stage === stageKey;
@@ -4085,14 +4078,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 card.addEventListener('focus', () => setActiveStage(stageKey));
                 card.addEventListener('mouseleave', clearActiveStage);
                 card.addEventListener('blur', clearActiveStage);
-            });
-
-            pipelineStages.forEach(stage => {
-                const stageKey = stage.dataset.stage;
-                stage.addEventListener('click', () => {
-                    if (!stageKey) return;
-                    scrollToStage(`ecosystem-stage-${stageKey}`);
-                });
             });
 
             function showRepoDetail(repoKey) {
