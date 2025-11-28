@@ -2865,7 +2865,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>CerbiStream uses familiar .NET logging abstractions and can run alongside Serilog, NLog, or MEL during rollout. You can enable Cerbi for a subset of services first, validate governance profiles, and then expand as you gain confidence. Many teams can prototype migration in an afternoon, but full cut-over timing depends on your codebase and the governance rules you choose to enforce.</p>
+                        <p>CerbiStream uses familiar .NET logging abstractions and can run alongside Serilog, NLog, or MEL during rollout. You can enable Cerbi for a subset of services first, validate governance profiles, and then expand as you gain confidence. Many teams can prototype integration in a day or less, but full cut-over timing depends on your codebase and the governance rules you choose to enforce.</p>
                     </div>
                 </div>
 
@@ -2875,7 +2875,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>Your logs never leave your infrastructure. CerbiStream writes to your chosen destination (files, databases, queues) within your environment. We never see, store, or transmit your data. You maintain complete control over retention, access, and deletion policies.</p>
+                        <p>CerbiStream writes logs to destinations you configure (files, databases, queues, SIEMs) inside your environment. We don’t operate a centralized log-ingestion SaaS, and we don’t have access to your application log payloads. Optional analytics features can work on derived governance metadata if you explicitly enable them, but raw logs remain under your control.</p>
                     </div>
                 </div>
 
@@ -2885,7 +2885,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>CerbiStream adds <2ms latency on average. We use async Channel<T> buffering to ensure logging never blocks your application threads. Governance validation runs asynchronously. In many cases, CerbiStream performs better than traditional loggers because of intelligent batching and compression.</p>
+                        <p>CerbiStream is designed to stay off the hot path. Logging uses async Channel-based buffering so application threads aren’t blocked, and governance validation runs in the background. In our BenchmarkDotNet tests on typical .NET workloads, CerbiStream’s overhead was comparable to established .NET loggers. Exact numbers depend on your payloads, sinks, and governance rules.</p>
                     </div>
                 </div>
 
@@ -2905,7 +2905,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>CerbiStream core is open source (Apache 2.0). Governance analyzers and compliance features are available under a dual license: free for open source projects, paid for commercial use. Enterprise licenses include priority support, SLAs, and advanced features. Contact us for pricing.</p>
+                        <p>CerbiStream core and the shared governance libraries (for example, Cerbi.Governance.Core and Cerbi.Governance.Runtime) are open source under the MIT license. You can use them in both open source and commercial projects. CerbiShield (the governance dashboard, APIs, and reporting) is licensed commercially for enterprise customers, with subscriptions that include support, SLAs, and advanced features. Check each repo or NuGet page for the exact license, but the general rule is: logging/runtime pieces are permissive, governance/dashboard/reporting are paid.</p>
                     </div>
                 </div>
 
