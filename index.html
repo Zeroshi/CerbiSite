@@ -99,9 +99,11 @@
             display: grid;
             gap: 8px;
             align-content: start;
-            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, z-index 0ms;
             will-change: transform;
             box-shadow: 0 8px 20px rgba(12, 22, 44, 0.08);
+            position: relative;
+            z-index: 1;
         }
 
         .metric-card:hover,
@@ -109,6 +111,7 @@
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 14px 30px rgba(12, 22, 44, 0.14);
             border-color: color-mix(in srgb, var(--brand) 32%, rgba(24,34,53,.12));
+            z-index: 2;
         }
 
         .metric-number {
