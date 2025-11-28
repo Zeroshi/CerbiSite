@@ -4014,6 +4014,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             const detailPanel = document.getElementById('repoDetail');
             const closeBtn = detailPanel?.querySelector('.repo-detail-close');
+            let selectedComponent = null;
 
             const pipelineStages = Array.from(document.querySelectorAll('.pipeline-stage'));
 
@@ -4040,6 +4041,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             function showRepoDetail(repoKey) {
                 const data = repoData[repoKey];
                 if (!data || !detailPanel) return;
+
+                selectedComponent = repoKey;
 
                 // Populate content
                 detailPanel.querySelector('.repo-detail-icon').textContent = data.icon;
@@ -4072,22 +4075,28 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                 detailPanel.querySelector('.repo-detail-links').innerHTML = linksHtml;
 
-                // Show panel
+                // Show panel (ecosystem-only)
                 detailPanel.hidden = false;
-                document.body.style.overflow = 'hidden';
             }
 
             function hideRepoDetail() {
-                if (detailPanel) {
-                    detailPanel.hidden = true;
-                    document.body.style.overflow = '';
-                }
+                if (!detailPanel || !selectedComponent) return;
+
+                selectedComponent = null;
+                detailPanel.hidden = true;
             }
 
             // Attach click handlers
             document.querySelectorAll('.repo-node').forEach(node => {
                 node.addEventListener('click', () => {
                     const repoKey = node.getAttribute('data-repo');
+                    if (!repoKey) return;
+
+                    if (selectedComponent === repoKey && !detailPanel.hidden) {
+                        hideRepoDetail();
+                        return;
+                    }
+
                     showRepoDetail(repoKey);
                 });
 
@@ -4095,6 +4104,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         const repoKey = node.getAttribute('data-repo');
+                        if (!repoKey) return;
+
+                        if (selectedComponent === repoKey && !detailPanel.hidden) {
+                            hideRepoDetail();
+                            return;
+                        }
+
                         showRepoDetail(repoKey);
                     }
                 });
