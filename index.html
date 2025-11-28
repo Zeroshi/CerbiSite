@@ -2596,7 +2596,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>CerbiStream is designed to stay off the hot path. Logging uses async Channel-based buffering so application threads aren’t blocked, and governance validation runs in the background. In our BenchmarkDotNet tests on typical .NET workloads, CerbiStream’s overhead was comparable to established .NET loggers. Exact numbers depend on your payloads, sinks, and governance rules.</p>
+                        <p>
+                            CerbiStream is designed to stay off the hot path. Logging uses async Channel-based buffering so
+                            application threads aren’t blocked, and governance validation runs in the background. In our
+                            BenchmarkDotNet tests on typical .NET workloads, CerbiStream’s overhead was comparable to
+                            established .NET loggers. Exact numbers depend on your payloads, sinks, and governance rules.
+                        </p>
                     </div>
                 </div>
 
