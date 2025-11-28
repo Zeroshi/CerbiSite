@@ -1490,91 +1490,110 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="repos" class="container section">
             <div class="eyebrow">Open Source</div>
             <h2><span class="hl">Explore</span> the Cerbi Ecosystem</h2>
-            <p class="lead">From structured logs to governance scores and dashboards, each piece plays a specific role in the pipeline.</p>
+            <p class="lead">From first log line to governance scores on a dashboard, each piece plays a specific role in the pipeline.</p>
 
-            <div class="repo-ecosystem">
-                <!-- Central hub -->
-                <div class="ecosystem-hub">
-                    <div class="hub-logo">
-                        <img src="assets/CerbiLogoEmblem.png" alt="Cerbi" style="width:72px;height:72px;border-radius:16px;filter:drop-shadow(0 0 16px rgba(255,77,0,.4))">
-                    </div>
-                    <div class="hub-title">CerbiSuite</div>
-                    <div class="hub-subtitle">Unified logging, governance, and scoring for .NET teams.</div>
+            <div class="repo-ecosystem pipeline-layout">
+                <div class="pipeline-column">
+                    <ol class="pipeline-stages">
+                        <li>Source logging</li>
+                        <li>Build-time guardrails</li>
+                        <li>Runtime governance &amp; scoring</li>
+                        <li>Shared contracts</li>
+                        <li>Dashboards &amp; reporting</li>
+                    </ol>
                 </div>
 
-                <!-- Repository cards arranged in orbit -->
-                <div class="repo-orbit">
-                    <!-- CerbiStream -->
-                    <article class="repo-node" data-repo="cerbistream" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
-                        <div class="repo-icon">🚀</div>
-                        <h3 class="repo-name">CerbiStream</h3>
-                        <p class="repo-tagline">Core .NET logger that attaches governance and scoring metadata at the source, with optional file fallback and encryption.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-net">.NET 6–9+</span>
+                <div class="pipeline-stacks">
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Source logging</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="cerbistream" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
+                                <div class="repo-icon">🚀</div>
+                                <h3 class="repo-name">CerbiStream</h3>
+                                <p class="repo-tagline">Core .NET logger that attaches governance and scoring metadata at the source, with optional file fallback and encryption.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-net">.NET 6–9+</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Source logger + governance metadata.</p>
+                            </article>
                         </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Source logger + governance metadata.</p>
-                    </article>
+                    </div>
 
-                    <!-- Governance Analyzer -->
-                    <article class="repo-node" data-repo="analyzer" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
-                        <div class="repo-icon">🔍</div>
-                        <h3 class="repo-name">CerbiStream.GovernanceAnalyzer</h3>
-                        <p class="repo-tagline">Roslyn analyzers that keep logs aligned with Cerbi governance and scoring rules before they ever hit main.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-roslyn">Roslyn</span>
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Build-time guardrails</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="analyzer" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
+                                <div class="repo-icon">🔍</div>
+                                <h3 class="repo-name">CerbiStream.GovernanceAnalyzer</h3>
+                                <p class="repo-tagline">Roslyn analyzers that keep logs aligned with Cerbi governance and scoring rules before they ever hit main.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-roslyn">Roslyn</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Build-time guardrails.</p>
+                            </article>
                         </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Build-time guardrails.</p>
-                    </article>
+                    </div>
 
-                    <!-- MEL Governance -->
-                    <article class="repo-node" data-repo="mel" data-link="https://www.nuget.org/packages/Cerbi.MEL.Governance" tabindex="0">
-                        <div class="repo-icon">⚡</div>
-                        <h3 class="repo-name">Cerbi.MEL.Governance</h3>
-                        <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata asynchronously.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-mel">MEL</span>
-                        </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Runtime validator + score shipper.</p>
-                    </article>
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Runtime governance &amp; scoring</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="mel" data-link="https://www.nuget.org/packages/Cerbi.MEL.Governance" tabindex="0">
+                                <div class="repo-icon">⚡</div>
+                                <h3 class="repo-name">Cerbi.MEL.Governance</h3>
+                                <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata asynchronously.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-mel">MEL</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Runtime validator + score shipper.</p>
+                            </article>
 
-                    <!-- CerbiShield -->
-                    <article class="repo-node" data-repo="shield" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
-                        <div class="repo-icon">🛡️</div>
-                        <h3 class="repo-name">CerbiShield</h3>
-                        <p class="repo-tagline">Tenant-hosted governance dashboard, profile store, deployments, and governance scorecards for apps, teams, and environments.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-beta">Beta</span>
-                            <span class="badge badge-web">Web</span>
+                            <article class="repo-node" data-repo="serilog" data-link="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" tabindex="0">
+                                <div class="repo-icon">📊</div>
+                                <h3 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h3>
+                                <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into CerbiShield.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-serilog">Serilog</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Serilog runtime governance and scoring.</p>
+                            </article>
                         </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Governance brain and dashboards.</p>
-                    </article>
+                    </div>
 
-                    <!-- Serilog Analyzer -->
-                    <article class="repo-node" data-repo="serilog" data-link="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" tabindex="0">
-                        <div class="repo-icon">📊</div>
-                        <h3 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h3>
-                        <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into CerbiShield.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-serilog">Serilog</span>
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Shared contracts</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="core" data-link="https://www.nuget.org/packages/Cerbi.Governance.Core" tabindex="0">
+                                <div class="repo-icon">⚙️</div>
+                                <h3 class="repo-name">Cerbi.Governance.Core</h3>
+                                <p class="repo-tagline">Shared contracts, scoring enums, and profile types that keep analyzers, runtime validators, and dashboards in sync.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-lib">Library</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Shared contracts and scoring types.</p>
+                            </article>
                         </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Serilog runtime governance and scoring.</p>
-                    </article>
+                    </div>
 
-                    <!-- Governance Core -->
-                    <article class="repo-node" data-repo="core" data-link="https://www.nuget.org/packages/Cerbi.Governance.Core" tabindex="0">
-                        <div class="repo-icon">⚙️</div>
-                        <h3 class="repo-name">Cerbi.Governance.Core</h3>
-                        <p class="repo-tagline">Shared contracts, scoring enums, and profile types that keep analyzers, runtime validators, and dashboards in sync.</p>
-                        <div class="repo-status">
-                            <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-lib">Library</span>
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Dashboards &amp; reporting</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="shield" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
+                                <div class="repo-icon">🛡️</div>
+                                <h3 class="repo-name">CerbiShield</h3>
+                                <p class="repo-tagline">Tenant-hosted governance dashboard, profile store, deployments, and governance scorecards for apps, teams, and environments.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-beta">Beta</span>
+                                    <span class="badge badge-web">Web</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Governance brain and dashboards.</p>
+                            </article>
                         </div>
-                        <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Shared contracts and scoring types.</p>
-                    </article>
+                    </div>
                 </div>
             </div>
 
@@ -1599,46 +1618,87 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         </section>
 
         <style>
-            /* Ecosystem visualization */
+            /* Ecosystem pipeline layout */
             .repo-ecosystem {
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 20px;
+                display: grid;
+                grid-template-columns: minmax(220px, 280px) 1fr;
+                gap: 24px;
+                align-items: start;
                 margin: 40px 0;
             }
 
-            /* Central hub */
-            .ecosystem-hub {
+            .pipeline-column {
                 position: relative;
-                z-index: 10;
-                text-align: center;
                 background: white;
-                border: 3px solid var(--brand);
-                border-radius: 20px;
-                padding: 16px 18px;
-                width: min(280px, 100%);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 6px;
-                box-shadow: 0 12px 40px rgba(255,77,0,.18);
+                border: 2px solid rgba(20,40,72,.12);
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: 0 8px 24px rgba(10,16,30,.08);
             }
 
-            .hub-logo { margin-bottom: 4px; }
-            .hub-title { font-weight: 800; font-size: 18px; color: var(--text-strong); line-height: 1.25; }
-            .hub-subtitle { font-size: 13px; color: var(--muted); line-height: 1.4; }
+            .pipeline-stages {
+                list-style: decimal;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin: 0;
+                padding-left: 22px;
+                color: var(--text-strong);
+                font-weight: 700;
+            }
 
-            /* Repository orbit */
-            .repo-orbit {
-                position: relative;
+            .pipeline-stages li {
+                background: linear-gradient(90deg, rgba(255,77,0,.08), rgba(255,77,0,.0));
+                border: 1px solid rgba(255,77,0,.18);
+                border-radius: 12px;
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .pipeline-stacks {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .pipeline-stack {
+                background: white;
+                border: 2px solid rgba(20,40,72,.08);
+                border-radius: 16px;
+                padding: 14px;
+                box-shadow: 0 8px 24px rgba(10,16,30,.06);
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .stack-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 800;
+                color: var(--text-strong);
+                font-size: 15px;
+            }
+
+            .stack-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 14px;
-                width: min(1100px, 100%);
-                padding: 8px;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 12px;
+            }
+
+            @media (max-width: 900px) {
+                .repo-ecosystem {
+                    grid-template-columns: 1fr;
+                }
+
+                .pipeline-column {
+                    order: 1;
+                }
+
+                .pipeline-stacks {
+                    order: 2;
+                }
             }
 
         /* NuGet package cards */
