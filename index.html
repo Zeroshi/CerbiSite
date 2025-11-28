@@ -1495,17 +1495,33 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="repo-ecosystem pipeline-layout">
                 <div class="pipeline-column">
                     <ol class="pipeline-stages">
-                        <li>Source logging</li>
-                        <li>Build-time guardrails</li>
-                        <li>Runtime governance &amp; scoring</li>
-                        <li>Shared contracts</li>
-                        <li>Dashboards &amp; reporting</li>
+                        <li>Stage 1 – Source logging</li>
+                        <li>Stage 2 – Build-time guardrails</li>
+                        <li>Stage 3 – Runtime governance &amp; scoring</li>
+                        <li>Stage 4 – Shared contracts</li>
+                        <li>Stage 5 – Dashboards &amp; reporting</li>
                     </ol>
                 </div>
 
                 <div class="pipeline-stacks">
                     <div class="pipeline-stack">
-                        <div class="stack-header">Source logging</div>
+                        <div class="stack-header">Ecosystem overview</div>
+                        <div class="stack-grid">
+                            <article class="repo-node" data-repo="suite" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
+                                <div class="repo-icon">🧭</div>
+                                <h3 class="repo-name">CerbiSuite</h3>
+                                <p class="repo-tagline">Unified logging, governance, and scoring for .NET teams.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-net">.NET</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: End-to-end ecosystem that connects source logs, governance profiles, scoring, and dashboards.</p>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="pipeline-stack">
+                        <div class="stack-header">Stage 1 – Source logging</div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="cerbistream" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                                 <div class="repo-icon">🚀</div>
@@ -1521,7 +1537,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </div>
 
                     <div class="pipeline-stack">
-                        <div class="stack-header">Build-time guardrails</div>
+                        <div class="stack-header">Stage 2 – Build-time guardrails</div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="analyzer" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                                 <div class="repo-icon">🔍</div>
@@ -1537,7 +1553,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </div>
 
                     <div class="pipeline-stack">
-                        <div class="stack-header">Runtime governance &amp; scoring</div>
+                        <div class="stack-header">Stage 3 – Runtime governance &amp; scoring</div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="mel" data-link="https://www.nuget.org/packages/Cerbi.MEL.Governance" tabindex="0">
                                 <div class="repo-icon">⚡</div>
@@ -1560,11 +1576,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                                 </div>
                                 <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Serilog runtime governance and scoring.</p>
                             </article>
+
+                            <article class="repo-node" data-repo="runtime" data-link="https://www.nuget.org/packages/Cerbi.Governance.Runtime" tabindex="0">
+                                <div class="repo-icon">🧮</div>
+                                <h3 class="repo-name">Cerbi.Governance.Runtime</h3>
+                                <p class="repo-tagline">Shared governance engine that evaluates profiles, tags violations, and computes impact scores for any Cerbi-aware logger.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-ga">GA</span>
+                                    <span class="badge badge-lib">Library</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Runtime validation and scoring engine.</p>
+                            </article>
                         </div>
                     </div>
 
                     <div class="pipeline-stack">
-                        <div class="stack-header">Shared contracts</div>
+                        <div class="stack-header">Stage 4 – Shared contracts</div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="core" data-link="https://www.nuget.org/packages/Cerbi.Governance.Core" tabindex="0">
                                 <div class="repo-icon">⚙️</div>
@@ -1580,7 +1607,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     </div>
 
                     <div class="pipeline-stack">
-                        <div class="stack-header">Dashboards &amp; reporting</div>
+                        <div class="stack-header">Stage 5 – Dashboards &amp; reporting</div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="shield" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                                 <div class="repo-icon">🛡️</div>
@@ -1590,7 +1617,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                                     <span class="badge badge-beta">Beta</span>
                                     <span class="badge badge-web">Web</span>
                                 </div>
-                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Governance brain and dashboards.</p>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Governance brain and scorecards.</p>
                             </article>
                         </div>
                     </div>
