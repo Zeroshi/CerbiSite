@@ -1404,80 +1404,60 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="eyebrow">Install</div>
             <h2>Install from NuGet: <span class="hl">Cerbi Packages</span> (live)</h2>
             <p style="text-align:center;max-width:820px;margin:0 auto 1rem;color:var(--muted);font-size:15px">
-                Install the core Cerbi packages directly from NuGet. Click any package card to flip and reveal install commands & live statistics from NuGet.org.
+                Install the core Cerbi packages directly from NuGet using the commands below.
             </p>
-            <div id="nugetGrid"></div>
-            <template id="nugetCardTpl">
-                <article class="nuget-flip-card" tabindex="0" role="button" aria-label="Click to flip card">
-                    <div class="nuget-flip-inner">
-                        <!-- Front of card -->
-                        <div class="nuget-flip-front card">
-                            <div class="pkg-icon">📦</div>
-                            <h3 class="pkg-title">Package</h3>
-                            <p class="muted pkg-desc">Description</p>
-                            <div class="pkg-badges">
-                                <span class="badge badge-version pkg-version">v0.0.0</span>
-                                <span class="badge badge-downloads pkg-downloads">0</span>
-                            </div>
-                            <div class="flip-hint">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-                                    <path d="M21 3v5h-5"/>
-                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-                                    <path d="M3 21v-5h5"/>
-                                </svg>
-                                Click to flip
-                            </div>
-                        </div>
-                        <!-- Back of card -->
-                        <div class="nuget-flip-back card">
-                            <div class="pkg-stats-header">
-                                <h3 class="pkg-title-back">Package</h3>
-                                <button class="flip-close" aria-label="Flip back">✕</button>
-                            </div>
-                            <div class="pkg-install-section">
-                                <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text-strong)">📋 Install Command</div>
-                                <div class="pkg-install-cmd">
-                                    <code class="pkg-cmd-text">dotnet add package PackageName</code>
-                                    <button class="copy-btn" aria-label="Copy command">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="pkg-stats-grid">
-                                <div class="stat-item">
-                                    <div class="stat-label">Total Downloads</div>
-                                    <div class="stat-value pkg-total-downloads">—</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Latest Version</div>
-                                    <div class="stat-value pkg-latest-version">—</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Last Updated</div>
-                                    <div class="stat-value pkg-last-updated">—</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-label">Authors</div>
-                                    <div class="stat-value pkg-authors">—</div>
-                                </div>
-                            </div>
-                            <a class="btn btn-primary pkg-link-back" target="_blank" rel="noopener" style="width:100%;margin-top:16px">
-                                NuGet →
-                            </a>
-                        </div>
+            <div id="nugetGrid">
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">CerbiStream</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/CerbiStream" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Governance-enforced structured logging for .NET with optional file fallback and encryption.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package CerbiStream</span>
                     </div>
                 </article>
-            </template>
-                    <details class="pkg-updates" style="margin-top:10px">
-                        <summary class="mono">Recent updates</summary>
-                        <ul class="updates-list" style="margin:.4rem00; padding-left:1.1rem"></ul>
-                    </details>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">CerbiStream.GovernanceAnalyzer</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/CerbiStream.GovernanceAnalyzer" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Roslyn analyzer that enforces Cerbi governance rules at build time.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package CerbiStream.GovernanceAnalyzer</span>
+                    </div>
                 </article>
-            </template>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.MEL.Governance</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.MEL.Governance" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Runtime governance adapter for Microsoft.Extensions.Logging (MEL).</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.MEL.Governance</span>
+                    </div>
+                </article>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.Governance.Core</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.Governance.Core" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Shared contracts and enums that keep analyzers, runtime validators, and dashboards aligned.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.Governance.Core</span>
+                    </div>
+                </article>
+                <article class="card nuget-card">
+                    <div class="pkg-head">
+                        <h3 class="pkg-title">Cerbi.Governance.Runtime</h3>
+                        <a class="btn btn-ghost pkg-link" href="https://www.nuget.org/packages/Cerbi.Governance.Runtime" target="_blank" rel="noopener">NuGet →</a>
+                    </div>
+                    <p class="muted pkg-desc">Runtime governance engine that evaluates Cerbi profiles and emits violation metadata.</p>
+                    <div class="pkg-command">
+                        <span class="mono">dotnet add package Cerbi.Governance.Runtime</span>
+                    </div>
+                </article>
+            </div>
         </section>
 
         <!-- CerbiStream Demo Video -->
@@ -1650,282 +1630,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 padding: 8px;
             }
 
-            /* NuGet Flip Cards */
-        .nuget-flip-card {
-            background: transparent;
-            perspective: 1000px;
-            cursor: pointer;
-            min-height: 380px;
-            position: relative;
-        }
-
-        .nuget-flip-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-            transform-style: preserve-3d;
-            will-change: transform;
-        }
-
-            .nuget-flip-card.flipped .nuget-flip-inner {
-                transform: rotateY(180deg);
-            }
-
-        .nuget-flip-front,
-        .nuget-flip-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-                backface-visibility: hidden;
-                -webkit-backface-visibility: hidden;
-                border-radius: 16px;
-                padding: 28px 24px;
-                display: flex;
-                flex-direction: column;
-                min-height: 380px;
-            }
-
-        .nuget-flip-front {
-            background: white;
-            border: 2px solid rgba(20,40,72,.1);
-            box-shadow: 0 4px 12px rgba(20,40,72,.08);
-            transition: all .3s ease;
-        }
-
-        /* Avoid the global `.card:hover` transform interfering with the flip */
-        .nuget-flip-card .nuget-flip-front.card:hover,
-        .nuget-flip-card .nuget-flip-back.card:hover {
-            transform: none;
-        }
-
-        .nuget-flip-card:not(.flipped):hover .nuget-flip-front {
-            border-color: var(--brand);
-            box-shadow: 0 8px 24px rgba(255,77,0,.15);
-            transform: translateY(-4px);
-        }
-
-        .nuget-flip-card.flipped .nuget-flip-front {
-            transform: none;
-            pointer-events: none;
-            box-shadow: 0 4px 12px rgba(20,40,72,.08);
-        }
-
-        .nuget-flip-card.flipped {
-            cursor: default;
-        }
-
-        .nuget-flip-back {
-            background: linear-gradient(135deg, #142848 0%, #1a3a5f 100%);
-            color: white;
-            transform: rotateY(180deg);
-            box-shadow: 0 8px 32px rgba(0,0,0,.3);
-        }
-
-        .nuget-flip-card.flipped .nuget-flip-back.card:hover {
-            transform: rotateY(180deg);
-        }
-
-            .pkg-icon {
-                font-size: 48px;
-                margin-bottom: 16px;
-                animation: pkgBounce 2s ease-in-out infinite;
-            }
-
-            @keyframes pkgBounce {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-8px); }
-            }
-
-            .pkg-title {
-                font-size: 20px;
-                font-weight: 700;
-                color: var(--text-strong);
-                margin: 0 0 12px;
-            }
-
-            .pkg-desc {
-                font-size: 14px;
-                line-height: 1.5;
-                margin: 0 0 auto;
-                flex: 1;
-            }
-
-            .pkg-badges {
-                display: flex;
-                gap: 8px;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-top: 20px;
-            }
-
-            .badge-version {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-            }
-
-            .badge-downloads {
-                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-                color: white;
-            }
-
-            .flip-hint {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                justify-content: center;
-                margin-top: 16px;
-                font-size: 13px;
-                color: var(--muted);
-                opacity: 0.7;
-                transition: opacity .3s;
-            }
-
-            .nuget-flip-card:hover .flip-hint {
-                opacity: 1;
-                color: var(--brand);
-            }
-
-            .flip-hint svg {
-                animation: rotateHint 2s linear infinite;
-            }
-
-            @keyframes rotateHint {
-                0%, 100% { transform: rotate(0deg); }
-                25% { transform: rotate(15deg); }
-                75% { transform: rotate(-15deg); }
-            }
-
-            .pkg-stats-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-                padding-bottom: 16px;
-                border-bottom: 1px solid rgba(255,255,255,.2);
-            }
-
-            .pkg-title-back {
-                font-size: 18px;
-                font-weight: 700;
-                color: white;
-                margin: 0;
-            }
-
-            .flip-close {
-                background: rgba(255,255,255,.1);
-                border: 1px solid rgba(255,255,255,.2);
-                color: white;
-                width: 28px;
-                height: 28px;
-                border-radius: 50%;
-                cursor: pointer;
-                transition: all .2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 16px;
-            }
-
-            .flip-close:hover {
-                background: rgba(255,255,255,.2);
-                transform: rotate(90deg);
-            }
-
-            .pkg-install-section {
-                background: rgba(255,255,255,.1);
-                border-radius: 12px;
-                padding: 16px;
-                margin-bottom: 20px;
-            }
-
-            .pkg-install-cmd {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background: rgba(0,0,0,.3);
-                border-radius: 8px;
-                padding: 10px 12px;
-            }
-
-            .pkg-cmd-text {
-                flex: 1;
-                font-family: 'Courier New', monospace;
-                font-size: 13px;
-                color: #6ce5b1;
-                text-align: left;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            .copy-btn {
-                background: rgba(255,255,255,.1);
-                border: 1px solid rgba(255,255,255,.2);
-                color: white;
-                padding: 6px 8px;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all .2s;
-                flex-shrink: 0;
-            }
-
-            .copy-btn:hover {
-                background: rgba(255,255,255,.2);
-                transform: scale(1.1);
-            }
-
-            .pkg-stats-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-                margin-bottom: auto;
-            }
-
-            .stat-item {
-                background: rgba(255,255,255,.1);
-                border-radius: 10px;
-                padding: 14px;
-                text-align: left;
-            }
-
-            .stat-label {
-                font-size: 11px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: rgba(255,255,255,.6);
-                margin-bottom: 6px;
-                font-weight: 600;
-            }
-
-            .stat-value {
-                font-size: 16px;
-                font-weight: 700;
-                color: white;
-            }
-
-            .pkg-link-back {
-                background: white;
-                color: var(--brand);
-                border: none;
-            }
-
-            .pkg-link-back:hover {
-                background: rgba(255,255,255,.9);
-                transform: translateY(-2px);
-            }
-
-            @media (max-width: 768px) {
-                .nuget-flip-front,
-                .nuget-flip-back {
-                    min-height: 420px;
-                    padding: 24px 20px;
-                }
-
-                .pkg-stats-grid {
-                    grid-template-columns: 1fr;
-                }
-            }
+        /* NuGet package cards */
+        .nuget-card { gap: 12px; display: flex; flex-direction: column; }
+        .nuget-card .pkg-title { margin: 0; font-size: 19px; }
+        .nuget-card .pkg-desc { margin: 0; line-height: 1.6; min-height: 3em; }
+        .nuget-card .pkg-command { background: rgba(20,40,72,.06); border: 1px solid rgba(20,40,72,.12); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+        .nuget-card .pkg-command .mono { font-weight: 700; }
+        .nuget-card .pkg-link { font-weight: 700; }
 
             /* Video Library Gallery */
             .youtube-latest {
@@ -3321,141 +3032,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
         })();
 
-        // NuGet packages
-        (function () {
-            const grid = document.getElementById('nugetGrid'); const tpl = document.getElementById('nugetCardTpl');
-            if (!grid || !tpl) return;
-
-            const pkgs = [
-                { id: 'CerbiStream', desc: 'Governance-first logger for .NET with redaction, encryption, and async buffering.' },
-                { id: 'Cerbi.Governance.Runtime', desc: 'Runtime engine for enforcing Cerbi governance profiles and tagging logs with violations.' },
-                { id: 'CerbiStream.GovernanceAnalyzer', desc: 'Roslyn analyzer that validates CerbiStream logs against governance profiles at build time.' },
-                { id: 'Cerbi.Serilog.GovernanceAnalyzer', desc: 'Serilog governance adapter that enforces profiles and ships governance scores.' }
-            ];
-
-            function fmtDownloads(n) {
-                if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
-                if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-                if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
-                return String(n);
-            }
-
-            function animateNumber(element, target) {
-                const duration = 1000;
-                const start = 0;
-                const startTime = performance.now();
-                
-                function update(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const easeOut = 1 - Math.pow(1 - progress, 3);
-                    const current = Math.floor(start + (target - start) * easeOut);
-                    element.textContent = fmtDownloads(current);
-                    if (progress < 1) requestAnimationFrame(update);
-                }
-                requestAnimationFrame(update);
-            }
-
-            pkgs.forEach(async pkg => {
-                const node = tpl.content.firstElementChild.cloneNode(true);
-                
-                // Front of card
-                node.querySelector('.pkg-title').textContent = pkg.id;
-                node.querySelector('.pkg-desc').textContent = pkg.desc;
-                
-                // Back of card
-                node.querySelector('.pkg-title-back').textContent = pkg.id;
-                node.querySelector('.pkg-cmd-text').textContent = `dotnet add package ${pkg.id}`;
-                node.querySelector('.pkg-link-back').href = `https://www.nuget.org/packages/${pkg.id}`;
-
-                // Flip card interaction
-                const flipCard = node;
-                const flipClose = node.querySelector('.flip-close');
-                const copyBtn = node.querySelector('.copy-btn');
-                const pkgLinkBack = node.querySelector('.pkg-link-back');
-                const downloadsEl = node.querySelector('.pkg-total-downloads');
-                let downloads = 0;
-                let downloadsReady = false;
-                let shouldAnimateDownloads = false;
-                let downloadsAnimated = false;
-
-                const tryAnimateDownloads = () => {
-                    if (!downloadsEl || downloadsAnimated || !downloadsReady || !shouldAnimateDownloads) return;
-                    downloadsAnimated = true;
-                    setTimeout(() => animateNumber(downloadsEl, downloads), 300);
-                };
-
-                function flipOpen() {
-                    if (flipCard.classList.contains('flipped')) return;
-                    flipCard.classList.add('flipped');
-                    shouldAnimateDownloads = true;
-                    tryAnimateDownloads();
-                }
-
-                function flipBack() {
-                    if (!flipCard.classList.contains('flipped')) return;
-                    flipCard.classList.remove('flipped');
-                }
-
-                flipCard.addEventListener('click', (e) => {
-                    const blocked = e.target.closest('.flip-close') || e.target.closest('.copy-btn') || e.target.closest('.pkg-link-back');
-                    if (blocked) return;
-                    flipOpen();
-                });
-                flipCard.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        flipCard.classList.contains('flipped') ? flipBack() : flipOpen();
-                    }
-                    if (e.key === 'Escape') {
-                        flipBack();
-                    }
-                });
-
-                flipClose.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    flipBack();
-                    flipCard.focus();
-                });
-
-                copyBtn.addEventListener('click', async (e) => {
-                    e.stopPropagation();
-                    const cmd = node.querySelector('.pkg-cmd-text').textContent;
-                    try {
-                        await navigator.clipboard.writeText(cmd);
-                        copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
-                        setTimeout(() => {
-                            copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-                        }, 2000);
-                    } catch (_) { }
-                });
-
-                try {
-                    const r = await fetch(`https://api-v2v3search-0.nuget.org/query?q=packageid:${encodeURIComponent(pkg.id)}&prerelease=false`);
-                    const j = await r.json();
-                    const item = (j.data && j.data[0]) || null;
-                    if (item) {
-                        const version = item.version || (item.versions?.slice(-1)[0]?.version) || '—';
-                        downloads = item.totalDownloads || 0;
-                        const updated = item.published ? new Date(item.published).toLocaleDateString() : '—';
-                        const authors = item.authors || 'Cerbi';
-
-                        // Front card
-                        node.querySelector('.pkg-version').textContent = 'v' + version;
-                        node.querySelector('.pkg-downloads').textContent = fmtDownloads(downloads);
-
-                        // Back card - animate downloads
-                        node.querySelector('.pkg-latest-version').textContent = 'v' + version;
-                        node.querySelector('.pkg-last-updated').textContent = updated;
-                        node.querySelector('.pkg-authors').textContent = authors;
-                        downloadsReady = true;
-                        tryAnimateDownloads();
-                    }
-                } catch (_) { }
-
-                grid.appendChild(node);
-            });
-        })();
+        // NuGet packages (static)
 
         /* Robust randomized background with fallback for GitHub Pages */
         (function () {
