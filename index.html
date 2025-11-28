@@ -1494,22 +1494,55 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             <div class="repo-ecosystem pipeline-layout">
                 <div class="pipeline-column">
-                    <ol class="pipeline-stages">
-                        <li>Stage 1 – Source logging</li>
-                        <li>Stage 2 – Build-time guardrails</li>
-                        <li>Stage 3 – Runtime governance &amp; scoring</li>
-                        <li>Stage 4 – Shared contracts</li>
-                        <li>Stage 5 – Dashboards &amp; reporting</li>
+                    <ol class="pipeline-stages" aria-label="Cerbi pipeline stages">
+                        <li class="pipeline-stage" data-stage="1">
+                            <div class="stage-number" aria-hidden="true">1</div>
+                            <div class="stage-copy">
+                                <p class="stage-kicker">Stage 1</p>
+                                <p class="stage-title">Source logging</p>
+                            </div>
+                        </li>
+                        <li class="pipeline-stage" data-stage="2">
+                            <div class="stage-number" aria-hidden="true">2</div>
+                            <div class="stage-copy">
+                                <p class="stage-kicker">Stage 2</p>
+                                <p class="stage-title">Build-time guardrails</p>
+                            </div>
+                        </li>
+                        <li class="pipeline-stage" data-stage="3">
+                            <div class="stage-number" aria-hidden="true">3</div>
+                            <div class="stage-copy">
+                                <p class="stage-kicker">Stage 3</p>
+                                <p class="stage-title">Runtime governance &amp; scoring</p>
+                            </div>
+                        </li>
+                        <li class="pipeline-stage" data-stage="4">
+                            <div class="stage-number" aria-hidden="true">4</div>
+                            <div class="stage-copy">
+                                <p class="stage-kicker">Stage 4</p>
+                                <p class="stage-title">Shared contracts</p>
+                            </div>
+                        </li>
+                        <li class="pipeline-stage" data-stage="5">
+                            <div class="stage-number" aria-hidden="true">5</div>
+                            <div class="stage-copy">
+                                <p class="stage-kicker">Stage 5</p>
+                                <p class="stage-title">Dashboards &amp; reporting</p>
+                            </div>
+                        </li>
                     </ol>
                 </div>
 
                 <div class="pipeline-stacks">
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Ecosystem overview</div>
+                    <div class="pipeline-stack" data-stage="overview">
+                        <div class="stack-header">
+                            <p class="stage-label">Overview</p>
+                            <h3 class="stack-title">Ecosystem overview</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="suite" data-link="https://github.com/Zeroshi" tabindex="0">
                                 <div class="repo-icon">🧭</div>
-                                <h3 class="repo-name">CerbiSuite</h3>
+                                <h4 class="repo-name">CerbiSuite</h4>
                                 <p class="repo-tagline">Unified logging, governance, and scoring for .NET teams.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1520,12 +1553,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Stage 1 – Source logging</div>
+                    <div class="pipeline-stack" data-stage="1">
+                        <div class="stack-header">
+                            <p class="stage-label">Stage 1</p>
+                            <h3 class="stack-title">Source logging</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="cerbistream" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                                 <div class="repo-icon">🚀</div>
-                                <h3 class="repo-name">CerbiStream</h3>
+                                <h4 class="repo-name">CerbiStream</h4>
                                 <p class="repo-tagline">Core .NET logger that attaches governance and scoring metadata at the source, with optional file fallback and encryption.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1536,12 +1572,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Stage 2 – Build-time guardrails</div>
+                    <div class="pipeline-stack" data-stage="2">
+                        <div class="stack-header">
+                            <p class="stage-label">Stage 2</p>
+                            <h3 class="stack-title">Build-time guardrails</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="analyzer" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                                 <div class="repo-icon">🔍</div>
-                                <h3 class="repo-name">CerbiStream.GovernanceAnalyzer</h3>
+                                <h4 class="repo-name">CerbiStream.GovernanceAnalyzer</h4>
                                 <p class="repo-tagline">Roslyn analyzers that keep logs aligned with Cerbi governance and scoring rules before they ever hit main.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1552,12 +1591,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Stage 3 – Runtime governance &amp; scoring</div>
+                    <div class="pipeline-stack" data-stage="3">
+                        <div class="stack-header">
+                            <p class="stage-label">Stage 3</p>
+                            <h3 class="stack-title">Runtime governance &amp; scoring</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="mel" data-link="https://github.com/Zeroshi/Cerbi.MEL.Governance" tabindex="0">
                                 <div class="repo-icon">⚡</div>
-                                <h3 class="repo-name">Cerbi.MEL.Governance</h3>
+                                <h4 class="repo-name">Cerbi.MEL.Governance</h4>
                                 <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata asynchronously.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1568,7 +1610,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                             <article class="repo-node" data-repo="serilog" data-link="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" tabindex="0">
                                 <div class="repo-icon">📊</div>
-                                <h3 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h3>
+                                <h4 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h4>
                                 <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into CerbiShield.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1579,7 +1621,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                             <article class="repo-node" data-repo="runtime" data-link="https://www.nuget.org/packages/Cerbi.Governance.Runtime" tabindex="0">
                                 <div class="repo-icon">🧮</div>
-                                <h3 class="repo-name">Cerbi.Governance.Runtime</h3>
+                                <h4 class="repo-name">Cerbi.Governance.Runtime</h4>
                                 <p class="repo-tagline">Shared governance engine that evaluates profiles, tags violations, and computes impact scores for any Cerbi-aware logger.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1590,12 +1632,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Stage 4 – Shared contracts</div>
+                    <div class="pipeline-stack" data-stage="4">
+                        <div class="stack-header">
+                            <p class="stage-label">Stage 4</p>
+                            <h3 class="stack-title">Shared contracts</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="core" data-link="https://www.nuget.org/packages/Cerbi.Governance.Core" tabindex="0">
                                 <div class="repo-icon">⚙️</div>
-                                <h3 class="repo-name">Cerbi.Governance.Core</h3>
+                                <h4 class="repo-name">Cerbi.Governance.Core</h4>
                                 <p class="repo-tagline">Shared contracts, scoring enums, and profile types that keep analyzers, runtime validators, and dashboards in sync.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
@@ -1606,12 +1651,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         </div>
                     </div>
 
-                    <div class="pipeline-stack">
-                        <div class="stack-header">Stage 5 – Dashboards &amp; reporting</div>
+                    <div class="pipeline-stack" data-stage="5">
+                        <div class="stack-header">
+                            <p class="stage-label">Stage 5</p>
+                            <h3 class="stack-title">Dashboards &amp; reporting</h3>
+                        </div>
                         <div class="stack-grid">
                             <article class="repo-node" data-repo="shield" data-link="https://github.com/Zeroshi" tabindex="0">
                                 <div class="repo-icon">🛡️</div>
-                                <h3 class="repo-name">CerbiShield</h3>
+                                <h4 class="repo-name">CerbiShield</h4>
                                 <p class="repo-tagline">Tenant-hosted governance dashboard, profile store, deployments, and governance scorecards for apps, teams, and environments.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-beta">Beta</span>
@@ -1645,11 +1693,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         </section>
 
         <style>
-            /* Ecosystem pipeline layout */
+        /* Ecosystem pipeline layout */
             .repo-ecosystem {
                 display: grid;
-                grid-template-columns: minmax(220px, 280px) 1fr;
-                gap: 24px;
+                grid-template-columns: minmax(240px, 300px) 1fr;
+                gap: 28px;
                 align-items: start;
                 margin: 40px 0;
             }
@@ -1657,29 +1705,112 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             .pipeline-column {
                 position: relative;
                 background: white;
-                border: 2px solid rgba(20,40,72,.12);
-                border-radius: 16px;
-                padding: 16px;
-                box-shadow: 0 8px 24px rgba(10,16,30,.08);
+                border: 1px solid rgba(20,40,72,.12);
+                border-radius: 18px;
+                padding: 18px 18px 12px;
+                box-shadow: 0 10px 28px rgba(10,16,30,.08);
+                overflow: hidden;
             }
 
             .pipeline-stages {
-                list-style: decimal;
+                list-style: none;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 14px;
                 margin: 0;
-                padding-left: 22px;
+                padding: 8px 0 8px 0;
                 color: var(--text-strong);
                 font-weight: 700;
+                position: relative;
             }
 
-            .pipeline-stages li {
-                background: linear-gradient(90deg, rgba(255,77,0,.08), rgba(255,77,0,.0));
-                border: 1px solid rgba(255,77,0,.18);
-                border-radius: 12px;
-                padding: 10px 12px;
+            .pipeline-stages::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                bottom: 20px;
+                left: 32px;
+                width: 2px;
+                background: linear-gradient(180deg, rgba(20,40,72,.08) 0%, rgba(255,77,0,.28) 50%, rgba(20,40,72,.06) 100%);
+            }
+
+            .pipeline-stage {
+                position: relative;
+                padding: 12px 14px 12px 64px;
+                border: 1px solid rgba(20,40,72,.12);
+                border-radius: 14px;
+                background: linear-gradient(120deg, rgba(255,77,0,.04) 0%, rgba(255,77,0,.02) 100%);
+                box-shadow: 0 6px 18px rgba(12,22,44,.06);
+                transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease, transform 160ms ease;
+            }
+
+            .pipeline-stage::after {
+                content: '';
+                position: absolute;
+                left: 32px;
+                right: auto;
+                top: 50%;
+                width: 12px;
+                height: 1px;
+                background: rgba(20,40,72,.18);
+                transform: translateY(-50%);
+            }
+
+            .pipeline-stage:last-child::after {
+                display: none;
+            }
+
+            .stage-number {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 2px solid color-mix(in srgb, var(--brand) 46%, transparent);
+                background: color-mix(in srgb, var(--brand) 12%, white);
+                color: var(--brand);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 800;
                 font-size: 14px;
+                box-shadow: 0 8px 18px rgba(255,77,0,.18);
+            }
+
+            .stage-copy {
+                display: grid;
+                gap: 2px;
+            }
+
+            .stage-kicker {
+                margin: 0;
+                font-size: 12px;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: color-mix(in srgb, var(--text-strong) 70%, rgba(20,40,72,.8));
+            }
+
+            .stage-title {
+                margin: 0;
+                font-size: 15px;
+                color: var(--text-strong);
+                font-weight: 800;
+            }
+
+            .pipeline-stage.is-active {
+                border-color: color-mix(in srgb, var(--brand) 54%, rgba(20,40,72,.12));
+                background: linear-gradient(120deg, rgba(255,77,0,.10) 0%, rgba(255,77,0,.04) 100%);
+                box-shadow: 0 14px 30px rgba(255,77,0,.16);
+                transform: translateX(2px);
+            }
+
+            .pipeline-stage.is-active .stage-number {
+                background: var(--brand);
+                color: white;
+                border-color: color-mix(in srgb, white 20%, var(--brand));
+                box-shadow: 0 10px 22px rgba(255,77,0,.26);
             }
 
             .pipeline-stacks {
@@ -1701,16 +1832,37 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             .stack-header {
                 display: flex;
+                align-items: baseline;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .stage-label {
+                margin: 0;
+                display: inline-flex;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+                font-size: 12px;
+                font-weight: 800;
+                letter-spacing: 0.4px;
+                text-transform: uppercase;
+                color: var(--text-strong);
+                background: var(--brand-06);
+                border: 1px solid var(--brand-10);
+                border-radius: 999px;
+                padding: 4px 10px;
+            }
+
+            .stack-title {
+                margin: 0;
+                font-size: 16px;
                 font-weight: 800;
                 color: var(--text-strong);
-                font-size: 15px;
             }
 
             .stack-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
                 gap: 12px;
             }
 
@@ -3852,6 +4004,28 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
             const detailPanel = document.getElementById('repoDetail');
             const closeBtn = detailPanel?.querySelector('.repo-detail-close');
+
+            const pipelineStages = Array.from(document.querySelectorAll('.pipeline-stage'));
+
+            function setActiveStage(stageKey) {
+                pipelineStages.forEach(stage => {
+                    stage.classList.toggle('is-active', !!stageKey && stage.dataset.stage === stageKey);
+                });
+            }
+
+            function clearActiveStage() {
+                setActiveStage(null);
+            }
+
+            document.querySelectorAll('.pipeline-stack[data-stage] .repo-node').forEach(card => {
+                const parentStack = card.closest('.pipeline-stack');
+                const stageKey = parentStack?.getAttribute('data-stage');
+
+                card.addEventListener('mouseenter', () => setActiveStage(stageKey));
+                card.addEventListener('focus', () => setActiveStage(stageKey));
+                card.addEventListener('mouseleave', clearActiveStage);
+                card.addEventListener('blur', clearActiveStage);
+            });
             
             function showRepoDetail(repoKey) {
                 const data = repoData[repoKey];
