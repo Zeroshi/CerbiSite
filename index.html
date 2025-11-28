@@ -1710,11 +1710,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <style>
         /* Ecosystem pipeline layout */
             .repo-ecosystem {
-                display: grid;
-                grid-template-columns: minmax(240px, 300px) 1fr;
+                display: flex;
+                flex-direction: column;
                 gap: 28px;
-                align-items: start;
+                align-items: flex-start;
                 margin: 40px 0;
+                padding-bottom: 96px;
             }
 
             .pipeline-column {
@@ -1724,7 +1725,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 border-radius: 18px;
                 padding: 18px 18px 12px;
                 box-shadow: 0 10px 28px rgba(10,16,30,.08);
-                overflow: hidden;
+                width: 100%;
+                max-width: 320px;
+                flex: 0 0 280px;
             }
 
             .ecosystem-stages {
@@ -1877,6 +1880,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 display: flex;
                 flex-direction: column;
                 gap: 16px;
+                flex: 1;
+                width: 100%;
             }
 
             .pipeline-stack {
@@ -1926,11 +1931,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 gap: 12px;
             }
 
-            @media (max-width: 900px) {
+            @media (min-width: 900px) {
                 .repo-ecosystem {
-                    grid-template-columns: 1fr;
+                    flex-direction: row;
+                    align-items: flex-start;
                 }
 
+                .pipeline-column {
+                    max-width: 340px;
+                    flex-basis: 300px;
+                }
+            }
+
+            @media (max-width: 900px) {
                 .pipeline-column {
                     order: 1;
                 }
