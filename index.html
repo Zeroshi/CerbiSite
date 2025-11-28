@@ -1498,18 +1498,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <article class="repo-node" data-repo="cerbistream" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                         <div class="repo-icon">🚀</div>
                         <h3 class="repo-name">CerbiStream</h3>
-                        <p class="repo-tagline">Core logging engine with governance enforcement and file fallback.</p>
+                        <p class="repo-tagline">Core .NET logger that attaches governance and scoring metadata at the source, with optional file fallback and encryption.</p>
                         <div class="repo-status">
                             <span class="badge badge-ga">GA</span>
-                            <span class="badge badge-net">.NET 6-8</span>
+                            <span class="badge badge-net">.NET 6–9+</span>
                         </div>
                     </article>
 
                     <!-- Governance Analyzer -->
                     <article class="repo-node" data-repo="analyzer" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                         <div class="repo-icon">🔍</div>
-                        <h3 class="repo-name">GovernanceAnalyzer</h3>
-                        <p class="repo-tagline">Roslyn analyzers for compile-time governance checks.</p>
+                        <h3 class="repo-name">CerbiStream.GovernanceAnalyzer</h3>
+                        <p class="repo-tagline">Roslyn analyzers that keep logs aligned with Cerbi governance and scoring rules before they ever hit main.</p>
                         <div class="repo-status">
                             <span class="badge badge-ga">GA</span>
                             <span class="badge badge-roslyn">Roslyn</span>
@@ -1519,8 +1519,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <!-- MEL Governance -->
                     <article class="repo-node" data-repo="mel" data-link="https://www.nuget.org/packages/Cerbi.MEL.Governance" tabindex="0">
                         <div class="repo-icon">⚡</div>
-                        <h3 class="repo-name">MEL.Governance</h3>
-                        <p class="repo-tagline">Runtime adapter for Microsoft.Extensions.Logging pipelines.</p>
+                        <h3 class="repo-name">Cerbi.MEL.Governance</h3>
+                        <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata asynchronously.</p>
                         <div class="repo-status">
                             <span class="badge badge-ga">GA</span>
                             <span class="badge badge-mel">MEL</span>
@@ -1531,7 +1531,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <article class="repo-node" data-repo="shield" data-link="https://github.com/Zeroshi/Cerbi-CerbiStream" tabindex="0">
                         <div class="repo-icon">🛡️</div>
                         <h3 class="repo-name">CerbiShield</h3>
-                        <p class="repo-tagline">Governance dashboard, rule store, and deployment APIs (tenant-hosted).</p>
+                        <p class="repo-tagline">Tenant-hosted governance dashboard, profile store, deployments, and governance scorecards for apps, teams, and environments.</p>
                         <div class="repo-status">
                             <span class="badge badge-beta">Beta</span>
                             <span class="badge badge-web">Web</span>
@@ -1541,8 +1541,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <!-- Serilog Analyzer -->
                     <article class="repo-node" data-repo="serilog" data-link="https://www.nuget.org/packages/Cerbi.Serilog.GovernanceAnalyzer" tabindex="0">
                         <div class="repo-icon">📊</div>
-                        <h3 class="repo-name">Serilog.Analyzer</h3>
-                        <p class="repo-tagline">Serilog-specific governance adapter and score shipper.</p>
+                        <h3 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h3>
+                        <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into CerbiShield.</p>
                         <div class="repo-status">
                             <span class="badge badge-ga">GA</span>
                             <span class="badge badge-serilog">Serilog</span>
@@ -1552,8 +1552,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <!-- Governance Core -->
                     <article class="repo-node" data-repo="core" data-link="https://www.nuget.org/packages/Cerbi.Governance.Core" tabindex="0">
                         <div class="repo-icon">⚙️</div>
-                        <h3 class="repo-name">Governance.Core</h3>
-                        <p class="repo-tagline">Shared contracts and enums that keep all components aligned.</p>
+                        <h3 class="repo-name">Cerbi.Governance.Core</h3>
+                        <p class="repo-tagline">Shared contracts, scoring enums, and profile types that keep analyzers, runtime validators, and dashboards in sync.</p>
                         <div class="repo-status">
                             <span class="badge badge-ga">GA</span>
                             <span class="badge badge-lib">Library</span>
