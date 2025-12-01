@@ -1285,36 +1285,22 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <!-- Sales & ROI Charts -->
         <section id="sales-roi" class="section">
             <div class="container">
-                <h2 id="leaders" class="section-title">Sales & ROI Impact</h2>
-                <p class="section-subtitle">
-                    Our SaaS platform delivers measurable business outcomes.
-                    The following charts illustrate how organizations benefit in terms of <strong>cost savings</strong>,
-                    <strong>time efficiency</strong>, and <strong>return on investment</strong>.
-                </p>
-
-                <div class="charts-wrapper" style="display:flex; flex-wrap: wrap; justify-content: center; gap:40px; margin-top:30px;">
-                    <div style="width:300px; text-align:center;">
-                        <h3>Cost Savings</h3>
-                        <canvas id="costSavingsChart"></canvas>
-                        <p style="margin-top:10px;">
-                            Automating governance workflows reduces audit costs by up to <strong>40%</strong>.
-                        </p>
+                <h2 id="leaders" class="section-title">Cost &amp; Time Impact in Real Teams</h2>
+                <div style="display:flex; flex-direction:column; gap:16px; margin-top:10px; line-height:1.6;">
+                    <div>
+                        <h3 style="margin-bottom:6px;">Log pipeline spend</h3>
+                        <p>Teams using Cerbi-style governance in pilots have cut paid log volume by around <strong>40%</strong> in the first 90 days — mostly by killing noisy fields, normalizing shapes, and dropping junk before it ever hits Splunk, Datadog, or ELK.</p>
                     </div>
-
-                    <div style="width:300px; text-align:center;">
-                        <h3>Time Efficiency</h3>
-                        <canvas id="timeEfficiencyChart"></canvas>
-                        <p style="margin-top:10px;">
-                            Productivity boosts free up <strong>30% more engineering time</strong>.
-                        </p>
+                    <div>
+                        <h3 style="margin-bottom:6px;">Engineering time</h3>
+                        <p>Stable schemas and governed fields mean fewer broken dashboards and surprise schema changes. In practice, platform teams get back <strong>20–30%</strong> of the time they used to waste chasing log issues and fixing “mystery” dashboards.</p>
                     </div>
-
-                    <div style="width:300px; text-align:center;">
-                        <h3>ROI Growth</h3>
-                        <canvas id="roiGrowthChart"></canvas>
-                        <p style="margin-top:10px;">
-                            Companies adopting CerbiShield can see an average ROI increase of <strong>3x</strong>.
-                        </p>
+                    <div>
+                        <h3 style="margin-bottom:6px;">Audit and compliance effort</h3>
+                        <p>Versioned governance profiles, redaction metadata, and audit history give Risk/Legal something concrete to work with. That doesn’t magically make you compliant, but it <strong>removes a big chunk of audit thrash</strong> around logging.</p>
+                    </div>
+                    <div class="card" style="padding:12px;">
+                        <p style="margin:0;">These examples are based on internal benchmarks and pilot assumptions. Actual results depend on your stack, volume, and the governance rules you choose to enforce.</p>
                     </div>
                 </div>
             </div>
