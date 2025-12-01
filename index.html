@@ -543,6 +543,15 @@
         .card ul { padding-left: 18px; margin: 8px 0 }
         .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
 
+        .founder-card { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: center; background: linear-gradient(135deg, rgba(255,77,0,.05), rgba(15,99,255,.05)); }
+        .founder-card img { width: 100%; max-width: 320px; border-radius: 14px; box-shadow: 0 10px 28px rgba(12,22,44,0.16); }
+        .founder-card figure { margin: 0; display: grid; gap: 10px; justify-items: start; }
+        .founder-caption { font-size: 14px; color: var(--muted); }
+        .founder-copy p { margin: 0; color: var(--text); }
+        @media (min-width: 780px) {
+            .founder-card { grid-template-columns: 320px 1fr; }
+        }
+
         .table { width: 100%; border-collapse: separate; border-spacing: 0 }
         .table th, .table td { border: 1px solid rgba(20,40,72,.12); padding: .6em .7em }
         .table th { background: #f0f3fa; color: #navy }
@@ -2866,6 +2875,21 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
+                </div>
+            </div>
+        </section>
+
+        <!-- Founder Personal Note -->
+        <section id="founder" class="container section">
+            <div class="eyebrow">About</div>
+            <h2>Meet the person behind Cerbi</h2>
+            <div class="card founder-card">
+                <figure>
+                    <img src="/images/founder/tom-and-cat.jpg" alt="Tom Nelson and his cat in the home office">
+                    <figcaption class="founder-caption">When I’m not wrangling .NET logs and governance rules, I’m usually being supervised by this QA lead disguised as a cat.</figcaption>
+                </figure>
+                <div class="founder-copy">
+                    <p>Hi, I’m Tom — the founder and engineer behind CerbiSuite. I built Cerbi to make enterprise logging predictable, compliant, and calm. This little co-founder keeps me honest about quality and helps ensure every release feels as thoughtful as the teams we support.</p>
                 </div>
             </div>
         </section>
