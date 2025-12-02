@@ -696,10 +696,32 @@
         .flow-icon { font-size: 2.5rem; margin-bottom: 8px; }
         .flow-step-num { position: absolute; top: 8px; right: 8px; background: var(--brand); color: white; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
         .flow-title { font-weight: 600; color: var(--text-strong); margin-top: 4px; }
-        .flow-details { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; background: white; border: 2px solid var(--brand); border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 12px 32px rgba(255,77,0,.2); z-index: var(--layer-dropdown); text-align: left; }
+        .flow-details { display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 12px; background: white; border: 2px solid var(--brand); border-radius: 12px; padding: 16px; width: 280px; box-shadow: 0 12px 32px rgba(255,77,0,.2); z-index: var(--layer-dropdown); text-align: left; }
+        .flow-node.is-open .flow-details,
+        .flow-node:hover .flow-details,
+        .flow-node:focus-within .flow-details { display: block; }
         .flow-details h4 { margin: 0 0 8px 0; color: var(--brand); font-size: 16px; }
         .flow-details p { margin: 0 0 8px 0; font-size: 14px; }
         .flow-details ul { margin: 0; padding-left: 18px; font-size: 13px; }
+
+        /* Impact section */
+        .impact-section { background: linear-gradient(180deg, rgba(20,40,72,.02), rgba(20,40,72,.06)); padding: clamp(36px, 5vw, 48px); margin: 32px auto; border-radius: 18px; border: 1px solid rgba(20,40,72,.08); box-shadow: 0 18px 38px rgba(10,16,30,.08); width: var(--container); }
+        .impact-section h2 { text-align: center; margin-bottom: 8px; }
+        .impact-note { text-align: center; color: var(--muted); margin-top: 0; margin-bottom: 20px; }
+        .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px; }
+        .impact-card { background: white; border-radius: 14px; padding: 18px; border: 1px solid rgba(20,40,72,.1); box-shadow: 0 10px 26px rgba(10,16,30,.08); }
+        .impact-metric { font-size: 2rem; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+        .impact-breakdown { background: white; border-radius: 16px; padding: 18px; border: 1px solid rgba(20,40,72,.08); box-shadow: 0 8px 22px rgba(10,16,30,.06); }
+        .savings-bar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 12px 0 16px; border-radius: 12px; overflow: hidden; font-weight: 700; color: white; text-align: center; }
+        .segment { padding: 10px 8px; }
+        .segment-ingest { background: #ff6a3d; }
+        .segment-retention { background: #0f63ff; }
+        .segment-engineering { background: #00b295; }
+        .segment-audit { background: #1b3159; }
+        .savings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .savings-item { background: var(--panel-2); border-radius: 12px; padding: 14px; border: 1px solid rgba(20,40,72,.08); }
+        .savings-item .percent { display: inline-block; font-weight: 800; color: var(--brand); margin-bottom: 4px; }
+        .impact-disclaimer { color: var(--muted); text-align: center; margin-top: 18px; }
 
         /* Video containers */
         .video-container { display: flex; justify-content: center; margin: 20px 0; }
@@ -1239,7 +1261,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-icon">🔍</div>
                         <div class="flow-step-num">1</div>
                         <div class="flow-title">Runtime Validation</div>
-                        <div class="flow-details" hidden>
+                        <div class="flow-details">
                             <h4>Plugin Validates Event</h4>
                             <p>Governance plugin checks log against profile rules and computes impact score.</p>
                             <ul>
@@ -1254,7 +1276,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-icon">📤</div>
                         <div class="flow-step-num">2</div>
                         <div class="flow-title">Async Ship</div>
-                        <div class="flow-details" hidden>
+                        <div class="flow-details">
                             <h4>Background Transmission</h4>
                             <p>Score data ships to GovernanceApi asynchronously—non-blocking and batched.</p>
                             <ul>
@@ -1269,7 +1291,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-icon">💾</div>
                         <div class="flow-step-num">3</div>
                         <div class="flow-title">Storage</div>
-                        <div class="flow-details" hidden>
+                        <div class="flow-details">
                             <h4>Persist to Store</h4>
                             <p>GovernanceApi persists scores to CerbiShield with RBAC and timestamps.</p>
                             <ul>
@@ -1284,7 +1306,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-icon">📊</div>
                         <div class="flow-step-num">4</div>
                         <div class="flow-title">Aggregate</div>
-                        <div class="flow-details" hidden>
+                        <div class="flow-details">
                             <h4>Reporting Rollups</h4>
                             <p>ReportingApi rolls up scores by service, environment, team, and time window.</p>
                             <ul>
@@ -1299,7 +1321,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-icon">📈</div>
                         <div class="flow-step-num">5</div>
                         <div class="flow-title">Dashboard</div>
-                        <div class="flow-details" hidden>
+                        <div class="flow-details">
                             <h4>Visualize Compliance</h4>
                             <p>CerbiShield displays trends, violations, and scorecards with drill-downs.</p>
                             <ul>
@@ -3995,8 +4017,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             function initSwiper() {
                 try {
                     if (!window.Swiper) return false;
+                    const swiperRoot = document.querySelector('.mySwiper');
+                    if (!swiperRoot) return false;
 
-                    new Swiper(".mySwiper", {
+                    // Ensure coverflow/navigation modules are available in modular builds
+                    if (window.Swiper.use && window.Swiper.EffectCoverflow) {
+                        window.Swiper.use([
+                            window.Swiper.EffectCoverflow,
+                            window.Swiper.Navigation,
+                            window.Swiper.Pagination
+                        ]);
+                    }
+
+                    new Swiper(swiperRoot, {
                         effect: "coverflow",
                         grabCursor: true,
                         centeredSlides: true,
@@ -4122,40 +4155,33 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         })();
 
         // Interactive governance flow nodes
-        document.addEventListener('DOMContentLoaded', function () {
+        (() => {
             const nodes = document.querySelectorAll('.flow-node');
+            if (!nodes.length) return;
+
+            const closeAll = () => nodes.forEach(n => n.classList.remove('is-open'));
 
             nodes.forEach(node => {
-                const details = node.querySelector('.flow-details');
+                const open = () => { closeAll(); node.classList.add('is-open'); };
+                const close = () => node.classList.remove('is-open');
 
-                function showDetails() {
-                    document.querySelectorAll('.flow-details').forEach(d => d.hidden = true);
-                    if (details) details.hidden = false;
-                }
-
-                function hideDetails() {
-                    if (details) details.hidden = true;
-                }
-
-                node.addEventListener('mouseenter', showDetails);
-                node.addEventListener('focus', showDetails);
-                node.addEventListener('mouseleave', hideDetails);
-                node.addEventListener('blur', hideDetails);
+                node.addEventListener('mouseenter', open);
+                node.addEventListener('focusin', open);
+                node.addEventListener('mouseleave', close);
+                node.addEventListener('blur', close);
 
                 node.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (details && !details.hidden) {
-                        hideDetails();
+                    if (node.classList.contains('is-open')) {
+                        close();
                     } else {
-                        showDetails();
+                        open();
                     }
                 });
             });
 
-            document.addEventListener('click', () => {
-                document.querySelectorAll('.flow-details').forEach(d => d.hidden = true);
-            });
-        });
+            document.addEventListener('click', closeAll);
+        })();
 
         // OSS repo expand/collapse
         document.addEventListener('click', (e) => {
