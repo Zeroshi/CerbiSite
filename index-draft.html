@@ -1350,59 +1350,48 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         </script>
 
         <!-- Quick Key Highlights under ROI -->
-        <section id="roi-key-highlights" class="section">
+        <section id="roi-key-highlights" class="section savings-breakdown">
             <div class="container">
-                <h3>Deep dive: where the savings actually come from</h3>
-                <p>
-                  The 40% log spend reduction at the top of the page is the headline.
-                  Here’s an example breakdown of what’s usually driving it.
+                <h3>How a 40% reduction usually breaks down</h3>
+                <p class="savings-note">
+                    Example scenario &mdash; not a promise. Your mileage depends on how hard you lean into governance.
                 </p>
 
-                <blockquote>
-                  Example scenario (not a promise): ~50 .NET services, ~1.5 TB/day into a paid
-                  log platform, 30-day hot retention on everything.
-                </blockquote>
+                <div class="savings-bar" aria-hidden="true">
+                    <div class="segment segment-ingest" style="width:25%;">25%</div>
+                    <div class="segment segment-retention" style="width:15%;">15%</div>
+                    <div class="segment segment-engineering" style="width:30%;">30%</div>
+                    <div class="segment segment-audit" style="width:30%;">30%</div>
+                </div>
 
-                <h4>1. Ingesting less junk (~20–25% of savings)</h4>
-                <ul>
-                  <li><strong>Field-level pruning</strong> – governance profiles strip out low-value fields (e.g., giant blobs, debug-only fields, duplicate IDs) before they ever leave the app.</li>
-                  <li><strong>Event-level filtering</strong> – noisy, non-actionable events (e.g., heartbeat logs, redundant info logs) can be sampled or dropped by rule instead of “log everything forever.”</li>
-                  <li><strong>Environment scoping</strong> – dev/test logs don’t hit the same expensive sinks as prod by default.</li>
-                </ul>
-                <p>👉 Result: less data shipped, parsed, and indexed in Splunk/Datadog/ELK.</p>
+                <div class="savings-grid">
+                    <article class="savings-card card">
+                        <span class="percent">25%</span>
+                        <h4>Less junk ingested</h4>
+                        <p>Governance strips low-value fields and noisy events before they reach your paid log platforms.</p>
+                    </article>
 
-                <h4>2. Smarter retention and routing (~10–15% of savings)</h4>
-                <ul>
-                  <li><strong>Different retention by stream</strong> – keep security and audit trails hot for 90 days, but push low-value ops noise to short retention or cold storage.</li>
-                  <li><strong>Multi-sink routing</strong> – push “must search fast” data to your primary vendor and long-tail analytics to cheaper object storage.</li>
-                  <li><strong>Profile-driven retention</strong> – rules live in Cerbi profiles, not random Terraform one-offs.</li>
-                </ul>
-                <p>👉 Result: you’re not paying hot-storage rates for junk logs you never read.</p>
+                    <article class="savings-card card">
+                        <span class="percent">15%</span>
+                        <h4>Smarter retention &amp; routing</h4>
+                        <p>Shorter retention for noisy streams and cheaper storage for long-tail or low-value data.</p>
+                    </article>
 
-                <h4>3. Engineering time &amp; incident overhead (~20–30% of value)</h4>
-                <p>This doesn’t always show up as a line item, but it’s very real:</p>
-                <ul>
-                  <li><strong>Fewer broken dashboards</strong> – stable shapes + governed fields = less time fixing queries and panels after someone “just adds a field.”</li>
-                  <li><strong>Faster incident response</strong> – SREs and platform teams know exactly which fields are present, encrypted, or redacted; less hunting, more fixing.</li>
-                  <li><strong>Predictable schemas</strong> – new services onboard faster because logging isn’t a free-for-all.</li>
-                </ul>
-                <p>👉 Ballpark: a couple of hours per engineer per week back, especially for platform/SRE teams.</p>
+                    <article class="savings-card card">
+                        <span class="percent">30%</span>
+                        <h4>Engineering time back</h4>
+                        <p>Fewer broken dashboards and schema surprises; faster incident triage for SRE and platform teams.</p>
+                    </article>
 
-                <h4>4. Audit &amp; compliance thrash (~10–20% of value)</h4>
-                <p>You don’t usually get a clean “invoice” for this, but you feel it:</p>
-                <ul>
-                  <li><strong>Versioned governance profiles</strong> – you can show exactly what fields were allowed, required, or forbidden at any point in time.</li>
-                  <li><strong>Redaction metadata</strong> – you can answer “where is PII allowed to appear in logs?” with something better than a shrug.</li>
-                  <li><strong>Less “please screenshot Kibana” theater</strong> – auditors get profiles + history, not ad-hoc log dives.</li>
-                </ul>
-                <p>👉 Fewer long audit cycles, fewer “we need a special tiger team to figure out what we’re logging.”</p>
+                    <article class="savings-card card">
+                        <span class="percent">30%</span>
+                        <h4>Audit &amp; compliance thrash</h4>
+                        <p>Versioned profiles and redaction history instead of ad-hoc “screenshot Kibana” reviews.</p>
+                    </article>
+                </div>
 
-                <p>
-                  <em>
-                    All of the numbers here are illustrative, not guaranteed. Cerbi gives you the
-                    tooling to design your own governance profiles; the actual savings depend on
-                    how aggressively you use them.
-                  </em>
+                <p class="savings-disclaimer">
+                    All numbers are illustrative. Cerbi gives you the controls; the actual savings depend on how aggressively you use them.
                 </p>
             </div>
         </section>
