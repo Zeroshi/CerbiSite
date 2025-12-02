@@ -602,12 +602,18 @@
             }
         }
 
-        .founder-card { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: center; background: linear-gradient(135deg, rgba(255,77,0,.05), rgba(15,99,255,.05)); }
-        .founder-card img { width: 100%; max-width: 320px; border-radius: 14px; box-shadow: 0 10px 28px rgba(12,22,44,0.16); }
+        .founder-card { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; background: linear-gradient(135deg, rgba(255,77,0,.05), rgba(15,99,255,.05)); }
+        .founder-card img { width: 100%; max-width: 100%; border-radius: 14px; box-shadow: 0 10px 28px rgba(12,22,44,0.16); }
         .founder-card figure { margin: 0; display: grid; gap: 10px; justify-items: start; }
         .founder-caption { font-size: 14px; color: var(--muted); }
+        .founder-pets { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+        .founder-pet-card { margin: 0; padding: 12px; background: rgba(255,255,255,.9); border-radius: 12px; box-shadow: 0 10px 28px rgba(12,22,44,0.12); display: grid; gap: 10px; }
+        .founder-photo { width: 100%; height: auto; object-fit: cover; border-radius: 10px; }
+        @media (min-width: 640px) {
+            .founder-pets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (min-width: 780px) {
-            .founder-card { grid-template-columns: 320px 1fr; }
+            .founder-card { grid-template-columns: 1.1fr 0.9fr; }
         }
 
         .table { width: 100%; border-collapse: separate; border-spacing: 0 }
@@ -2964,14 +2970,40 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <!-- Founder Personal Note -->
         <section id="founder" class="container section">
             <div class="eyebrow">About</div>
-            <h2>Meet the person behind Cerbi</h2>
+            <h2>Meet the person (and cats) behind Cerbi</h2>
             <div class="card founder-card">
-                <figure>
-                    <img src="/images/founder/tom-and-cat.jpg" alt="Tom Nelson and his cat in the home office">
-                    <figcaption class="founder-caption">When I’m not wrangling .NET logs and governance rules, I’m usually being supervised by this QA lead disguised as a cat.</figcaption>
-                </figure>
                 <div class="founder-copy">
-                    <p>Hi, I’m Tom — the founder and engineer behind CerbiSuite. I built Cerbi to make enterprise logging predictable, compliant, and calm. This little co-founder keeps me honest about quality and helps ensure every release feels as thoughtful as the teams we support.</p>
+                    <p>
+                        Hi, I’m Tom Nelson — principal architect, Cerbi founder, and the one to blame for the phrase “governed telemetry.” Cerbi started as a nights-and-weekends experiment to stop our .NET logs from turning into an expensive, ungoverned mess.
+                    </p>
+                    <p>
+                        Most of my work has been in regulated stacks — healthcare, insurance, payments — where “we’ll fix the logs later” usually means “we’ll suffer during the audit.” Cerbi is my answer to that: make logging predictable, compliant, and actually useful instead of noisy.
+                    </p>
+                    <p>
+                        The supervising fur team is Leo and Cora. They don’t care about log volume, but they absolutely care if I miss dinner or break a dashboard on purpose to test governance.
+                    </p>
+                </div>
+                <div class="founder-pets">
+                    <figure class="founder-pet-card">
+                        <img
+                            src="/assets/founder/tom_leo.jpg"
+                            alt="Thomas Nelson with Leo the cat in the home office"
+                            class="founder-photo"
+                        />
+                        <figcaption class="founder-caption">
+                            Tom &amp; Leo — senior lap-based QA and keyboard interrupter.
+                        </figcaption>
+                    </figure>
+                    <figure class="founder-pet-card">
+                        <img
+                            src="/assets/founder/cora.jpg"
+                            alt="Cora the cat on the Cerbi workstation"
+                            class="founder-photo"
+                        />
+                        <figcaption class="founder-caption">
+                            Cora — observability lead, keeps a close eye on the monitors (and the mouse).
+                        </figcaption>
+                    </figure>
                 </div>
             </div>
         </section>
