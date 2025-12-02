@@ -3988,33 +3988,52 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
         })();
 
-        // Swiper initialization
+        // Swiper initialization with CDN fallback (some browsers block local assets)
         (function () {
-            if (!window.Swiper) return;
-            try {
-                new Swiper(".mySwiper", {
-                    effect: "coverflow",
-                    grabCursor: true,
-                    centeredSlides: true,
-                    loop: true,
-                    slidesPerView: "auto",
-                    coverflowEffect: {
-                        rotate: 30,
-                        stretch: 0,
-                        depth: 200,
-                        modifier: 1,
-                        slideShadows: true,
-                    },
-                    pagination: {
-                        el: ".swiper-pagination",
-                        clickable: true,
-                    },
-                    navigation: {
-                        nextEl: ".swiper-button-next",
-                        prevEl: ".swiper-button-prev",
-                    },
-                });
-            } catch (e) { console.warn('Swiper init failed', e); }
+            const SWIPER_FALLBACK = "https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js";
+
+            function initSwiper() {
+                try {
+                    if (!window.Swiper) return false;
+
+                    new Swiper(".mySwiper", {
+                        effect: "coverflow",
+                        grabCursor: true,
+                        centeredSlides: true,
+                        loop: true,
+                        slidesPerView: "auto",
+                        coverflowEffect: {
+                            rotate: 30,
+                            stretch: 0,
+                            depth: 200,
+                            modifier: 1,
+                            slideShadows: true,
+                        },
+                        pagination: {
+                            el: ".swiper-pagination",
+                            clickable: true,
+                        },
+                        navigation: {
+                            nextEl: ".swiper-button-next",
+                            prevEl: ".swiper-button-prev",
+                        },
+                    });
+                    return true;
+                } catch (e) {
+                    console.warn('Swiper init failed', e);
+                    return false;
+                }
+            }
+
+            if (initSwiper()) return;
+
+            // If local copy failed (ad blockers / CSP), load a CDN fallback
+            const script = document.createElement('script');
+            script.src = SWIPER_FALLBACK;
+            script.async = true;
+            script.onload = initSwiper;
+            script.onerror = () => console.warn('Swiper fallback failed to load');
+            document.head.appendChild(script);
         })();
 
         // Signature art rotator
