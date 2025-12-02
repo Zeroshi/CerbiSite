@@ -21,8 +21,8 @@
     <meta property="og:image" content="assets/CerbiShield.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Swiper CSS (local to avoid CDN/CERT failures) -->
+    <link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css" />
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
@@ -3309,8 +3309,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Swiper JS (local copy for reliability) -->
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="scripts/cerbi.js"></script>
     <script src="scripts/hero-metrics.js"></script>
     <script src="scripts/ecosystem-scrollspy.js"></script>
