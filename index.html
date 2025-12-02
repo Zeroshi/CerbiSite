@@ -712,12 +712,12 @@
         .impact-card { background: white; border-radius: 14px; padding: 18px; border: 1px solid rgba(20,40,72,.1); box-shadow: 0 10px 26px rgba(10,16,30,.08); }
         .impact-metric { font-size: 2rem; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
         .impact-breakdown { background: white; border-radius: 16px; padding: 18px; border: 1px solid rgba(20,40,72,.08); box-shadow: 0 8px 22px rgba(10,16,30,.06); }
-        .savings-bar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 12px 0 16px; border-radius: 12px; overflow: hidden; font-weight: 700; color: white; text-align: center; }
-        .segment { padding: 10px 8px; }
-        .segment-ingest { background: #ff6a3d; }
-        .segment-retention { background: #0f63ff; }
-        .segment-engineering { background: #00b295; }
-        .segment-audit { background: #1b3159; }
+        .savings-bar { display: grid; grid-template-columns: repeat(4, 1fr); margin: 12px 0 16px; border-radius: 12px; overflow: hidden; font-weight: 700; color: var(--text-strong); text-align: center; }
+        .segment { padding: 10px 8px; text-shadow: 0 1px 0 rgba(255,255,255,0.7); }
+        .segment-ingest { background: linear-gradient(135deg, #ffe6da 0%, #ff8a5c 100%); }
+        .segment-retention { background: linear-gradient(135deg, #e4ecff 0%, #6ca2ff 100%); }
+        .segment-engineering { background: linear-gradient(135deg, #def6f0 0%, #3cc9aa 100%); }
+        .segment-audit { background: linear-gradient(135deg, #dbe2f1 0%, #2f4a73 100%); color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.28); }
         .savings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
         .savings-item { background: var(--panel-2); border-radius: 12px; padding: 14px; border: 1px solid rgba(20,40,72,.08); }
         .savings-item .percent { display: inline-block; font-weight: 800; color: var(--brand); margin-bottom: 4px; }
