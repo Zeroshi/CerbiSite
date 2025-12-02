@@ -62,6 +62,15 @@
       document.body.appendChild(el);
     }
 
+    // Ensure the visible text node exists (new markup uses an inner span)
+    let textEl = document.getElementById('clockText');
+    if (!textEl){
+      textEl = document.createElement('span');
+      textEl.id = 'clockText';
+      textEl.dataset.glitch = 'CERBI';
+      el.appendChild(textEl);
+    }
+
     // Activate RGB-split layers even when idle
     el.classList.add('glitch');
     if (!el.querySelector('.scan')){
@@ -85,8 +94,10 @@
       return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     };
     const setClockText = (s) => {
+      const target = textEl || el;
+      target.dataset.glitch = s;
+      target.textContent = s;
       el.dataset.text = s;
-      el.textContent  = s;
       el.setAttribute('aria-label', `Current time ${s}`);
     };
 
@@ -98,12 +109,19 @@
       const vw = Math.max(document.documentElement.clientWidth, window.innerWidth||0);
       // Mobile tweak: larger factor for small viewports
       const sizeFactor = vw < 820 ? 0.44 : 0.36;
-      el.style.fontSize = Math.min(Math.max(vw*sizeFactor,96),900) + 'px';
+      const fontSize = Math.min(Math.max(vw*sizeFactor,96),900) + 'px';
+      el.style.fontSize = fontSize;
       el.style.lineHeight = '1';
+      if (textEl){
+        textEl.style.fontSize = fontSize;
+        textEl.style.lineHeight = '1';
+      }
       const cs = getComputedStyle(root);
-      el.style.color = (root.getAttribute('data-theme') || 'light') === 'light'
+      const color = (root.getAttribute('data-theme') || 'light') === 'light'
         ? (cs.getPropertyValue('--text').trim() || '#0b1530')
         : (cs.getPropertyValue('--muted').trim() || '#a7b4cf');
+      el.style.color = color;
+      if (textEl) textEl.style.color = color;
 
       // opacity ramps with scroll (fallback keeps it visible)
       const h=document.documentElement, max=h.scrollHeight-h.clientHeight;
