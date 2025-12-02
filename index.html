@@ -1407,25 +1407,58 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <!-- ROI Key Highlights -->
         <section id="roi-key-highlights" class="section">
             <div class="container">
-                <h3 style="margin-bottom:10px">Key Highlights</h3>
-                <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start; justify-content:center">
-                    <div style="width:min(360px,90vw)">
-                        <canvas id="roiHighlightsBar" height="160" aria-label="Key metrics bar" role="img"></canvas>
-                    </div>
-                    <div style="width:260px; text-align:center">
-                        <canvas id="roiHighlightsPie" height="160" aria-label="Savings breakdown by driver" role="img"></canvas>
-                        <div class="muted" style="margin-top:6px">Savings breakdown by driver (example)</div>
-                    </div>
-                    <article class="card" style="width:min(420px,92vw); padding:14px">
-                        <h4 style="margin:.2rem0 .6rem">ROI Levers</h4>
-                        <ul style="margin:.2rem0; padding-left:1rem; line-height:1.55">
-                            <li><strong>Pre-index normalization:</strong> send fewer, cleaner events → lower ingestion spend.</li>
-                            <li><strong>Stable schemas:</strong> fewer broken charts/alerts → less rework and query churn.</li>
-                            <li><strong>Policy + redaction:</strong> audit evidence inline → reduced compliance overhead.</li>
-                        </ul>
-                        <small class="muted" style="display:block;font-size:13px;margin-top:10px">Note: These are illustrative examples based on internal benchmarks and pilot assumptions. Actual results vary by stack, volume, and the governance policies you choose to enforce.</small>
-                    </article>
-                </div>
+                <h3>Deep dive: where the savings actually come from</h3>
+                <p>
+                  The 40% log spend reduction at the top of the page is the headline.
+                  Here’s an example breakdown of what’s usually driving it.
+                </p>
+
+                <blockquote>
+                  Example scenario (not a promise): ~50 .NET services, ~1.5 TB/day into a paid
+                  log platform, 30-day hot retention on everything.
+                </blockquote>
+
+                <h4>1. Ingesting less junk (~20–25% of savings)</h4>
+                <ul>
+                  <li><strong>Field-level pruning</strong> – governance profiles strip out low-value fields (e.g., giant blobs, debug-only fields, duplicate IDs) before they ever leave the app.</li>
+                  <li><strong>Event-level filtering</strong> – noisy, non-actionable events (e.g., heartbeat logs, redundant info logs) can be sampled or dropped by rule instead of “log everything forever.”</li>
+                  <li><strong>Environment scoping</strong> – dev/test logs don’t hit the same expensive sinks as prod by default.</li>
+                </ul>
+                <p>👉 Result: less data shipped, parsed, and indexed in Splunk/Datadog/ELK.</p>
+
+                <h4>2. Smarter retention and routing (~10–15% of savings)</h4>
+                <ul>
+                  <li><strong>Different retention by stream</strong> – keep security and audit trails hot for 90 days, but push low-value ops noise to short retention or cold storage.</li>
+                  <li><strong>Multi-sink routing</strong> – push “must search fast” data to your primary vendor and long-tail analytics to cheaper object storage.</li>
+                  <li><strong>Profile-driven retention</strong> – rules live in Cerbi profiles, not random Terraform one-offs.</li>
+                </ul>
+                <p>👉 Result: you’re not paying hot-storage rates for junk logs you never read.</p>
+
+                <h4>3. Engineering time &amp; incident overhead (~20–30% of value)</h4>
+                <p>This doesn’t always show up as a line item, but it’s very real:</p>
+                <ul>
+                  <li><strong>Fewer broken dashboards</strong> – stable shapes + governed fields = less time fixing queries and panels after someone “just adds a field.”</li>
+                  <li><strong>Faster incident response</strong> – SREs and platform teams know exactly which fields are present, encrypted, or redacted; less hunting, more fixing.</li>
+                  <li><strong>Predictable schemas</strong> – new services onboard faster because logging isn’t a free-for-all.</li>
+                </ul>
+                <p>👉 Ballpark: a couple of hours per engineer per week back, especially for platform/SRE teams.</p>
+
+                <h4>4. Audit &amp; compliance thrash (~10–20% of value)</h4>
+                <p>You don’t usually get a clean “invoice” for this, but you feel it:</p>
+                <ul>
+                  <li><strong>Versioned governance profiles</strong> – you can show exactly what fields were allowed, required, or forbidden at any point in time.</li>
+                  <li><strong>Redaction metadata</strong> – you can answer “where is PII allowed to appear in logs?” with something better than a shrug.</li>
+                  <li><strong>Less “please screenshot Kibana” theater</strong> – auditors get profiles + history, not ad-hoc log dives.</li>
+                </ul>
+                <p>👉 Fewer long audit cycles, fewer “we need a special tiger team to figure out what we’re logging.”</p>
+
+                <p>
+                  <em>
+                    All of the numbers here are illustrative, not guaranteed. Cerbi gives you the
+                    tooling to design your own governance profiles; the actual savings depend on
+                    how aggressively you use them.
+                  </em>
+                </p>
             </div>
         </section>
 
