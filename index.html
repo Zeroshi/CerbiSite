@@ -523,7 +523,21 @@
         .more-menu a:hover { background: var(--panel-2) }
         .more[data-open="true"] .more-menu { display: block }
 
-        .hero { padding: 20px 0 8px }
+        .hero {
+            position: relative;
+            padding: 20px 0 8px;
+            isolation: isolate;
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -40px -28px;
+            background: var(--bg-url) center / cover no-repeat;
+            opacity: .24;
+            filter: saturate(1.05) contrast(1.02);
+            border-radius: 26px;
+            z-index: -1;
+        }
         .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px }
         .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
         .hl { color: var(--brand) }
