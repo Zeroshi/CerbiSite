@@ -3930,53 +3930,62 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             const colorLink = (csROI.getPropertyValue('--link') || '#0f63ff').trim();
             const colorMuted = (csROI.getPropertyValue('--muted') || '#5a6a88').trim();
 
-            new Chart(document.getElementById("costSavingsChart"), {
-                type: "doughnut",
-                data: {
-                    labels: ["Saved", "Remaining"],
-                    datasets: [{
-                        data: [40, 60],
-                        backgroundColor: [colorBrand, colorMuted],
-                        borderWidth: 0,
-                        cutout: '65%'
-                    }]
-                },
-                options: {
-                    plugins: { legend: { position: "bottom" } }
-                }
-            });
+            const costSavingsEl = document.getElementById("costSavingsChart");
+            if (costSavingsEl) {
+                new Chart(costSavingsEl, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Saved", "Remaining"],
+                        datasets: [{
+                            data: [40, 60],
+                            backgroundColor: [colorBrand, colorMuted],
+                            borderWidth: 0,
+                            cutout: '65%'
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { position: "bottom" } }
+                    }
+                });
+            }
 
-            new Chart(document.getElementById("timeEfficiencyChart"), {
-                type: "doughnut",
-                data: {
-                    labels: ["Saved Time", "Remaining Work"],
-                    datasets: [{
-                        data: [30, 70],
-                        backgroundColor: [colorBrand, colorMuted],
-                        borderWidth: 0,
-                        cutout: '65%'
-                    }]
-                },
-                options: {
-                    plugins: { legend: { position: "bottom" } }
-                }
-            });
+            const timeEfficiencyEl = document.getElementById("timeEfficiencyChart");
+            if (timeEfficiencyEl) {
+                new Chart(timeEfficiencyEl, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Saved Time", "Remaining Work"],
+                        datasets: [{
+                            data: [30, 70],
+                            backgroundColor: [colorBrand, colorMuted],
+                            borderWidth: 0,
+                            cutout: '65%'
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { position: "bottom" } }
+                    }
+                });
+            }
 
-            new Chart(document.getElementById("roiGrowthChart"), {
-                type: "doughnut",
-                data: {
-                    labels: ["Growth", "Baseline"],
-                    datasets: [{
-                        data: [300, 100],
-                        backgroundColor: [colorBrand, colorMuted],
-                        borderWidth: 0,
-                        cutout: '65%'
-                    }]
-                },
-                options: {
-                    plugins: { legend: { position: "bottom" } }
-                }
-            });
+            const roiGrowthEl = document.getElementById("roiGrowthChart");
+            if (roiGrowthEl) {
+                new Chart(roiGrowthEl, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Growth", "Baseline"],
+                        datasets: [{
+                            data: [300, 100],
+                            backgroundColor: [colorBrand, colorMuted],
+                            borderWidth: 0,
+                            cutout: '65%'
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { position: "bottom" } }
+                    }
+                });
+            }
 
             const bar = document.getElementById('roiHighlightsBar');
             if (bar) {
