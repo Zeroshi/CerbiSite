@@ -603,17 +603,18 @@
         }
 
         .founder-card { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; background: linear-gradient(135deg, rgba(255,77,0,.05), rgba(15,99,255,.05)); }
-        .founder-card img { width: 100%; max-width: 100%; border-radius: 14px; box-shadow: 0 10px 28px rgba(12,22,44,0.16); }
+        .founder-media { width: 100%; max-width: 100%; box-shadow: 0 10px 28px rgba(12,22,44,0.16); }
         .founder-card figure { margin: 0; display: grid; gap: 10px; justify-items: start; }
         .founder-caption { font-size: 14px; color: var(--muted); }
         .founder-pets { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
         .founder-pet-card { margin: 0; padding: 12px; background: rgba(255,255,255,.9); border-radius: 12px; box-shadow: 0 10px 28px rgba(12,22,44,0.12); display: grid; gap: 10px; }
-        .founder-photo { width: 100%; height: auto; object-fit: cover; border-radius: 10px; }
+        .founder-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; }
         @media (min-width: 640px) {
             .founder-pets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
         @media (min-width: 780px) {
-            .founder-card { grid-template-columns: 1.1fr 0.9fr; }
+            .founder-card { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); align-items: center; }
+            .founder-pets { max-width: 520px; justify-self: end; }
         }
 
         .table { width: 100%; border-collapse: separate; border-spacing: 0 }
@@ -2988,7 +2989,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <img
                             src="/assets/founder/tom_leo.jpg"
                             alt="Thomas Nelson with Leo the cat in the home office"
-                            class="founder-photo"
+                            class="founder-photo founder-media"
                         />
                         <figcaption class="founder-caption">
                             Tom &amp; Leo — senior lap-based QA and keyboard interrupter.
@@ -2998,7 +2999,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <img
                             src="/assets/founder/cora.jpg"
                             alt="Cora the cat on the Cerbi workstation"
-                            class="founder-photo"
+                            class="founder-photo founder-media"
                         />
                         <figcaption class="founder-caption">
                             Cora — observability lead, keeps a close eye on the monitors (and the mouse).
