@@ -3443,6 +3443,40 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             tryList(0);
         })();
 
+        /* Hero image loader (pop-art rotator) */
+        (function () {
+            const rotator = document.getElementById('sigRotator');
+            if (!rotator || rotator.childElementCount) return;
+
+            const sources = [
+                'assets/popart/popart-01.png', 'assets/popart/popart-02.png', 'assets/popart/popart-03.png',
+                'assets/popart/popart-04.png', 'assets/popart/popart-05.png', 'assets/popart/popart-06.png',
+                'assets/popart/popart-07.png', 'assets/popart/popart-08.png', 'assets/popart/popart-09.png',
+                'assets/popart/popart-10.png'
+            ];
+
+            const images = sources.map((src, idx) => {
+                const im = new Image();
+                im.src = src;
+                im.decoding = 'async';
+                im.loading = idx === 0 ? 'eager' : 'lazy';
+                im.alt = `Cerbi pop-art ${idx + 1}`;
+                if (idx === 0) im.className = 'is-active';
+                rotator.appendChild(im);
+                return im;
+            });
+
+            const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!reducedMotion && images.length > 1) {
+                let i = 0;
+                setInterval(() => {
+                    images[i].classList.remove('is-active');
+                    i = (i + 1) % images.length;
+                    images[i].classList.add('is-active');
+                }, 3500);
+            }
+        })();
+
         // YouTube feed teaser
         (function () {
             const feedContainer = document.getElementById('youtubeFeed');
