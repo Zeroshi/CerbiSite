@@ -1380,75 +1380,78 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             </div>
         </section>
 
-        <!-- Sales & ROI Charts -->
-        <section id="sales-roi" class="section">
-            <div class="container">
-                <h2 id="leaders" class="section-title">Cost &amp; Time Impact in Real Teams</h2>
-                <div style="display:flex; flex-direction:column; gap:16px; margin-top:10px; line-height:1.6;">
-                    <div>
-                        <h3 style="margin-bottom:6px;">Log pipeline spend</h3>
-                        <p>Teams using Cerbi-style governance in pilots have cut paid log volume by around <strong>40%</strong> in the first 90 days — mostly by killing noisy fields, normalizing shapes, and dropping junk before it ever hits Splunk, Datadog, or ELK.</p>
-                    </div>
-                    <div>
-                        <h3 style="margin-bottom:6px;">Engineering time</h3>
-                        <p>Stable schemas and governed fields mean fewer broken dashboards and surprise schema changes. In practice, platform teams get back <strong>20–30%</strong> of the time they used to waste chasing log issues and fixing “mystery” dashboards.</p>
-                    </div>
-                    <div>
-                        <h3 style="margin-bottom:6px;">Audit and compliance effort</h3>
-                        <p>Versioned governance profiles, redaction metadata, and audit history give Risk/Legal something concrete to work with. That doesn’t magically make you compliant, but it <strong>removes a big chunk of audit thrash</strong> around logging.</p>
-                    </div>
-                    <div class="card" style="padding:12px;">
-                        <p style="margin:0;">These examples are based on internal benchmarks and pilot assumptions. Actual results depend on your stack, volume, and the governance rules you choose to enforce.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <section id="impact" class="impact-section">
+            <h2>Cost &amp; time impact in real teams</h2>
+            <p class="impact-note">
+                Example figures from governance-heavy rollouts — not promises. Your stack and rules will drive the actual outcome.
+            </p>
 
-        <!-- ROI Key Highlights -->
-        <section id="roi-key-highlights" class="section savings-breakdown">
-            <div class="container">
-                <h3>How a 40% reduction usually breaks down</h3>
-                <p class="savings-note">
-                    Example scenario &mdash; not a promise. Your mileage depends on how hard you lean into governance.
-                </p>
+            <div class="impact-grid">
+                <article class="impact-card">
+                    <div class="impact-metric">40%</div>
+                    <h3>Less paid log volume</h3>
+                    <p>
+                        Governance profiles strip noisy fields and whole junk events before they reach Splunk, Datadog, ELK, or whatever you’re paying for.
+                    </p>
+                </article>
+
+                <article class="impact-card">
+                    <div class="impact-metric">20–30%</div>
+                    <h3>Engineer time back</h3>
+                    <p>
+                        Stable, governed schemas mean fewer broken dashboards and “what even is this log shape?” sessions for platform and SRE teams.
+                    </p>
+                </article>
+
+                <article class="impact-card">
+                    <div class="impact-metric">Fewer cycles</div>
+                    <h3>Audit &amp; compliance thrash</h3>
+                    <p>
+                        Versioned profiles and redaction history give Risk/Legal a real paper trail instead of ad-hoc log dives and screenshot theater.
+                    </p>
+                </article>
+            </div>
+
+            <div class="impact-breakdown">
+                <h3>What usually drives the savings</h3>
 
                 <div class="savings-bar" aria-hidden="true">
-                    <div class="segment segment-ingest" style="width:25%;">25%</div>
-                    <div class="segment segment-retention" style="width:15%;">15%</div>
-                    <div class="segment segment-engineering" style="width:30%;">30%</div>
-                    <div class="segment segment-audit" style="width:30%;">30%</div>
+                    <div class="segment segment-ingest" style="width:25%;">Less junk</div>
+                    <div class="segment segment-retention" style="width:15%;">Retention</div>
+                    <div class="segment segment-engineering" style="width:30%;">Eng time</div>
+                    <div class="segment segment-audit" style="width:30%;">Audit</div>
                 </div>
 
                 <div class="savings-grid">
-                    <article class="savings-card card">
+                    <div class="savings-item">
                         <span class="percent">25%</span>
-                        <h4>Less junk ingested</h4>
-                        <p>Governance strips low-value fields and noisy events before they reach your paid log platforms.</p>
-                    </article>
+                        <strong>Less junk ingested</strong>
+                        <p>Low-value fields and noisy events get dropped or normalized at the source.</p>
+                    </div>
 
-                    <article class="savings-card card">
+                    <div class="savings-item">
                         <span class="percent">15%</span>
-                        <h4>Smarter retention &amp; routing</h4>
-                        <p>Shorter retention for noisy streams and cheaper storage for long-tail or low-value data.</p>
-                    </article>
+                        <strong>Smarter retention &amp; routing</strong>
+                        <p>Noisy streams get shorter hot retention; long-tail data moves to cheaper storage.</p>
+                    </div>
 
-                    <article class="savings-card card">
+                    <div class="savings-item">
                         <span class="percent">30%</span>
-                        <h4>Engineering time back</h4>
-                        <p>Fewer broken dashboards and schema surprises; faster incident triage for SRE and platform teams.</p>
-                    </article>
+                        <strong>Engineering time back</strong>
+                        <p>Less time fixing queries and dashboards, more time fixing actual incidents.</p>
+                    </div>
 
-                    <article class="savings-card card">
+                    <div class="savings-item">
                         <span class="percent">30%</span>
-                        <h4>Audit &amp; compliance thrash</h4>
-                        <p>Versioned profiles and redaction history instead of ad-hoc “screenshot Kibana” reviews.</p>
-                    </article>
+                        <strong>Less audit thrash</strong>
+                        <p>Clear governance history instead of “dig through Kibana and hope” during reviews.</p>
+                    </div>
                 </div>
-
-                <p class="savings-disclaimer">
-                    All numbers are illustrative. Cerbi gives you the controls; the actual savings depend on how aggressively you use them.
-                </p>
             </div>
+
+            <p class="impact-disclaimer">
+                All figures are illustrative. Cerbi gives you the controls; the actual impact depends on your services, volume, and how aggressively you apply governance.
+            </p>
         </section>
 
         <section id="architecture" class="container section">
