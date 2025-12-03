@@ -600,25 +600,39 @@
         .hero-watermark {
             position: absolute;
             inset-inline: 0;
-            right: 16px;
-            bottom: 16px;
+            bottom: 32px;
             padding: 0 16px;
             pointer-events: none;
             display: none;
-            justify-content: flex-end;
+            justify-content: center;
             z-index: 0;
         }
 
         .nuget-watermark {
             pointer-events: none;
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nuget-watermark .nuget-count {
             font-weight: 900;
-            letter-spacing: 0.35em;
-            color: rgba(71, 85, 105, 0.1);
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.08);
             text-transform: uppercase;
-            white-space: nowrap;
-            font-size: clamp(48px, 8vw, 112px);
+            font-size: clamp(56px, 7vw, 112px);
             line-height: 1;
+        }
+
+        .nuget-watermark .nuget-label {
+            font-weight: 700;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.16);
+            font-size: clamp(9px, 1.5vw, 14px);
+            line-height: 1.2;
         }
 
         @media (min-width: 640px) {
@@ -1092,8 +1106,12 @@
                     </article>
                 </div>
             </div>
+            <!-- NuGet download watermark – decorative only -->
             <div aria-hidden="true" class="hero-watermark">
-                <div class="nuget-watermark">33.5k+ NuGet downloads</div>
+                <div class="nuget-watermark">
+                    <div class="nuget-count">33.5k+</div>
+                    <div class="nuget-label">NuGet downloads</div>
+                </div>
             </div>
         </section>
 
