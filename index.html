@@ -143,6 +143,101 @@
             margin: 0;
         }
 
+        .nuget-stat-card {
+            background: rgba(11, 19, 36, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            box-shadow: 0 16px 38px rgba(5, 10, 25, 0.45);
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 14px 16px;
+            gap: 4px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .nuget-stat-number {
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .nuget-stat-label {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(226, 232, 240, 0.72);
+            font-size: 11px;
+        }
+
+        .nuget-stat-mobile {
+            display: flex;
+        }
+
+        .nuget-stat-mobile .nuget-stat-number {
+            font-size: 28px;
+        }
+
+        .nuget-stat-mobile .nuget-stat-label {
+            margin-top: 2px;
+        }
+
+        .nuget-stat-desktop {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            min-height: 260px;
+            padding: 20px 18px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(7, 11, 22, 0.88));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .nuget-stat-desktop .nuget-stat-number {
+            font-size: clamp(44px, 4vw, 64px);
+            line-height: 1.1;
+        }
+
+        .nuget-stat-desktop .nuget-stat-label {
+            transform: rotate(90deg);
+            transform-origin: center;
+            letter-spacing: 0.32em;
+            margin-top: 12px;
+            white-space: nowrap;
+        }
+
+        .nuget-stat-card.is-loading .nuget-stat-number {
+            position: relative;
+            color: transparent;
+        }
+
+        .nuget-stat-card.is-loading .nuget-stat-number::after {
+            content: "";
+            display: block;
+            width: 80%;
+            height: 1.1em;
+            background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.28), rgba(255,255,255,0.12));
+            background-size: 200% 100%;
+            border-radius: 12px;
+            animation: nugetShimmer 1.2s ease-in-out infinite;
+        }
+
+        .nuget-stat-card.is-loading .nuget-stat-label {
+            opacity: 0.7;
+        }
+
+        @keyframes nugetShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (min-width: 1024px) {
+            .nuget-stat-desktop { display: flex; }
+            .nuget-stat-mobile { display: none; }
+        }
+
         .info-trigger {
             appearance: none;
             background: color-mix(in srgb, var(--brand) 12%, white 88%);
@@ -529,6 +624,18 @@
             padding: 20px 0 8px;
             isolation: isolate;
         }
+        .hero-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: stretch;
+        }
+        .hero-main {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: stretch;
+        }
         .hero::before {
             content: "";
             position: absolute;
@@ -557,6 +664,49 @@
         .card p, .card li { overflow-wrap: anywhere; hyphens: auto }
         .card ul { padding-left: 18px; margin: 8px 0 }
         .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
+
+        .hero-stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: stretch;
+            justify-content: center;
+        }
+
+        .hero-stats-row > * {
+            flex: 1 1 280px;
+        }
+
+        .hero-stats-row .metrics-shell {
+            margin: 0;
+            flex: 2 1 520px;
+        }
+
+        .nuget-stat-mobile-slot {
+            display: flex;
+        }
+
+        .nuget-stat-desktop-slot {
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-layout {
+                display: grid;
+                grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.7fr);
+                gap: 22px;
+                align-items: stretch;
+            }
+
+            .nuget-stat-mobile-slot {
+                display: none;
+            }
+
+            .nuget-stat-desktop-slot {
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
 
         .scroll-target { scroll-margin-top: calc(var(--nav-h) + 16px); }
 
@@ -939,85 +1089,106 @@
 
     <main id="main">
         <section class="hero container" id="top" aria-label="Hero">
-            <div class="chip-row" role="list" aria-label="High level features">
-                <span class="chip">Structured Logging</span>
-                <span class="chip">Governance (Build & Runtime)</span>
-                <span class="chip">Cloud-Native & Portable</span>
-                <span class="chip">Modular</span>
-                <span class="chip">Hybrid-Ready</span>
-                <span class="chip">ML-Friendly</span>
-            </div>
+            <div class="hero-layout">
+                <div class="hero-main">
+                    <div class="chip-row" role="list" aria-label="High level features">
+                        <span class="chip">Structured Logging</span>
+                        <span class="chip">Governance (Build & Runtime)</span>
+                        <span class="chip">Cloud-Native & Portable</span>
+                        <span class="chip">Modular</span>
+                        <span class="chip">Hybrid-Ready</span>
+                        <span class="chip">ML-Friendly</span>
+                    </div>
 
-            <h1>
-                Cut Log Costs 40%. <span class="hl">Make Compliance Audits Easier.</span>
-            </h1>
-            <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enterprise .NET logging with built-in governance. Deploy in hours, not months. Turn your logs into compliant, ML-ready assets.</p>
+                    <h1>
+                        Cut Log Costs 40%. <span class="hl">Make Compliance Audits Easier.</span>
+                    </h1>
+                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enterprise .NET logging with built-in governance. Deploy in hours, not months. Turn your logs into compliant, ML-ready assets.</p>
 
-            <!-- Executive Stats Banner -->
-                    <div id="heroMetrics" class="metrics-shell">
-                        <div class="metrics-grid">
-                            <article class="metric-card">
-                                <div class="metric-number">40%</div>
-                                <div class="metric-label">Log spend eliminated</div>
-                                <p class="metric-note">Median reduction in paid log volume for early adopters in the first 90 days.</p>
-                            </article>
-                            <article class="metric-card">
-                                <div class="metric-number">95%</div>
-                                <div class="metric-label">First-audit pass rate</div>
-                                <p class="metric-note">Compliance checks passed on first audit when teams enforced Cerbi governance profiles.</p>
-                            </article>
-                            <article class="metric-card">
-                                <div class="metric-number">3x</div>
-                                <div class="metric-label">Faster incident response</div>
-                                <p class="metric-note">Time-to-resolution improvement after instrumenting runbooks with governed, searchable logs.</p>
-                            </article>
+                    <!-- Dual CTAs -->
+                    <div class="hero-ctas">
+                        <a href="#quickstart" class="btn btn-primary btn-large">
+                            ⚡ Try CerbiStream in 60 Seconds
+                        </a>
+                        <a href="#contact" class="btn btn-secondary btn-large">
+                            📅 Request Enterprise Demo
+                        </a>
+                    </div>
+                    <p class="hero-trust" style="text-align:center;color:var(--muted);font-size:14px;margin-top:16px">
+                        Free for open source. Enterprise licenses available.
+                    </p>
+
+                    <div class="hero-stats-row">
+                        <!-- Executive Stats Banner -->
+                        <div id="heroMetrics" class="metrics-shell">
+                            <div class="metrics-grid">
+                                <article class="metric-card">
+                                    <div class="metric-number">40%</div>
+                                    <div class="metric-label">Log spend eliminated</div>
+                                    <p class="metric-note">Median reduction in paid log volume for early adopters in the first 90 days.</p>
+                                </article>
+                                <article class="metric-card">
+                                    <div class="metric-number">95%</div>
+                                    <div class="metric-label">First-audit pass rate</div>
+                                    <p class="metric-note">Compliance checks passed on first audit when teams enforced Cerbi governance profiles.</p>
+                                </article>
+                                <article class="metric-card">
+                                    <div class="metric-number">3x</div>
+                                    <div class="metric-label">Faster incident response</div>
+                                    <p class="metric-note">Time-to-resolution improvement after instrumenting runbooks with governed, searchable logs.</p>
+                                </article>
+                            </div>
+                            <p class="muted" style="text-align:center;margin:14px auto 0;max-width:780px;font-size:13px">
+                                Results are based on internal benchmarks and pilot rollouts; actual results will vary.
+                            </p>
                         </div>
-                        <p class="muted" style="text-align:center;margin:14px auto 0;max-width:780px;font-size:13px">
-                            Results are based on internal benchmarks and pilot rollouts; actual results will vary.
-                        </p>
+                        <div id="nugetStatMobile" class="nuget-stat-mobile-slot">
+                            <div class="nuget-stat-card nuget-stat-mobile is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
+                                <div class="nuget-stat-number">10k+</div>
+                                <div class="nuget-stat-label">NuGet downloads</div>
+                            </div>
+                        </div>
                     </div>
 
-            <!-- Dual CTAs -->
-            <div class="hero-ctas">
-                <a href="#quickstart" class="btn btn-primary btn-large">
-                    ⚡ Try CerbiStream in 60 Seconds
-                </a>
-                <a href="#contact" class="btn btn-secondary btn-large">
-                    📅 Request Enterprise Demo
-                </a>
+                    <!-- Who Is This For -->
+                    <div class="audience-pills">
+                        <div class="audience-pill">
+                            <span class="audience-icon">👔</span>
+                            <div class="audience-text">
+                                <strong>For CTOs:</strong> Cut costs, ensure compliance
+                            </div>
+                        </div>
+                        <div class="audience-pill">
+                            <span class="audience-icon">👨‍💻</span>
+                            <div class="audience-text">
+                                <strong>For Developers:</strong> Ship faster with governance built-in
+                            </div>
+                        </div>
+                        <div class="audience-pill">
+                            <span class="audience-icon">🛡️</span>
+                            <div class="audience-text">
+                                <strong>For CISOs:</strong> Automate compliance, sleep better
+                            </div>
+                        </div>
+                    </div>
+
+                    <article class="card typebox" style="margin-top:32px">
+                        <h3 id="typeTitle"></h3>
+                        <div id="typeBody" class="muted mono"></div>
+                        <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
+                    </article>
+                </div>
+
+                <div class="nuget-stat-desktop-slot">
+                    <div id="nugetStatDesktop">
+                        <div class="nuget-stat-card nuget-stat-desktop is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
+                            <div class="nuget-stat-number">10k+</div>
+                            <div class="nuget-stat-label">NuGet downloads</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="hero-trust" style="text-align:center;color:var(--muted);font-size:14px;margin-top:16px">
-                Free for open source. Enterprise licenses available.
-            </p>
-
-            <!-- Who Is This For -->
-            <div class="audience-pills">
-                <div class="audience-pill">
-                    <span class="audience-icon">👔</span>
-                    <div class="audience-text">
-                        <strong>For CTOs:</strong> Cut costs, ensure compliance
-                    </div>
-                </div>
-                <div class="audience-pill">
-                    <span class="audience-icon">👨‍💻</span>
-                    <div class="audience-text">
-                        <strong>For Developers:</strong> Ship faster with governance built-in
-                    </div>
-                </div>
-                <div class="audience-pill">
-                    <span class="audience-icon">🛡️</span>
-                    <div class="audience-text">
-                        <strong>For CISOs:</strong> Automate compliance, sleep better
-                    </div>
-                </div>
-            </div>
-
-        <article class="card typebox" style="margin-top:32px">
-            <h3 id="typeTitle"></h3>
-            <div id="typeBody" class="muted mono"></div>
-            <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
-        </article>
-    </section>
+        </section>
 
         <section class="container section persona-nav" aria-label="Persona navigation">
             <div class="persona-grid">
@@ -3394,6 +3565,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="scripts/cerbi.js"></script>
     <script src="scripts/video-card.js"></script>
+    <script src="scripts/nuget-download-stat.js"></script>
     <script src="scripts/hero-metrics.js"></script>
     <script src="scripts/ecosystem-scrollspy.js"></script>
 
