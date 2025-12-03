@@ -1,20 +1,20 @@
 (function () {
-    const desktopMount = document.getElementById('nugetStatDesktop');
-    const mobileMount = document.getElementById('nugetStatMobile');
+    const watermarkMount = document.getElementById('nugetWatermarkMount');
 
-    if ((!desktopMount && !mobileMount) || !window.React || !window.ReactDOM) return;
+    if (!watermarkMount || !window.React || !window.ReactDOM) return;
 
     const { useEffect, useState } = React;
     const h = React.createElement;
 
-    const FALLBACK_TOTAL = 10000;
+    const FALLBACK_TOTAL = 33539;
     const CERBI_PACKAGE_IDS = [
         'CerbiStream',
         'Cerbi.MEL.Governance',
+        'Cerbi.Governance.Runtime',
         'CerbiStream.GovernanceAnalyzer',
         'Cerbi.Governance.Core',
-        'Cerbi.Governance.Runtime',
-        'Cerbi.Serilog.GovernanceAnalyzer'
+        'Cerbi.Serilog.GovernanceAnalyzer',
+        'Cerbi.Serilog.Governance'
     ];
 
     let cachedTotal = null;
@@ -64,47 +64,37 @@
         return total.toLocaleString();
     }
 
-    function NugetDownloadStat({ variant = 'compact', className = '' }) {
+    function NugetDownloadWatermark() {
         const [total, setTotal] = useState(null);
 
         useEffect(() => {
-            let active = true;
-            fetchDownloadTotal()
-                .then((value) => { if (active) setTotal(value); })
-                .catch(() => { if (active) setTotal(FALLBACK_TOTAL); });
+            let cancelled = false;
 
-            return () => { active = false; };
+            (async () => {
+                try {
+                    const value = await fetchDownloadTotal();
+                    if (!cancelled) setTotal(value);
+                } catch (err) {
+                    console.error('Failed to load NuGet totals', err);
+                    if (!cancelled) setTotal(FALLBACK_TOTAL);
+                }
+            })();
+
+            return () => { cancelled = true; };
         }, []);
 
-        const displayValue = total ?? FALLBACK_TOTAL;
-        const formattedTotal = formatTotal(displayValue);
-        const isLoading = total === null;
-        const normalizedVariant = variant === 'vertical' ? 'vertical' : 'compact';
-        const variantClass = normalizedVariant === 'vertical' ? 'nuget-stat-vertical' : 'nuget-stat-compact';
+        const value = total ?? FALLBACK_TOTAL;
+        const formatted = formatTotal(value).toUpperCase();
 
-        const baseProps = {
-            className: `nuget-stat-card ${variantClass}${isLoading ? ' is-loading' : ''}${className ? ` ${className}` : ''}`,
-            'aria-label': 'Combined NuGet downloads across Cerbi packages'
-        };
-
-        if (normalizedVariant === 'vertical') {
-            return h('div', baseProps,
-                h('div', { className: 'nuget-stat-number', 'aria-live': 'polite' }, formattedTotal),
-                h('div', { className: 'nuget-stat-label' }, 'NuGet downloads')
-            );
-        }
-
-        return h('div', baseProps,
-            h('div', { className: 'nuget-stat-number', 'aria-live': 'polite' }, formattedTotal),
-            h('div', { className: 'nuget-stat-label' }, 'NuGet downloads')
+        return h(
+            'div',
+            {
+                className: 'nuget-watermark',
+                'aria-hidden': 'true'
+            },
+            `${formatted} NUGET DOWNLOADS`
         );
     }
 
-    if (desktopMount) {
-        ReactDOM.createRoot(desktopMount).render(h(NugetDownloadStat, { variant: 'vertical' }));
-    }
-
-    if (mobileMount) {
-        ReactDOM.createRoot(mobileMount).render(h(NugetDownloadStat, { variant: 'compact' }));
-    }
+    ReactDOM.createRoot(watermarkMount).render(h(NugetDownloadWatermark));
 })();
