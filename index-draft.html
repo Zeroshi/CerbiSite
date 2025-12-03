@@ -879,6 +879,26 @@
         }
         /* reserves one-two lines */
 
+        .video-fallback {
+            display: grid;
+            gap: 6px;
+            align-content: center;
+            justify-items: center;
+            padding: 18px;
+            text-align: center;
+            background: color-mix(in srgb, var(--brand) 8%, white 92%);
+            border: 1px dashed color-mix(in srgb, var(--brand) 45%, rgba(20,40,72,.2));
+            border-radius: 12px;
+            color: var(--text-strong);
+            font-weight: 700;
+        }
+
+        .video-fallback p {
+            margin: 0;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
         #dynamic-bg, .tiles, .sky, .veil, .spotlight {
             position: fixed;
             inset: 0;
@@ -1014,7 +1034,10 @@
                 <video controls preload="metadata" playsinline
                        style="width:100%;max-width:960px;border-radius:14px;box-shadow:var(--shadow);background:#000">
                     <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
+                    <div class="video-fallback">
+                        <strong>Video coming soon</strong>
+                        <p>Watch this walkthrough on YouTube or check back here shortly.</p>
+                    </div>
                 </video>
             </div>
         </section>
@@ -1566,7 +1589,10 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <video controls preload="metadata" playsinline
                        style="width:100%;max-width:960px;border-radius:14px;box-shadow:var(--shadow);background:#000">
                     <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
+                    <div class="video-fallback">
+                        <strong>Video coming soon</strong>
+                        <p>If the embed fails, watch the demo on YouTube while we finish the on-page player.</p>
+                    </div>
                 </video>
             </div>
             <p class="lead">
@@ -1898,12 +1924,14 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="eyebrow">Vision</div>
             <h2>Why I Built CerbiSuite</h2>
             <p class="lead">A candid walkthrough for leaders and architects on where Cerbi fits: what problem it solves, what it doesn’t do, and how it plugs into the stack you already have.</p>
-            <p class="note"><strong>If the video is not implemented yet, show this text:</strong> <em>Video walkthrough coming soon. For now, scroll up for the architecture diagram and ecosystem overview.</em></p>
             <div class="card" style="padding:16px;display:flex;justify-content:center;">
                 <video controls preload="metadata" playsinline
                        style="width:100%;max-width:960px;border-radius:14px;box-shadow:var(--shadow);background:#000">
                     <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
+                    <div class="video-fallback">
+                        <strong>Video walkthrough coming soon</strong>
+                        <p>For now, scroll up for the architecture diagram and ecosystem overview.</p>
+                    </div>
                 </video>
             </div>
         </section>
