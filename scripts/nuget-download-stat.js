@@ -64,7 +64,7 @@
         return total.toLocaleString();
     }
 
-    function NugetDownloadStat({ variant }) {
+    function NugetDownloadStat({ variant = 'compact', className = '' }) {
         const [total, setTotal] = useState(null);
 
         useEffect(() => {
@@ -77,25 +77,34 @@
         }, []);
 
         const displayValue = total ?? FALLBACK_TOTAL;
-        const formatted = formatTotal(displayValue);
+        const formattedTotal = formatTotal(displayValue);
         const isLoading = total === null;
+        const normalizedVariant = variant === 'vertical' ? 'vertical' : 'compact';
+        const variantClass = normalizedVariant === 'vertical' ? 'nuget-stat-vertical' : 'nuget-stat-compact';
 
         const baseProps = {
-            className: `nuget-stat-card ${variant === 'desktop' ? 'nuget-stat-desktop' : 'nuget-stat-mobile'}${isLoading ? ' is-loading' : ''}`,
+            className: `nuget-stat-card ${variantClass}${isLoading ? ' is-loading' : ''}${className ? ` ${className}` : ''}`,
             'aria-label': 'Combined NuGet downloads across Cerbi packages'
         };
 
+        if (normalizedVariant === 'vertical') {
+            return h('div', baseProps,
+                h('div', { className: 'nuget-stat-number', 'aria-live': 'polite' }, formattedTotal),
+                h('div', { className: 'nuget-stat-label' }, 'NuGet downloads')
+            );
+        }
+
         return h('div', baseProps,
-            h('div', { className: 'nuget-stat-number', 'aria-live': 'polite' }, formatted),
+            h('div', { className: 'nuget-stat-number', 'aria-live': 'polite' }, formattedTotal),
             h('div', { className: 'nuget-stat-label' }, 'NuGet downloads')
         );
     }
 
     if (desktopMount) {
-        ReactDOM.createRoot(desktopMount).render(h(NugetDownloadStat, { variant: 'desktop' }));
+        ReactDOM.createRoot(desktopMount).render(h(NugetDownloadStat, { variant: 'vertical' }));
     }
 
     if (mobileMount) {
-        ReactDOM.createRoot(mobileMount).render(h(NugetDownloadStat, { variant: 'mobile' }));
+        ReactDOM.createRoot(mobileMount).render(h(NugetDownloadStat, { variant: 'compact' }));
     }
 })();

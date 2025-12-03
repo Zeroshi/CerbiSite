@@ -152,9 +152,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start;
-            padding: 14px 16px;
-            gap: 4px;
+            gap: 6px;
             position: relative;
             overflow: visible;
         }
@@ -171,41 +169,45 @@
             font-size: 11px;
         }
 
-        .nuget-stat-mobile {
-            display: flex;
+        .nuget-stat-compact {
+            align-items: flex-start;
+            justify-content: center;
+            padding: 14px 16px;
+            gap: 4px;
+            border-radius: 16px;
         }
 
-        .nuget-stat-mobile .nuget-stat-number {
+        .nuget-stat-compact .nuget-stat-number {
             font-size: 28px;
         }
 
-        .nuget-stat-mobile .nuget-stat-label {
+        .nuget-stat-compact .nuget-stat-label {
             margin-top: 2px;
         }
 
-        .nuget-stat-desktop {
-            display: none;
+        .nuget-stat-vertical {
             align-items: center;
             justify-content: center;
-            gap: 18px;
-            min-height: 260px;
-            padding: 20px 18px;
+            min-height: 240px;
+            padding: 20px 24px;
             text-align: center;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(7, 11, 22, 0.88));
+            border-radius: 24px;
+            gap: 10px;
             border: 1px solid rgba(255, 255, 255, 0.12);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(7, 11, 22, 0.88));
         }
 
-        .nuget-stat-desktop .nuget-stat-number {
+        .nuget-stat-vertical .nuget-stat-number {
             font-size: clamp(44px, 4vw, 64px);
             line-height: 1.1;
         }
 
-        .nuget-stat-desktop .nuget-stat-label {
+        .nuget-stat-vertical .nuget-stat-label {
+            letter-spacing: 0.35em;
             transform: rotate(90deg);
             transform-origin: center;
-            letter-spacing: 0.32em;
-            margin-top: 12px;
             white-space: nowrap;
+            margin-top: 14px;
         }
 
         .nuget-stat-card.is-loading .nuget-stat-number {
@@ -231,11 +233,6 @@
         @keyframes nugetShimmer {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
-        }
-
-        @media (min-width: 1024px) {
-            .nuget-stat-desktop { display: flex; }
-            .nuget-stat-mobile { display: none; }
         }
 
         .info-trigger {
@@ -665,6 +662,12 @@
         .card ul { padding-left: 18px; margin: 8px 0 }
         .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
 
+        .hero-layout {
+            position: relative;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
         .hero-stats-row {
             display: flex;
             flex-wrap: wrap;
@@ -686,25 +689,26 @@
             display: flex;
         }
 
-        .nuget-stat-desktop-slot {
+        .nuget-overlay-slot {
             display: none;
         }
 
         @media (min-width: 1024px) {
             .hero-layout {
-                display: grid;
-                grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.7fr);
-                gap: 22px;
-                align-items: stretch;
+                padding-right: 220px;
             }
 
             .nuget-stat-mobile-slot {
                 display: none;
             }
 
-            .nuget-stat-desktop-slot {
-                display: flex;
-                justify-content: flex-end;
+            .nuget-overlay-slot {
+                display: block;
+                position: absolute;
+                right: 32px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: auto;
             }
         }
 
@@ -1143,7 +1147,7 @@
                             </p>
                         </div>
                         <div id="nugetStatMobile" class="nuget-stat-mobile-slot">
-                            <div class="nuget-stat-card nuget-stat-mobile is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
+                            <div class="nuget-stat-card nuget-stat-compact is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
                                 <div class="nuget-stat-number">10k+</div>
                                 <div class="nuget-stat-label">NuGet downloads</div>
                             </div>
@@ -1178,13 +1182,12 @@
                         <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
                     </article>
                 </div>
-
-                <div class="nuget-stat-desktop-slot">
-                    <div id="nugetStatDesktop">
-                        <div class="nuget-stat-card nuget-stat-desktop is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
-                            <div class="nuget-stat-number">10k+</div>
-                            <div class="nuget-stat-label">NuGet downloads</div>
-                        </div>
+            </div>
+            <div class="nuget-overlay-slot">
+                <div id="nugetStatDesktop">
+                    <div class="nuget-stat-card nuget-stat-vertical is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
+                        <div class="nuget-stat-number">10k+</div>
+                        <div class="nuget-stat-label">NuGet downloads</div>
                     </div>
                 </div>
             </div>
