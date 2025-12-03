@@ -65,6 +65,7 @@
             text-rendering: optimizeLegibility;
             line-height: 1.55;
             padding-top: var(--nav-h);
+            scroll-behavior: smooth;
             overflow-x: hidden;
         }
         a { color: var(--link); text-decoration: none }
@@ -557,6 +558,16 @@
         .card ul { padding-left: 18px; margin: 8px 0 }
         .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
 
+        .scroll-target { scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+        .persona-nav { padding: 6px 0 10px; }
+        .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .persona-card { text-decoration: none; color: inherit; display: grid; gap: 6px; align-content: start; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(20,40,72,.12); background: linear-gradient(135deg, rgba(255,77,0,.06), rgba(15,99,255,.04)); box-shadow: 0 14px 36px rgba(12,22,44,0.08); transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
+        .persona-card:hover { transform: translateY(-1px); box-shadow: 0 18px 44px rgba(12,22,44,0.12); border-color: color-mix(in srgb, var(--brand) 30%, rgba(20,40,72,.12)); }
+        .persona-title { font-weight: 800; font-size: 16px; color: var(--text-strong); }
+        .persona-desc { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+        .persona-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--brand); font-size: 13px; text-transform: uppercase; letter-spacing: .02em; }
+
         .founder-section {
             position: relative;
             margin-top: 24px;
@@ -865,7 +876,7 @@
             <div class="nav-wrap">
                 <nav id="primaryNav" class="nav-links" aria-label="Primary">
                     <a href="#why">Why</a>
-                    <a href="#usecases">Use Cases</a>
+                    <a href="#use-cases">Use Cases</a>
                     <a href="#quickstart">Quick Start</a>
                     <a href="#ecosystem">Ecosystem</a>
                     <a href="#governance">Governance</a>
@@ -965,11 +976,31 @@
                 </div>
             </div>
 
-            <article class="card typebox" style="margin-top:32px">
-                <h3 id="typeTitle"></h3>
-                <div id="typeBody" class="muted mono"></div>
-                <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
-            </article>
+        <article class="card typebox" style="margin-top:32px">
+            <h3 id="typeTitle"></h3>
+            <div id="typeBody" class="muted mono"></div>
+            <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
+        </article>
+    </section>
+
+        <section class="container section persona-nav" aria-label="Persona navigation">
+            <div class="persona-grid">
+                <a class="persona-card" href="#use-cases">
+                    <div class="persona-title">For CTOs &amp; VP Engineering</div>
+                    <p class="persona-desc">See cost reduction, audit readiness, and delivery time impact.</p>
+                    <span class="persona-cta">Jump to outcomes →</span>
+                </a>
+                <a class="persona-card" href="#quick-start">
+                    <div class="persona-title">For Developers &amp; Platform Teams</div>
+                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and ecosystem details.</p>
+                    <span class="persona-cta">Start building →</span>
+                </a>
+                <a class="persona-card" href="#compliance">
+                    <div class="persona-title">For Security, Risk &amp; Compliance</div>
+                    <p class="persona-desc">Review governance, compliance guardrails, and FAQs.</p>
+                    <span class="persona-cta">View controls →</span>
+                </a>
+            </div>
         </section>
 
         <section id="founder-intro" class="founder-section" aria-label="Founder introduction">
@@ -1021,7 +1052,8 @@
             </div>
         </section>
 
-        <section id="usecases" class="container section">
+        <section id="use-cases" class="container section scroll-target">
+            <div id="usecases" class="sr-only" aria-hidden="true"></div>
             <div class="eyebrow">Real outcomes</div>
             <h2><span class="hl">Use Cases</span> (for teams & execs)</h2>
             <p class="lead">Short, concrete wins you can expect. Each can start small and expand safely across the org.</p>
@@ -1079,9 +1111,9 @@
         </section>
 
         <!-- Security & Compliance Section -->
-        <section id="security" class="container section" style="background:linear-gradient(135deg, rgba(255,77,0,.08) 0%, rgba(20,40,72,.06) 100%);color:var(--text-strong);border-radius:20px;padding:64px 48px;margin:48px auto;border:1px solid rgba(20,40,72,.08);box-shadow:0 22px 60px rgba(20,40,72,.08)">
+        <section id="security" class="container section scroll-target" style="background:linear-gradient(135deg, rgba(255,77,0,.08) 0%, rgba(20,40,72,.06) 100%);color:var(--text-strong);border-radius:20px;padding:64px 48px;margin:48px auto;border:1px solid rgba(20,40,72,.08);box-shadow:0 22px 60px rgba(20,40,72,.08)">
             <div class="eyebrow" style="color:rgba(20,40,72,.75)">Enterprise-Grade Security</div>
-            <h2 id="compliance" style="color:var(--text-strong)">Built for <span class="hl">Compliance</span> from Day One</h2>
+            <h2 id="compliance" class="scroll-target" style="color:var(--text-strong)">Built for <span class="hl">Compliance</span> from Day One</h2>
             <p class="lead" style="color:rgba(24,34,53,.9);max-width:800px;margin:0 auto 3rem">
                 Cerbi was designed for regulated workloads. Governance profiles let you define required, forbidden, and disallowed fields, plus redaction rules, so PII and PHI don’t leak into your log pipeline by accident. CerbiShield lets you version and deploy these profiles per app and environment, so auditors can see exactly what is enforced and where. We don’t promise “automatic compliance”—instead, we give you the guardrails and evidence you need to pass real audits.
             </p>
@@ -1187,7 +1219,8 @@
             </div>
         </section>
 
-        <section id="quickstart" class="container section">
+        <div id="quick-start" class="sr-only" aria-hidden="true"></div>
+        <section id="quickstart" class="container section scroll-target">
             <div class="eyebrow">Get started</div>
             <h2 id="developers">⚡ <span class="hl">Quick Start</span>: Try <span class="hl">CerbiStream</span> in 60 Seconds</h2>
             <p class="lead">Install from NuGet, configure in <code>Program.cs</code>, and log safely with governance validation.</p>
@@ -3228,7 +3261,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <div>
                     <h4 style="margin:0 0 16px;font-size:15px;font-weight:600;color:var(--text-strong)">Product</h4>
                     <div style="display:flex;flex-direction:column;gap:8px">
-                        <a class="chip" href="#usecases" style="width:fit-content">Use Cases</a>
+                        <a class="chip" href="#use-cases" style="width:fit-content">Use Cases</a>
                         <a class="chip" href="#ecosystem" style="width:fit-content">Ecosystem</a>
                         <a class="chip" href="#dashboards" style="width:fit-content">Dashboards</a>
                         <a class="chip" href="#architecture" style="width:fit-content">Architecture</a>
