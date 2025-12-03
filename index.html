@@ -1625,7 +1625,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <p class="lead">From first log line to governance scores on a dashboard, each piece plays a specific role in the pipeline.</p>
 
             <div class="repo-ecosystem pipeline-layout">
-                <div class="ecosystem-stages-wrapper">
+                <div class="pipeline-layout-grid">
                     <div class="pipeline-column">
                         <div class="ecosystem-stages">
                             <div class="pipeline-stages-wrapper">
@@ -1680,9 +1680,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="pipeline-stacks">
+                    <div class="pipeline-stacks">
                     <div class="pipeline-stack" data-stage="overview">
                         <div class="stack-header">
                             <p class="stage-label">Overview</p>
@@ -1844,12 +1843,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <style>
         /* Ecosystem pipeline layout */
             .repo-ecosystem {
-                display: flex;
-                flex-direction: column;
-                gap: 28px;
-                align-items: flex-start;
+                display: block;
                 margin: 40px 0;
                 padding-bottom: 96px;
+            }
+
+            .pipeline-layout-grid {
+                display: grid;
+                gap: 28px;
+                align-items: start;
             }
 
             .pipeline-column {
@@ -1860,24 +1862,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 padding: 18px 18px 12px;
                 box-shadow: 0 10px 28px rgba(10,16,30,.08);
                 width: 100%;
-                max-width: 320px;
-                flex: 0 0 280px;
-            }
-
-            .ecosystem-stages-wrapper {
-                position: static;
-                align-self: flex-start;
+                max-width: 360px;
+                min-width: 0;
             }
 
             .ecosystem-stages {
                 position: relative;
-            }
-
-            @media (min-width: 768px) {
-                .ecosystem-stages-wrapper {
-                    position: sticky;
-                    top: 96px;
-                }
             }
 
             .pipeline-stages-wrapper {
@@ -2007,6 +1997,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             .pipeline-stage.is-active {
                 color: var(--brand);
                 transform: translateX(2px);
+                border-color: color-mix(in srgb, var(--brand) 38%, transparent);
+                background: color-mix(in srgb, var(--brand) 6%, white);
+                box-shadow: 0 12px 24px rgba(255,77,0,.12);
             }
 
             .pipeline-stage.is-active .stage-title {
@@ -2076,29 +2069,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
 
             @media (min-width: 900px) {
-                .repo-ecosystem {
-                    flex-direction: row;
-                    align-items: flex-start;
+                .pipeline-layout-grid {
+                    grid-template-columns: minmax(280px, 360px) 1fr;
                 }
 
                 .pipeline-column {
-                    max-width: 340px;
-                    flex-basis: 300px;
+                    position: sticky;
+                    top: 96px;
                 }
             }
 
             @media (max-width: 900px) {
                 .pipeline-column {
-                    order: 1;
-                }
-
-                .pipeline-stacks {
-                    order: 2;
-                }
-
-                .ecosystem-stages {
-                    position: static;
-                    top: auto;
+                    max-width: 100%;
                 }
             }
 
