@@ -1714,7 +1714,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                                 <p class="repo-tagline">Core .NET logger that attaches governance and scoring metadata at the source, with optional file fallback and encryption.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
-                                    <span class="badge badge-net">.NET 6–9+</span>
+                                    <span class="badge badge-net">.NET 8–9 (compatible with .NET 10+)</span>
                                 </div>
                                 <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Source logger + governance metadata.</p>
                             </button>
@@ -3117,11 +3117,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Do you support .NET Framework, .NET Core, and .NET 6+?</h3>
+                        <h3>What .NET versions does CerbiStream support?</h3>
                         <span class="faq-icon">+</span>
                     </div>
                     <div class="faq-answer">
-                        <p>Yes. CerbiStream supports .NET 6, .NET 7, .NET 8, and .NET 9+. We also support ASP.NET Core, Azure Functions, Blazor, gRPC services, and more. Check our documentation for specific framework compatibility details.</p>
+                        <p>CerbiStream targets .NET 8 and .NET 9 on NuGet, with computed compatibility forward to .NET 10+. Older services on .NET 6 or .NET 7, as well as legacy .NET Framework apps, can integrate through the Microsoft.Extensions.Logging abstractions or adapter patterns, but first-class support and testing focus on the current runtimes.</p>
                     </div>
                 </div>
 
