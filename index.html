@@ -1994,7 +1994,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 border-radius: 14px;
                 background: transparent;
                 box-shadow: none;
-                transition: color 160ms ease, transform 160ms ease;
+                transition: color 160ms ease, transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
                 display: flex;
                 align-items: center;
                 width: 100%;
@@ -2064,6 +2064,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 border-color: color-mix(in srgb, var(--brand) 38%, transparent);
                 background: color-mix(in srgb, var(--brand) 6%, white);
                 box-shadow: 0 12px 24px rgba(255,77,0,.12);
+            }
+
+            .pipeline-stage:hover {
+                border-color: color-mix(in srgb, var(--brand) 14%, transparent);
+                background: color-mix(in srgb, var(--brand) 4%, white);
+            }
+
+            .pipeline-stage:focus-visible {
+                outline: 3px solid color-mix(in srgb, var(--brand) 45%, transparent);
+                outline-offset: 2px;
+                box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 10%, white);
+                border-color: color-mix(in srgb, var(--brand) 26%, transparent);
             }
 
             .pipeline-stage.is-active .stage-title {

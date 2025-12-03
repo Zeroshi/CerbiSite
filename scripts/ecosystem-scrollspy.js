@@ -76,8 +76,15 @@
 
         useEffect(() => {
             const buttons = Array.from(document.querySelectorAll('.pipeline-stage'));
+            let ignoreNextClick = false;
 
-            const handleClick = (event) => {
+            const handleActivate = (event) => {
+                if (event.type === 'click' && ignoreNextClick) {
+                    event.preventDefault();
+                    ignoreNextClick = false;
+                    return;
+                }
+
                 const targetButton = event.currentTarget;
                 const stageNumber = parseInt(targetButton.dataset.stage || '', 10);
                 if (Number.isNaN(stageNumber)) return;
@@ -92,9 +99,23 @@
                 }
             };
 
-            buttons.forEach((btn) => btn.addEventListener('click', handleClick));
+            const handleKeydown = (event) => {
+                const isActivationKey = event.key === 'Enter' || event.key === ' ';
+                if (!isActivationKey) return;
+                ignoreNextClick = true;
+                handleActivate(event);
+            };
 
-            return () => buttons.forEach((btn) => btn.removeEventListener('click', handleClick));
+            buttons.forEach((btn) => {
+                btn.addEventListener('click', handleActivate);
+                btn.addEventListener('keydown', handleKeydown);
+            });
+
+            return () =>
+                buttons.forEach((btn) => {
+                    btn.removeEventListener('click', handleActivate);
+                    btn.removeEventListener('keydown', handleKeydown);
+                });
         }, []);
 
         useEffect(() => {
@@ -106,14 +127,18 @@
             buttons.forEach((btn) => {
                 const stageNumber = parseInt(btn.dataset.stage || '', 10);
                 const isActive = stageNumber === activeStage;
+                const targetId = stageTargetLookup.get(stageNumber);
 
                 btn.classList.toggle('is-active', isActive);
+                if (targetId) {
+                    btn.setAttribute('aria-controls', targetId);
+                }
                 if (isActive) {
                     btn.setAttribute('aria-current', 'step');
-                    btn.setAttribute('aria-pressed', 'true');
+                    btn.setAttribute('aria-selected', 'true');
                 } else {
                     btn.removeAttribute('aria-current');
-                    btn.setAttribute('aria-pressed', 'false');
+                    btn.setAttribute('aria-selected', 'false');
                 }
             });
         }, [activeStage]);
