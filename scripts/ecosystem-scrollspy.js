@@ -6,6 +6,7 @@
     function EcosystemScrollSpy() {
         const [activeStage, setActiveStage] = useState(1);
         const activeStageRef = useRef(activeStage);
+        const debounceTimerRef = useRef();
 
         const stageSections = [
             { id: 'ecosystem-stage-overview', stage: 1 },
@@ -39,6 +40,14 @@
             highlight.style.transform = `translateY(${offset}px)`;
         };
 
+        const scheduleStageUpdate = (nextStage) => {
+            if (nextStage === activeStageRef.current) return;
+            window.clearTimeout(debounceTimerRef.current);
+            debounceTimerRef.current = window.setTimeout(() => {
+                setActiveStage(nextStage);
+            }, 75);
+        };
+
         useEffect(() => {
             const sections = stageSections
                 .map(({ id }) => document.getElementById(id))
@@ -51,7 +60,7 @@
             const observer = new IntersectionObserver(
                 (entries) => {
                     const sorted = entries
-                        .filter((entry) => entry.isIntersecting || entry.intersectionRatio >= 0.35)
+                        .filter((entry) => entry.isIntersecting || entry.intersectionRatio >= 0.45)
                         .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
                     if (sorted.length === 0) return;
@@ -59,13 +68,13 @@
                     const topEntry = sorted[0];
                     const nextStage = sectionStageLookup.get(topEntry.target.id);
 
-                    if (nextStage && nextStage !== activeStageRef.current) {
-                        setActiveStage(nextStage);
+                    if (nextStage) {
+                        scheduleStageUpdate(nextStage);
                     }
                 },
                 {
-                    threshold: [0.25, 0.5, 0.75],
-                    rootMargin: '-20% 0px -20% 0px'
+                    threshold: [0.5],
+                    rootMargin: '-10% 0px -10% 0px'
                 }
             );
 
@@ -73,6 +82,8 @@
 
             return () => observer.disconnect();
         }, []);
+
+        useEffect(() => () => window.clearTimeout(debounceTimerRef.current), []);
 
         useEffect(() => {
             const buttons = Array.from(document.querySelectorAll('.pipeline-stage'));
