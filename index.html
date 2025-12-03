@@ -1464,7 +1464,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="impact" class="impact-section">
             <h2>Cost &amp; time impact in real teams</h2>
             <p class="impact-note">
-                Example figures from governance-heavy rollouts — not promises. Your stack and rules will drive the actual outcome.
+                These are example outcomes from governance-heavy rollouts, not promises. Your stack and rules will change the numbers.
             </p>
 
             <div class="impact-grid">
@@ -1472,7 +1472,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <div class="impact-metric">40%</div>
                     <h3>Less paid log volume</h3>
                     <p>
-                        Governance profiles strip noisy fields and whole junk events before they reach Splunk, Datadog, ELK, or whatever you’re paying for.
+                        Cutting high-noise fields and junk events before they land reduces paid log volume by roughly 40% in pilots.
                     </p>
                 </article>
 
@@ -1480,15 +1480,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <div class="impact-metric">20–30%</div>
                     <h3>Engineer time back</h3>
                     <p>
-                        Stable, governed schemas mean fewer broken dashboards and “what even is this log shape?” sessions for platform and SRE teams.
+                        Guardrails keep schemas stable, so platform and SRE teams spend 20–30% less time chasing broken dashboards and queries.
                     </p>
                 </article>
 
                 <article class="impact-card">
                     <div class="impact-metric">Fewer cycles</div>
-                    <h3>Audit &amp; compliance thrash</h3>
+                    <h3>Less audit &amp; compliance thrash</h3>
                     <p>
-                        Versioned profiles and redaction history give Risk/Legal a real paper trail instead of ad-hoc log dives and screenshot theater.
+                        Versioned profiles and redaction history trim audit review cycles by replacing ad-hoc log dives with a clear paper trail.
                     </p>
                 </article>
             </div>
@@ -1507,31 +1507,31 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                     <div class="savings-item">
                         <span class="percent">25%</span>
                         <strong>Less junk ingested</strong>
-                        <p>Low-value fields and noisy events get dropped or normalized at the source.</p>
+                        <p>Low-value fields and noisy events get dropped or normalized at the source (~25%).</p>
                     </div>
 
                     <div class="savings-item">
                         <span class="percent">15%</span>
                         <strong>Smarter retention &amp; routing</strong>
-                        <p>Noisy streams get shorter hot retention; long-tail data moves to cheaper storage.</p>
+                        <p>Noisy streams get shorter hot retention or move to cheaper storage (~15%).</p>
                     </div>
 
                     <div class="savings-item">
                         <span class="percent">30%</span>
                         <strong>Engineering time back</strong>
-                        <p>Less time fixing queries and dashboards, more time fixing actual incidents.</p>
+                        <p>Less time fixing queries and dashboards, more time fixing actual incidents (~30%).</p>
                     </div>
 
                     <div class="savings-item">
                         <span class="percent">30%</span>
                         <strong>Less audit thrash</strong>
-                        <p>Clear governance history instead of “dig through Kibana and hope” during reviews.</p>
+                        <p>Clear governance history instead of “dig through Kibana and hope” during reviews (~30%).</p>
                     </div>
                 </div>
             </div>
 
             <p class="impact-disclaimer">
-                All figures are illustrative. Cerbi gives you the controls; the actual impact depends on your services, volume, and how aggressively you apply governance.
+                All figures are illustrative pilots, not guarantees. Cerbi gives you the controls; results depend on your services, volumes, and how hard you turn the governance dials.
             </p>
         </section>
 
