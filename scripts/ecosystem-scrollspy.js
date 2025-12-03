@@ -1,10 +1,29 @@
 (function () {
     if (!window.React || !window.ReactDOM) return;
-    const { useEffect, useState } = React;
+    const { useEffect, useState, useRef } = React;
     const h = React.createElement;
 
     function EcosystemScrollSpy() {
         const [activeStage, setActiveStage] = useState(1);
+        const activeStageRef = useRef(activeStage);
+
+        const stageSections = [
+            { id: 'ecosystem-stage-overview', stage: 1 },
+            { id: 'ecosystem-stage-1', stage: 1 },
+            { id: 'ecosystem-stage-2', stage: 2 },
+            { id: 'ecosystem-stage-3', stage: 3 },
+            { id: 'ecosystem-stage-4', stage: 4 },
+            { id: 'ecosystem-stage-5', stage: 5 }
+        ];
+
+        const sectionStageLookup = new Map(stageSections.map(({ id, stage }) => [id, stage]));
+        const stageTargetLookup = new Map([
+            [1, 'ecosystem-stage-1'],
+            [2, 'ecosystem-stage-2'],
+            [3, 'ecosystem-stage-3'],
+            [4, 'ecosystem-stage-4'],
+            [5, 'ecosystem-stage-5']
+        ]);
 
         const moveHighlight = (stageValue) => {
             const highlight = document.querySelector('.pipeline-stage-highlight');
@@ -21,25 +40,34 @@
         };
 
         useEffect(() => {
-            const sections = [1, 2, 3, 4, 5]
-                .map((n) => document.getElementById(`ecosystem-stage-${n}`))
+            const sections = stageSections
+                .map(({ id }) => document.getElementById(id))
                 .filter(Boolean);
 
             if (!('IntersectionObserver' in window)) {
                 return undefined;
             }
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.id;
-                        const num = parseInt(id.replace('ecosystem-stage-', ''), 10);
-                        if (!Number.isNaN(num)) {
-                            setActiveStage(num);
-                        }
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    const sorted = entries
+                        .filter((entry) => entry.isIntersecting || entry.intersectionRatio >= 0.35)
+                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+                    if (sorted.length === 0) return;
+
+                    const topEntry = sorted[0];
+                    const nextStage = sectionStageLookup.get(topEntry.target.id);
+
+                    if (nextStage && nextStage !== activeStageRef.current) {
+                        setActiveStage(nextStage);
                     }
-                });
-            }, { threshold: 0.3 });
+                },
+                {
+                    threshold: [0.25, 0.5, 0.75],
+                    rootMargin: '-20% 0px -20% 0px'
+                }
+            );
 
             sections.forEach((section) => observer.observe(section));
 
@@ -48,6 +76,30 @@
 
         useEffect(() => {
             const buttons = Array.from(document.querySelectorAll('.pipeline-stage'));
+
+            const handleClick = (event) => {
+                const targetButton = event.currentTarget;
+                const stageNumber = parseInt(targetButton.dataset.stage || '', 10);
+                if (Number.isNaN(stageNumber)) return;
+
+                const targetId = stageTargetLookup.get(stageNumber);
+                const target = targetId ? document.getElementById(targetId) : null;
+
+                if (target) {
+                    event.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    setActiveStage(stageNumber);
+                }
+            };
+
+            buttons.forEach((btn) => btn.addEventListener('click', handleClick));
+
+            return () => buttons.forEach((btn) => btn.removeEventListener('click', handleClick));
+        }, []);
+
+        useEffect(() => {
+            const buttons = Array.from(document.querySelectorAll('.pipeline-stage'));
+            activeStageRef.current = activeStage;
             document.body.dataset.ecosystemActiveStage = activeStage ? String(activeStage) : '';
             moveHighlight(activeStage);
 
