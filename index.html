@@ -735,9 +735,41 @@
         .savings-item .percent { display: inline-block; font-weight: 800; color: var(--brand); margin-bottom: 4px; }
         .impact-disclaimer { color: var(--muted); text-align: center; margin-top: 18px; }
 
-        /* Video containers */
-        .video-container { display: flex; justify-content: center; margin: 20px 0; }
-        .video-container video { width: 100%; max-width: 960px; border-radius: 14px; box-shadow: var(--shadow); background: #000; }
+        /* Video cards */
+        .video-card-shell { padding: 16px; }
+        .react-video-card { display: grid; gap: 12px; }
+        .video-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #0b1324;
+            box-shadow: var(--shadow);
+            isolation: isolate;
+        }
+        .video-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            background: #0b1324;
+        }
+        .video-placeholder {
+            height: 100%;
+            display: grid;
+            gap: 8px;
+            align-content: center;
+            padding: clamp(18px, 3vw, 28px);
+            background: color-mix(in srgb, var(--brand) 10%, white 90%);
+            border: 1px dashed color-mix(in srgb, var(--brand) 55%, rgba(20,40,72,.28));
+            border-radius: 14px;
+            color: var(--text-strong);
+        }
+        .video-placeholder-title { font-weight: 800; font-size: clamp(18px, 2vw, 20px); margin: 0; }
+        .video-placeholder-text { margin: 0; color: var(--muted); }
+        .video-coming-soon { font-weight: 700; color: var(--brand); }
+        .video-caption { margin: 0; color: var(--muted); }
 
         @media (max-width:980px) {
             .grid { grid-template-columns: repeat(2,minmax(0,1fr)) }
@@ -1042,14 +1074,7 @@
             <div class="eyebrow">Overview</div>
             <h2>Cerbi — <span class="hl">Brief Overview</span></h2>
             <p class="lead">CerbiStream is a governance-first logging layer for .NET that validates, redacts, and tags every log event before it hits your sinks. Instead of shipping “whatever the app logs” into expensive platforms, Cerbi enforces JSON profiles so only clean, compliant, ML-ready data flows downstream. CerbiShield, the governance dashboard, generates and deploys those profiles across teams so policy lives outside code. Together, they turn logging from an ungoverned cost center into an auditable, measurable part of your architecture.</p>
-            <div class="card" style="padding:16px;">
-                <div class="video-container">
-                    <video controls preload="metadata" playsinline>
-                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/Cerbi__Brief_Overview.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
+            <div class="card video-card-shell" data-video-card="brief-overview"></div>
         </section>
 
         <section id="use-cases" class="container section scroll-target">
@@ -1635,14 +1660,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="eyebrow">See it in action</div>
             <h2>CerbiStream — <span class="hl">Demo Overview</span></h2>
             <p class="lead">A deeper walk-through of the CerbiStream implementation, file fallback, governance hooks, and async logging pipeline.</p>
-            <div class="card" style="padding:16px;">
-                <div class="video-container">
-                    <video controls preload="metadata" playsinline>
-                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiStream__Demo_Overview.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
+            <div class="card video-card-shell" data-video-card="cerbistream-demo"></div>
             <p class="lead">
                 Repo:
                 <a href="https://github.com/Zeroshi/Cerbi.CerbiStream-Implementation" target="_blank" rel="noopener">
@@ -3021,15 +3039,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="eyebrow">Vision</div>
             <h2>Why I Built CerbiSuite</h2>
             <p class="lead">A candid walkthrough for leaders and architects on where Cerbi fits: what problem it solves, what it doesn’t do, and how it plugs into the stack you already have.</p>
-            <p class="note">Video walkthrough coming soon. For now, scroll up for the architecture diagram and ecosystem overview.</p>
-            <div class="card" style="padding:16px;">
-                <div class="video-container">
-                    <video controls preload="metadata" playsinline>
-                        <source src="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/videos/CerbiSuite__A_New_Philosophy.mp4" type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
+            <div class="card video-card-shell" data-video-card="cerbisuite-story"></div>
         </section>
 
         <!-- Founder Personal Note -->
@@ -3351,6 +3361,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <!-- Swiper JS (local copy for reliability) -->
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="scripts/cerbi.js"></script>
+    <script src="scripts/video-card.js"></script>
     <script src="scripts/hero-metrics.js"></script>
     <script src="scripts/ecosystem-scrollspy.js"></script>
 
