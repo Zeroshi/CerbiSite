@@ -7,6 +7,7 @@
         const [activeStage, setActiveStage] = useState(1);
         const activeStageRef = useRef(activeStage);
         const debounceTimerRef = useRef();
+        const visibilityMapRef = useRef(new Map());
 
         const stageSections = [
             { id: 'ecosystem-stage-overview', stage: 1 },
@@ -59,26 +60,27 @@
                 return undefined;
             }
 
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    const sorted = entries
-                        .filter((entry) => entry.isIntersecting || entry.intersectionRatio >= 0.45)
-                        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+            visibilityMapRef.current = new Map(stageSections.map(({ id }) => [id, 0]));
 
-                    if (sorted.length === 0) return;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    const ratio = entry.isIntersecting ? entry.intersectionRatio : 0;
+                    visibilityMapRef.current.set(entry.target.id, ratio);
+                });
 
-                    const topEntry = sorted[0];
-                    const nextStage = sectionStageLookup.get(topEntry.target.id);
+                const [bestId] = Array.from(visibilityMapRef.current.entries()).reduce(
+                    (best, current) => (current[1] > best[1] ? current : best),
+                    ['', 0]
+                );
 
-                    if (nextStage) {
-                        scheduleStageUpdate(nextStage);
-                    }
-                },
-                {
-                    threshold: [0.5],
-                    rootMargin: '-10% 0px -10% 0px'
+                const nextStage = bestId ? sectionStageLookup.get(bestId) : null;
+                if (nextStage) {
+                    scheduleStageUpdate(nextStage);
                 }
-            );
+            }, {
+                threshold: [0, 0.25, 0.5, 0.75, 1],
+                rootMargin: '-10% 0px -10% 0px'
+            });
 
             sections.forEach((section) => observer.observe(section));
 
