@@ -1282,33 +1282,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="card" style="padding:8px 12px;overflow-x:auto">
                 <table aria-label="Cerbi components matrix" class="table">
                     <thead><tr><th>Component</th><th>Status</th><th>Purpose</th></tr></thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>CerbiStream</strong></td>
-                            <td>
-                                <div class="repo-status">
-                                    <span class="badge badge-ga">GA</span>
-                                    <span class="badge badge-net">.NET 8–9 (compatible with .NET 10+)</span>
-                                </div>
-                            </td>
-                            <td>Core .NET logger with structured output and optional encryption. Works with governance analyzers (build-time) and runtime validators.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>CerbiStream.GovernanceAnalyzer</strong></td>
-                            <td><span class="chip">GA</span></td>
-                            <td>Roslyn analyzer that flags governance issues during build (IDE/CI). Reads project governance profiles.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Cerbi.MEL.Governance</strong></td>
-                            <td><span class="chip">GA</span></td>
-                            <td>Runtime governance validator for Microsoft.Extensions.Logging pipelines; applies redaction/flagging based on profiles.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>CerbiShield</strong></td>
-                            <td><span class="chip">Beta</span></td>
-                            <td>Governance dashboard & APIs. Profile authoring, RBAC, audit history, environment-aware deployments, and profile versioning.</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="ecosystem-table-body"></tbody>
                 </table>
             </div>
         </section>
@@ -4278,6 +4252,101 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
         // Interactive repository ecosystem
         (function() {
+            const componentMetadata = [
+                {
+                    key: 'cerbistream',
+                    name: 'CerbiStream',
+                    status: 'GA',
+                    tags: [{ class: 'net', label: '.NET 8–9 (compatible with .NET 10+)' }],
+                    role: 'Source logger that attaches governance metadata with optional encryption and file fallback.',
+                    tagline: 'Core logging engine that attaches governance metadata at the source.'
+                },
+                {
+                    key: 'analyzer',
+                    name: 'CerbiStream.GovernanceAnalyzer',
+                    status: 'GA',
+                    tags: [{ class: 'roslyn', label: 'Roslyn' }],
+                    role: 'Build-time Roslyn analyzer that flags governance and scoring issues before merge.',
+                    tagline: 'Roslyn analyzers for compile-time governance checks.'
+                },
+                {
+                    key: 'mel',
+                    name: 'Cerbi.MEL.Governance',
+                    status: 'GA',
+                    tags: [{ class: 'mel', label: 'MEL' }],
+                    role: 'Runtime governance adapter for Microsoft.Extensions.Logging that redacts and ships scoring metadata.',
+                    tagline: 'Runtime adapter for Microsoft.Extensions.Logging pipelines.'
+                },
+                {
+                    key: 'serilog',
+                    name: 'Cerbi.Serilog.GovernanceAnalyzer',
+                    status: 'GA',
+                    tags: [{ class: 'serilog', label: 'Serilog' }],
+                    role: 'Serilog governance adapter that enforces profiles and ships scoring metadata.',
+                    tagline: 'Serilog governance adapter and score shipper.'
+                },
+                {
+                    key: 'runtime',
+                    name: 'Cerbi.Governance.Runtime',
+                    status: 'GA',
+                    tags: [{ class: 'lib', label: 'Library' }],
+                    role: 'Shared governance engine that evaluates profiles and computes impact scores for every adapter.',
+                    tagline: 'Shared governance engine for validators and adapters.'
+                },
+                {
+                    key: 'core',
+                    name: 'Cerbi.Governance.Core',
+                    status: 'GA',
+                    tags: [{ class: 'lib', label: 'Library' }],
+                    role: 'Shared contracts and profile models that keep analyzers and runtime validators aligned.',
+                    tagline: 'Shared contracts and enums that keep all components aligned.'
+                },
+                {
+                    key: 'shield',
+                    name: 'CerbiShield',
+                    status: 'Beta',
+                    tags: [{ class: 'web', label: 'Web' }],
+                    role: 'Governance dashboard, profile store, deployments, and scorecards.',
+                    tagline: 'Governance dashboard, rule store, and deployment APIs (tenant-hosted).'
+                }
+            ];
+
+            const statusBadge = (component) => `<span class="badge ${component.status === 'GA' ? 'badge-ga' : 'badge-beta'}">${component.status}</span>`;
+            const tagBadges = (component) => (component.tags || []).map(tag => `<span class="badge badge-${tag.class}">${tag.label}</span>`).join('');
+
+            function renderEcosystemTable() {
+                const tbody = document.getElementById('ecosystem-table-body');
+                if (!tbody) return;
+
+                tbody.innerHTML = componentMetadata.map(component => `
+                    <tr>
+                        <td><strong>${component.name}</strong></td>
+                        <td><div class="repo-status">${statusBadge(component)}${tagBadges(component)}</div></td>
+                        <td>${component.role}</td>
+                    </tr>
+                `).join('');
+            }
+
+            function syncStageCards() {
+                componentMetadata.forEach(component => {
+                    const card = document.querySelector(`.repo-node[data-repo="${component.key}"]`);
+                    if (!card) return;
+
+                    const nameEl = card.querySelector('.repo-name');
+                    const taglineEl = card.querySelector('.repo-tagline');
+                    const mutedEl = card.querySelector('.muted');
+                    const statusEl = card.querySelector('.repo-status');
+
+                    if (nameEl) nameEl.textContent = component.name;
+                    if (taglineEl) taglineEl.textContent = component.tagline || component.role;
+                    if (mutedEl) mutedEl.textContent = `Role: ${component.role}`;
+                    if (statusEl) statusEl.innerHTML = `${statusBadge(component)}${tagBadges(component)}`;
+                });
+            }
+
+            renderEcosystemTable();
+            syncStageCards();
+
             const repoData = {
                 suite: {
                     icon: '🧭',
