@@ -4486,60 +4486,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             const closeBtn = detailPanel?.querySelector('.repo-detail-close');
             let selectedComponent = null;
 
-            const pipelineStages = Array.from(document.querySelectorAll('.pipeline-stage'));
-            const stageHighlight = document.querySelector('.pipeline-stage-highlight');
-            const stageWrapper = document.querySelector('.pipeline-stages-wrapper');
-
-            function moveStageHighlight(stageValue) {
-                if (!stageHighlight || !stageWrapper) return;
-
-                const styles = getComputedStyle(stageWrapper);
-                const itemHeight = parseFloat(styles.getPropertyValue('--pipeline-stage-height')) || 88;
-                const itemGap = parseFloat(styles.getPropertyValue('--pipeline-stage-gap')) || 14;
-                const offset = Math.max(0, stageValue - 1) * (itemHeight + itemGap);
-
-                stageHighlight.style.height = `${itemHeight}px`;
-                stageHighlight.style.transform = `translateY(${offset}px)`;
-            }
-
-            function setActiveStage(stageKey) {
-                const stageNumber = parseInt(stageKey || '', 10);
-                pipelineStages.forEach(stage => {
-                    const isActive = !!stageKey && stage.dataset.stage === stageKey;
-                    stage.classList.toggle('is-active', isActive);
-                    if (isActive) {
-                        stage.setAttribute('aria-current', 'step');
-                        stage.setAttribute('aria-pressed', 'true');
-                    } else {
-                        stage.removeAttribute('aria-current');
-                        stage.setAttribute('aria-pressed', 'false');
-                    }
-                });
-
-                if (!Number.isNaN(stageNumber)) {
-                    moveStageHighlight(stageNumber);
-                }
-            }
-
-            function clearActiveStage() {
-                const fallbackStage = document.body?.dataset?.ecosystemActiveStage;
-                if (fallbackStage) {
-                    setActiveStage(fallbackStage);
-                } else {
-                    setActiveStage(null);
-                }
-            }
-
-            document.querySelectorAll('.pipeline-stack[data-stage] .repo-node').forEach(card => {
-                const parentStack = card.closest('.pipeline-stack');
-                const stageKey = parentStack?.getAttribute('data-stage');
-
-                card.addEventListener('mouseenter', () => setActiveStage(stageKey));
-                card.addEventListener('focus', () => setActiveStage(stageKey));
-                card.addEventListener('mouseleave', clearActiveStage);
-                card.addEventListener('blur', clearActiveStage);
-            });
-
             function showRepoDetail(repoKey) {
                 const data = repoData[repoKey];
                 if (!data || !detailPanel) return;
