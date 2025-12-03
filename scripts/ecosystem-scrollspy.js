@@ -18,13 +18,15 @@
         ];
 
         const sectionStageLookup = new Map(stageSections.map(({ id, stage }) => [id, stage]));
-        const stageTargetLookup = new Map([
-            [1, 'ecosystem-stage-1'],
-            [2, 'ecosystem-stage-2'],
-            [3, 'ecosystem-stage-3'],
-            [4, 'ecosystem-stage-4'],
-            [5, 'ecosystem-stage-5']
-        ]);
+        const stageTargetLookup = new Map(
+            Array.from({ length: 5 }, (_, idx) => [idx + 1, `ecosystem-stage-${idx + 1}`])
+        );
+
+        const getStageTargetId = (stageNumber) => {
+            const button = document.querySelector(`.pipeline-stage[data-stage="${stageNumber}"]`);
+            const dataTarget = button?.dataset?.target;
+            return dataTarget || stageTargetLookup.get(stageNumber);
+        };
 
         const moveHighlight = (stageValue) => {
             const highlight = document.querySelector('.pipeline-stage-highlight');
@@ -100,7 +102,7 @@
                 const stageNumber = parseInt(targetButton.dataset.stage || '', 10);
                 if (Number.isNaN(stageNumber)) return;
 
-                const targetId = stageTargetLookup.get(stageNumber);
+                const targetId = getStageTargetId(stageNumber);
                 const target = targetId ? document.getElementById(targetId) : null;
 
                 if (target) {
@@ -138,7 +140,7 @@
             buttons.forEach((btn) => {
                 const stageNumber = parseInt(btn.dataset.stage || '', 10);
                 const isActive = stageNumber === activeStage;
-                const targetId = stageTargetLookup.get(stageNumber);
+                const targetId = getStageTargetId(stageNumber);
 
                 btn.classList.toggle('is-active', isActive);
                 if (targetId) {
