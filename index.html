@@ -914,7 +914,7 @@
                     <a href="#governance">Governance</a>
                     <a href="#dashboards">Dashboards</a>
                     <a href="#packages">Packages</a>
-                    <a href="#repos">Repos</a>
+                    <a href="#ecosystem-explore">Repos</a>
                     <a href="#architecture">Architecture</a>
                     <a href="#roadmap">Roadmap</a>
                     <a href="#contact">Contact</a>
@@ -1022,10 +1022,10 @@
                     <p class="persona-desc">See cost reduction, audit readiness, and delivery time impact.</p>
                     <span class="persona-cta">Jump to outcomes →</span>
                 </a>
-                <a class="persona-card" href="#quick-start">
+                <a class="persona-card" href="#ecosystem-explore" data-scroll-target="#ecosystem-explore">
                     <div class="persona-title">For Developers &amp; Platform Teams</div>
-                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and ecosystem details.</p>
-                    <span class="persona-cta">Start building →</span>
+                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and explore the ecosystem details.</p>
+                    <span class="persona-cta">Explore the stack →</span>
                 </a>
                 <a class="persona-card" href="#compliance">
                     <div class="persona-title">For Security, Risk &amp; Compliance</div>
@@ -1034,6 +1034,19 @@
                 </a>
             </div>
         </section>
+
+        <script>
+            document.querySelectorAll('[data-scroll-target]').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    const targetSelector = link.getAttribute('data-scroll-target');
+                    const target = targetSelector ? document.querySelector(targetSelector) : null;
+                    if (!target) return;
+
+                    event.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            });
+        </script>
 
         <section id="founder-intro" class="founder-section" aria-label="Founder introduction">
             <div class="founder-inner">
@@ -1649,7 +1662,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         </section>
 
         <!-- Open Source Repos - Creative Interactive Design -->
-        <section id="repos" class="container section">
+        <div id="repos" class="sr-only" aria-hidden="true"></div>
+        <section id="ecosystem-explore" class="container section">
             <div class="eyebrow">Open Source</div>
             <h2><span class="hl">Explore</span> the Cerbi Ecosystem</h2>
             <p class="lead">From first log line to governance scores on a dashboard, each piece plays a specific role in the pipeline.</p>
