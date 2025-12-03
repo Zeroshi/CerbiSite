@@ -560,13 +560,17 @@
 
         .scroll-target { scroll-margin-top: calc(var(--nav-h) + 16px); }
 
-        .persona-nav { padding: 6px 0 10px; }
+        .persona-nav { padding: 16px 0 20px; margin: 18px 0 14px; }
         .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
         .persona-card { text-decoration: none; color: inherit; display: grid; gap: 6px; align-content: start; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(20,40,72,.12); background: linear-gradient(135deg, rgba(255,77,0,.06), rgba(15,99,255,.04)); box-shadow: 0 14px 36px rgba(12,22,44,0.08); transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease; }
         .persona-card:hover { transform: translateY(-1px); box-shadow: 0 18px 44px rgba(12,22,44,0.12); border-color: color-mix(in srgb, var(--brand) 30%, rgba(20,40,72,.12)); }
         .persona-title { font-weight: 800; font-size: 16px; color: var(--text-strong); }
         .persona-desc { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
         .persona-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--brand); font-size: 13px; text-transform: uppercase; letter-spacing: .02em; }
+
+        .architecture-grid { align-items: flex-start; gap: 18px; }
+        .arch-diagram { margin: 0; display: grid; gap: 10px; align-content: start; }
+        .arch-diagram img { width: 100%; height: auto; max-height: 420px; object-fit: contain; border-radius: 12px; border: 1px solid rgba(20,40,72,.12); }
 
         .founder-section {
             position: relative;
@@ -1531,7 +1535,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <div class="eyebrow">How it fits</div>
             <h2>Reference <span class="hl">Architecture</span></h2>
             <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
-            <div class="grid" style="align-items:start;gap:18px">
+            <div class="grid architecture-grid">
                 <article class="col-6 card">
                     <h3>Flow</h3>
                     <ul>
@@ -1544,7 +1548,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
                     <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" title="Open full-size architecture">
-                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async" style="max-height:360px;width:100%;object-fit:contain;">
+                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
                     </a>
                     <figcaption class="img-cap">
                         Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.
