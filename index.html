@@ -74,6 +74,7 @@
         h1, h2, h3, h4, h5 { color: var(--text-strong); margin: .2em 0 .35em }
         .container { width: var(--container); margin-inline: auto }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0 }
+        .relative { position: relative }
 
         /* Hero Metrics */
         .metrics-shell {
@@ -141,30 +142,6 @@
             color: var(--muted);
             line-height: 1.5;
             margin: 0;
-        }
-
-        .nuget-watermark-slot {
-            position: absolute;
-            inset-inline: 0;
-            bottom: 12px;
-            display: none;
-            justify-content: flex-end;
-            padding: 0 14px;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .nuget-watermark {
-            pointer-events: none;
-            user-select: none;
-            font-weight: 900;
-            letter-spacing: 0.3em;
-            color: rgba(71, 85, 105, 0.08);
-            text-transform: uppercase;
-            white-space: nowrap;
-            font-size: clamp(48px, 9vw, 112px);
-            line-height: 1;
         }
 
         .info-trigger {
@@ -558,6 +535,8 @@
             flex-direction: column;
             gap: 18px;
             align-items: stretch;
+            position: relative;
+            z-index: 1;
         }
         .hero-main {
             display: flex;
@@ -618,17 +597,33 @@
             flex: 2 1 520px;
         }
 
-        @media (min-width: 640px) {
-            .nuget-watermark-slot {
-                display: flex;
-            }
+        .hero-watermark {
+            position: absolute;
+            inset-inline: 0;
+            right: 16px;
+            bottom: 16px;
+            padding: 0 16px;
+            pointer-events: none;
+            display: none;
+            justify-content: flex-end;
+            z-index: 0;
         }
 
-        @media (min-width: 1024px) {
-            .nuget-watermark-slot {
+        .nuget-watermark {
+            pointer-events: none;
+            user-select: none;
+            font-weight: 900;
+            letter-spacing: 0.35em;
+            color: rgba(71, 85, 105, 0.1);
+            text-transform: uppercase;
+            white-space: nowrap;
+            font-size: clamp(48px, 8vw, 112px);
+            line-height: 1;
+        }
+
+        @media (min-width: 640px) {
+            .hero-watermark {
                 display: flex;
-                padding: 0 28px;
-                bottom: 16px;
             }
         }
 
@@ -1012,7 +1007,7 @@
     </header>
 
     <main id="main">
-        <section class="hero container" id="top" aria-label="Hero">
+        <section class="hero container relative" id="top" aria-label="Hero">
             <div class="hero-layout">
                 <div class="hero-main">
                     <div class="chip-row" role="list" aria-label="High level features">
@@ -1097,8 +1092,8 @@
                     </article>
                 </div>
             </div>
-            <div class="nuget-watermark-slot" aria-hidden="true">
-                <div id="nugetWatermarkMount"></div>
+            <div aria-hidden="true" class="hero-watermark">
+                <div class="nuget-watermark">33.5k+ NuGet downloads</div>
             </div>
         </section>
 
@@ -3477,7 +3472,6 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="scripts/cerbi.js"></script>
     <script src="scripts/video-card.js"></script>
-    <script src="scripts/nuget-download-stat.js"></script>
     <script src="scripts/hero-metrics.js"></script>
     <script src="scripts/ecosystem-scrollspy.js"></script>
 
