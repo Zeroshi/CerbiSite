@@ -143,96 +143,28 @@
             margin: 0;
         }
 
-        .nuget-stat-card {
-            background: rgba(11, 19, 36, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            box-shadow: 0 16px 38px rgba(5, 10, 25, 0.45);
-            color: #f8fafc;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 6px;
-            position: relative;
-            overflow: visible;
+        .nuget-watermark-slot {
+            position: absolute;
+            inset-inline: 0;
+            bottom: 12px;
+            display: none;
+            justify-content: flex-end;
+            padding: 0 14px;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
         }
 
-        .nuget-stat-number {
-            font-weight: 700;
-            color: #f8fafc;
-        }
-
-        .nuget-stat-label {
+        .nuget-watermark {
+            pointer-events: none;
+            user-select: none;
+            font-weight: 900;
+            letter-spacing: 0.3em;
+            color: rgba(71, 85, 105, 0.08);
             text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: rgba(226, 232, 240, 0.72);
-            font-size: 11px;
-        }
-
-        .nuget-stat-compact {
-            align-items: flex-start;
-            justify-content: center;
-            padding: 14px 16px;
-            gap: 4px;
-            border-radius: 16px;
-        }
-
-        .nuget-stat-compact .nuget-stat-number {
-            font-size: 28px;
-        }
-
-        .nuget-stat-compact .nuget-stat-label {
-            margin-top: 2px;
-        }
-
-        .nuget-stat-vertical {
-            align-items: center;
-            justify-content: center;
-            min-height: 240px;
-            padding: 20px 24px;
-            text-align: center;
-            border-radius: 24px;
-            gap: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(7, 11, 22, 0.88));
-        }
-
-        .nuget-stat-vertical .nuget-stat-number {
-            font-size: clamp(44px, 4vw, 64px);
-            line-height: 1.1;
-        }
-
-        .nuget-stat-vertical .nuget-stat-label {
-            letter-spacing: 0.35em;
-            transform: rotate(90deg);
-            transform-origin: center;
             white-space: nowrap;
-            margin-top: 14px;
-        }
-
-        .nuget-stat-card.is-loading .nuget-stat-number {
-            position: relative;
-            color: transparent;
-        }
-
-        .nuget-stat-card.is-loading .nuget-stat-number::after {
-            content: "";
-            display: block;
-            width: 80%;
-            height: 1.1em;
-            background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.28), rgba(255,255,255,0.12));
-            background-size: 200% 100%;
-            border-radius: 12px;
-            animation: nugetShimmer 1.2s ease-in-out infinite;
-        }
-
-        .nuget-stat-card.is-loading .nuget-stat-label {
-            opacity: 0.7;
-        }
-
-        @keyframes nugetShimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            font-size: clamp(48px, 9vw, 112px);
+            line-height: 1;
         }
 
         .info-trigger {
@@ -666,6 +598,7 @@
             position: relative;
             max-width: 1080px;
             margin: 0 auto;
+            z-index: 1;
         }
 
         .hero-stats-row {
@@ -685,30 +618,17 @@
             flex: 2 1 520px;
         }
 
-        .nuget-stat-mobile-slot {
-            display: flex;
-        }
-
-        .nuget-overlay-slot {
-            display: none;
+        @media (min-width: 640px) {
+            .nuget-watermark-slot {
+                display: flex;
+            }
         }
 
         @media (min-width: 1024px) {
-            .hero-layout {
-                padding-right: 220px;
-            }
-
-            .nuget-stat-mobile-slot {
-                display: none;
-            }
-
-            .nuget-overlay-slot {
-                display: block;
-                position: absolute;
-                right: 32px;
-                top: 50%;
-                transform: translateY(-50%);
-                pointer-events: auto;
+            .nuget-watermark-slot {
+                display: flex;
+                padding: 0 28px;
+                bottom: 16px;
             }
         }
 
@@ -1146,12 +1066,6 @@
                                 Results are based on internal benchmarks and pilot rollouts; actual results will vary.
                             </p>
                         </div>
-                        <div id="nugetStatMobile" class="nuget-stat-mobile-slot">
-                            <div class="nuget-stat-card nuget-stat-compact is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
-                                <div class="nuget-stat-number">10k+</div>
-                                <div class="nuget-stat-label">NuGet downloads</div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Who Is This For -->
@@ -1183,13 +1097,8 @@
                     </article>
                 </div>
             </div>
-            <div class="nuget-overlay-slot">
-                <div id="nugetStatDesktop">
-                    <div class="nuget-stat-card nuget-stat-vertical is-loading" aria-label="Combined NuGet downloads across Cerbi packages">
-                        <div class="nuget-stat-number">10k+</div>
-                        <div class="nuget-stat-label">NuGet downloads</div>
-                    </div>
-                </div>
+            <div class="nuget-watermark-slot" aria-hidden="true">
+                <div id="nugetWatermarkMount"></div>
             </div>
         </section>
 
