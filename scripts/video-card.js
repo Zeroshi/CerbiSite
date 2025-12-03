@@ -18,17 +18,18 @@
         'cerbisuite-story': {
             title: 'Why I Built CerbiSuite',
             description: 'Where Cerbi fits for leaders and architects: the problem it solves and how it plugs into existing stacks.',
-            youtubeId: '4YsEgMs2Xs4'
+            youtubeId: '4YsEgMs2Xs4',
+            fallbackText: 'Video walkthrough coming soon. For now, scroll up for the architecture diagram and ecosystem overview.'
         }
     };
 
-    const VideoPlaceholder = ({ title, description }) => h('div', { className: 'video-placeholder' },
+    const VideoPlaceholder = ({ title, description, fallbackText }) => h('div', { className: 'video-placeholder' },
         h('div', { className: 'video-placeholder-title' }, title),
         description ? h('p', { className: 'video-placeholder-text' }, description) : null,
-        h('div', { className: 'video-coming-soon' }, 'Video coming soon')
+        h('div', { className: 'video-coming-soon' }, fallbackText || 'Video coming soon')
     );
 
-    const VideoCard = ({ title, description, youtubeId }) => {
+    const VideoCard = ({ title, description, youtubeId, fallbackText }) => {
         const hasVideo = Boolean(youtubeId);
         const frameContent = hasVideo
             ? h('iframe', {
@@ -38,7 +39,7 @@
                 allowFullScreen: true,
                 loading: 'lazy'
             })
-            : h(VideoPlaceholder, { title, description });
+            : h(VideoPlaceholder, { title, description, fallbackText });
 
         return h('div', { className: 'react-video-card' },
             h('div', { className: 'video-frame' }, frameContent),
