@@ -597,47 +597,24 @@
             flex: 2 1 520px;
         }
 
-        .hero-watermark {
-            position: absolute;
-            inset-inline: 0;
-            bottom: 32px;
-            padding: 0 16px;
-            pointer-events: none;
-            display: none;
-            justify-content: center;
-            z-index: 0;
-        }
-
-        .nuget-watermark {
-            pointer-events: none;
-            user-select: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nuget-watermark .nuget-count {
-            font-weight: 900;
-            letter-spacing: 0.25em;
-            color: rgba(255, 255, 255, 0.08);
+        .nuget-inline-stat {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
-            font-size: clamp(56px, 7vw, 112px);
-            line-height: 1;
-        }
-
-        .nuget-watermark .nuget-label {
-            font-weight: 700;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.16);
-            font-size: clamp(9px, 1.5vw, 14px);
-            line-height: 1.2;
         }
 
         @media (min-width: 640px) {
-            .hero-watermark {
-                display: flex;
+            .nuget-inline-stat {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .nuget-inline-stat {
+                font-size: 0.875rem;
             }
         }
 
@@ -1104,13 +1081,12 @@
                         <div id="typeBody" class="muted mono"></div>
                         <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
                     </article>
-                </div>
-            </div>
-            <!-- NuGet download watermark – decorative only -->
-            <div aria-hidden="true" class="hero-watermark">
-                <div class="nuget-watermark">
-                    <div class="nuget-count">33.5k+</div>
-                    <div class="nuget-label">NuGet downloads</div>
+
+                    <p
+                        class="nuget-inline-stat mt-3 text-[0.7rem] sm:text-xs md:text-sm text-white/70 text-center tracking-[0.18em] uppercase"
+                    >
+                        33.5k+ NuGet downloads across Cerbi packages
+                    </p>
                 </div>
             </div>
         </section>
