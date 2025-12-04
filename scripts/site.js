@@ -26,17 +26,22 @@
   (function(){
     const btn = $(".hamburger");
     const menu = $("#mobileMenu");
+    const body = document.body;
     if (!btn || !menu) return;
+    const setOpen = (open)=>{
+      if (open) { menu.removeAttribute("hidden"); body.style.overflow="hidden"; }
+      else { menu.setAttribute("hidden", ""); body.style.overflow=""; }
+      btn.setAttribute("aria-expanded", String(open));
+    };
     btn.addEventListener("click", () => {
       const open = menu.hasAttribute("hidden");
-      if (open) menu.removeAttribute("hidden");
-      else menu.setAttribute("hidden", "");
-      btn.setAttribute("aria-expanded", String(open));
+      setOpen(open);
     });
+    matchMedia("(min-width: 981px)").addEventListener("change", e=>{ if(e.matches) setOpen(false); });
     // Close on nav click
     menu.addEventListener("click", e => {
       if (e.target.tagName === "A") {
-        menu.setAttribute("hidden",""); btn.setAttribute("aria-expanded","false");
+        setOpen(false);
       }
     });
   })();
