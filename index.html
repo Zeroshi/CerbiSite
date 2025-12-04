@@ -23,6 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
     <!-- Swiper CSS (local to avoid CDN/CERT failures) -->
     <link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="styles/mobile-fixes.css" />
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
@@ -514,6 +515,18 @@
         .nav-links a { white-space: nowrap; padding: 8px 10px; border-radius: 10px; color: var(--navy); flex: 0 0 auto; transition: background .2s ease; }
         .nav-links a:hover { background: var(--panel-2) }
         .nav-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0 }
+        .hamburger { display: none; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; border: 1px solid rgba(20,40,72,.14); background: var(--panel-2); color: var(--text-strong); font-size: 22px; cursor: pointer; box-shadow: 0 6px 18px rgba(10,16,30,.08); }
+        .hamburger:focus-visible { outline: 3px solid color-mix(in srgb, var(--link) 50%, transparent); outline-offset: 3px; }
+        #mobileMenu { position: fixed; inset: var(--nav-h) 0 auto 0; background: rgba(255,255,255,.97); border-bottom: 1px solid rgba(20,40,72,.08); box-shadow: 0 12px 40px rgba(10,16,30,.16); padding: 16px; display: grid; gap: 12px; z-index: var(--layer-dropdown); max-height: calc(100vh - var(--nav-h)); overflow-y: auto; }
+        #mobileMenu[hidden] { display: none; }
+        .mobile-nav-links { display: grid; gap: 8px; }
+        .mobile-nav-links a { padding: 10px 12px; border-radius: 10px; background: var(--panel-2); color: var(--text-strong); border: 1px solid rgba(20,40,72,.08); }
+        .mobile-nav-actions { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); }
+        @media (max-width: 980px) {
+            .nav-inner { padding-inline: 8px; }
+            .nav-wrap { display: none; }
+            .hamburger { display: inline-flex; }
+        }
         .btn { appearance: none; border: none; cursor: pointer; border-radius: 12px; padding: 10px 14px; font-weight: 700; transition: transform .08s ease, box-shadow .2s ease, background .2s ease }
         .btn-primary { background: var(--brand); color: #fff; box-shadow: var(--shadow) }
         .btn-primary:hover { transform: translateY(-1px) }
@@ -969,6 +982,8 @@
                 <span>CerbiSuite</span>
             </a>
 
+            <button class="hamburger" type="button" aria-label="Toggle navigation" aria-controls="mobileMenu" aria-expanded="false">☰</button>
+
             <div class="nav-wrap">
                 <nav id="primaryNav" class="nav-links" aria-label="Primary">
                     <a href="#why">Why</a>
@@ -996,6 +1011,26 @@
             </div>
         </div>
     </header>
+
+    <nav id="mobileMenu" aria-label="Mobile" hidden>
+        <div class="mobile-nav-links">
+            <a href="#why">Why</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="#ecosystem">Ecosystem</a>
+            <a href="#governance">Governance</a>
+            <a href="#dashboards">Dashboards</a>
+            <a href="#packages">Packages</a>
+            <a href="#ecosystem-explore">Repos</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#roadmap">Roadmap</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="mobile-nav-actions">
+            <a class="btn btn-ghost" href="#contact" role="button">Contact</a>
+            <a class="btn btn-primary" href="https://github.com/Zeroshi/Cerbi-CerbiStream" target="_blank" rel="noopener" role="button">GitHub</a>
+        </div>
+    </nav>
 
     <main id="main">
         <section class="hero container relative" id="top" aria-label="Hero">
