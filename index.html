@@ -742,7 +742,8 @@
         .lightbox > .close { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); border: 1px solid rgba(20,40,72,.15); border-radius: 10px; padding: 6px 10px; cursor: pointer; }
         #lightboxImg { max-width: min(96vw, 1800px); max-height: 90vh; border-radius: 12px; box-shadow: 0 18px 50px rgba(0,0,0,.35); background: #fff; }
 
-        .typebox { position: relative; min-height: 132px }
+        .typebox { position: relative; min-height: 132px; padding: 14px 18px; margin-top: 24px }
+        #typeBody { white-space: pre-line; line-height: 1.6 }
         .caret { display: inline-block; width: .6ch; background: currentColor; margin-left: 2px; height: 1.05em; vertical-align: -.18em; animation: blink .9s steps(1) infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -1141,7 +1142,7 @@
                         </div>
                     </div>
 
-                    <article class="card typebox" style="margin-top:32px">
+                    <article class="card typebox">
                         <h3 id="typeTitle"></h3>
                         <div id="typeBody" class="muted mono"></div>
                         <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
@@ -3819,11 +3820,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 },
                 {
                     t: "Compliance Without Friction",
-                    b: [
-                        "PII rules at build-time & runtime. Redact & flag—don't drop critical signals.",
-                        "Versioned policies in CerbiShield (RBAC & audit history)",
-                        "Relax-mode for safe rollout in prod"
-                    ]
+                    p: "Redact and flag sensitive fields at build-time and runtime with versioned CerbiShield policies, keeping audits traceable while relax-mode smooths rollout."
                 },
                 {
                     t: "Make Every Tool Better",
@@ -3858,11 +3855,26 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 const tick = () => { if (p >= 0) { el.textContent = s.slice(0, p--); setTimeout(tick, erase); } else { cb && cb(); } };
                 tick();
             }
-            function typeBody(lines, cb) {
-                bodyEl.innerHTML = ""; let line = 0, acc = "";
+            function typeBody(content, opts = {}, cb) {
+                bodyEl.innerHTML = "";
+
+                if (opts.paragraph) {
+                    let p = 0;
+                    const text = content || "";
+                    const tick = () => {
+                        if (p <= text.length) { bodyEl.textContent = text.slice(0, p++); setTimeout(tick, speed); }
+                        else { cb && cb(); }
+                    };
+                    tick();
+                    return;
+                }
+
+                if (!Array.isArray(content)) { cb && cb(); return; }
+
+                let line = 0, acc = "";
                 const nextLine = () => {
-                    if (line >= lines.length) { return cb && cb(); }
-                    const text = (line ? "\n• " : "• ") + lines[line++];
+                    if (line >= content.length) { return cb && cb(); }
+                    const text = (line ? "\n• " : "• ") + content[line++];
                     let p = 0;
                     const tick = () => {
                         if (p <= text.length) { acc += text[p++] || ""; bodyEl.textContent = acc; setTimeout(tick, speed); }
@@ -3874,8 +3886,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             }
 
             function cycle() {
-                const { t, b } = items[i];
-                typeText(titleEl, t, () => typeBody(b, () => {
+                const { t, b, p } = items[i];
+                const body = p || b || [];
+                typeText(titleEl, t, () => typeBody(body, { paragraph: Boolean(p) }, () => {
                     setTimeout(() => {
                         eraseText(bodyEl, () => eraseText(titleEl, () => {
                             i = (i + 1) % items.length;
