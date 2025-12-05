@@ -1512,7 +1512,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Keep your sinks</h3>
                     <ul>
-                        <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data.</li>
+                        <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> CerbiStream governs at the source while you keep routing via OTel, Fluent Bit, Vector, or your own collectors.</li>
                         <li><strong>Durable dashboards:</strong> governed field names/types avoid chart breakage.</li>
                         <li><strong>ML-ready:</strong> consistent, PII-safe features feed analytics/LLMs.</li>
                     </ul>
@@ -1625,7 +1625,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <div id="oss-1" class="oss-panel" hidden>
                     <ul class="oss-details">
                         <li><strong>Status:</strong> GA; targets .NET 8–9 (compatible with .NET 10+).</li>
-                        <li><strong>Highlights:</strong> Channel&lt;T&gt; async path, file fallback + encrypted rotation, governance hooks (<code>[CerbiTopic]</code>, <code>.Relax()</code>), redaction/violation tags, queue-first routing.</li>
+                        <li><strong>Highlights:</strong> Channel&lt;T&gt; async path, file fallback + encrypted rotation, governance hooks (<code>[CerbiTopic]</code>, <code>.Relax()</code>), redaction/violation tags, queue-first buffering.</li>
                         <li><strong>Companions:</strong> Governance runtime + analyzers.</li>
                     </ul>
                 </div>
@@ -1911,7 +1911,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Phase 2 (Planned)</h3>
                     <ul>
-                        <li>CerbIQ — routing, normalization, rollups, fan-out</li>
+                        <li>Scoring API — governance scores for coverage, violations, redaction posture, and risk</li>
                         <li>CerbiSense — ML anomaly detection & trend forecasting</li>
                         <li>Marketplace integrations (Azure/AWS/GCP)</li>
                     </ul>

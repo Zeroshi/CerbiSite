@@ -1289,7 +1289,7 @@
                 <div class="security-card">
                     <div class="security-icon">📊</div>
                     <h3>Real-Time Violation Alerts</h3>
-                    <p>Catch governance violations quickly. Cerbi tags events with structured violations you can route into your existing alert stack (Splunk, Datadog, ELK, Grafana, etc.) so issues surface before they turn into incidents or audit findings.</p>
+                    <p>Catch governance violations quickly. Cerbi tags events with structured violations so your pipelines (OTel, Fluent Bit, Vector, custom collectors) can forward alerts into your existing stack (Splunk, Datadog, ELK, Grafana, etc.) before issues become incidents or audit findings.</p>
                 </div>
 
                 <div class="security-card">
@@ -1649,8 +1649,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <li>Apps & services emit events</li>
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
-                        <li>CerbiShield hosts versioned profiles, RBAC, audit history</li>
-                        <li>Downstream sinks receive clean, consistent data</li>
+                        <li>CerbiShield hosts versioned profiles, RBAC, audit history, and deployable policy</li>
+                        <li>Teams route governed events through OTel, Fluent Bit, Vector, or custom pipelines to their sinks; Cerbi never ships your logs to vendors</li>
                     </ul>
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
@@ -1680,7 +1680,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Keep your sinks</h3>
                     <ul>
-                        <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> send less, cleaner data.</li>
+                        <li><strong>Splunk / ELK / OpenSearch / Datadog / CloudWatch:</strong> CerbiStream governs at the source while you keep routing via OTel, Fluent Bit, Vector, or your own collectors.</li>
                         <li><strong>Durable dashboards:</strong> governed field names/types avoid chart breakage.</li>
                         <li><strong>ML-ready:</strong> consistent, PII-safe features feed analytics/LLMs.</li>
                     </ul>
@@ -2994,7 +2994,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Phase 2 (Planned)</h3>
                     <ul>
-                        <li>CerbIQ — routing, normalization, rollups, fan-out</li>
+                        <li>Scoring API — governance scores for coverage, violations, redaction posture, and risk</li>
                         <li>CerbiSense — ML anomaly detection & trend forecasting</li>
                         <li>Marketplace integrations (Azure/AWS/GCP)</li>
                     </ul>
@@ -4509,7 +4509,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         'File fallback with encrypted rotation',
                         'Governance hooks: [CerbiTopic] attributes, .Relax() mode',
                         'Redaction & violation tagging',
-                        'Queue-first routing with configurable batching'
+                        'Queue-first buffering with configurable batching'
                     ],
                     github: 'https://github.com/Zeroshi/Cerbi-CerbiStream',
                     nuget: 'https://www.nuget.org/packages/CerbiStream',
