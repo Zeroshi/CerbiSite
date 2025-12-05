@@ -1913,12 +1913,13 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Phase 2 (Planned)</h3>
                     <ul>
-                        <li>Scoring API GA (governance score ingestion + rollups, no transport)</li>
-                        <li>CerbiSense (optional ML insights on governance metadata)</li>
+                        <li>Scoring API — governance signal ingestion, normalization of scoring events, and rollups for dashboards</li>
+                        <li>CerbiSense — optional ML analytics on metadata</li>
                         <li>Optional: “More runtime/IDE governance experiences”</li>
                     </ul>
                 </article>
             </div>
+            <p class="note">Routing to external log vendors is outside Cerbi; your pipeline remains in control.</p>
         </section>
 
         <!-- CerbiSuite story video BEFORE Contact/Get in Touch -->
