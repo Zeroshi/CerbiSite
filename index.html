@@ -615,8 +615,9 @@
             .chip { padding: 5px 9px; font-size: 13px; }
         }
         .hl { color: var(--brand) }
-        .hero h1 { margin: 0; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
-        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
+        .hero h1 { margin: 0 0 1rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 2rem; }
+        .hero-headings { text-align: center; }
         .section { padding: 28px 0 }
         #why-redaction {
             margin-top: clamp(28px, 4vw, 46px);
@@ -1104,10 +1105,12 @@
                         <span class="chip">Tenant-Hosted</span>
                     </div>
 
-                    <h1>
-                        Govern logs before they hit your sinks.
-                    </h1>
-                    <p class="sub text-base md:text-lg max-w-3xl mx-auto">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
+                    <div class="hero-headings">
+                        <h1 class="mb-4">
+                            Govern logs before they hit your sinks.
+                        </h1>
+                        <p class="sub text-base md:text-lg max-w-3xl mx-auto mt-0 mb-8">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
+                    </div>
 
                     <div class="hero-ctas flex w-full flex-wrap justify-center gap-3" role="group" aria-label="Primary calls to action">
                         <a href="#quickstart" class="btn btn-primary btn-large">
