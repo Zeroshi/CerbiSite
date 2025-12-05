@@ -3,60 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Governance scoring — Cerbi Scoring API for governed logging</title>
-    <meta name="description" content="Scoring API is Cerbi's governance scoring engine that grades signals from CerbiStream and CerbiShield while your pipelines keep routing logs to the sinks you choose." />
+    <title>Governance Scoring — Cerbi Scoring API</title>
+    <meta name="description" content="Cerbi Scoring API explains ScoreImpact and how governance scoring reduces uncertainty without brokering your log traffic." />
     <meta name="keywords" content="logging governance, structured logging .NET, governance scoring, redaction posture, compile-time logging enforcement, runtime validation, Cerbi Scoring API" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
     <header class="text-center py-10 bg-gray-800 shadow-lg">
-        <h1 class="text-5xl font-extrabold">Cerbi Scoring API</h1>
-        <p class="text-lg mt-2">Normalize governance signals from CerbiStream and CerbiShield, score every payload, and keep routing decisions in your own pipelines.</p>
+        <h1 class="text-5xl font-extrabold">Governance Scoring</h1>
+        <p class="text-lg mt-2">ScoreImpact turns CerbiStream and CerbiShield signals into a single score while your routers keep sending logs wherever you choose.</p>
         <a href="index.html" class="mt-4 inline-block px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Back to Home</a>
     </header>
 
     <main class="container mx-auto px-6 py-10 space-y-12">
         <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
-            <h2 class="text-3xl font-semibold mb-4">What the Scoring API Represents</h2>
-            <p class="text-gray-200">ScoreImpact summarizes how healthy your logging posture is across every service—without Cerbi ever brokering traffic.</p>
-            <p class="text-gray-200 mt-3">CerbiStream governs events at the source, CerbiShield defines and deploys the policies that drive governance signals, and the Scoring API turns those signals into comparable scores while your own routers keep sending logs to the sinks you already use.</p>
+            <h2 class="text-3xl font-semibold mb-4">What ScoreImpact Represents</h2>
+            <p class="text-gray-200">ScoreImpact is the governance score Cerbi generates from policy outcomes; Cerbi never brokers or forwards your log traffic.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div class="p-6 bg-gray-700 rounded-lg shadow">
                     <h3 class="text-2xl font-semibold">Coverage</h3>
-                    <p class="text-gray-200 mt-2">Tracks how many workloads are under governance, so schema gaps show up before incidents.</p>
+                    <p class="text-gray-200 mt-2">Shows how much of your fleet is under governed schemas, so gaps surface before incidents.</p>
                 </div>
                 <div class="p-6 bg-gray-700 rounded-lg shadow">
                     <h3 class="text-2xl font-semibold">Violations</h3>
-                    <p class="text-gray-200 mt-2">Counts policy breaks like unredacted secrets or dropped samples, weighted by severity and tied to enforcement points.</p>
+                    <p class="text-gray-200 mt-2">Counts policy breaks (like unredacted secrets or dropped samples) and weights them by severity.</p>
                 </div>
                 <div class="p-6 bg-gray-700 rounded-lg shadow">
                     <h3 class="text-2xl font-semibold">Redaction Posture</h3>
-                    <p class="text-gray-200 mt-2">Measures how consistently sensitive fields are masked at the edge and downstream, with CI/runtime coverage signals.</p>
+                    <p class="text-gray-200 mt-2">Measures how consistently sensitive fields are masked at source and downstream.</p>
                 </div>
                 <div class="p-6 bg-gray-700 rounded-lg shadow">
-                    <h3 class="text-2xl font-semibold">Risk Trends</h3>
-                    <p class="text-gray-200 mt-2">Shows whether risk is climbing or falling over time, with weight on recent drift and service-specific posture.</p>
+                    <h3 class="text-2xl font-semibold">Risk Trend Signals</h3>
+                    <p class="text-gray-200 mt-2">Highlights whether risk is climbing or falling, weighting recent drift and noisy services.</p>
                 </div>
             </div>
         </section>
 
         <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
-            <h2 class="text-3xl font-semibold mb-4">Why Scoring Helps</h2>
+            <h2 class="text-3xl font-semibold mb-4">Why Scoring Reduces Operational Uncertainty</h2>
             <ul class="list-disc ml-6 space-y-2 text-gray-200">
-                <li>Highlights weak spots early, so fixes happen before misconfigurations spill into production.</li>
-                <li>Prioritizes what to fix first by tying scores to the highest-risk services and traffic paths.</li>
-                <li>Provides a common signal during reviews, reducing noisy alerts and surprise outages.</li>
-                <li>Shows governance trends across CI and runtime enforcement so teams can prove improvement over time.</li>
+                <li>Makes schema drift visible with coverage and violation deltas instead of ad-hoc checks.</li>
+                <li>Surfaces audit evidence gaps by showing where masking and enforcement are missing.</li>
+                <li>Focuses remediation on the noisiest routes, so reliability work is predictable.</li>
+                <li>All scoring happens without routing or storing your payloads.</li>
             </ul>
         </section>
 
         <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
-            <h2 class="text-3xl font-semibold mb-4">Cross-Service Standardization</h2>
+            <h2 class="text-3xl font-semibold mb-4">Safe Rollout With Relax Mode</h2>
             <ul class="list-disc ml-6 space-y-2 text-gray-200">
-                <li>Uses the same scoring rubric for every team, so policies are enforced evenly without manual checklists.</li>
-                <li>Signals when services diverge from shared baselines, making drift visible without ticket policing.</li>
-                <li>Lets platform teams set defaults once while allowing services to self-correct against the score.</li>
-                <li>Works with any router or collector—CerbiStream and CerbiShield emit governance data, the Scoring API scores it, and your pipelines keep sending logs to your sinks.</li>
+                <li>Relax mode enforces masking and schema checks without dropping traffic, so teams can observe impact before tightening.</li>
+                <li>Visibility shows which services improve the score and which need fixes before blocking.</li>
+                <li>Scores stay consistent across routers—Cerbi never brokers, stores, or reroutes your logs.</li>
             </ul>
         </section>
 
@@ -65,19 +63,19 @@
             <div class="space-y-4">
                 <div>
                     <h3 class="text-xl font-semibold">Is this ML?</h3>
-                    <p class="text-gray-200">No. Scores are rule-based and deterministic so operators can audit every factor.</p>
+                    <p class="text-gray-200">No. Scores are deterministic from policy outcomes.</p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold">Does Cerbi store my logs?</h3>
-                    <p class="text-gray-200">No. Cerbi evaluates metadata and policy outcomes; log storage stays in your stack.</p>
+                    <h3 class="text-xl font-semibold">Does Cerbi store my raw logs?</h3>
+                    <p class="text-gray-200">No. Cerbi scores governance signals only.</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold">Does Cerbi route logs?</h3>
-                    <p class="text-gray-200">No. CerbiStream governs events at the source and CerbiShield manages the policies being enforced, but your own routers forward data to sinks—Cerbi never brokers or forwards log traffic.</p>
+                    <p class="text-gray-200">No. Your routers keep forwarding data; Cerbi does not broker or fan-out traffic.</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold">Do I need a specific router?</h3>
-                    <p class="text-gray-200">No. Scoring works with any router that can emit governance signals and metrics; the Scoring API is the scoring engine—Cerbi does not broker or fan-out your log transport.</p>
+                    <p class="text-gray-200">No. Any router works as long as it emits governance signals.</p>
                 </div>
             </div>
         </section>
