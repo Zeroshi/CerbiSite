@@ -1128,24 +1128,28 @@
 
         <section id="why-redaction" class="container section" style="background:var(--panel);border-radius:18px;padding:56px 42px;border:1px solid rgba(20,40,72,.08)">
             <div class="eyebrow">Context</div>
-            <h2>Why not <span class="hl">“just a redaction library”</span></h2>
-            <p class="lead">Cerbi doesn’t route or store your logs. Customers keep their pipelines and sinks while CerbiStream governs what gets emitted, CerbiShield defines and versions the policies being enforced, and the Scoring API measures posture across teams.</p>
+            <h2>Why <span class="hl">Redaction Alone Isn’t Enough</span></h2>
+            <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline.</p>
             <div class="grid">
                 <article class="col-6 card">
-                    <h3>Field-level control</h3>
-                    <p>Define Required, Disallowed, and Sensitive field rules for every log shape so redaction is one guardrail in a governed schema, not the only control.</p>
+                    <h3>Required/Disallowed/Sensitive policy</h3>
+                    <p>Define Required, Disallowed, and Sensitive field rules for every log shape so schemas are intentional and sensitive data is controlled by policy—not best-effort filters.</p>
                 </article>
                 <article class="col-6 card">
-                    <h3>Defense in depth</h3>
-                    <p>Compile-time analyzers and runtime validation work together to catch violations early, then block or tag risky events before they leave the service.</p>
+                    <h3>Build-time analyzers</h3>
+                    <p>Roslyn analyzers flag violations in CI before code ships, blocking schema drift and risky fields while keeping your existing logger configuration.</p>
                 </article>
                 <article class="col-6 card">
-                    <h3>Operational traceability</h3>
-                    <p>Policy versioning with deployment history shows who changed what and where it is enforced, so redaction decisions stay auditable.</p>
+                    <h3>Runtime validation &amp; redaction</h3>
+                    <p>Runtime validators enforce the same rules in production, redacting or tagging violations so payloads stay compliant without changing your transport.</p>
                 </article>
                 <article class="col-6 card">
-                    <h3>Measurable outcomes</h3>
-                    <p>Scoring visibility highlights schema consistency, redaction posture, and drift over time, so governance progress is transparent.</p>
+                    <h3>Policy versioning + deployment history</h3>
+                    <p>Versioned policies with deployment traceability show who changed what and where it’s enforced, keeping governance decisions auditable release over release.</p>
+                </article>
+                <article class="col-6 card">
+                    <h3>Scoring visibility</h3>
+                    <p>Scoring surfaces schema consistency, redaction posture, and coverage trends so teams can prove improvements and spot regressions quickly.</p>
                 </article>
             </div>
         </section>
