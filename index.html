@@ -2038,7 +2038,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                             <button type="button" class="repo-node" data-repo="mel">
                                 <div class="repo-icon">⚡</div>
                                 <h4 class="repo-name">Cerbi.MEL.Governance</h4>
-                                <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata asynchronously.</p>
+                                <p class="repo-tagline">Runtime governance and scoring adapter for Microsoft.Extensions.Logging; redacts PII and ships score metadata to the Scoring API asynchronously.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
                                     <span class="badge badge-mel">MEL</span>
@@ -2049,7 +2049,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                             <button type="button" class="repo-node" data-repo="serilog">
                                 <div class="repo-icon">📊</div>
                                 <h4 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h4>
-                                <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into CerbiShield.</p>
+                                <p class="repo-tagline">Serilog governance plugin that enforces profiles at runtime and ships scoring metadata into the Scoring API for downstream dashboards.</p>
                                 <div class="repo-status">
                                     <span class="badge badge-ga">GA</span>
                                     <span class="badge badge-serilog">Serilog</span>
@@ -2104,6 +2104,17 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                                     <span class="badge badge-web">Web</span>
                                 </div>
                                 <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Governance brain and scorecards.</p>
+                            </button>
+
+                            <button type="button" class="repo-node" data-repo="reporting">
+                                <div class="repo-icon">📈</div>
+                                <h4 class="repo-name">Reporting API</h4>
+                                <p class="repo-tagline">API that aggregates Scoring API metadata into CerbiShield dashboards and downstream reporting surfaces.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-beta">Beta</span>
+                                    <span class="badge badge-api">API</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Reporting and dashboard feed.</p>
                             </button>
                         </div>
                     </div>
