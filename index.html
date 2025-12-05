@@ -1497,6 +1497,26 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             </div>
         </section>
 
+        <section id="closed-loop" class="container section">
+            <div class="eyebrow">Execution feedback loop</div>
+            <h2>Closed-Loop Governance &amp; <span class="hl">Scoring</span></h2>
+            <p class="lead">A clear four-step loop that reduces risk, improves consistency, and brings operational clarity across teams.</p>
+
+            <ol class="card" style="padding:18px 22px; display:grid; gap:12px;">
+                <li><strong>Define policies (CerbiShield)</strong>: set required fields, redaction rules, and relax modes as versioned standards.</li>
+                <li><strong>Enforce at source (CerbiStream)</strong>: analyzers and runtime validators stop drift before data leaves the service.</li>
+                <li><strong>Score outcomes (Scoring API)</strong>: every event receives an impact score that highlights governance quality and risk.</li>
+                <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten policies without breaking pipelines.</li>
+            </ol>
+
+            <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
+
+            <div class="card" style="padding:14px 18px; margin-top:12px;">
+                <h3 style="margin-top:0">Why this matters for Platform &amp; SRE</h3>
+                <p>Platform and SRE teams get provable guardrails without re-platforming: consistent schemas, reduced incident blast radius from bad payloads, faster RCA from scored violations, and clearer ownership around who is enforcing what.</p>
+            </div>
+        </section>
+
         <!-- Pitch cards -->
         <section id="pitch" class="container section">
             <div class="eyebrow">For Decision Makers</div>
