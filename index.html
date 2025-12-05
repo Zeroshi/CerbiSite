@@ -14,10 +14,10 @@
     <title>CerbiSuite — Logging governance and governance scoring for .NET</title>
 
     <meta name="theme-color" content="#fffdf7" />
-    <meta name="description" content="Logging governance with structured logging .NET, compile-time logging enforcement, PII redaction logs, governance policy as code, and governance scoring." />
-    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring, Scoring API, Cerbi, CerbiSuite, CerbiStream, CerbiShield" />
+    <meta name="description" content="Governance-first logging for .NET that validates, redacts, and scores payloads without routing your logs. CerbiStream, CerbiShield, and the Scoring API keep your pipelines and sinks unchanged." />
+    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring, Scoring API, Cerbi, CerbiSuite, CerbiStream, CerbiShield, vendor agnostic" />
     <meta property="og:title" content="CerbiSuite — Governance-first logging and scoring" />
-    <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance—while your pipelines keep routing to sinks." />
+    <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance while your pipelines keep routing to your sinks." />
     <meta property="og:image" content="assets/CerbiShield.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -1046,9 +1046,9 @@
                     </div>
 
                     <h1>
-                        Govern logs at the source. <span class="hl">Score governance outcomes. Keep your logger, pipeline, and sinks exactly how you want.</span>
+                        Govern logs at the source. <span class="hl">Score governance outcomes. Keep your logger, pipelines, and sinks exactly how you want.</span>
                     </h1>
-                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Cerbi validates every payload where it’s produced, versions policy outside the codebase, and scores governance posture release-to-release. You keep your existing logger and routing while Cerbi enforces schemas, redaction, and auditability at the edge.</p>
+                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Cerbi validates every payload where it’s produced, versions policy outside the codebase, and scores governance posture release-to-release. You keep your existing logger and routing—Cerbi never brokers traffic—while Cerbi enforces schemas, redaction, and auditability at the edge via the Scoring API.</p>
 
                     <!-- Dual CTAs -->
                     <div class="hero-ctas">
@@ -1135,7 +1135,7 @@
         <section id="why-redaction" class="container section" style="background:var(--panel);border-radius:18px;padding:56px 42px;border:1px solid rgba(20,40,72,.08)">
             <div class="eyebrow">Context</div>
             <h2>Why <span class="hl">Redaction Alone Isn’t Enough</span></h2>
-            <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline.</p>
+            <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline you keep routing.</p>
             <div class="grid">
                 <article class="col-6 card">
                     <h3>Required/Disallowed/Sensitive policy</h3>
@@ -1164,12 +1164,12 @@
             <div class="persona-grid">
                 <a class="persona-card" href="#use-cases">
                     <div class="persona-title">For CTOs &amp; VP Engineering</div>
-                    <p class="persona-desc">Score governance outcomes to prove improvement, and see cost and compliance impact from governed schemas and redaction posture.</p>
+                    <p class="persona-desc">Score governance outcomes to prove improvement, and see cost and compliance impact from governed schemas and redaction posture without swapping log vendors.</p>
                     <span class="persona-cta">Jump to outcomes →</span>
                 </a>
                 <a class="persona-card" href="#ecosystem-explore" data-scroll-target="#ecosystem-explore">
                     <div class="persona-title">For Developers &amp; Platform Teams</div>
-                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads without owning your routing.</p>
+                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads while you keep your agents, collectors, and sinks.</p>
                     <span class="persona-cta">Explore the stack →</span>
                 </a>
                 <a class="persona-card" href="#compliance">
@@ -1479,7 +1479,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="governance" class="container section">
             <div class="eyebrow">How governance works</div>
             <h2 id="scoring-flow">Governance Scoring <span class="hl">Flow</span></h2>
-            <p class="lead">From runtime validation to dashboard visualization—track the journey of every governance score.</p>
+            <p class="lead">From runtime validation to dashboard visualization—governance signals flow to the Scoring API while your log routers keep sending payloads to the sinks you already trust.</p>
 
             <div class="card" style="padding:18px; overflow:visible; position:relative">
                 <div class="flow-nodes" role="list" aria-label="Governance flow steps">
@@ -1489,7 +1489,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Runtime Validation</div>
                         <div class="flow-details">
                             <h4>Plugin Validates Event</h4>
-                            <p>Governance plugin checks log against profile rules and computes impact score.</p>
+                            <p>Governance plugin checks each log against profile rules, computes the impact score, and tags the event before your router ships it.</p>
                             <ul>
                                 <li>Severity-weighted scoring</li>
                                 <li>Plugin contributions</li>
@@ -1504,7 +1504,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Async Ship</div>
                         <div class="flow-details">
                             <h4>Background Transmission</h4>
-                            <p>Score data ships to the Scoring API for ingest/normalize/compute ScoreImpact—non-blocking and batched.</p>
+                            <p>Governance signals ship asynchronously to the Scoring API for ingest/normalize/compute ScoreImpact—non-blocking and batched, and separate from your payload routing.</p>
                             <ul>
                                 <li>Non-blocking</li>
                                 <li>Batched</li>
@@ -1736,8 +1736,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <li>Apps & services emit events into CerbiStream (source governance + validation)</li>
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
-                        <li>(Optional) governed events enter a Scoring Queue → Scoring API → CerbiShield Dashboards for governance + risk scoring</li>
-                        <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes to vendors/sinks; Cerbi stays vendor-agnostic and never brokers traffic</li>
+                        <li>(Optional) governed signals enter a Scoring Queue → Scoring API → CerbiShield Dashboards for governance + risk scoring</li>
+                        <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes payloads to vendors/sinks; Cerbi stays vendor-agnostic and never brokers traffic</li>
                     </ul>
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
@@ -3110,18 +3110,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Phase 1 (Current)</h3>
                     <ul>
-                        <li>CerbiStream GA (.NET structured logger)</li>
+                        <li>CerbiStream GA (.NET structured logger + governance tagging)</li>
                         <li>Governance analyzers (Roslyn)</li>
                         <li>Runtime validators (redaction, relax-mode)</li>
                         <li>CerbiShield Beta — profiles, RBAC, audit history</li>
+                        <li>Scoring API Preview — governance scoring without owning your routing</li>
                     </ul>
                 </article>
                 <article class="col-6 card">
                     <h3>Phase 2 (Planned)</h3>
                     <ul>
-                        <li>Scoring API GA (governance score ingestion + rollups, no transport)</li>
+                        <li>Scoring API GA (normalized score ingestion + rollups, no transport)</li>
                         <li>CerbiSense (optional ML insights on governance metadata)</li>
-                        <li>Optional: “More runtime/IDE governance experiences”</li>
+                        <li>More runtime/IDE governance experiences</li>
                     </ul>
                 </article>
             </div>
@@ -3423,11 +3424,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="faq-answer">
                             <p>
                                 CerbiStream core and the shared governance libraries (for example, Cerbi.Governance.Core and
-                                Cerbi.Governance.Runtime) are open source under the MIT license. You can use them in both open
-                                source and commercial projects. CerbiShield (the governance dashboard, APIs, and reporting) is
-                                licensed commercially for enterprise customers, with subscriptions that include support, SLAs,
-                                and advanced features. Check each repo or NuGet page for the exact license, but the general
-                                rule is: logging/runtime pieces are permissive, governance/dashboard/reporting are paid.
+                                Cerbi.Governance.Runtime) are open source under the MIT license. CerbiShield (the governance
+                                dashboard, APIs, reporting, and scoring) is licensed commercially <strong>per governed
+                                application</strong>—not per environment—and includes support and SLAs. Check each repo or
+                                NuGet page for the exact license; runtime pieces are permissive, governance/dashboard/scoring
+                                are paid.
                             </p>
                         </div>
                     </div>

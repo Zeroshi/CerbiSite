@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Cerbi — logging governance and governance scoring</title>
-    <meta name="description" content="Cerbi brings logging governance, structured logging .NET, compile-time logging enforcement, PII redaction logs, governance policy as code, and governance scoring." />
-    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring" />
+    <meta name="description" content="Learn how CerbiStream, CerbiShield, and the Scoring API govern .NET logs without routing your traffic—covering schema consistency, redaction posture, and audit-ready scoring." />
+    <meta name="keywords" content="logging governance, structured logging .NET, governance scoring, Scoring API, redaction posture, vendor agnostic logging" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.5/cdn.min.js" defer></script>
     <script>
@@ -31,61 +31,61 @@
 </head>
 <body class="bg-gray-900 text-white">
     <header class="text-center py-10 bg-gray-800 shadow-lg">
-        <h1 class="text-5xl font-extrabold">Cerbi Features</h1>
-        <p class="text-lg mt-2">Explore the power of AI-driven logging and observability</p>
+        <h1 class="text-5xl font-extrabold">Cerbi in Plain Language</h1>
+        <p class="text-lg mt-2">Governed logging, redaction, and scoring without replacing your routers or sinks.</p>
         <a href="index.html" class="mt-4 inline-block px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Back to Home</a>
     </header>
     
     <section class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Key Features</h2>
+        <h2 class="text-4xl font-semibold text-center">Key Capabilities</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 text-center">
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
-                <h3 class="text-2xl font-bold">AI-Powered Insights</h3>
-                <p class="mt-2">Analyze logs with real-time machine learning models.</p>
+                <h3 class="text-2xl font-bold">Govern at the Source</h3>
+                <p class="mt-2">CerbiStream enforces schemas and redaction rules inside your services before data reaches any sink.</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
-                <h3 class="text-2xl font-bold">Multi-Cloud Ready</h3>
-                <p class="mt-2">Seamlessly integrates with AWS, Azure, and GCP.</p>
+                <h3 class="text-2xl font-bold">Keep Your Pipelines</h3>
+                <p class="mt-2">You keep OpenTelemetry, Fluent Bit, Vector, or custom routers—Cerbi never brokers or fans out your logs.</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg feature-card">
-                <h3 class="text-2xl font-bold">Secure & Encrypted</h3>
-                <p class="mt-2">End-to-end encryption ensures log security.</p>
+                <h3 class="text-2xl font-bold">Score Governance</h3>
+                <p class="mt-2">The Scoring API normalizes governance signals and grades coverage, violations, and posture per governed app.</p>
             </div>
         </div>
     </section>
     
     <section class="container mx-auto px-6 py-10 text-center">
-        <h2 class="text-4xl font-semibold">Real-Time Stats</h2>
+        <h2 class="text-4xl font-semibold">How Cerbi Fits</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold" id="logsProcessed">500,000</h3>
-                <p>Logs Processed</p>
+                <h3 class="text-3xl font-bold">CerbiStream</h3>
+                <p>Runtime validators and analyzers keep schemas and sensitive fields governed inside your codebase.</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold">99.99%</h3>
-                <p>Uptime Guarantee</p>
+                <h3 class="text-3xl font-bold">CerbiShield</h3>
+                <p>Profiles, RBAC, and history live in your tenant—policy stays outside app code but inside your control.</p>
             </div>
             <div class="p-6 bg-gray-700 rounded-lg shadow-lg">
-                <h3 class="text-3xl font-bold">50+</h3>
-                <p>Enterprise Clients</p>
+                <h3 class="text-3xl font-bold">Scoring API</h3>
+                <p>Aggregates governance signals without touching payload routing so teams can prove posture per governed application.</p>
             </div>
         </div>
     </section>
-    
+
     <section class="container mx-auto px-6 py-10">
-        <h2 class="text-4xl font-semibold text-center">Expandable Features</h2>
+        <h2 class="text-4xl font-semibold text-center">What Customers Ask</h2>
         <div class="mt-6 space-y-4 max-w-3xl mx-auto">
             <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
-                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🚀 High Performance</button>
-                <p x-show="open" class="mt-2">Cerbi processes millions of logs in real-time with minimal latency.</p>
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🚀 Does Cerbi route my logs?</button>
+                <p x-show="open" class="mt-2">No. Your pipelines and routers keep sending payloads to your sinks. Cerbi governs and scores without brokering traffic.</p>
             </div>
             <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
-                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🔍 Deep Observability</button>
-                <p x-show="open" class="mt-2">Leverage AI to uncover hidden patterns and trends in your logs.</p>
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">🔍 How is it priced?</button>
+                <p x-show="open" class="mt-2">Licensing is per governed application. No per-environment multipliers or traffic tax.</p>
             </div>
             <div class="bg-gray-700 p-4 rounded-lg shadow-lg" x-data="{ open: false }">
-                <button @click="open = !open" class="w-full text-left text-xl font-semibold">⚙️ Developer Friendly</button>
-                <p x-show="open" class="mt-2">Easily integrate with your application using a simple API.</p>
+                <button @click="open = !open" class="w-full text-left text-xl font-semibold">⚙️ What changes in my stack?</button>
+                <p x-show="open" class="mt-2">Add CerbiStream and the governance analyzers to your .NET services; keep your existing collectors and observability vendors.</p>
             </div>
         </div>
     </section>
