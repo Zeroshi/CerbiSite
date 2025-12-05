@@ -1503,7 +1503,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Async Ship</div>
                         <div class="flow-details">
                             <h4>Background Transmission</h4>
-                            <p>Score data ships to GovernanceApi asynchronously—non-blocking and batched.</p>
+                            <p>Score data ships to the Scoring API for ingest/normalize/compute ScoreImpact—non-blocking and batched.</p>
                             <ul>
                                 <li>Non-blocking</li>
                                 <li>Batched</li>
@@ -1518,7 +1518,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Storage</div>
                         <div class="flow-details">
                             <h4>Persist to Store</h4>
-                            <p>GovernanceApi persists scores to CerbiShield with RBAC and timestamps.</p>
+                            <p>Scoring API persists scores to CerbiShield via Store APIs with RBAC and timestamps.</p>
                             <ul>
                                 <li>EF migrations</li>
                                 <li>RBAC-aware storage</li>
@@ -1533,7 +1533,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Aggregate</div>
                         <div class="flow-details">
                             <h4>Reporting Rollups</h4>
-                            <p>ReportingApi rolls up scores by service, environment, team, and time window.</p>
+                            <p>CerbiShield Reporting APIs roll up scores by service, environment, team, and time window.</p>
                             <ul>
                                 <li>Flexible grouping</li>
                                 <li>Trend analysis</li>
