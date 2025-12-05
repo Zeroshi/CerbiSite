@@ -1747,6 +1747,19 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             </div>
         </section>
 
+        <section id="trust" class="container section" style="background:var(--panel);border-radius:18px;padding:44px 42px;border:1px solid rgba(20,40,72,.08)">
+            <div class="eyebrow">Trust</div>
+            <h2>Control and confidence <span class="hl">by design</span></h2>
+            <p class="muted" style="max-width:820px;margin:0 auto 24px">Deployment, governance, and routing stay under your control. Cerbi enforces policy without taking over your log transport or locking you into a vendor path.</p>
+            <ul class="checked-list" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 18px">
+                <li><strong>Deployed in your tenant:</strong> CerbiShield and the scoring plane run inside your Azure tenant—no shared control planes.</li>
+                <li><strong>Vendor-agnostic:</strong> Governance sits before any sink or analytics vendor so you can keep or swap providers freely.</li>
+                <li><strong>No sink routing responsibility:</strong> Your collectors and pipelines keep forwarding logs; Cerbi never brokers or re-routes your traffic.</li>
+                <li><strong>Policies-as-code:</strong> Profiles are versioned, reviewed, and enforced through CI and runtime validators.</li>
+                <li><strong>Works with existing loggers:</strong> MEL, Serilog, NLog, and hybrid setups keep their formatters and sinks while Cerbi governs payloads.</li>
+            </ul>
+        </section>
+
         <section id="adoption-safety" class="container section" style="background:var(--panel);border-radius:18px;padding:48px 42px;border:1px solid rgba(20,40,72,.08)">
             <div class="eyebrow">Adoption safety</div>
             <h2>Governance you can roll out <span class="hl">without disruption</span></h2>
