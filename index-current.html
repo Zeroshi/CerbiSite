@@ -580,7 +580,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <tr><td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td><td>Core .NET logger with structured output, encryption, and governance</td></tr>
             <tr><td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td><td>Static/dynamic schema validator enforcing rules at build and runtime</td></tr>
             <tr><td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td><td>Governance dashboard UI & enforcement engine</td></tr>
-            <tr><td><strong>CerbIQ</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Routing, normalization, and fan‑out for logs</td></tr>
+            <tr><td><strong>Scoring API</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Governance scores for coverage, violations, redaction posture, and risk</td></tr>
             <tr><td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>ML‑driven anomaly detection and trend forecasting</td></tr>
           </tbody>
         </table>
@@ -898,7 +898,7 @@ dotnet add package Cerbi.Governance.Runtime
         <button class="filter" data-tag="build">Build‑time</button>
         <button class="filter" data-tag="runtime">Runtime</button>
         <button class="filter" data-tag="encryption">Encryption</button>
-        <button class="filter" data-tag="routing">Routing</button>
+        <button class="filter" data-tag="routing">Pipelines</button>
       </div>
       <div class="glass" style="padding:8px 12px;overflow-x:auto">
         <table aria-label="Logger comparison table" id="compareTable">
@@ -908,8 +908,8 @@ dotnet add package Cerbi.Governance.Runtime
             <tr data-tags="runtime"><td>Runtime Governance Enforcement</td><td>❌ Not applicable</td><td>✅ Via <span class="kbd">Cerbi.Serilog.GovernanceAnalyzer</span></td></tr>
             <tr data-tags="encryption"><td>Encryption Support (AES, Base64)</td><td>✅ Built‑in</td><td>❌ Not included</td></tr>
             <tr data-tags="routing"><td>File Fallback Logging</td><td>✅ <span class="kbd">WithFileFallback()</span></td><td>✅ via <span class="kbd">Serilog.Sinks.File</span></td></tr>
-            <tr data-tags="routing"><td>Telemetry Routing & Enrichment</td><td>✅ Built‑in (App Insights, OTel)</td><td>✅ Supported via Serilog sinks & enrichers</td></tr>
-            <tr data-tags="routing"><td>ML / CerbIQ Compatibility</td><td>✅ Schema‑aligned automatically</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
+            <tr data-tags="routing"><td>Routing to vendors</td><td>Customer pipelines (OTel, Fluent Bit, Vector, custom) move data; CerbiStream governs payloads at the source</td><td>Customer pipelines (Serilog sinks, OTel) move data; the plugin enforces governance metadata</td></tr>
+            <tr data-tags="routing"><td>Scoring API Compatibility</td><td>✅ Schema‑aligned automatically for governance scoring</td><td>✅ Requires matching metadata (CerbiShield assists)</td></tr>
             <tr data-tags="build runtime"><td>Governance Profile Reloading</td><td>✅ Supported</td><td>✅ Supported</td></tr>
             <tr data-tags="build runtime"><td>Custom Rule Plugins</td><td>✅ Supported</td><td>✅ via <span class="kbd">ICustomGovernancePlugin</span></td></tr>
             <tr data-tags="routing"><td>App Rollup / Grouping Support</td><td>✅ Built‑in</td><td>⚠️ External design needed</td></tr>
@@ -945,13 +945,13 @@ dotnet add package Cerbi.Governance.Runtime
   ▼
 CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   │
-  ├──▶ Logs go to your standard sinks (console, file, Splunk, etc.)
+  ├──▶ Logs go to your standard sinks via OTel / Fluent Bit / Vector / custom pipelines
   │
-  └──▶ (optional) CerbiStream → CerbIQ → CerbiSense (Phase 2)
+  └──▶ (optional) CerbiStream → Scoring API → CerbiSense (Phase 2)
               │        │
               ▼        ▼
          Governance    ML Analytics
-         Routing       Scoring & Trends</code></pre>
+         Scores        Scoring & Trends</code></pre>
           <button class="btn" data-copy="#architecture code">Copy</button>
         </div>
         <div class="col-6 glass tilt" style="padding:16px">
