@@ -1558,15 +1558,15 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <p class="lead">A clear four-step loop that keeps schema consistency, redaction posture, and governance enforcement measurable—without changing how you route logs.</p>
 
             <ol class="card" style="padding:18px 22px; display:grid; gap:12px;">
-                <li><strong>Define policies (CerbiShield)</strong>: set required fields, redaction rules, and relax modes as versioned standards.</li>
-                <li><strong>Enforce at source (CerbiStream)</strong>: analyzers and runtime validators stop drift before data leaves the service.</li>
-                <li><strong>Score outcomes (Scoring API)</strong>: governance signals are normalized and every event is scored so schema quality, redaction posture, and coverage are comparable across teams.</li>
-                <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten policies without breaking pipelines.</li>
+                <li><strong>Define policies (CerbiShield)</strong>: author and version required fields, redaction rules, and relax modes as portable governance standards.</li>
+                <li><strong>Enforce at source (CerbiStream + analyzers + runtime validators)</strong>: build-time analyzers and runtime validators block schema drift and PII leaks before data leaves the service.</li>
+                <li><strong>Score outcomes (Scoring API)</strong>: the scoring engine normalizes governance signals and grades every event so schema quality, redaction posture, and coverage remain comparable across teams.</li>
+                <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten or relax policies confidently while services keep running.</li>
             </ol>
 
-            <p class="muted">The Scoring API is the governance signal normalization + scoring engine and it replaces the legacy “CerbIQ-as-router” narrative—Cerbi no longer brokers or forwards traffic.</p>
+            <p class="muted">The Scoring API is the governance signal normalization + scoring engine and it replaces the legacy “CerbIQ-as-router” narrative—Cerbi does not broker, forward, or replace your log transport.</p>
 
-            <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
+            <p>Cerbi is not a log transport layer and does not require pipeline changes. Customers keep their existing routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi layers governance, validation, and scoring on top.</p>
 
             <div class="card" style="padding:14px 18px; margin-top:12px;">
                 <h3 style="margin-top:0">Why this matters for Platform &amp; SRE</h3>
