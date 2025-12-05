@@ -211,9 +211,7 @@
         /* Hero CTAs */
         .hero-ctas {
             display: flex;
-            gap: 16px;
             justify-content: center;
-            margin: 32px auto 16px;
             flex-wrap: wrap;
         }
 
@@ -546,16 +544,12 @@
         .hero-layout {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            align-items: stretch;
             position: relative;
             z-index: 1;
         }
         .hero-main {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            align-items: stretch;
         }
         .hero::before {
             content: "";
@@ -567,11 +561,11 @@
             border-radius: 26px;
             z-index: -1;
         }
-        .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px }
+        .chip-row { display: flex; flex-wrap: wrap; }
         .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
         .hl { color: var(--brand) }
-        .hero h1 { margin: 10px 0 8px; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
-        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; }
+        .hero h1 { margin: 0; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
         .section { padding: 28px 0 }
         #why-redaction {
             margin-top: clamp(28px, 4vw, 46px);
@@ -1046,9 +1040,9 @@
 
     <main id="main">
         <section class="hero container relative" id="top" aria-label="Hero">
-            <div class="hero-layout">
-                <div class="hero-main">
-                    <div class="chip-row" role="list" aria-label="High level features">
+            <div class="hero-layout flex flex-col items-center gap-10 md:gap-12">
+                <div class="hero-main flex w-full flex-col items-center text-center gap-6 md:gap-7">
+                    <div class="chip-row justify-center gap-2 md:gap-3" role="list" aria-label="High level features">
                         <span class="chip">Governance + Scoring</span>
                         <span class="chip">Schema Consistency</span>
                         <span class="chip">Redaction Posture</span>
@@ -1060,10 +1054,10 @@
                     <h1>
                         Govern logs before they hit your sinks.
                     </h1>
-                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
+                    <p class="sub text-base md:text-lg max-w-3xl mx-auto">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
 
                     <!-- Dual CTAs -->
-                    <div class="hero-ctas">
+                    <div class="hero-ctas flex w-full flex-wrap justify-center gap-3 md:gap-4">
                         <a href="#quickstart" class="btn btn-primary btn-large">
                             ⚡ Try CerbiStream in 60 Seconds
                         </a>
@@ -1077,7 +1071,7 @@
                             🛠️ Early Access for Platform Teams
                         </a>
                     </div>
-                    <p class="hero-trust" style="text-align:center;color:var(--muted);font-size:14px;margin-top:16px">
+                    <p class="hero-trust text-center text-[var(--muted)] text-sm leading-relaxed max-w-3xl mx-auto">
                         Founder-led pilots with hands-on implementation support, governance scorecards, and weekly working sessions for platform teams.
                     </p>
 
