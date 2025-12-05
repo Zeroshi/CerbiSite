@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Features — logging governance and compile-time logging enforcement</title>
-    <meta name="description" content="Feature highlights for logging governance, structured logging .NET, PII redaction logs, and governance scoring." />
-    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, logging policy as code, governance scoring" />
+    <title>Features — logging governance and governance policy as code</title>
+    <meta name="description" content="Feature highlights for logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, and governance scoring." />
+    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
