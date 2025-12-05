@@ -1573,9 +1573,9 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten or relax policies confidently while services keep running.</li>
             </ol>
 
-            <p class="muted">The Scoring API is the governance signal normalization + scoring engine. The legacy “CerbIQ-as-router/normalization/fan-out” story is retired—CerbIQ was an early idea; the Scoring API is the supported path and Cerbi does not broker, forward, or replace your log transport.</p>
+            <p class="muted">The Scoring API is the governance signal normalization + scoring engine. The legacy “CerbIQ-as-router/normalization/fan-out” story is fully retired—CerbIQ is deprecated. Cerbi never brokers, forwards, or replaces your transport to Splunk, Datadog, ELK, OpenSearch, or any other sink.</p>
 
-            <p>Cerbi is not a log transport layer and does not require pipeline changes. Customers keep their existing routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi layers governance, validation, and scoring on top.</p>
+            <p>Cerbi is not a log transport layer and does not require pipeline changes. Customers keep their existing routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi layers governance, validation, and scoring metadata on top—your pipelines continue delivering payloads to vendors unchanged.</p>
 
             <div class="card" style="padding:14px 18px; margin-top:12px;">
                 <h3 style="margin-top:0">Why this matters for Platform &amp; SRE</h3>
