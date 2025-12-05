@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Governance scoring — Cerbi Scoring API for governed logging</title>
-    <meta name="description" content="Score schema consistency, redaction posture, and governance enforcement across services with the Cerbi Scoring API—while your pipelines keep routing logs to the sinks you choose." />
+    <meta name="description" content="Scoring API is Cerbi's governance scoring engine that grades signals from CerbiStream and CerbiShield while your pipelines keep routing logs to the sinks you choose." />
     <meta name="keywords" content="logging governance, structured logging .NET, governance scoring, redaction posture, compile-time logging enforcement, runtime validation, Cerbi Scoring API" />
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white">
     <header class="text-center py-10 bg-gray-800 shadow-lg">
         <h1 class="text-5xl font-extrabold">Cerbi Scoring API</h1>
-        <p class="text-lg mt-2">Normalize governance signals, score every payload, and keep routing decisions in your own pipelines.</p>
+        <p class="text-lg mt-2">Normalize governance signals from CerbiStream and CerbiShield, score every payload, and keep routing decisions in your own pipelines.</p>
         <a href="index.html" class="mt-4 inline-block px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Back to Home</a>
     </header>
 
@@ -19,6 +19,7 @@
         <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
             <h2 class="text-3xl font-semibold mb-4">What the Scoring API Represents</h2>
             <p class="text-gray-200">ScoreImpact summarizes how healthy your logging posture is across every service—without Cerbi ever brokering traffic.</p>
+            <p class="text-gray-200 mt-3">CerbiStream governs events at the source, CerbiShield defines and deploys the policies that drive governance signals, and the Scoring API turns those signals into comparable scores while your own routers keep sending logs to the sinks you already use.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div class="p-6 bg-gray-700 rounded-lg shadow">
                     <h3 class="text-2xl font-semibold">Coverage</h3>
@@ -55,7 +56,7 @@
                 <li>Uses the same scoring rubric for every team, so policies are enforced evenly without manual checklists.</li>
                 <li>Signals when services diverge from shared baselines, making drift visible without ticket policing.</li>
                 <li>Lets platform teams set defaults once while allowing services to self-correct against the score.</li>
-                <li>Works with any router or collector—Cerbi scores governance data and lets your pipelines keep sending logs to your sinks.</li>
+                <li>Works with any router or collector—CerbiStream and CerbiShield emit governance data, the Scoring API scores it, and your pipelines keep sending logs to your sinks.</li>
             </ul>
         </section>
 
@@ -72,11 +73,11 @@
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold">Does Cerbi route logs?</h3>
-                    <p class="text-gray-200">No. Cerbi observes routing decisions but does not broker or forward log traffic—customers keep their own sinks and pipelines.</p>
+                    <p class="text-gray-200">No. CerbiStream governs events at the source and CerbiShield manages the policies being enforced, but your own routers forward data to sinks—Cerbi never brokers or forwards log traffic.</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold">Do I need a specific router?</h3>
-                    <p class="text-gray-200">No. Scoring works with any router that can emit governance signals and metrics; Cerbi’s Scoring API replaces the old CerbIQ routing story.</p>
+                    <p class="text-gray-200">No. Scoring works with any router that can emit governance signals and metrics; the Scoring API is the scoring engine and the legacy CerbIQ-as-router story is retired.</p>
                 </div>
             </div>
         </section>

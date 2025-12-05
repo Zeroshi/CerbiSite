@@ -14,10 +14,10 @@
     <title>CerbiSuite — Governance-first logging and scoring for .NET</title>
 
     <meta name="theme-color" content="#fffdf7" />
-    <meta name="description" content="Governance-first logging with compile-time and runtime enforcement, redaction posture scoring, schema consistency, and audit-ready visibility—without taking over your log routing." />
-    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, runtime logging validation, governance scoring, Scoring API, Cerbi, CerbiSuite" />
+    <meta name="description" content="CerbiStream governs logs at the source while CerbiShield defines and deploys governance policy; the Scoring API measures posture and trends—all without Cerbi routing your data." />
+    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, runtime logging validation, governance scoring, Scoring API, Cerbi, CerbiSuite, CerbiStream, CerbiShield" />
     <meta property="og:title" content="CerbiSuite — Governance-first logging and scoring" />
-    <meta property="og:description" content="Validate, redact, and score every payload while your own pipelines keep routing to sinks. Governance you can prove with trends over time." />
+    <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance—while your pipelines keep routing to sinks." />
     <meta property="og:image" content="assets/CerbiShield.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -1048,7 +1048,7 @@
                     <h1>
                         Governed logging and scoring that stays out of your routing. <span class="hl">Cerbi validates and scores what your services emit; your pipelines keep sending it to the sinks you choose.</span>
                     </h1>
-                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enforce schemas in CI and at runtime, document redaction posture, and surface governance trends you can defend. Cerbi doesn’t move your logs—customers keep their pipelines and sinks while Cerbi standardizes payloads, blocks risky fields, and scores outcomes for every service.</p>
+                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enforce schemas in CI and at runtime, document redaction posture, and surface governance trends you can defend. CerbiStream governs at the source, CerbiShield defines and deploys policy versions, and the Scoring API grades outcomes—your own pipelines keep moving data to the sinks and vendors you choose.</p>
 
                     <!-- Dual CTAs -->
                     <div class="hero-ctas">
@@ -1129,7 +1129,7 @@
         <section id="why-redaction" class="container section" style="background:var(--panel);border-radius:18px;padding:56px 42px;border:1px solid rgba(20,40,72,.08)">
             <div class="eyebrow">Context</div>
             <h2>Why not <span class="hl">“just a redaction library”</span></h2>
-            <p class="lead">Cerbi doesn’t route or store your logs. Customers keep their pipelines and sinks; Cerbi governs what gets emitted, scores the posture, and keeps schema + redaction rules consistent across teams.</p>
+            <p class="lead">Cerbi doesn’t route or store your logs. Customers keep their pipelines and sinks while CerbiStream governs what gets emitted, CerbiShield defines and versions the policies being enforced, and the Scoring API measures posture across teams.</p>
             <div class="grid">
                 <article class="col-6 card">
                     <h3>Field-level control</h3>
@@ -1252,7 +1252,7 @@
         <section id="brief-overview-video" class="container section">
             <div class="eyebrow">Overview</div>
             <h2>Cerbi — <span class="hl">Brief Overview</span></h2>
-            <p class="lead">CerbiStream is a governance-first logging layer for .NET that validates, redacts, and tags every log event before it hits your sinks. Instead of shipping “whatever the app logs” into expensive platforms, Cerbi enforces JSON profiles so only clean, compliant, ML-ready data flows downstream. CerbiShield, the governance dashboard, generates and deploys those profiles across teams so policy lives outside code. Together, they turn logging from an ungoverned cost center into an auditable, measurable part of your architecture.</p>
+            <p class="lead">CerbiStream is a governance-first logging layer for .NET that validates, redacts, and tags every log event before it hits your sinks. Instead of shipping “whatever the app logs” into expensive platforms, Cerbi enforces JSON profiles so only clean, compliant, ML-ready data flows downstream. CerbiShield, the governance dashboard, defines, versions, and deploys those profiles across teams so policy lives outside code, and the Scoring API is the governance scoring engine that tracks posture over time. Together, they turn logging from an ungoverned cost center into an auditable, measurable part of your architecture without ever routing your traffic.</p>
             <div class="card video-card-shell" data-video-card="brief-overview"></div>
         </section>
 
@@ -1564,7 +1564,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten policies without breaking pipelines.</li>
             </ol>
 
-            <p class="muted">The Scoring API is the governance signal normalization + scoring engine (it replaces the old “CerbIQ” routing story) and never brokers your traffic.</p>
+            <p class="muted">The Scoring API is the governance signal normalization + scoring engine and it replaces the legacy “CerbIQ-as-router” narrative—Cerbi no longer brokers or forwards traffic.</p>
 
             <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
 
@@ -1692,8 +1692,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                     <div class="savings-item">
                         <span class="percent">15%</span>
-                        <strong>Smarter retention &amp; routing</strong>
-                        <p>Noisy streams get shorter hot retention or move to cheaper storage (~15%).</p>
+                        <strong>Smarter retention with your routing</strong>
+                        <p>Noisy streams get shorter hot retention or move to cheaper storage using the pipelines you already own (~15%).</p>
                     </div>
 
                     <div class="savings-item">
@@ -1718,11 +1718,12 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="architecture" class="container section">
             <div class="eyebrow">How it fits</div>
             <h2>Reference <span class="hl">Architecture</span></h2>
-            <p class="lead">Cerbi governs telemetry at the source and scores outcomes while your existing pipelines keep routing to sinks and vendors.</p>
+            <p class="lead">CerbiStream governs telemetry at the source, CerbiShield defines and deploys governance policy, and the Scoring API measures posture—your existing pipelines keep routing to sinks and vendors.</p>
             <div class="grid architecture-grid">
                 <article class="col-6 card">
                     <h3>Flow</h3>
                     <ul>
+                        <li>Governance policies are authored, versioned, and deployed from CerbiShield.</li>
                         <li>Apps & services emit events into CerbiStream (source governance + validation)</li>
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
