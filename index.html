@@ -211,13 +211,11 @@
         /* Hero CTAs */
         .hero-ctas {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            align-items: stretch;
+            justify-content: center;
             gap: 12px;
-            width: min(760px, 100%);
+            width: 100%;
             margin: 0 auto;
-            flex-direction: column;
         }
 
         .btn-large {
@@ -227,10 +225,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            flex: 1 1 240px;
             min-width: 240px;
             min-height: 56px;
             justify-content: center;
-            width: 100%;
         }
 
         .btn-secondary {
@@ -305,16 +303,6 @@
             .stat-item:last-child {
                 border-bottom: none;
             }
-
-            .hero-ctas {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn-large {
-                width: 100%;
-            }
-
             .audience-pills {
                 flex-direction: column;
             }
@@ -325,16 +313,6 @@
         }
 
         @media (min-width: 640px) {
-            .hero-ctas {
-                flex-direction: row;
-                align-items: center;
-                gap: 14px;
-            }
-
-            .btn-large {
-                width: auto;
-            }
-
             .hero-main {
                 gap: clamp(20px, 4vw, 28px);
             }
