@@ -213,16 +213,19 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            align-items: stretch;
+            gap: 12px;
         }
 
         .btn-large {
-            padding: 16px 32px;
+            padding: 14px 28px;
             font-size: 17px;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             min-width: 240px;
+            min-height: 56px;
             justify-content: center;
         }
 
@@ -1056,8 +1059,7 @@
                     </h1>
                     <p class="sub text-base md:text-lg max-w-3xl mx-auto">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
 
-                    <!-- Dual CTAs -->
-                    <div class="hero-ctas flex w-full flex-wrap justify-center gap-3 md:gap-4">
+                    <div class="hero-ctas flex w-full flex-wrap justify-center gap-3" role="group" aria-label="Primary calls to action">
                         <a href="#quickstart" class="btn btn-primary btn-large">
                             ⚡ Try CerbiStream in 60 Seconds
                         </a>
