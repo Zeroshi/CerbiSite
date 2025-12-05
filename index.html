@@ -618,9 +618,20 @@
         .hero h1 { margin: 0 0 1rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
         .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 2rem; }
         .hero-headings { text-align: center; }
-        .section { padding: 28px 0 }
+        .section { padding: 3.5rem 0; }
+        .section-tight { padding: 2rem 0; }
+        .py-14 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        .space-y-8 > * + * { margin-top: 2rem; }
+        @media (min-width: 768px) {
+            .section { padding: 5rem 0; }
+            .section-tight { padding: 3rem 0; }
+            .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+            .md\:py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        }
         #why-redaction {
-            margin-top: clamp(28px, 4vw, 46px);
+            margin-top: 0;
             scroll-margin-top: calc(var(--nav-h) + 14px);
         }
         .panel-section {
@@ -1193,13 +1204,16 @@
 
         <section
             id="why-redaction"
-            class="container section mt-8 md:mt-10"
-            style="background:var(--panel);border-radius:18px;padding:56px 42px;border:1px solid rgba(20,40,72,.08)"
+            class="container section"
+            style="background:var(--panel);border-radius:18px;padding-inline:42px;border:1px solid rgba(20,40,72,.08)"
         >
-            <div class="eyebrow">Context</div>
-            <h2>Why <span class="hl">Redaction Alone Isn’t Enough</span></h2>
-            <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline you keep routing.</p>
-            <div class="grid">
+            <div class="space-y-8">
+                <div class="space-y-6">
+                    <div class="eyebrow">Context</div>
+                    <h2>Why <span class="hl">Redaction Alone Isn’t Enough</span></h2>
+                    <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline you keep routing.</p>
+                </div>
+                <div class="grid">
                 <article class="col-6 card">
                     <h3>Required/Disallowed/Sensitive policy</h3>
                     <p>Define Required, Disallowed, and Sensitive field rules for every log shape so schemas are intentional and sensitive data is controlled by policy—not best-effort filters.</p>
@@ -1216,10 +1230,11 @@
                     <h3>Policy versioning + deployment history</h3>
                     <p>Versioned policies with deployment traceability show who changed what and where it’s enforced, keeping governance decisions auditable release over release.</p>
                 </article>
-                <article class="col-6 card">
-                    <h3>Scoring visibility</h3>
-                    <p>Scoring surfaces schema consistency, redaction posture, and coverage trends so teams can prove improvements and spot regressions quickly.</p>
-                </article>
+                    <article class="col-6 card">
+                        <h3>Scoring visibility</h3>
+                        <p>Scoring surfaces schema consistency, redaction posture, and coverage trends so teams can prove improvements and spot regressions quickly.</p>
+                    </article>
+                </div>
             </div>
         </section>
 
@@ -1387,86 +1402,90 @@
         </section>
 
         <!-- Security & Compliance Section -->
-        <section id="security" class="container section scroll-target" style="background:linear-gradient(135deg, rgba(255,77,0,.08) 0%, rgba(20,40,72,.06) 100%);color:var(--text-strong);border-radius:20px;padding:64px 48px;margin:48px auto;border:1px solid rgba(20,40,72,.08);box-shadow:0 22px 60px rgba(20,40,72,.08)">
-            <div class="eyebrow" style="color:rgba(20,40,72,.75)">Enterprise-Grade Security</div>
-            <h2 id="compliance" class="scroll-target" style="color:var(--text-strong)">Built for <span class="hl">Compliance</span> from Day One</h2>
-            <p class="lead" style="color:rgba(24,34,53,.9);max-width:800px;margin:0 auto 3rem">
-                Cerbi was designed for regulated workloads. Governance profiles let you define required, forbidden, and disallowed fields, plus redaction rules, so PII and PHI don’t leak into your log pipeline by accident. CerbiShield lets you version and deploy these profiles per app and environment, so auditors can see exactly what is enforced and where. We don’t promise “automatic compliance”—instead, we give you the guardrails and evidence you need to pass real audits.
-            </p>
-
-            <div class="security-grid">
-                <div class="security-card">
-                    <div class="security-icon">🔒</div>
-                    <h3>Encryption at Rest & In Transit</h3>
-                    <p>AES-256 file encryption is available for fallback logs, and Cerbi fits cleanly into TLS-secured infrastructure. Exact cipher suites and TLS versions are controlled by your hosting platform and configuration. Cerbi does not weaken your existing security posture.</p>
-                </div>
-                
-                <div class="security-card">
-                    <div class="security-icon">🛡️</div>
-                    <h3>Automatic PII Redaction</h3>
-                    <p>Rule-based redaction identifies and masks sensitive fields before they are written to your sinks. Governance profiles keep PII and PHI out of your log payloads by design. Optional analytics and future ML components can build on the same metadata, but core redaction is explicit and policy-driven.</p>
-                </div>
-                
-                <div class="security-card">
-                    <div class="security-icon">✅</div>
-                    <h3>Compliance Ready</h3>
-                    <p>Built-in audit trails and governance metadata are designed to help you address common SOC 2 Type II, HIPAA, GDPR, and ISO 27001 logging controls. Cerbi itself is not a substitute for legal review or formal certification, but it gives your security and compliance teams the evidence they expect from a modern logging layer.</p>
-                </div>
-                
-                <div class="security-card">
-                    <div class="security-icon">📊</div>
-                    <h3>Real-Time Violation Alerts</h3>
-                    <p>Catch governance violations quickly. Cerbi tags events with structured violations so your pipelines (OTel, Fluent Bit, Vector, custom collectors) can forward alerts into your existing stack (Splunk, Datadog, ELK, Grafana, etc.) before issues become incidents or audit findings.</p>
+        <section id="security" class="container section scroll-target" style="background:linear-gradient(135deg, rgba(255,77,0,.08) 0%, rgba(20,40,72,.06) 100%);color:var(--text-strong);border-radius:20px;padding-inline:48px;border:1px solid rgba(20,40,72,.08);box-shadow:0 22px 60px rgba(20,40,72,.08)">
+            <div class="space-y-8">
+                <div class="space-y-6">
+                    <div class="eyebrow" style="color:rgba(20,40,72,.75)">Enterprise-Grade Security</div>
+                    <h2 id="compliance" class="scroll-target" style="color:var(--text-strong)">Built for <span class="hl">Compliance</span> from Day One</h2>
+                    <p class="lead" style="color:rgba(24,34,53,.9);max-width:800px;margin:0 auto">
+                        Cerbi was designed for regulated workloads. Governance profiles let you define required, forbidden, and disallowed fields, plus redaction rules, so PII and PHI don’t leak into your log pipeline by accident. CerbiShield lets you version and deploy these profiles per app and environment, so auditors can see exactly what is enforced and where. We don’t promise “automatic compliance”—instead, we give you the guardrails and evidence you need to pass real audits.
+                    </p>
                 </div>
 
-                <div class="security-card">
-                    <div class="security-icon">🔐</div>
-                    <h3>Your Infrastructure, Your Control</h3>
-                    <p>By default, Cerbi runs entirely in your tenant so logs stay in your environment. Optional analytics services can consume derived metadata if you choose to enable them, but Cerbi does not ship your raw logs to shared SaaS by default.</p>
+                <div class="security-grid">
+                    <div class="security-card">
+                        <div class="security-icon">🔒</div>
+                        <h3>Encryption at Rest & In Transit</h3>
+                        <p>AES-256 file encryption is available for fallback logs, and Cerbi fits cleanly into TLS-secured infrastructure. Exact cipher suites and TLS versions are controlled by your hosting platform and configuration. Cerbi does not weaken your existing security posture.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-icon">🛡️</div>
+                        <h3>Automatic PII Redaction</h3>
+                        <p>Rule-based redaction identifies and masks sensitive fields before they are written to your sinks. Governance profiles keep PII and PHI out of your log payloads by design. Optional analytics and future ML components can build on the same metadata, but core redaction is explicit and policy-driven.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-icon">✅</div>
+                        <h3>Compliance Ready</h3>
+                        <p>Built-in audit trails and governance metadata are designed to help you address common SOC 2 Type II, HIPAA, GDPR, and ISO 27001 logging controls. Cerbi itself is not a substitute for legal review or formal certification, but it gives your security and compliance teams the evidence they expect from a modern logging layer.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-icon">📊</div>
+                        <h3>Real-Time Violation Alerts</h3>
+                        <p>Catch governance violations quickly. Cerbi tags events with structured violations so your pipelines (OTel, Fluent Bit, Vector, custom collectors) can forward alerts into your existing stack (Splunk, Datadog, ELK, Grafana, etc.) before issues become incidents or audit findings.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-icon">🔐</div>
+                        <h3>Your Infrastructure, Your Control</h3>
+                        <p>By default, Cerbi runs entirely in your tenant so logs stay in your environment. Optional analytics services can consume derived metadata if you choose to enable them, but Cerbi does not ship your raw logs to shared SaaS by default.</p>
+                    </div>
+
+                    <div class="security-card">
+                        <div class="security-icon">📝</div>
+                        <h3>Immutable Audit Logs</h3>
+                        <p>Append-only audit trails are designed to be stored in immutable or WORM-capable storage, making access and changes tamper-evident during investigations and audits.</p>
+                    </div>
                 </div>
 
-                <div class="security-card">
-                    <div class="security-icon">📝</div>
-                    <h3>Immutable Audit Logs</h3>
-                    <p>Append-only audit trails are designed to be stored in immutable or WORM-capable storage, making access and changes tamper-evident during investigations and audits.</p>
+                <div class="compliance-badges">
+                    <span class="compliance-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        SOC 2 Type II aligned
+                    </span>
+                    <span class="compliance-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        HIPAA logging friendly
+                    </span>
+                    <span class="compliance-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        GDPR aware
+                    </span>
+                    <span class="compliance-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                        ISO 27001 aligned
+                    </span>
                 </div>
-            </div>
 
-            <div class="compliance-badges">
-                <span class="compliance-badge">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                    SOC 2 Type II aligned
-                </span>
-                <span class="compliance-badge">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                    HIPAA logging friendly
-                </span>
-                <span class="compliance-badge">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                    GDPR aware
-                </span>
-                <span class="compliance-badge">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <path d="M9 12l2 2 4-4"/>
-                    </svg>
-                    ISO 27001 aligned
-                </span>
-            </div>
-
-            <div style="text-align:center;margin-top:3rem">
-                <a href="#contact" class="btn btn-primary btn-large" style="background:white;color:var(--brand)">
-                    🔒 Request Security Whitepaper
-                </a>
+                <div style="text-align:center;margin-top:3rem">
+                    <a href="#contact" class="btn btn-primary btn-large" style="background:white;color:var(--brand)">
+                        🔒 Request Security Whitepaper
+                    </a>
+                </div>
             </div>
         </section>
 

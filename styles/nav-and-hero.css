@@ -4,7 +4,8 @@ html, body { height: 100%; }
 body{ margin:0; line-height:1.55; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
 
 .container{ width:min(1200px, 92vw); margin-inline:auto; }
-.section{ padding: 40px 0; }
+.section{ padding: 3.5rem 0; }
+@media (min-width: 768px){ .section{ padding: 5rem 0; } }
 
 /* Fix: background layers behind everything */
 #dynamic-bg{ position:fixed; inset:0; z-index:-6; pointer-events:none; overflow:hidden }
