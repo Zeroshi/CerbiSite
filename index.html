@@ -11,13 +11,13 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CerbiSuite — Logging governance and structured logging .NET</title>
+    <title>CerbiSuite — Governance-first logging and scoring for .NET</title>
 
     <meta name="theme-color" content="#fffdf7" />
-    <meta name="description" content="Logging governance with compile-time logging enforcement, PII redaction logs, and logging policy as code plus governance scoring." />
-    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, logging policy as code, governance scoring, Cerbi, CerbiSuite" />
-    <meta property="og:title" content="CerbiSuite — Unified Logging, Governance & Observability" />
-    <meta property="og:description" content="Bring order to log chaos. Enforce structure, enable audit-ready compliance, and feed ML-ready pipelines—without lock-in." />
+    <meta name="description" content="Governance-first logging with compile-time and runtime enforcement, redaction posture scoring, schema consistency, and audit-ready visibility—without taking over your log routing." />
+    <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, runtime logging validation, governance scoring, Scoring API, Cerbi, CerbiSuite" />
+    <meta property="og:title" content="CerbiSuite — Governance-first logging and scoring" />
+    <meta property="og:description" content="Validate, redact, and score every payload while your own pipelines keep routing to sinks. Governance you can prove with trends over time." />
     <meta property="og:image" content="assets/CerbiShield.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -1037,18 +1037,18 @@
             <div class="hero-layout">
                 <div class="hero-main">
                     <div class="chip-row" role="list" aria-label="High level features">
-                        <span class="chip">Structured Logging</span>
-                        <span class="chip">Governance (Build & Runtime)</span>
-                        <span class="chip">Cloud-Native & Portable</span>
-                        <span class="chip">Modular</span>
-                        <span class="chip">Hybrid-Ready</span>
-                        <span class="chip">ML-Friendly</span>
+                        <span class="chip">Governance + Scoring</span>
+                        <span class="chip">Schema Consistency</span>
+                        <span class="chip">Redaction Posture</span>
+                        <span class="chip">CI + Runtime Enforcement</span>
+                        <span class="chip">Vendor-Agnostic Routing</span>
+                        <span class="chip">Tenant-Hosted</span>
                     </div>
 
                     <h1>
-                        Reduce log noise before your pipeline ships it. <span class="hl">Vendor-agnostic, tenant-hosted control for whatever sinks you route to.</span>
+                        Governed logging and scoring that stays out of your routing. <span class="hl">Cerbi validates and scores what your services emit; your pipelines keep sending it to the sinks you choose.</span>
                     </h1>
-                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Prevent sensitive data from escaping with enforceable rules. Standardize schemas across services without manual policing. Score governance outcomes to prove improvement over time. Cerbi enforces standards and redacts sensitive data at the edge so your streams stay clean and portable.</p>
+                    <p class="sub" style="font-size:18px;max-width:700px;margin:0 auto">Enforce schemas in CI and at runtime, document redaction posture, and surface governance trends you can defend. Cerbi doesn’t move your logs—customers keep their pipelines and sinks while Cerbi standardizes payloads, blocks risky fields, and scores outcomes for every service.</p>
 
                     <!-- Dual CTAs -->
                     <div class="hero-ctas">
@@ -1128,12 +1128,12 @@
 
         <section id="why-redaction" class="container section" style="background:var(--panel);border-radius:18px;padding:56px 42px;border:1px solid rgba(20,40,72,.08)">
             <div class="eyebrow">Context</div>
-            <h2>Why <span class="hl">Redaction Alone</span> Isn’t Enough</h2>
-            <p class="lead">Cerbi complements your existing logging providers instead of replacing them. You still route data to your sinks using your preferred pipeline, but Cerbi governs what gets emitted so downstream platforms receive compliant, dependable signals.</p>
+            <h2>Why not <span class="hl">“just a redaction library”</span></h2>
+            <p class="lead">Cerbi doesn’t route or store your logs. Customers keep their pipelines and sinks; Cerbi governs what gets emitted, scores the posture, and keeps schema + redaction rules consistent across teams.</p>
             <div class="grid">
                 <article class="col-6 card">
                     <h3>Field-level control</h3>
-                    <p>Define Required, Disallowed, and Sensitive field rules for every log shape so redaction is only one guardrail among many.</p>
+                    <p>Define Required, Disallowed, and Sensitive field rules for every log shape so redaction is one guardrail in a governed schema, not the only control.</p>
                 </article>
                 <article class="col-6 card">
                     <h3>Defense in depth</h3>
@@ -1145,7 +1145,7 @@
                 </article>
                 <article class="col-6 card">
                     <h3>Measurable outcomes</h3>
-                    <p>Scoring visibility highlights the quality of each payload and surfaces drift over time, making governance progress transparent.</p>
+                    <p>Scoring visibility highlights schema consistency, redaction posture, and drift over time, so governance progress is transparent.</p>
                 </article>
             </div>
         </section>
@@ -1154,17 +1154,17 @@
             <div class="persona-grid">
                 <a class="persona-card" href="#use-cases">
                     <div class="persona-title">For CTOs &amp; VP Engineering</div>
-                    <p class="persona-desc">See cost reduction, audit readiness, and delivery time impact.</p>
+                    <p class="persona-desc">See cost, compliance, and delivery impact from governed schemas, redaction posture, and scored trends.</p>
                     <span class="persona-cta">Jump to outcomes →</span>
                 </a>
                 <a class="persona-card" href="#ecosystem-explore" data-scroll-target="#ecosystem-explore">
                     <div class="persona-title">For Developers &amp; Platform Teams</div>
-                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and explore the ecosystem details.</p>
+                    <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads without owning your routing.</p>
                     <span class="persona-cta">Explore the stack →</span>
                 </a>
                 <a class="persona-card" href="#compliance">
                     <div class="persona-title">For Security, Risk &amp; Compliance</div>
-                    <p class="persona-desc">Review governance, compliance guardrails, and FAQs.</p>
+                    <p class="persona-desc">Review governance controls, redaction posture scoring, and CI/runtime enforcement.</p>
                     <span class="persona-cta">View controls →</span>
                 </a>
             </div>
@@ -1177,28 +1177,25 @@
                 <article class="card col-4">
                     <h3>Platform / SRE</h3>
                     <p class="muted">
-                        Platform and SRE teams get blindsided by hidden observability surprises when new services spew noisy
-                        fields and schema chaos spills into dashboards. Cerbi normalizes and validates events before they hit
-                        sinks so you aren't debugging broken alerts at 2 a.m. Outcome: predictable telemetry and calmer
-                        on-call rotations.
+                        Platform and SRE teams need clean signals without rebuilding pipelines. Cerbi standardizes schemas,
+                        tags governance outcomes, and scores violations before events enter your existing sinks—so dashboards
+                        stay durable and on-call stays calm.
                     </p>
                 </article>
                 <article class="card col-4">
                     <h3>Security / Compliance</h3>
                     <p class="muted">
-                        Security and compliance owners worry about sensitive data risk hiding in payloads and reviews that
-                        depend on manual gates. Cerbi enforces redaction and governance checks in CI so unsafe fields are
-                        blocked before deployment. Outcome: audit-ready evidence that risky data never leaves the service
-                        boundary.
+                        Security and compliance owners need provable redaction posture and governance history. Cerbi enforces
+                        policies in CI and at runtime, and Scoring API trends show how exposure and coverage change over time
+                        without Cerbi ever routing the logs itself.
                     </p>
                 </article>
                 <article class="card col-4">
                     <h3>Engineering Leads</h3>
                     <p class="muted">
-                        Engineering leads battle schema chaos as teams ship logging changes without guardrails, and CI
-                        enforcement is often the first casualty when deadlines bite. Cerbi keeps profiles versioned outside
-                        code and fails fast when violations show up in pipelines. Outcome: consistent contracts across teams
-                        without slowing delivery.
+                        Engineering leads battle schema chaos as teams ship logging changes without guardrails. Cerbi keeps
+                        profiles versioned outside code, fails fast in CI and runtime, and scores adherence so consistency
+                        improves without slowing delivery or changing where logs go.
                     </p>
                 </article>
             </div>
@@ -1558,18 +1555,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="closed-loop" class="container section">
             <div class="eyebrow">Execution feedback loop</div>
             <h2>Closed-Loop Governance &amp; <span class="hl">Scoring</span></h2>
-            <p class="lead">A clear four-step loop that reduces risk, improves consistency, and brings operational clarity across teams.</p>
+            <p class="lead">A clear four-step loop that keeps schema consistency, redaction posture, and governance enforcement measurable—without changing how you route logs.</p>
 
             <ol class="card" style="padding:18px 22px; display:grid; gap:12px;">
                 <li><strong>Define policies (CerbiShield)</strong>: set required fields, redaction rules, and relax modes as versioned standards.</li>
                 <li><strong>Enforce at source (CerbiStream)</strong>: analyzers and runtime validators stop drift before data leaves the service.</li>
-                <li><strong>Score outcomes (Scoring API)</strong>: governance signals are normalized and every event is scored so risk and coverage are comparable across teams.</li>
+                <li><strong>Score outcomes (Scoring API)</strong>: governance signals are normalized and every event is scored so schema quality, redaction posture, and coverage are comparable across teams.</li>
                 <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten policies without breaking pipelines.</li>
             </ol>
 
-            <p class="muted">The Scoring API is the governance signal normalization + scoring engine; the legacy “CerbIQ” metadata router now lives here.</p>
+            <p class="muted">The Scoring API is the governance signal normalization + scoring engine (it replaces the old “CerbIQ” routing story) and never brokers your traffic.</p>
 
-            <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
+            <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, Vector, Fluent Bit, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
 
             <div class="card" style="padding:14px 18px; margin-top:12px;">
                 <h3 style="margin-top:0">Why this matters for Platform &amp; SRE</h3>
@@ -1721,7 +1718,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="architecture" class="container section">
             <div class="eyebrow">How it fits</div>
             <h2>Reference <span class="hl">Architecture</span></h2>
-            <p class="lead">Cerbi governs telemetry at the source and plays nicely with your existing loggers, sinks, and BI tools.</p>
+            <p class="lead">Cerbi governs telemetry at the source and scores outcomes while your existing pipelines keep routing to sinks and vendors.</p>
             <div class="grid architecture-grid">
                 <article class="col-6 card">
                     <h3>Flow</h3>
@@ -1730,7 +1727,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
                         <li>(Optional) governed events enter a Scoring Queue → Scoring API → CerbiShield dashboard for governance + risk scoring</li>
-                        <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes to vendors/sinks; Cerbi stays vendor-agnostic</li>
+                        <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes to vendors/sinks; Cerbi stays vendor-agnostic and never brokers traffic</li>
                     </ul>
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
@@ -1738,8 +1735,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
                     </a>
                     <figcaption class="img-cap">
-                        Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard.
-                        External routing: your log pipeline of choice → vendors/sinks. Cerbi is vendor-agnostic governance + scoring — not log transport.
+                        Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard. Routing to sinks stays with your pipeline (OTel/Vector/Fluent Bit/etc.). Cerbi governs, validates, and scores—never transports logs.
                         <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png">Open full size →</a>
                     </figcaption>
                 </figure>
