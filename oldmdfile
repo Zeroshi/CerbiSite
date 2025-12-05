@@ -39,7 +39,7 @@ CerbiSuite is a cohesive suite of tools, each addressing a critical aspect of en
 | **CerbiStream**                    | GA               | Core .NET logger with structured output, encryption, and governance  |
 | **CerbiStream.GovernanceAnalyzer** | GA               | Static/dynamic schema validator enforcing rules at build and runtime |
 | **CerbiShield**                    | Beta (SaaS Soon) | Governance dashboard UI & enforcement engine                         |
-| **Scoring API**                    | Phase 2 Planned  | Governance scores for coverage, violations, redaction posture, and risk |
+| **Scoring API**                    | Phase 2 Planned  | Governance signal normalization + scoring engine for coverage, violations, redaction posture, and risk |
 | **CerbiSense**                     | Phase 2 Planned  | ML-driven anomaly detection and trend forecasting from metadata      |
 
 ---
