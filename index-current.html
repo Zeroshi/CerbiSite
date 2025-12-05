@@ -948,7 +948,7 @@ CerbiStream governance (analyzers + runtime validation)
   │
   ├──▶ Your log pipeline (OTel / Fluent Bit / Vector / custom) → vendors / sinks (Cerbi is not a router)
   │
-  └──▶ (optional) Scoring Queue → Scoring API → CerbiShield dashboard
+  └──▶ (optional) Scoring Queue → Scoring API → CerbiShield Dashboards
               │
               ▼
         Governance + risk scores</code></pre>
@@ -957,9 +957,11 @@ CerbiStream governance (analyzers + runtime validation)
         <div class="col-6 glass tilt" style="padding:16px">
           <div class="glare"></div>
           <div class="img-frame" role="img" aria-label="Architecture diagram">
-            <img src="/assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
+            <img src="/assets/architecture/Cerbi-Architecture.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
-          <p class="k" style="margin-top:10px">Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard. External routing: your log pipeline of choice → vendors/sinks. Cerbi is vendor-agnostic governance + scoring — not log transport.</p>
+          <p class="k" style="margin-top:10px"><strong>Canonical governance/scoring flow:</strong> Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield Dashboards.</p>
+          <p class="k" style="margin-top:10px">Your pipeline of choice routes logs to any sinks.</p>
+          <p class="k" style="margin-top:10px">Cerbi is vendor-agnostic governance + scoring — not log transport.</p>
           <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="/assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>

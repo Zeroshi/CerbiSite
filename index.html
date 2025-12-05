@@ -1729,16 +1729,18 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <li>Apps & services emit events into CerbiStream (source governance + validation)</li>
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
-                        <li>(Optional) governed events enter a Scoring Queue → Scoring API → CerbiShield dashboard for governance + risk scoring</li>
+                        <li>(Optional) governed events enter a Scoring Queue → Scoring API → CerbiShield Dashboards for governance + risk scoring</li>
                         <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes to vendors/sinks; Cerbi stays vendor-agnostic and never brokers traffic</li>
                     </ul>
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
                     <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" title="Open full-size architecture">
-                        <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
+                        <img src="assets/architecture/Cerbi-Architecture.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
                     </a>
                     <figcaption class="img-cap">
-                        Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard. Routing to sinks stays with your pipeline (OTel/Vector/Fluent Bit/etc.). Cerbi governs, validates, and scores—never transports logs.
+                        <strong>Canonical governance/scoring flow:</strong> Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield Dashboards.
+                        <div>Your pipeline of choice routes logs to any sinks.</div>
+                        <div>Cerbi is vendor-agnostic governance + scoring — not log transport.</div>
                         <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png">Open full size →</a>
                     </figcaption>
                 </figure>
