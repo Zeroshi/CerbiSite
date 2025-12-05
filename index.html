@@ -1488,8 +1488,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-step-num">1</div>
                         <div class="flow-title">Runtime Validation</div>
                         <div class="flow-details">
-                            <h4>Plugin Validates Event</h4>
-                            <p>Governance plugin checks each log against profile rules, computes the impact score, and tags the event before your router ships it.</p>
+                            <h4>Runtime Validators Compute ScoreImpact</h4>
+                            <p>Runtime validators and governance plug-ins grade each log against profile rules, compute the ScoreImpact, and tag the event before your router ships it.</p>
                             <ul>
                                 <li>Severity-weighted scoring</li>
                                 <li>Plugin contributions</li>
@@ -1503,8 +1503,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-step-num">2</div>
                         <div class="flow-title">Async Ship</div>
                         <div class="flow-details">
-                            <h4>Background Transmission</h4>
-                            <p>Governance signals ship asynchronously to the Scoring API for ingest/normalize/compute ScoreImpact—non-blocking and batched, and separate from your payload routing.</p>
+                            <h4>Async, PII-Safe Scoring Payloads</h4>
+                            <p>Minimal scoring payloads (no PII) ship asynchronously to the Scoring API for ingest/normalize/compute ScoreImpact—non-blocking, batched, and separate from your payload routing.</p>
                             <ul>
                                 <li>Non-blocking</li>
                                 <li>Batched</li>
@@ -1519,7 +1519,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <div class="flow-title">Storage</div>
                         <div class="flow-details">
                             <h4>Persist to Store</h4>
-                            <p>Scoring API persists scores to CerbiShield via Store APIs with RBAC and timestamps.</p>
+                            <p>Scoring API ingests the score metadata asynchronously and persists it to CerbiShield via Store APIs with RBAC and timestamps.</p>
                             <ul>
                                 <li>EF migrations</li>
                                 <li>RBAC-aware storage</li>
