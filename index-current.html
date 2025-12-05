@@ -943,15 +943,14 @@ dotnet add package Cerbi.Governance.Runtime
           <pre class="kbd" style="display:block;padding:14px;white-space:pre-wrap;background:rgba(14,165,255,.06);border:1px solid rgba(14,165,255,.25);border-radius:12px"><code>Application (Serilog / NLog / MEL / CerbiStream)
   │
   ▼
-CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
+CerbiStream governance (analyzers + runtime validation)
   │
-  ├──▶ Logs go to your standard sinks via OTel / Fluent Bit / Vector / custom pipelines
+  ├──▶ Your log pipeline (OTel / Fluent Bit / Vector / custom) → vendors / sinks (Cerbi is not a router)
   │
-  └──▶ (optional) CerbiStream → Scoring API (governance signal normalization + scoring engine) → CerbiSense (Phase 2)
-              │        │
-              ▼        ▼
-         Governance    ML Analytics
-         Scores        Scoring & Trends</code></pre>
+  └──▶ (optional) Scoring Queue → Scoring API → CerbiShield dashboard
+              │
+              ▼
+        Governance + risk scores</code></pre>
           <button class="btn" data-copy="#architecture code">Copy</button>
         </div>
         <div class="col-6 glass tilt" style="padding:16px">
@@ -959,6 +958,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
           <div class="img-frame" role="img" aria-label="Architecture diagram">
             <img src="/assets/da3b8164-84d7-400c-a093-154d1eb9fd09.png" alt="CerbiSuite Architecture Diagram" style="width:100%;display:block"/>
           </div>
+          <p class="k" style="margin-top:10px">Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard. External routing: your log pipeline of choice → vendors/sinks. Cerbi is vendor-agnostic governance + scoring — not log transport.</p>
           <p class="k" style="margin-top:10px">Full architecture (PDF): <a href="/assets/CerbiSuite Architecture.pdf" target="_blank" rel="noopener">Download</a></p>
         </div>
       </div>
