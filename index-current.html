@@ -580,7 +580,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <tr><td><strong>CerbiStream</strong></td><td><span class="pill ok">GA</span></td><td>Core .NET logger with structured output, encryption, and governance</td></tr>
             <tr><td><strong>CerbiStream.GovernanceAnalyzer</strong></td><td><span class="pill ok">GA</span></td><td>Static/dynamic schema validator enforcing rules at build and runtime</td></tr>
             <tr><td><strong>CerbiShield</strong></td><td><span class="pill beta">Beta (SaaS soon)</span></td><td>Governance dashboard UI & enforcement engine</td></tr>
-            <tr><td><strong>Scoring API</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Governance scores for coverage, violations, redaction posture, and risk</td></tr>
+            <tr><td><strong>Scoring API</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>Governance signal normalization + scoring engine for coverage, violations, redaction posture, and risk</td></tr>
             <tr><td><strong>CerbiSense</strong></td><td><span class="pill planned">Phase 2 Planned</span></td><td>ML‑driven anomaly detection and trend forecasting</td></tr>
           </tbody>
         </table>
@@ -947,7 +947,7 @@ CerbiShield Plugin / Analyzer (Required / Forbidden Field Enforcement)
   │
   ├──▶ Logs go to your standard sinks via OTel / Fluent Bit / Vector / custom pipelines
   │
-  └──▶ (optional) CerbiStream → Scoring API → CerbiSense (Phase 2)
+  └──▶ (optional) CerbiStream → Scoring API (governance signal normalization + scoring engine) → CerbiSense (Phase 2)
               │        │
               ▼        ▼
          Governance    ML Analytics

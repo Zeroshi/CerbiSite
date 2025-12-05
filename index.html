@@ -1505,9 +1505,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
             <ol class="card" style="padding:18px 22px; display:grid; gap:12px;">
                 <li><strong>Define policies (CerbiShield)</strong>: set required fields, redaction rules, and relax modes as versioned standards.</li>
                 <li><strong>Enforce at source (CerbiStream)</strong>: analyzers and runtime validators stop drift before data leaves the service.</li>
-                <li><strong>Score outcomes (Scoring API)</strong>: every event receives an impact score that highlights governance quality and risk.</li>
+                <li><strong>Score outcomes (Scoring API)</strong>: governance signals are normalized and every event is scored so risk and coverage are comparable across teams.</li>
                 <li><strong>Improve standards over time</strong>: scorecards feed back into CerbiShield so teams can tighten policies without breaking pipelines.</li>
             </ol>
+
+            <p class="muted">The Scoring API is the governance signal normalization + scoring engine; the legacy “CerbIQ” metadata router now lives here.</p>
 
             <p>Cerbi is not a transport layer—it layers governance and scoring on top of your existing choices. Customers keep their current pipelines and routing (Kafka, Event Hubs, HTTP collectors, or anything else) while Cerbi standardizes the payloads and enforcement.</p>
 
@@ -3014,7 +3016,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Phase 2 (Planned)</h3>
                     <ul>
-                        <li>Scoring API — governance scores for coverage, violations, redaction posture, and risk</li>
+                        <li>Scoring API — governance signal normalization + scoring engine for coverage, violations, redaction posture, and risk</li>
                         <li>CerbiSense — ML anomaly detection & trend forecasting</li>
                         <li>Marketplace integrations (Azure/AWS/GCP)</li>
                     </ul>
