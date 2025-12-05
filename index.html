@@ -215,6 +215,9 @@
             flex-wrap: wrap;
             align-items: stretch;
             gap: 12px;
+            width: min(760px, 100%);
+            margin: 0 auto;
+            flex-direction: column;
         }
 
         .btn-large {
@@ -227,6 +230,7 @@
             min-width: 240px;
             min-height: 56px;
             justify-content: center;
+            width: 100%;
         }
 
         .btn-secondary {
@@ -317,6 +321,32 @@
 
             .audience-pill {
                 min-width: auto;
+            }
+        }
+
+        @media (min-width: 640px) {
+            .hero-ctas {
+                flex-direction: row;
+                align-items: center;
+                gap: 14px;
+            }
+
+            .btn-large {
+                width: auto;
+            }
+
+            .hero-main {
+                gap: clamp(20px, 4vw, 28px);
+            }
+        }
+
+        @media (min-width: 960px) {
+            .hero-layout {
+                gap: clamp(28px, 4vw, 40px);
+            }
+
+            .chip-row {
+                margin: 0 auto clamp(16px, 2vw, 24px);
             }
         }
 
@@ -549,10 +579,12 @@
             flex-direction: column;
             position: relative;
             z-index: 1;
+            gap: clamp(22px, 4vw, 32px);
         }
         .hero-main {
             display: flex;
             flex-direction: column;
+            gap: clamp(18px, 3vw, 26px);
         }
         .hero::before {
             content: "";
@@ -570,7 +602,7 @@
             justify-content: center;
             column-gap: 10px;
             row-gap: 8px;
-            margin: 0 auto clamp(16px, 3vw, 22px);
+            margin: 0 auto clamp(12px, 2.5vw, 20px);
             max-width: min(960px, 100%);
         }
         .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
@@ -616,6 +648,7 @@
             max-width: 1080px;
             margin: 0 auto;
             z-index: 1;
+            padding-inline: clamp(12px, 3vw, 22px);
         }
 
         .hero-stats-row {
