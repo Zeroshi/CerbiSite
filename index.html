@@ -549,7 +549,7 @@
 
         .hero {
             position: relative;
-            padding: 20px 0 8px;
+            padding: 14px 0 4px;
             isolation: isolate;
         }
         .hero-layout {
@@ -557,12 +557,12 @@
             flex-direction: column;
             position: relative;
             z-index: 1;
-            gap: clamp(22px, 4vw, 32px);
+            gap: clamp(16px, 2.8vw, 24px);
         }
         .hero-main {
             display: flex;
             flex-direction: column;
-            gap: clamp(18px, 3vw, 26px);
+            gap: clamp(12px, 2.2vw, 18px);
         }
         .hero::before {
             content: "";
@@ -580,7 +580,7 @@
             justify-content: center;
             column-gap: 10px;
             row-gap: 8px;
-            margin: 0 auto clamp(12px, 2.5vw, 20px);
+            margin: 0 auto clamp(8px, 2vw, 14px);
             max-width: min(960px, 100%);
         }
         .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
@@ -593,22 +593,24 @@
             .chip { padding: 5px 9px; font-size: 13px; }
         }
         .hl { color: var(--brand) }
-        .hero h1 { margin: 0 0 1rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
-        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 2rem; }
+        .hero h1 { margin: 0 0 .75rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 1.2rem; }
         .hero-headings { text-align: center; }
-        .section { padding: 3.5rem 0; }
-        .section-tight { padding: 2rem 0; }
+        .hero-ctas { gap: 10px; row-gap: 8px; }
+        .hero-trust { margin-top: 2px; }
+        .section { padding: 3rem 0; }
+        .section-tight { padding: 1.6rem 0; }
         .py-14 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
         .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
-        .mt-10 { margin-top: 2.5rem; }
+        .mt-10 { margin-top: 1.75rem; }
         .space-y-6 > * + * { margin-top: 1.5rem; }
         .space-y-8 > * + * { margin-top: 2rem; }
         @media (min-width: 768px) {
-            .section { padding: 5rem 0; }
-            .section-tight { padding: 3rem 0; }
+            .section { padding: 4rem 0; }
+            .section-tight { padding: 2.4rem 0; }
             .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
             .md\:py-12 { padding-top: 3rem; padding-bottom: 3rem; }
-            .md\:mt-12 { margin-top: 3rem; }
+            .md\:mt-12 { margin-top: 2.25rem; }
         }
         #why-redaction {
             margin-top: 0;
