@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoring - Cerbi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <header class="text-center py-10 bg-gray-800 shadow-lg">
+        <h1 class="text-5xl font-extrabold">Cerbi Scoring</h1>
+        <p class="text-lg mt-2">ScoreImpact keeps teams aligned on log safety and quality</p>
+        <a href="index.html" class="mt-4 inline-block px-6 py-3 bg-blue-500 rounded-lg text-white hover:bg-blue-600 transition">Back to Home</a>
+    </header>
+
+    <main class="container mx-auto px-6 py-10 space-y-12">
+        <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
+            <h2 class="text-3xl font-semibold mb-4">What ScoreImpact Represents</h2>
+            <p class="text-gray-200">ScoreImpact summarizes how healthy your logging posture is across every service.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="p-6 bg-gray-700 rounded-lg shadow">
+                    <h3 class="text-2xl font-semibold">Coverage</h3>
+                    <p class="text-gray-200 mt-2">Tracks how many workloads are under governance, so gaps show up before incidents.</p>
+                </div>
+                <div class="p-6 bg-gray-700 rounded-lg shadow">
+                    <h3 class="text-2xl font-semibold">Violations</h3>
+                    <p class="text-gray-200 mt-2">Counts policy breaks like unredacted secrets or dropped samples, weighted by severity.</p>
+                </div>
+                <div class="p-6 bg-gray-700 rounded-lg shadow">
+                    <h3 class="text-2xl font-semibold">Redaction Posture</h3>
+                    <p class="text-gray-200 mt-2">Measures how consistently sensitive fields are masked at the edge and downstream.</p>
+                </div>
+                <div class="p-6 bg-gray-700 rounded-lg shadow">
+                    <h3 class="text-2xl font-semibold">Risk Trends</h3>
+                    <p class="text-gray-200 mt-2">Shows whether risk is climbing or falling over time, with weight on recent drift.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
+            <h2 class="text-3xl font-semibold mb-4">Why Scoring Helps</h2>
+            <ul class="list-disc ml-6 space-y-2 text-gray-200">
+                <li>Highlights weak spots early, so fixes happen before misconfigurations spill into production.</li>
+                <li>Prioritizes what to fix first by tying scores to the highest-risk services and traffic paths.</li>
+                <li>Provides a common signal during reviews, reducing noisy alerts and surprise outages.</li>
+            </ul>
+        </section>
+
+        <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
+            <h2 class="text-3xl font-semibold mb-4">Cross-Service Standardization</h2>
+            <ul class="list-disc ml-6 space-y-2 text-gray-200">
+                <li>Uses the same scoring rubric for every team, so policies are enforced evenly without manual checklists.</li>
+                <li>Signals when services diverge from shared baselines, making drift visible without ticket policing.</li>
+                <li>Lets platform teams set defaults once while allowing services to self-correct against the score.</li>
+            </ul>
+        </section>
+
+        <section class="bg-gray-800 rounded-xl p-8 shadow-lg">
+            <h2 class="text-3xl font-semibold mb-4">FAQ</h2>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-xl font-semibold">Is this ML?</h3>
+                    <p class="text-gray-200">No. Scores are rule-based and deterministic so operators can audit every factor.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Does Cerbi store my logs?</h3>
+                    <p class="text-gray-200">No. Cerbi evaluates metadata and policy outcomes; log storage stays in your stack.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Does Cerbi route logs?</h3>
+                    <p class="text-gray-200">No. Cerbi observes routing decisions but does not broker or forward log traffic.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold">Do I need a specific router?</h3>
+                    <p class="text-gray-200">No. Scoring works with any router that can emit governance signals and metrics.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-6 bg-gray-800 mt-10">
+        <p>&copy; 2025 Cerbi. All rights reserved.</p>
+    </footer>
+</body>
+</html>
