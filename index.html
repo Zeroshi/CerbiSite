@@ -1170,6 +1170,40 @@
             </div>
         </section>
 
+        <section id="who-its-for" class="container section" aria-label="Who it's for">
+            <div class="eyebrow">Who it's for</div>
+            <h2>Who <span class="hl">it’s for</span></h2>
+            <div class="grid" style="--cols:3;gap:20px">
+                <article class="card col-4">
+                    <h3>Platform / SRE</h3>
+                    <p class="muted">
+                        Platform and SRE teams get blindsided by hidden observability surprises when new services spew noisy
+                        fields and schema chaos spills into dashboards. Cerbi normalizes and validates events before they hit
+                        sinks so you aren't debugging broken alerts at 2 a.m. Outcome: predictable telemetry and calmer
+                        on-call rotations.
+                    </p>
+                </article>
+                <article class="card col-4">
+                    <h3>Security / Compliance</h3>
+                    <p class="muted">
+                        Security and compliance owners worry about sensitive data risk hiding in payloads and reviews that
+                        depend on manual gates. Cerbi enforces redaction and governance checks in CI so unsafe fields are
+                        blocked before deployment. Outcome: audit-ready evidence that risky data never leaves the service
+                        boundary.
+                    </p>
+                </article>
+                <article class="card col-4">
+                    <h3>Engineering Leads</h3>
+                    <p class="muted">
+                        Engineering leads battle schema chaos as teams ship logging changes without guardrails, and CI
+                        enforcement is often the first casualty when deadlines bite. Cerbi keeps profiles versioned outside
+                        code and fails fast when violations show up in pipelines. Outcome: consistent contracts across teams
+                        without slowing delivery.
+                    </p>
+                </article>
+            </div>
+        </section>
+
         <script>
             document.querySelectorAll('[data-scroll-target]').forEach(link => {
                 link.addEventListener('click', (event) => {
