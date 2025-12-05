@@ -1726,11 +1726,11 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                 <article class="col-6 card">
                     <h3>Flow</h3>
                     <ul>
-                        <li>Apps & services emit events</li>
+                        <li>Apps & services emit events into CerbiStream (source governance + validation)</li>
                         <li>Build-time analyzers catch schema/PII violations pre-merge</li>
                         <li>Runtime validators redact/flag (relax-mode to roll out safely)</li>
-                        <li>CerbiShield hosts versioned profiles, RBAC, audit history, and deployable policy</li>
-                        <li>Teams route governed events through OTel, Fluent Bit, Vector, or custom pipelines to their sinks; Cerbi never ships your logs to vendors</li>
+                        <li>(Optional) governed events enter a Scoring Queue → Scoring API → CerbiShield dashboard for governance + risk scoring</li>
+                        <li>Your log pipeline of choice (OTel, Fluent Bit, Vector, custom) still routes to vendors/sinks; Cerbi stays vendor-agnostic</li>
                     </ul>
                 </article>
                 <figure class="col-6 img-frame arch-diagram card" style="padding:10px">
@@ -1738,7 +1738,8 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
                         <img src="assets/architecture/cerbisuite-architecture-1600x900.png" sizes="(max-width: 900px) 100vw, 900px" alt="Cerbi reference architecture diagram" loading="lazy" decoding="async">
                     </a>
                     <figcaption class="img-cap">
-                        Source-governed telemetry → durable dashboards, cheaper ingestion, audit-ready evidence.
+                        Canonical path: Apps → CerbiStream → (optional Scoring Queue) → Scoring API → CerbiShield dashboard.
+                        External routing: your log pipeline of choice → vendors/sinks. Cerbi is vendor-agnostic governance + scoring — not log transport.
                         <a class="arch-pop" href="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png" data-full="https://raw.githubusercontent.com/Zeroshi/CerbiSite/main/assets/architecture/Cerbi-Architecture.png">Open full size →</a>
                     </figcaption>
                 </figure>
