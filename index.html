@@ -564,8 +564,24 @@
             border-radius: 26px;
             z-index: -1;
         }
-        .chip-row { display: flex; flex-wrap: wrap; }
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            column-gap: 10px;
+            row-gap: 8px;
+            margin: 0 auto clamp(16px, 3vw, 22px);
+            max-width: min(960px, 100%);
+        }
         .chip { background: #e8f0ff; color: #1b3159; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(20,40,72,.12) }
+        @media (max-width: 640px) {
+            .chip-row {
+                column-gap: 8px;
+                row-gap: 8px;
+                margin-bottom: 14px;
+            }
+            .chip { padding: 5px 9px; font-size: 13px; }
+        }
         .hl { color: var(--brand) }
         .hero h1 { margin: 0; font-size: clamp(26px,4.6vw,44px); line-height: 1.1; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
         .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
