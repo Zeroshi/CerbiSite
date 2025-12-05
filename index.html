@@ -549,7 +549,7 @@
 
         .hero {
             position: relative;
-            padding: clamp(12px, 2vw, 20px) 0 clamp(10px, 2vw, 16px);
+            padding: clamp(6px, 1.2vw, 12px) 0 clamp(26px, 5vw, 44px);
             isolation: isolate;
         }
         .hero-layout {
@@ -596,16 +596,20 @@
         .hero h1 { margin: 0 0 .85rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.08; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
         .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 1.35rem; }
         .hero-headings { text-align: center; }
-        .section { padding: clamp(2.5rem, 5.5vw, 3.5rem) 0; }
-        .section-tight { padding: clamp(1.5rem, 4vw, 2.2rem) 0; }
+        .section { padding-block: 80px; }
+        .section > :first-child { margin-top: 0; }
         .py-14 { padding-top: 3.25rem; padding-bottom: 3.25rem; }
         .py-8 { padding-top: 1.75rem; padding-bottom: 1.75rem; }
         .mt-10 { margin-top: 2rem; }
         .space-y-6 > * + * { margin-top: 1.5rem; }
         .space-y-8 > * + * { margin-top: 2rem; }
+        @media (max-width: 1024px) {
+            .section { padding-block: 72px; }
+        }
+        @media (max-width: 640px) {
+            .section { padding-block: 60px; }
+        }
         @media (min-width: 768px) {
-            .section { padding: clamp(3.25rem, 6vw, 4.25rem) 0; }
-            .section-tight { padding: clamp(2.4rem, 4.8vw, 3.2rem) 0; }
             .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
             .md\:py-12 { padding-top: 3rem; padding-bottom: 3rem; }
             .md\:mt-12 { margin-top: 2.5rem; }
@@ -658,6 +662,29 @@
         .hero-stats-row .metrics-shell {
             margin: 0;
             flex: 2 1 520px;
+        }
+
+        .capabilities-head {
+            text-align: center;
+            display: grid;
+            gap: 10px;
+            margin: 0 auto 20px;
+            max-width: 760px;
+        }
+
+        .capabilities-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            column-gap: 10px;
+            row-gap: 10px;
+            margin: 0 auto;
+            max-width: min(960px, 100%);
+        }
+
+        .capabilities-ctas {
+            margin-top: clamp(18px, 3vw, 28px);
+            justify-content: center;
         }
 
         .nuget-inline-stat {
@@ -1091,28 +1118,19 @@
                         <span class="chip">Governance + Scoring</span>
                         <span class="chip">Schema Consistency</span>
                         <span class="chip">Redaction Posture</span>
-                        <span class="chip">CI + Runtime Enforcement</span>
-                        <span class="chip">Vendor-Agnostic Routing</span>
-                        <span class="chip">Tenant-Hosted</span>
                     </div>
 
                     <h1>
-                        Govern logs before they hit your sinks.
+                        Govern logs before they reach your log tools.
                     </h1>
-                    <p class="sub text-base md:text-lg max-w-2xl mx-auto text-center">CI + runtime guardrails for structured logging and automatic redaction—without changing your logger or routing.</p>
+                    <p class="sub text-base md:text-lg max-w-2xl mx-auto text-center">CI + runtime guardrails for structured logging and automatic redaction—without swapping out your log tools.</p>
 
                     <div class="hero-ctas flex w-full flex-wrap justify-center gap-3" role="group" aria-label="Primary calls to action">
                         <a href="#quickstart" class="btn btn-primary btn-large">
-                            ⚡ Try CerbiStream in 60 Seconds
+                            Try CerbiStream in 60 Seconds
                         </a>
                         <a href="#contact" class="btn btn-secondary btn-large">
-                            🚀 Request Pilot Access
-                        </a>
-                        <a href="#contact" class="btn btn-secondary btn-large">
-                            📊 Book a Governance POC
-                        </a>
-                        <a href="#contact" class="btn btn-secondary btn-large">
-                            🛠️ Early Access for Platform Teams
+                            Request Pilot Access
                         </a>
                     </div>
                     <p class="hero-trust text-center text-[var(--muted)] text-sm leading-relaxed max-w-3xl mx-auto">
@@ -1181,6 +1199,23 @@
                         33.5k+ NuGet downloads across Cerbi packages
                     </p>
                 </div>
+            </div>
+        </section>
+
+        <section class="container section capabilities" aria-label="Capabilities">
+            <div class="capabilities-head">
+                <div class="eyebrow">Capabilities</div>
+                <h2>Cerbi is the governance layer for your existing logging stack</h2>
+                <p class="lead">Enforce policies, validate payloads, and score redaction posture while your agents, collectors, and sinks stay the same.</p>
+            </div>
+            <div class="capabilities-row" role="list" aria-label="Cerbi capabilities">
+                <span class="chip" role="listitem">CI + Runtime Enforcement</span>
+                <span class="chip" role="listitem">Tenant-Hosted Governance</span>
+                <span class="chip" role="listitem">Works with your log tools</span>
+            </div>
+            <div class="hero-ctas capabilities-ctas flex w-full flex-wrap" role="group" aria-label="Secondary calls to action">
+                <a href="#contact" class="btn btn-secondary btn-large">📊 Book a Governance POC</a>
+                <a href="#contact" class="btn btn-secondary btn-large">🛠️ Early Access for Platform Teams</a>
             </div>
         </section>
 
