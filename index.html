@@ -1360,45 +1360,255 @@
         <section id="pricing" class="container section">
             <div class="eyebrow">Licensing & Plans</div>
             <h2>How we <span class="hl">license</span> Cerbi</h2>
-            <p class="lead">NuGet packages &amp; governance runtime: free &amp; OSS (MIT). CerbiShield &amp; Scoring: paid plans via Azure Marketplace or private offers.</p>
+            <p class="lead">CerbiStream (NuGet analyzers + runtime guards) stays free and MIT. CerbiShield + Scoring add governed dashboards, API access, deployment history, and scorecards—procured via Azure Marketplace or private offer.</p>
 
             <div class="card" style="margin-bottom:18px;">
-                <p><strong>Quick split:</strong> install CerbiStream, analyzers, and governance runtime from NuGet under MIT; subscribe to CerbiShield + Scoring when you want managed RBAC, audit history, scorecards, and SLAs.</p>
+                <p><strong>Governance first:</strong> We don’t route logs. Cerbi standardizes schemas, tags/redacts risky fields, and scores governance posture so you reduce paid log noise before it reaches your existing tools.</p>
             </div>
 
-            <div class="grid" style="margin-top:10px;">
-                <article class="col-4 card">
-                    <h3>Starter / Team</h3>
-                    <p class="muted">Anchor price: <strong>$690/month</strong> via Azure Marketplace for up to 5 governed apps; includes CerbiShield dashboards and Scoring.</p>
+            <h3 style="margin-top:10px;">Section 1: Preview pricing plan blurbs</h3>
+            <p class="muted" style="margin-bottom:10px;">Provisional pricing for Marketplace listing drafts; final rates may change.</p>
+            <div class="grid" style="--cols:2;gap:16px;">
+                <article class="card">
+                    <div class="flex items-center justify-between">
+                        <h4>Plan 1: Free</h4>
+                        <span class="chip">$0</span>
+                    </div>
+                    <p class="muted">For individual engineers validating CerbiStream and runtime governance on a single app.</p>
                     <ul>
-                        <li>Unlimited OSS NuGet packages (MIT)</li>
-                        <li>5 governed apps with relax-mode rollout</li>
-                        <li>Email support and monthly check-ins</li>
+                        <li>CerbiStream SDK + analyzers (MIT) with 1 governed app</li>
+                        <li>Governance rule authoring with JSON import/export</li>
+                        <li>Runtime tagging/redaction concepts to shrink noisy payloads</li>
+                        <li>Validation playground for pre-production checks</li>
+                        <li>Basic retention/history with local audit trail</li>
                     </ul>
                 </article>
-
-                <article class="col-4 card">
-                    <h3>Growth</h3>
-                    <p class="muted">Anchor price: <strong>$2,400/month</strong> via Azure Marketplace for up to 25 governed apps; add-ons billed per app.</p>
+                <article class="card">
+                    <div class="flex items-center justify-between">
+                        <h4>Plan 2: Basic</h4>
+                        <span class="chip">$99/mo</span>
+                    </div>
+                    <p class="muted">For small teams adding light governance with simple RBAC and more apps.</p>
                     <ul>
-                        <li>NuGet + runtime under MIT</li>
-                        <li>25 governed apps with RBAC &amp; audit history</li>
-                        <li>Priority support and rollout planning</li>
+                        <li>Up to 5 governed apps with compile-time analyzer enforcement</li>
+                        <li>Email-based RBAC + audit logs for policy changes</li>
+                        <li>Governance-as-code via JSON export/import for CI</li>
+                        <li>Deployment targets per app for test + prod parity</li>
+                        <li>Templates/starter kits (not certified compliance)</li>
                     </ul>
                 </article>
-
-                <article class="col-4 card">
-                    <h3>Enterprise</h3>
-                    <p class="muted"><strong>Contact us</strong>; starts at <strong>$6,500/month</strong> via Azure Marketplace or private offer.</p>
+                <article class="card">
+                    <div class="flex items-center justify-between">
+                        <h4>Plan 3: Pro <span class="chip" style="background:var(--accent);color:var(--bg);">Recommended</span></h4>
+                        <span class="chip">$299/mo</span>
+                    </div>
+                    <p class="muted">For platform teams standardizing schemas across multiple services with managed RBAC and history.</p>
                     <ul>
-                        <li>Unlimited governed apps &amp; scoring volume</li>
-                        <li>Private networking, SSO, and SOC2 package</li>
-                        <li>Named TAM, architecture reviews, and SLAs</li>
+                        <li>Up to 20 governed apps with SSO and role depth for squads</li>
+                        <li>Runtime enforcement with redaction + tagging to cut vendor log volume</li>
+                        <li>Governance rule versioning with deployment history</li>
+                        <li>Validation playground + scoring API visibility</li>
+                        <li>Multiple deployment targets per app with rollback metadata</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <div class="flex items-center justify-between">
+                        <h4>Plan 4: Scale</h4>
+                        <span class="chip">$599/mo</span>
+                    </div>
+                    <p class="muted">For fast-growing companies aligning dozens of services to governed schemas and redaction guardrails.</p>
+                    <ul>
+                        <li>Up to 50 governed apps with hierarchical RBAC and approval flows</li>
+                        <li>Advanced governance-as-code with policy promotion between environments</li>
+                        <li>Expanded audit logs + retention for change tracing</li>
+                        <li>Deployment targets per app covering regional footprints</li>
+                        <li>Governed reporting hooks (PDF/JSON-ready) for leadership reviews</li>
+                    </ul>
+                </article>
+                <article class="card" style="grid-column:span 2;">
+                    <div class="flex items-center justify-between">
+                        <h4>Plan 5: Enterprise</h4>
+                        <span class="chip">Private offer</span>
+                    </div>
+                    <p class="muted">For regulated orgs needing private networking, deep RBAC, and procurement-ready reporting.</p>
+                    <ul>
+                        <li>Custom app limits with SSO, SCIM, and fine-grained roles</li>
+                        <li>Enterprise audit logs, long-term retention, and deployment attestations</li>
+                        <li>Governance rule authoring + JSON pipelines with change approvals</li>
+                        <li>Reporting exports (PDF/JSON) for internal reviews—not certified compliance</li>
+                        <li>Architecture support to reduce paid log noise before vendor ingestion</li>
                     </ul>
                 </article>
             </div>
 
-            <p class="k" style="margin-top:18px">We’ll refine pricing in the next section—this anchor keeps procurement fast. If you need a custom offer, we’ll route through Azure Marketplace or craft a private deal.</p>
+            <h3 style="margin-top:28px;">Section 2: Price-agnostic plan blurbs</h3>
+            <div class="grid" style="--cols:2;gap:16px;">
+                <article class="card">
+                    <h4>Plan 1: Free</h4>
+                    <p class="muted">For solo builders proving out CerbiStream + CerbiShield on one app with baseline governance.</p>
+                    <ul>
+                        <li>1 governed app with MIT-licensed CerbiStream and analyzers</li>
+                        <li>Governance rule editing plus JSON import/export</li>
+                        <li>Validation playground and runtime tagging/redaction patterns</li>
+                        <li>Starter templates (not certified compliance)</li>
+                        <li>Basic audit history for change awareness</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h4>Plan 2: Basic</h4>
+                    <p class="muted">For small teams adopting governance-as-code with lightweight RBAC and app headroom.</p>
+                    <ul>
+                        <li>Up to 5 apps with analyzer alignment and CI blocks for drift</li>
+                        <li>Email/SSO choice for simple access control</li>
+                        <li>Deployment targets per app (test + prod)</li>
+                        <li>Audit logs with short retention</li>
+                        <li>Templates/starter kits to speed policy definition</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h4>Plan 3: Pro <span class="chip" style="background:var(--accent);color:var(--bg);">Recommended</span></h4>
+                    <p class="muted">For platform teams needing governed schemas, SSO, and traceable deployments across many services.</p>
+                    <ul>
+                        <li>Up to 20 apps with SSO + role-based approvals</li>
+                        <li>Runtime enforcement with redaction/tagging to trim log spend</li>
+                        <li>Governance versioning with per-target deployment history</li>
+                        <li>Scoring API for governance signals</li>
+                        <li>Extended retention and audit visibility</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h4>Plan 4: Scale</h4>
+                    <p class="muted">For orgs coordinating governance across dozens of apps and regions with deeper RBAC.</p>
+                    <ul>
+                        <li>Up to 50 apps with hierarchical RBAC and approvals</li>
+                        <li>Multi-target deployments per app with promotion controls</li>
+                        <li>Advanced audit logs and retention options</li>
+                        <li>Governance rule automation through JSON pipelines</li>
+                        <li>Reporting hooks for leadership-ready summaries</li>
+                    </ul>
+                </article>
+                <article class="card" style="grid-column:span 2;">
+                    <h4>Plan 5: Enterprise</h4>
+                    <p class="muted">For enterprises seeking private offers, extended retention, and leadership-grade reporting.</p>
+                    <ul>
+                        <li>Custom app limits with SSO, SCIM, and advanced RBAC depth</li>
+                        <li>Full governance-as-code with approvals and JSON import/export</li>
+                        <li>Maximum retention, audit logs, and deployment attestations</li>
+                        <li>Reporting exports (PDF/JSON) for internal governance reviews</li>
+                        <li>Direct support to keep paid log noise low before vendor ingestion</li>
+                    </ul>
+                </article>
+            </div>
+
+            <h3 style="margin-top:28px;">Section 3: Feature matrix</h3>
+            <div class="card">
+                <table class="table" style="width:100%;font-size:14px;">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Free</th>
+                            <th>Basic</th>
+                            <th>Pro <span class="chip" style="background:var(--accent);color:var(--bg);">Recommended</span></th>
+                            <th>Scale</th>
+                            <th>Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>App limits</td>
+                            <td>1 app</td>
+                            <td>5 apps</td>
+                            <td>20 apps</td>
+                            <td>50 apps</td>
+                            <td>Custom</td>
+                        </tr>
+                        <tr>
+                            <td>SSO</td>
+                            <td>Not included</td>
+                            <td>Email/optional SSO</td>
+                            <td>Included</td>
+                            <td>Included with approvals</td>
+                            <td>Included with SCIM</td>
+                        </tr>
+                        <tr>
+                            <td>RBAC depth</td>
+                            <td>Single role</td>
+                            <td>Basic roles</td>
+                            <td>Team roles + approvals</td>
+                            <td>Hierarchical roles</td>
+                            <td>Fine-grained + custom</td>
+                        </tr>
+                        <tr>
+                            <td>Governance rule authoring + JSON import/export</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                            <td>Versioned with history</td>
+                            <td>Versioned with promotions</td>
+                            <td>Versioned with approvals</td>
+                        </tr>
+                        <tr>
+                            <td>Validation playground</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                            <td>Included + scoring signals</td>
+                            <td>Included + multi-target</td>
+                            <td>Included + enterprise telemetry</td>
+                        </tr>
+                        <tr>
+                            <td>Deployment targets per app</td>
+                            <td>1 target</td>
+                            <td>2 targets</td>
+                            <td>4 targets</td>
+                            <td>Regional targets</td>
+                            <td>Custom footprints</td>
+                        </tr>
+                        <tr>
+                            <td>Audit logs</td>
+                            <td>Local trail</td>
+                            <td>Short retention</td>
+                            <td>Extended retention</td>
+                            <td>Expanded retention + filters</td>
+                            <td>Long-term with export</td>
+                        </tr>
+                        <tr>
+                            <td>Retention/history</td>
+                            <td>Limited history</td>
+                            <td>30 days</td>
+                            <td>90 days</td>
+                            <td>180 days</td>
+                            <td>Custom</td>
+                        </tr>
+                        <tr>
+                            <td>Reporting (PDF/JSON)</td>
+                            <td>Not included</td>
+                            <td>Not included</td>
+                            <td>Not included</td>
+                            <td>Hooks for internal summaries</td>
+                            <td>Included (internal use)</td>
+                        </tr>
+                        <tr>
+                            <td>Templates/starter kits (not certified compliance)</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                            <td>Included</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin-top:28px;">Section 4: Marketplace plan highlights</h3>
+            <ul>
+                <li>Governance-as-code with Roslyn analyzers + runtime validators to block schema drift early.</li>
+                <li>Runtime tagging/redaction concepts to reduce paid log noise before vendor ingestion.</li>
+                <li>Scoring API surfaces governance signals for leadership-ready scorecards.</li>
+                <li>Versioned policies, deployment history, and audit logs to keep governance decisions traceable.</li>
+                <li>CerbiStream stays free as the entry point; CerbiShield adds dashboards, APIs, and support.</li>
+            </ul>
+
+            <h3 style="margin-top:28px;">Section 5: Disclaimers</h3>
+            <p class="muted">Pricing is provisional and intended for Marketplace previews; final terms, limits, and SLAs will be confirmed in order forms or private offers. Reporting exports support internal governance reviews and are not certified compliance artifacts. Cerbi governs schemas and tags/redacts payloads but leaves log routing within your stack.</p>
         </section>
 
         <section class="container section capabilities" aria-label="Capabilities">
