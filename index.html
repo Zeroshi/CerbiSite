@@ -14,10 +14,10 @@
     <title>CerbiSuite — Logging governance and governance scoring for .NET</title>
 
     <meta name="theme-color" content="#fffdf7" />
-    <meta name="description" content="Governance-first logging for .NET that validates, redacts, and scores payloads without routing your logs. CerbiStream, CerbiShield, and the Scoring API keep your pipelines and sinks unchanged." />
+    <meta name="description" content="Governance-first logging for .NET that validates, redacts, and scores payloads without routing your logs. CerbiStream, CerbiShield, and the Scoring API keep your pipelines and log destinations unchanged." />
     <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring, Scoring API, Cerbi, CerbiSuite, CerbiStream, CerbiShield, vendor agnostic" />
     <meta property="og:title" content="CerbiSuite — Governance-first logging and scoring" />
-    <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance while your pipelines keep routing to your sinks." />
+    <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance while your pipelines keep routing to your log destinations." />
     <meta property="og:image" content="assets/CerbiShield.png" />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -549,7 +549,7 @@
 
         .hero {
             position: relative;
-            padding: clamp(6px, 1.2vw, 12px) 0 clamp(26px, 5vw, 44px);
+            padding: clamp(6px, 1.2vw, 12px) 0 clamp(20px, 4vw, 40px);
             isolation: isolate;
         }
         .hero-layout {
@@ -562,7 +562,7 @@
         .hero-main {
             display: flex;
             flex-direction: column;
-            gap: clamp(14px, 2.4vw, 22px);
+            gap: clamp(16px, 2.6vw, 26px);
         }
         .hero::before {
             content: "";
@@ -573,6 +573,46 @@
             filter: saturate(1.05) contrast(1.02);
             border-radius: 26px;
             z-index: -1;
+        }
+        .hero-banner {
+            display: grid;
+            gap: 10px;
+            width: 100%;
+            max-width: 980px;
+            margin-inline: auto;
+        }
+        .hero-banner figure {
+            margin: 0;
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid rgba(20,40,72,.12);
+            box-shadow: 0 16px 40px rgba(12,22,44,0.12);
+            overflow: hidden;
+        }
+        .hero-banner img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .hero-banner figcaption {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            padding: 10px 14px 12px;
+        }
+        .hero-trust-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .hero-trust-row span {
+            padding: 6px 10px;
+            background: rgba(15,99,255,0.06);
+            border: 1px solid rgba(15,99,255,0.12);
+            border-radius: 999px;
         }
         .chip-row {
             display: flex;
@@ -594,20 +634,22 @@
         }
         .hl { color: var(--brand) }
         .hero h1 { margin: 0 0 .85rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.08; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
-        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0 0 1.35rem; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
         .hero-headings { text-align: center; }
-        .section { padding-block: 80px; }
+        .section { padding-block: clamp(40px, 7vw, 80px); }
         .section > :first-child { margin-top: 0; }
         .py-14 { padding-top: 3.25rem; padding-bottom: 3.25rem; }
         .py-8 { padding-top: 1.75rem; padding-bottom: 1.75rem; }
         .mt-10 { margin-top: 2rem; }
         .space-y-6 > * + * { margin-top: 1.5rem; }
         .space-y-8 > * + * { margin-top: 2rem; }
+        .space-y-10 > * + * { margin-top: 2.5rem; }
         @media (max-width: 1024px) {
-            .section { padding-block: 72px; }
+            .section { padding-block: clamp(40px, 9vw, 72px); }
         }
         @media (max-width: 640px) {
-            .section { padding-block: 60px; }
+            .section { padding-block: clamp(40px, 10vw, 60px); }
+            .hero-banner figcaption { font-size: 13px; }
         }
         @media (min-width: 768px) {
             .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
@@ -1113,7 +1155,7 @@
     <main id="main">
         <section class="hero container relative" id="top" aria-label="Hero">
             <div class="hero-layout flex flex-col items-center gap-10 md:gap-12">
-                <div class="hero-main flex w-full flex-col items-center text-center space-y-6">
+                <div class="hero-main flex w-full flex-col items-center text-center space-y-8">
                     <div class="chip-row justify-center gap-2 md:gap-3" role="list" aria-label="High level features">
                         <span class="chip">Governance + Scoring</span>
                         <span class="chip">Schema Consistency</span>
@@ -1123,7 +1165,19 @@
                     <h1>
                         Govern logs before they reach your log tools.
                     </h1>
-                    <p class="sub text-base md:text-lg max-w-2xl mx-auto text-center">CI + runtime guardrails for structured logging and automatic redaction—without swapping out your log tools.</p>
+                    <p class="sub text-base md:text-lg max-w-2xl mx-auto text-center">CI + runtime guardrails for structured logging and automatic redaction—without swapping out your log destinations or observability tools.</p>
+
+                    <div class="hero-banner">
+                        <figure>
+                            <img src="assets/architectrure/Governance_before_ingestion.png" alt="Cerbi governance sits before ingestion while routing stays under your control" loading="lazy" />
+                            <figcaption>Governance before ingestion. Routing stays yours.</figcaption>
+                        </figure>
+                        <div class="hero-trust-row" role="list" aria-label="Cerbi trust signals">
+                            <span role="listitem">33.5k+ NuGet downloads across Cerbi packages</span>
+                            <span role="listitem">Works with Serilog, NLog, Microsoft.Extensions.Logging</span>
+                            <span role="listitem">Tenant-hosted governance control plane</span>
+                        </div>
+                    </div>
 
                     <div class="hero-ctas flex w-full flex-wrap justify-center gap-3" role="group" aria-label="Primary calls to action">
                         <a href="#quickstart" class="btn btn-primary btn-large">
@@ -1134,34 +1188,32 @@
                         </a>
                     </div>
                     <p class="hero-trust text-center text-[var(--muted)] text-sm leading-relaxed max-w-3xl mx-auto">
-                        Founder-led pilots with hands-on implementation support, governance scorecards, and weekly working sessions for platform teams.
+                        Founder-led pilots with hands-on implementation support, governance scorecards, and weekly working sessions for platform teams. Cerbi never routes logs—your pipelines keep sending to the destinations you choose.
                     </p>
 
-                    <div class="mt-10 md:mt-12">
-                        <div class="hero-stats-row">
-                            <!-- Executive Stats Banner -->
-                            <div id="heroMetrics" class="metrics-shell">
-                                <div class="metrics-grid">
-                                    <article class="metric-card">
-                                        <div class="metric-number">40%</div>
-                                        <div class="metric-label">Log spend eliminated</div>
-                                        <p class="metric-note">Median reduction in paid log volume for early adopters in the first 90 days.</p>
-                                    </article>
-                                    <article class="metric-card">
-                                        <div class="metric-number">95%</div>
-                                        <div class="metric-label">First-audit pass rate</div>
-                                        <p class="metric-note">Compliance checks passed on first audit when teams enforced Cerbi governance profiles.</p>
-                                    </article>
-                                    <article class="metric-card">
-                                        <div class="metric-number">3x</div>
-                                        <div class="metric-label">Faster incident response</div>
-                                        <p class="metric-note">Time-to-resolution improvement after instrumenting runbooks with governed, searchable logs.</p>
-                                    </article>
-                                </div>
-                                <p class="muted" style="text-align:center;margin:14px auto 0;max-width:780px;font-size:13px">
-                                    Figures are illustrative pilot outcomes from governed schemas, redaction posture, and audit evidence; your pipeline and controls will change results.
-                                </p>
+                    <div class="hero-stats-row">
+                        <!-- Executive Stats Banner -->
+                        <div id="heroMetrics" class="metrics-shell">
+                            <div class="metrics-grid">
+                                <article class="metric-card">
+                                    <div class="metric-number">40%</div>
+                                    <div class="metric-label">Log spend eliminated</div>
+                                    <p class="metric-note">Median reduction in paid log volume for early adopters in the first 90 days.</p>
+                                </article>
+                                <article class="metric-card">
+                                    <div class="metric-number">95%</div>
+                                    <div class="metric-label">First-audit pass rate</div>
+                                    <p class="metric-note">Compliance checks passed on first audit when teams enforced Cerbi governance profiles.</p>
+                                </article>
+                                <article class="metric-card">
+                                    <div class="metric-number">3x</div>
+                                    <div class="metric-label">Faster incident response</div>
+                                    <p class="metric-note">Time-to-resolution improvement after instrumenting runbooks with governed, searchable logs.</p>
+                                </article>
                             </div>
+                            <p class="muted" style="text-align:center;margin:14px auto 0;max-width:780px;font-size:13px">
+                                Figures are illustrative pilot outcomes from governed schemas, redaction posture, and audited evidence; your pipeline and controls will change results.
+                            </p>
                         </div>
                     </div>
 
@@ -1193,11 +1245,6 @@
                         <div class="mono" id="typeCaret" style="color:var(--text-strong)"><span class="caret"></span></div>
                     </article>
 
-                    <p
-                        class="nuget-inline-stat mt-3 text-[0.7rem] sm:text-xs md:text-sm text-white/70 text-center tracking-[0.18em] uppercase"
-                    >
-                        33.5k+ NuGet downloads across Cerbi packages
-                    </p>
                 </div>
             </div>
         </section>
@@ -1206,7 +1253,7 @@
             <div class="capabilities-head">
                 <div class="eyebrow">Capabilities</div>
                 <h2>Cerbi is the governance layer for your existing logging stack</h2>
-                <p class="lead">Enforce policies, validate payloads, and score redaction posture while your agents, collectors, and sinks stay the same.</p>
+                <p class="lead">Enforce policies, validate payloads, and score redaction posture while your agents, collectors, and log destinations stay the same.</p>
             </div>
             <div class="capabilities-row" role="list" aria-label="Cerbi capabilities">
                 <span class="chip" role="listitem">CI + Runtime Enforcement</span>
@@ -1228,7 +1275,7 @@
                 <div class="space-y-6">
                     <div class="eyebrow">Context</div>
                     <h2>Why <span class="hl">Redaction Alone Isn’t Enough</span></h2>
-                    <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your sinks. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline you keep routing.</p>
+                    <p class="lead">Cerbi complements Serilog, NLog, and Microsoft.Extensions.Logging by governing payloads before they hit your log destinations. Instead of relying on ad-hoc masking, Cerbi combines policy, analyzers, runtime guards, versioning, and scoring so redaction is one layer in a governed pipeline you keep routing.</p>
                 </div>
                 <div class="grid">
                 <article class="col-6 card">
@@ -1265,7 +1312,7 @@
                     </a>
                     <a class="persona-card" href="#ecosystem-explore" data-scroll-target="#ecosystem-explore">
                         <div class="persona-title">For Developers &amp; Platform Teams</div>
-                        <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads while you keep your agents, collectors, and sinks.</p>
+                        <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads while you keep your agents, collectors, and log destinations.</p>
                         <span class="persona-cta">Explore the stack →</span>
                     </a>
                     <a class="persona-card" href="#compliance">
@@ -1336,7 +1383,7 @@
                     </p>
                     <p>
                         CerbiStream runs in your .NET services. CerbiShield runs in your tenant.
-                        You keep your log sinks. Cerbi gives you governed, PII-safe, audit-ready
+                        You keep your log destinations. Cerbi gives you governed, PII-safe, audit-ready
                         telemetry without dropping another black-box SaaS in the middle.
                     </p>
                 </div>
@@ -1357,7 +1404,7 @@
         <section id="brief-overview-video" class="container section">
             <div class="eyebrow">Overview</div>
             <h2>Cerbi — <span class="hl">Brief Overview</span></h2>
-            <p class="lead">CerbiStream is a governance-first logging layer for .NET that validates, redacts, and tags every log event before it hits your sinks. Instead of shipping “whatever the app logs” into expensive platforms, Cerbi enforces JSON profiles so only clean, compliant, ML-ready data flows downstream. CerbiShield is the tenant-hosted governance brain and scorecard layer that defines, versions, and deploys those profiles with RBAC and audit history—customers own the infrastructure and data plane while policy stays outside code. The Scoring API is the governance scoring engine that tracks posture over time. Together, they turn logging from an ungoverned cost center into an auditable, measurable part of your architecture without ever routing your traffic.</p>
+            <p class="lead">CerbiStream is a governance-first logging layer for .NET that validates, redacts, and tags every log event before it hits your log platforms. Instead of shipping “whatever the app logs” into expensive platforms, Cerbi enforces JSON profiles so only clean, compliant, ML-ready data flows downstream. CerbiShield is the tenant-hosted governance brain and scorecard layer that defines, versions, and deploys those profiles with RBAC and audit history—customers own the infrastructure and data plane while policy stays outside code. The Scoring API is the governance scoring engine that tracks posture over time. Together, they turn logging from an ungoverned cost center into an auditable, measurable part of your architecture without ever routing your traffic.</p>
             <div class="card video-card-shell" data-video-card="brief-overview"></div>
         </section>
 
@@ -1381,7 +1428,7 @@
                     <h3>2. Prove Compliance</h3>
                     <p class="muted">Versioned PII policy + redaction metadata you can hand to Risk/Legal.</p>
                     <ul>
-                        <li>Keep your logger and pipeline while policy rides along to any sinks you choose</li>
+                        <li>Keep your logger and pipeline while policy rides along to any log destinations you choose</li>
                         <li>RBAC & audit history in CerbiShield</li>
                     </ul>
                 </article>
@@ -1413,7 +1460,7 @@
                     <h3>6. Adopt Gradually</h3>
                     <p class="muted">Start with one domain, run in relax-mode, then tighten.</p>
                     <ul>
-                        <li>Keep your loggers/sinks</li>
+                        <li>Keep your loggers/log destinations</li>
                         <li>No vendor lock-in</li>
                     </ul>
                 </article>
@@ -1441,7 +1488,7 @@
                     <div class="security-card">
                         <div class="security-icon">🛡️</div>
                         <h3>Automatic PII Redaction</h3>
-                        <p>Rule-based redaction identifies and masks sensitive fields before they are written to your sinks. Governance profiles keep PII and PHI out of your log payloads by design. Optional analytics and future ML components can build on the same metadata, but core redaction is explicit and policy-driven.</p>
+                        <p>Rule-based redaction identifies and masks sensitive fields before they are written to your log destinations. Governance profiles keep PII and PHI out of your log payloads by design. Optional analytics and future ML components can build on the same metadata, but core redaction is explicit and policy-driven.</p>
                     </div>
 
                     <div class="security-card">
@@ -1580,7 +1627,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="governance" class="container section">
             <div class="eyebrow">How governance works</div>
             <h2 id="scoring-flow">Governance Scoring <span class="hl">Flow</span></h2>
-            <p class="lead">From runtime validation to dashboard visualization—governance signals flow to the Scoring API while your log routers keep sending payloads to the sinks you already trust.</p>
+            <p class="lead">From runtime validation to dashboard visualization—governance signals flow to the Scoring API while your log routers keep sending payloads to the destinations you already trust.</p>
 
             <div class="card" style="padding:18px; overflow:visible; position:relative">
                 <div class="flow-nodes" role="list" aria-label="Governance flow steps">
@@ -1707,7 +1754,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
 
                 <div class="card">
                     <h3>The Problem</h3>
-                    <p class="muted">Misconfigurations lead to schema drift, broken dashboards, and surprise ingestion across sinks.</p>
+                    <p class="muted">Misconfigurations lead to schema drift, broken dashboards, and surprise ingestion across log destinations.</p>
                     <h3>Our Solution</h3>
                     <p>Stop schema drift and turn governance into CI + runtime guardrails so dashboards, alerts, and pipelines stay predictable.</p>
                 </div>
@@ -1828,7 +1875,7 @@ logger.LogInformation("User logged in {@user}", new { UserId = "12345" });
         <section id="architecture" class="container section">
             <div class="eyebrow">How it fits</div>
             <h2>Reference <span class="hl">Architecture</span></h2>
-            <p class="lead">CerbiStream governs telemetry at the source, CerbiShield defines and deploys governance policy, and the Scoring API measures posture—your existing pipelines keep routing to sinks and vendors.</p>
+            <p class="lead">CerbiStream governs telemetry at the source, CerbiShield defines and deploys governance policy, and the Scoring API measures posture—your existing pipelines keep routing to log destinations and vendors you already trust.</p>
             <div class="grid architecture-grid">
                 <article class="col-6 card">
                     <h3>Flow</h3>
