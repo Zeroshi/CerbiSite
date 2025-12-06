@@ -557,12 +557,12 @@
             flex-direction: column;
             position: relative;
             z-index: 1;
-            gap: clamp(18px, 3vw, 26px);
+            gap: clamp(14px, 2.4vw, 22px);
         }
         .hero-main {
             display: flex;
             flex-direction: column;
-            gap: clamp(16px, 2.6vw, 26px);
+            gap: clamp(12px, 2.2vw, 22px);
         }
         .hero::before {
             content: "";
@@ -578,7 +578,7 @@
             display: grid;
             gap: 10px;
             width: 100%;
-            max-width: 980px;
+            max-width: none;
             margin-inline: auto;
         }
         .hero-banner figure {
@@ -588,11 +588,13 @@
             border: 1px solid rgba(20,40,72,.12);
             box-shadow: 0 16px 40px rgba(12,22,44,0.12);
             overflow: hidden;
+            aspect-ratio: 16 / 6;
         }
         .hero-banner img {
             display: block;
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
         }
         .hero-banner figcaption {
             text-align: center;
@@ -633,7 +635,7 @@
             .chip { padding: 5px 9px; font-size: 13px; }
         }
         .hl { color: var(--brand) }
-        .hero h1 { margin: 0 0 .85rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.08; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
+        .hero h1 { margin: 0 0 .45rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.08; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
         .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
         .hero-headings { text-align: center; }
         .section { padding-block: clamp(40px, 7vw, 80px); }
@@ -683,7 +685,7 @@
 
         .hero-layout {
             position: relative;
-            max-width: 1080px;
+            max-width: var(--container);
             margin: 0 auto;
             z-index: 1;
             padding-inline: clamp(10px, 2.6vw, 20px);
