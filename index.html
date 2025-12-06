@@ -200,6 +200,67 @@
             display: inline-flex;
         }
 
+        .hero-bullets {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 10px;
+            max-width: 780px;
+            width: 100%;
+        }
+
+        .hero-bullets li {
+            background: color-mix(in srgb, var(--brand-04), white 70%);
+            border: 1px solid rgba(20, 40, 72, 0.08);
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-strong);
+            box-shadow: 0 10px 26px rgba(12, 22, 44, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+
+        .hero-bullet-icon {
+            font-size: 18px;
+            flex: 0 0 auto;
+        }
+
+        .doorway-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            width: 100%;
+        }
+
+        .doorway-card {
+            text-decoration: none;
+            color: inherit;
+            display: grid;
+            gap: 6px;
+            align-content: start;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(20, 40, 72, 0.12);
+            background: linear-gradient(135deg, rgba(255,77,0,.06), rgba(15,99,255,.04));
+            box-shadow: 0 14px 32px rgba(12,22,44,0.08);
+            transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+
+        .doorway-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 42px rgba(12,22,44,0.12);
+            border-color: color-mix(in srgb, var(--brand) 30%, rgba(20,40,72,.12));
+        }
+
+        .doorway-title { font-weight: 800; font-size: 16px; color: var(--text-strong); }
+        .doorway-desc { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+        .doorway-cta { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--brand); font-size: 13px; text-transform: uppercase; letter-spacing: .02em; }
+
         @media (prefers-reduced-motion: reduce) {
             .metric-card,
             .info-trigger {
@@ -1188,6 +1249,30 @@
                     <h1>
                         Govern logs before they reach your log tools.
                     </h1>
+                    <ul class="hero-bullets" aria-label="Cerbi highlights">
+                        <li><span class="hero-bullet-icon">✅</span>Enforce .NET log schemas at the source (MEL / Serilog / NLog).</li>
+                        <li><span class="hero-bullet-icon">✅</span>Strip PII/PHI before Azure Monitor / Datadog / Splunk.</li>
+                        <li><span class="hero-bullet-icon">✅</span>Score governance posture over time for audits &amp; AI.</li>
+                    </ul>
+
+                    <div class="doorway-grid" role="navigation" aria-label="Audience shortcuts">
+                        <a class="doorway-card" href="#use-cases">
+                            <div class="doorway-title">For Platform / SRE</div>
+                            <p class="doorway-desc">Enforce schemas in CI and runtime without rerouting log pipelines.</p>
+                            <span class="doorway-cta">See runbooks →</span>
+                        </a>
+                        <a class="doorway-card" href="#compliance">
+                            <div class="doorway-title">For Security / Compliance</div>
+                            <p class="doorway-desc">Apply Required/Disallowed/Sensitive policies and keep audit trails.</p>
+                            <span class="doorway-cta">View controls →</span>
+                        </a>
+                        <a class="doorway-card" href="#who-its-for">
+                            <div class="doorway-title">For Engineering Leaders</div>
+                            <p class="doorway-desc">Score governance posture and keep dashboards stable across teams.</p>
+                            <span class="doorway-cta">Jump to outcomes →</span>
+                        </a>
+                    </div>
+
                     <p class="sub text-base md:text-lg max-w-2xl mx-auto text-center">CI + runtime guardrails for structured logging and automatic redaction—without swapping out your log destinations or observability tools.</p>
 
                     <div class="hero-banner">
@@ -1365,28 +1450,6 @@
                         <h3>Scoring visibility</h3>
                         <p>Scoring surfaces schema consistency, redaction posture, and coverage trends so teams can prove improvements and spot regressions quickly.</p>
                     </article>
-                </div>
-            </div>
-        </section>
-
-        <section class="container section" aria-label="Persona navigation">
-            <div class="persona-nav mt-10 md:mt-12">
-                <div class="persona-grid">
-                    <a class="persona-card" href="#use-cases">
-                        <div class="persona-title">For CTOs &amp; VP Engineering</div>
-                        <p class="persona-desc">Score governance outcomes to prove improvement, and see cost and compliance impact from governed schemas and redaction posture without swapping log vendors.</p>
-                        <span class="persona-cta">Jump to outcomes →</span>
-                    </a>
-                    <a class="persona-card" href="#ecosystem-explore" data-scroll-target="#ecosystem-explore">
-                        <div class="persona-title">For Developers &amp; Platform Teams</div>
-                        <p class="persona-desc">Skip to the Quick Start, NuGet install, and see how Cerbi governs payloads while you keep your agents, collectors, and log destinations.</p>
-                        <span class="persona-cta">Explore the stack →</span>
-                    </a>
-                    <a class="persona-card" href="#compliance">
-                        <div class="persona-title">For Security, Risk &amp; Compliance</div>
-                        <p class="persona-desc">Review governance controls, redaction posture scoring, and CI/runtime enforcement.</p>
-                        <span class="persona-cta">View controls →</span>
-                    </a>
                 </div>
             </div>
         </section>
