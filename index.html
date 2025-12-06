@@ -551,6 +551,9 @@
             position: relative;
             padding: clamp(6px, 1.2vw, 12px) 0 clamp(20px, 4vw, 40px);
             isolation: isolate;
+            width: 100vw;
+            margin-inline: calc(50% - 50vw);
+            padding-inline: clamp(18px, 4vw, 32px);
         }
         .hero-layout {
             display: flex;
@@ -558,6 +561,8 @@
             position: relative;
             z-index: 1;
             gap: clamp(14px, 2.4vw, 22px);
+            width: min(1400px, 96vw);
+            margin-inline: auto;
         }
         .hero-main {
             display: flex;
@@ -635,8 +640,8 @@
             .chip { padding: 5px 9px; font-size: 13px; }
         }
         .hl { color: var(--brand) }
-        .hero h1 { margin: 0 0 .45rem; font-size: clamp(26px,4.6vw,44px); line-height: 1.08; background: linear-gradient(90deg, var(--brand), #ff8443 35%, #0f63ff 80%); -webkit-background-clip: text; background-clip: text; color: transparent; min-height: 2.4em; }
-        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; }
+        .hero h1 { margin: 0 0 .35rem; font-size: clamp(32px,5vw,50px); line-height: 1.08; color: var(--text-strong); letter-spacing: -0.35px; }
+        .sub { color: var(--muted); max-width: 70ch; min-height: 2.2em; margin: 0; font-size: clamp(17px,2vw,20px); }
         .hero-headings { text-align: center; }
         .section { padding-block: clamp(40px, 7vw, 80px); }
         .section > :first-child { margin-top: 0; }
@@ -685,10 +690,11 @@
 
         .hero-layout {
             position: relative;
-            max-width: var(--container);
+            max-width: min(1400px, 96vw);
             margin: 0 auto;
             z-index: 1;
             padding-inline: clamp(10px, 2.6vw, 20px);
+            width: 100%;
         }
 
         .hero-stats-row {
