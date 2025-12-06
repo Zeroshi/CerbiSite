@@ -569,6 +569,21 @@
             flex-direction: column;
             gap: clamp(12px, 2.2vw, 22px);
         }
+
+        .hero-main > *:not(.hero-banner) {
+            width: min(1000px, 100%);
+            margin-inline: auto;
+        }
+
+        .hero-main h1,
+        .hero-main .sub {
+            text-align: center;
+            margin-inline: auto;
+        }
+
+        .hero-main .sub {
+            max-width: 48ch;
+        }
         .hero::before {
             content: "";
             position: absolute;
