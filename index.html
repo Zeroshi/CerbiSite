@@ -830,21 +830,41 @@
             font-size: 14px;
         }
 
-        .pricing-headline {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
+        .pricing-section { position: relative; padding: 60px 0; }
+
+        .pricing-section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(255,77,0,0.08), transparent 32%),
+                radial-gradient(circle at 80% 20%, rgba(0,122,255,0.08), transparent 32%);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .pricing-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .pricing-headline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            text-align: center;
+            max-width: 980px;
+            margin-inline: auto;
+        }
+
+        .pricing-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+        .pricing-headline .space-y-2 { text-align: center; }
+
+        .pricing-clarifier { font-weight: 700; text-align: center; margin: 14px auto 6px; color: var(--text-strong); max-width: 900px; }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-top: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin: 22px auto 0;
+            max-width: 1080px;
         }
 
         .pricing-card {
@@ -857,14 +877,23 @@
             gap: 12px;
             min-height: 100%;
             box-shadow: 0 10px 30px rgba(20,40,72,.06);
+            text-align: center;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
 
-        .pricing-card ul { margin: 0; display: grid; gap: 6px; padding-left: 18px; }
+        .pricing-card:hover { transform: translateY(-6px); box-shadow: 0 16px 42px rgba(20,40,72,.10); }
 
-        .pricing-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .pricing-card ul { margin: 0; display: grid; gap: 6px; padding-left: 18px; text-align: left; }
+
+        .pricing-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-direction: column;
+        }
         .pricing-limit { color: var(--brand); font-weight: 800; }
         .pricing-price { font-size: 30px; font-weight: 800; letter-spacing: -0.3px; }
-        .pricing-clarifier { font-weight: 700; text-align: center; margin: 14px auto 6px; color: var(--text-strong); }
 
         .pricing-most-popular {
             border: 2px solid var(--brand);
@@ -1617,7 +1646,7 @@
         </section>
 
 
-<section id="pricing" class="container section">
+<section id="pricing" class="container section pricing-section">
             <div class="eyebrow">Licensing & Plans</div>
             <div class="pricing-headline">
                 <div class="space-y-2">
