@@ -1621,78 +1621,68 @@
             <div class="eyebrow">Licensing & Plans</div>
             <div class="pricing-headline">
                 <div class="space-y-2">
-                    <h2>Pricing that tracks governed applications</h2>
-                    <p class="lead">Pricing is based on governed applications — not environments or traffic. One app across dev/test/uat/stage/prod counts as one license.</p>
-                    <p class="muted">CerbiStream + CerbiShield provide tenant-hosted structured logging governance. Cerbi does not route logs to vendors; you keep your collectors and destinations.</p>
+                    <h2>Flat, per-tenant CerbiShield pricing</h2>
+                    <p class="lead">CerbiStream logging SDK and governance analyzers are free to use across as many apps as you like. CerbiShield (dashboard + APIs) is a flat subscription per tenant—no per-GB charges, no per-event overages.</p>
+                    <p class="muted">CerbiStream + CerbiShield provide tenant-hosted structured logging governance. Cerbi does not replace your log platforms; you keep your collectors and destinations.</p>
                 </div>
                 <div class="pricing-badges">
+                    <span class="pill">Flat per-tenant pricing.</span>
                     <span class="pill">Environments don’t count separately.</span>
-                    <span class="pill">One app = dev/test/uat/stage/prod.</span>
                 </div>
             </div>
 
-            <p class="app-note"><strong>What counts as an app?</strong> A single governed application or service, even if it spans dev/test/uat/stage/prod. When microservices are governed separately, they count individually.</p>
+            <p class="app-note"><strong>What counts as a governed app?</strong> A logical application or service identity across dev/test/uat/stage/prod. Multiple environments for the same app are included within the app limits listed below.</p>
 
-            <p class="pricing-clarifier">Pricing is by governed applications — not environments or traffic. One app across dev/test/uat/stage/prod counts as one license.</p>
+            <p class="pricing-clarifier">CerbiShield is paid; CerbiStream + analyzers remain free. Pricing is flat per tenant with governed app allowances—no per-GB ingestion fees and no surprise overages.</p>
 
             <div class="pricing-grid">
                 <article class="pricing-card">
                     <div class="pricing-meta">
-                        <h3>Free</h3>
-                        <span class="pricing-limit">1 app</span>
+                        <h3>CerbiShield Basic</h3>
+                        <span class="pricing-limit">Up to 10 governed apps • 1 deployment target</span>
                     </div>
-                    <div class="pricing-price">$0</div>
-                    <p class="muted">Validate CerbiStream locally with baseline governance and redaction patterns.</p>
+                    <div class="pricing-price">$49 / month</div>
+                    <p class="muted">Start governing logs for real workloads.</p>
                     <ul>
-                        <li>MIT-licensed analyzers + runtime governance</li>
-                        <li>Governance profiles stored in your repo</li>
-                        <li>Local audit history for change awareness</li>
-                        <li>Works with your existing logging and routing</li>
-                    </ul>
-                </article>
-
-                <article class="pricing-card">
-                    <div class="pricing-meta">
-                        <h3>Basic</h3>
-                        <span class="pricing-limit">5 apps</span>
-                    </div>
-                    <div class="pricing-price">$99/mo</div>
-                    <p class="muted">Add lightweight RBAC and CI enforcement for small teams.</p>
-                    <ul>
-                        <li>Analyzer enforcement to block schema drift</li>
-                        <li>Email or SSO access with audit logs</li>
-                        <li>Deployment targets for test + prod parity</li>
-                        <li>JSON import/export for governance-as-code</li>
+                        <li>Governance profiles & policy management</li>
+                        <li>Rule deployments and history</li>
+                        <li>Basic governance scoring views</li>
+                        <li>Simple RBAC (admin + editor)</li>
+                        <li>Email support (best-effort)</li>
                     </ul>
                 </article>
 
                 <article class="pricing-card pricing-most-popular">
                     <div class="pricing-meta">
-                        <h3>Pro</h3>
-                        <span class="pricing-limit">20 apps</span>
+                        <h3>CerbiShield Pro</h3>
+                        <span class="pricing-limit">Up to 30 governed apps • 3 deployment targets</span>
                     </div>
-                    <div class="pricing-price">$299/mo</div>
-                    <p class="muted">Most popular for platform teams standardizing schemas with traceable history.</p>
+                    <div class="pricing-price">$199 / month</div>
+                    <p class="muted">For platform and SRE teams standardizing governance.</p>
                     <ul>
-                        <li>CerbiShield dashboard + governance lifecycle</li>
-                        <li>RBAC depth with SSO/SCIM and approval flows</li>
-                        <li>Versioned governance profiles with deployment history</li>
-                        <li>Scoring visibility and reporting rollups</li>
+                        <li>Everything in Basic</li>
+                        <li>SSO/SAML integration</li>
+                        <li>Team-based RBAC (admin/owner/editor/read-only)</li>
+                        <li>Reporting & export (CSV/JSON + basic PDFs)</li>
+                        <li>Notifications (email / Slack / webhook)</li>
+                        <li>Priority email support</li>
                     </ul>
                 </article>
 
                 <article class="pricing-card">
                     <div class="pricing-meta">
-                        <h3>Pro++</h3>
-                        <span class="pricing-limit">50 apps</span>
+                        <h3>CerbiShield Enterprise</h3>
+                        <span class="pricing-limit">Up to 100 governed apps • Unlimited deployment targets</span>
                     </div>
-                    <div class="pricing-price">$599/mo</div>
-                    <p class="muted">For large estates needing governed reporting and broader app coverage.</p>
+                    <div class="pricing-price">$499 / month</div>
+                    <p class="muted">For regulated and large estates.</p>
                     <ul>
-                        <li>Hierarchical RBAC and SCIM provisioning</li>
-                        <li>Governed reporting exports for internal reviews</li>
-                        <li>Regional deployment targets with rollback metadata</li>
-                        <li>Priority support and private offer options</li>
+                        <li>Everything in Pro</li>
+                        <li>Org-wide governance rollups across apps</li>
+                        <li>Advanced reporting packs and dashboards</li>
+                        <li>API access for reporting and integrations</li>
+                        <li>Higher-touch onboarding & support</li>
+                        <li>Need more than 100 apps? Custom pricing via private offer.</li>
                     </ul>
                 </article>
             </div>
@@ -1700,63 +1690,79 @@
             <div class="pricing-compare">
                 <div class="compare-grid compare-header">
                     <div></div>
-                    <div class="compare-tier">Free</div>
-                    <div class="compare-tier">Basic</div>
-                    <div class="compare-tier">Pro</div>
-                    <div class="compare-tier">Pro++</div>
+                    <div class="compare-tier">CerbiShield Basic</div>
+                    <div class="compare-tier">CerbiShield Pro</div>
+                    <div class="compare-tier">CerbiShield Enterprise</div>
                 </div>
                 <div class="compare-grid compare-row">
-                    <div class="compare-label">Governance profiles</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
+                    <div class="compare-label">Governed apps included</div>
+                    <div class="compare-cell">Up to 10</div>
+                    <div class="compare-cell">Up to 30</div>
+                    <div class="compare-cell">Up to 100 (custom beyond)</div>
                 </div>
                 <div class="compare-grid compare-row">
-                    <div class="compare-label">CI analyzers</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
-                    <div class="compare-cell">✔︎</div>
+                    <div class="compare-label">Deployment targets</div>
+                    <div class="compare-cell">1</div>
+                    <div class="compare-cell">Up to 3</div>
+                    <div class="compare-cell">Unlimited</div>
                 </div>
                 <div class="compare-grid compare-row">
-                    <div class="compare-label">Runtime governance enforcement (CI + runtime)</div>
-                    <div class="compare-cell" aria-label="Free runtime governance">Included with CerbiStream (NuGet)</div>
-                    <div class="compare-cell">Included with CerbiStream</div>
-                    <div class="compare-cell">Included with CerbiStream</div>
-                    <div class="compare-cell">Included with CerbiStream</div>
-                </div>
-                <div class="compare-grid compare-row">
-                    <div class="compare-label">CerbiShield adds dashboard, scoring visibility, deployment, reporting, RBAC, auditability</div>
-                    <div class="compare-cell muted">Not included</div>
+                    <div class="compare-label">Governance profiles & policy management</div>
                     <div class="compare-cell">Included</div>
                     <div class="compare-cell">Included</div>
                     <div class="compare-cell">Included</div>
                 </div>
                 <div class="compare-grid compare-row">
-                    <div class="compare-label">Scoring posture</div>
-                    <div class="compare-cell muted">Preview</div>
+                    <div class="compare-label">Rule deployments & history</div>
                     <div class="compare-cell">Included</div>
-                    <div class="compare-cell">Full</div>
-                    <div class="compare-cell">Full</div>
+                    <div class="compare-cell">Included</div>
+                    <div class="compare-cell">Included</div>
                 </div>
                 <div class="compare-grid compare-row">
-                    <div class="compare-label">Deployment history</div>
-                    <div class="compare-cell muted">Local</div>
-                    <div class="compare-cell">Standard</div>
-                    <div class="compare-cell">Versioned</div>
-                    <div class="compare-cell">Versioned</div>
+                    <div class="compare-label">Governance scoring visibility</div>
+                    <div class="compare-cell">Basic views</div>
+                    <div class="compare-cell">Advanced views</div>
+                    <div class="compare-cell">Org-wide rollups</div>
                 </div>
                 <div class="compare-grid compare-row">
                     <div class="compare-label">RBAC</div>
-                    <div class="compare-cell muted">Basic</div>
-                    <div class="compare-cell">Team</div>
+                    <div class="compare-cell">Simple (admin + editor)</div>
+                    <div class="compare-cell">Team-based</div>
                     <div class="compare-cell">Enterprise</div>
-                    <div class="compare-cell">Enterprise</div>
+                </div>
+                <div class="compare-grid compare-row">
+                    <div class="compare-label">SSO/SAML</div>
+                    <div class="compare-cell muted">—</div>
+                    <div class="compare-cell">Included</div>
+                    <div class="compare-cell">Included</div>
+                </div>
+                <div class="compare-grid compare-row">
+                    <div class="compare-label">Reporting & export</div>
+                    <div class="compare-cell muted">—</div>
+                    <div class="compare-cell">CSV/JSON + basic PDFs</div>
+                    <div class="compare-cell">Advanced packs</div>
+                </div>
+                <div class="compare-grid compare-row">
+                    <div class="compare-label">Notifications (email/Slack/webhook)</div>
+                    <div class="compare-cell muted">—</div>
+                    <div class="compare-cell">Included</div>
+                    <div class="compare-cell">Included</div>
+                </div>
+                <div class="compare-grid compare-row">
+                    <div class="compare-label">API access for reporting & data integration</div>
+                    <div class="compare-cell muted">—</div>
+                    <div class="compare-cell muted">—</div>
+                    <div class="compare-cell">Included</div>
+                </div>
+                <div class="compare-grid compare-row">
+                    <div class="compare-label">Support</div>
+                    <div class="compare-cell">Email (best-effort)</div>
+                    <div class="compare-cell">Priority email</div>
+                    <div class="compare-cell">Higher-touch onboarding & support</div>
                 </div>
             </div>
 
-            <p class="muted" style="margin-top:16px;">Pricing is provisional for Marketplace previews; final terms, limits, and SLAs will be confirmed in order forms or private offers. Cerbi governs schemas and redacts/tag payloads but leaves log routing entirely under your control.</p>
+            <p class="muted" style="margin-top:16px;">Pricing is per tenant, per month. Cerbi governs schemas and redacts/tag payloads before they reach your log platforms, and there are no per-GB ingestion fees.</p>
         </section>
 
 
@@ -1836,10 +1842,9 @@
                             <p>
                                 CerbiStream core and the shared governance libraries (for example, Cerbi.Governance.Core and
                                 Cerbi.Governance.Runtime) are open source under the MIT license. CerbiShield (the governance
-                                dashboard, APIs, reporting, and scoring) is licensed commercially <strong>per governed
-                                application</strong>—not per environment—and includes support and SLAs. Check each repo or
-                                NuGet page for the exact license; runtime pieces are permissive, governance/dashboard/scoring
-                                are paid.
+                                dashboard, APIs, reporting, and scoring) is a flat <strong>per-tenant</strong> subscription with
+                                governed app allowances—no per-GB fees. Check each repo or NuGet page for the exact license;
+                                runtime pieces stay free, governance/dashboard/scoring are paid.
                             </p>
                         </div>
                     </div>
