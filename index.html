@@ -925,6 +925,121 @@
             overflow-x: auto;
         }
 
+        #roi-savings {
+            margin-top: 32px;
+            background: var(--panel);
+            border: 1px solid rgba(20,40,72,.08);
+            border-radius: 14px;
+            padding: 28px;
+            display: grid;
+            gap: 20px;
+        }
+
+        #roi-savings h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .roi-description {
+            margin: 0;
+            color: var(--muted);
+            max-width: 780px;
+        }
+
+        .roi-table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(20,40,72,.08);
+        }
+
+        .roi-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 620px;
+        }
+
+        .roi-table th,
+        .roi-table td {
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .roi-table thead {
+            background: rgba(20,40,72,.04);
+            color: var(--text-strong);
+            font-weight: 700;
+        }
+
+        .roi-table tbody tr:nth-child(odd) {
+            background: rgba(20,40,72,.02);
+        }
+
+        .roi-highlight {
+            font-weight: 800;
+            color: var(--brand);
+        }
+
+        .roi-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .roi-form .grid-labels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .roi-form label {
+            display: grid;
+            gap: 6px;
+            font-weight: 600;
+            color: var(--text-strong);
+        }
+
+        .roi-form input[type="number"],
+        .roi-form input[type="range"] {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(20,40,72,.16);
+            background: #fff;
+            font: inherit;
+        }
+
+        .roi-form .roi-slider {
+            display: grid;
+            gap: 6px;
+        }
+
+        .roi-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(20,40,72,.03);
+            border: 1px solid rgba(20,40,72,.08);
+        }
+
+        .roi-metric {
+            display: grid;
+            gap: 2px;
+        }
+
+        .roi-metric-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        .roi-metric-value {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+        }
+
         .compare-grid {
             display: grid;
             grid-template-columns: 1.4fr repeat(4, 1fr);
@@ -949,6 +1064,11 @@
             .pricing-headline { flex-direction: column; }
             .pricing-badges { justify-content: flex-start; }
             .screenshot-highlights-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            #roi-savings { padding: 20px; }
+            .roi-table { min-width: 520px; }
         }
 
         .mono { font-family: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace }
@@ -1714,6 +1834,84 @@
                     </ul>
                 </article>
             </div>
+
+            <section id="roi-savings" aria-labelledby="roi-savings-title">
+                <div class="space-y-2">
+                    <h3 id="roi-savings-title">Save on Logging — and It Often Pays for Itself</h3>
+                    <p class="roi-description">Estimate how reducing log volume with Cerbi governance cuts your annual spend.</p>
+                </div>
+
+                <div class="roi-table-wrapper" role="region" aria-label="Logging savings examples">
+                    <table class="roi-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ingestion (GB/day)</th>
+                                <th scope="col">Cost ($/GB/mo)</th>
+                                <th scope="col">Annual Spend</th>
+                                <th scope="col">10% Savings</th>
+                                <th scope="col">30% Savings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2</td>
+                                <td>$20</td>
+                                <td>$14,400</td>
+                                <td>$1,440</td>
+                                <td class="roi-highlight">$4,320</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>$25</td>
+                                <td>$90,000</td>
+                                <td>$9,000</td>
+                                <td class="roi-highlight">$27,000</td>
+                            </tr>
+                            <tr>
+                                <td>50</td>
+                                <td>$25</td>
+                                <td>$450,000</td>
+                                <td>$45,000</td>
+                                <td class="roi-highlight">$135,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="muted" style="margin:0; font-weight:700;">Cerbi Shield starts at $588/yr. In most cases it pays for itself well before your next renewal.</p>
+
+                <div class="roi-form" aria-live="polite">
+                    <div class="grid-labels">
+                        <label for="roi-gb">GB/day
+                            <input id="roi-gb" name="roi-gb" type="number" min="0" step="0.1" value="10" inputmode="decimal">
+                        </label>
+                        <label for="roi-cost">Cost per GB ($/GB/mo)
+                            <input id="roi-cost" name="roi-cost" type="number" min="0" step="1" value="25" inputmode="decimal">
+                        </label>
+                        <div class="roi-slider">
+                            <label for="roi-savings-slider">Savings % (10–30)
+                                <input id="roi-savings-slider" name="roi-savings" type="range" min="10" max="30" value="20" step="1" aria-valuemin="10" aria-valuemax="30" aria-valuenow="20" aria-label="Savings percentage">
+                            </label>
+                            <span class="muted" id="roi-savings-value" aria-live="polite">20%</span>
+                        </div>
+                    </div>
+
+                    <div class="roi-metrics">
+                        <div class="roi-metric">
+                            <p class="roi-metric-title">Annual Spend</p>
+                            <p class="roi-metric-value" id="roi-annual-spend">$90,000</p>
+                        </div>
+                        <div class="roi-metric">
+                            <p class="roi-metric-title">Annual Savings</p>
+                            <p class="roi-metric-value" id="roi-annual-savings">$18,000</p>
+                        </div>
+                        <div class="roi-metric">
+                            <p class="roi-metric-title">Payback vs CerbiShield Pro ($199/mo)</p>
+                            <p class="roi-metric-value" id="roi-payback">1.3 months</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <p class="muted" style="margin-top:16px;">
                 Need to cover more than 100 governed apps or have special compliance requirements? We offer Custom Enterprise plans with tailored pricing and terms.
@@ -4195,6 +4393,47 @@
             on();
             addEventListener('scroll', on, { passive: true });
             addEventListener('resize', on, { passive: true });
+        })();
+
+        // ROI savings calculator
+        (function () {
+            const gbInput = document.getElementById('roi-gb');
+            const costInput = document.getElementById('roi-cost');
+            const savingsInput = document.getElementById('roi-savings-slider');
+            const annualEl = document.getElementById('roi-annual-spend');
+            const savingsEl = document.getElementById('roi-annual-savings');
+            const paybackEl = document.getElementById('roi-payback');
+            const savingsValue = document.getElementById('roi-savings-value');
+
+            if (!gbInput || !costInput || !savingsInput || !annualEl || !savingsEl || !paybackEl) return;
+
+            const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+            const monthsFormat = new Intl.NumberFormat('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+            const calculate = () => {
+                const gbPerDay = Math.max(0, parseFloat(gbInput.value) || 0);
+                const costPerGb = Math.max(0, parseFloat(costInput.value) || 0);
+                const savingsPct = Math.max(0, parseFloat(savingsInput.value) || 0);
+
+                const annualSpend = gbPerDay * costPerGb * 360; // 30 days x 12 months
+                const annualSavings = annualSpend * (savingsPct / 100);
+                const monthlySavings = annualSavings / 12;
+                const paybackMonths = monthlySavings > 0 ? (199 / monthlySavings) : 0;
+
+                savingsInput.setAttribute('aria-valuenow', savingsPct.toString());
+                savingsValue.textContent = savingsPct + '%';
+                annualEl.textContent = currency.format(annualSpend);
+                savingsEl.textContent = currency.format(annualSavings);
+                paybackEl.textContent = monthlySavings > 0 ? monthsFormat.format(paybackMonths) + ' months' : '—';
+            };
+
+            ['input', 'change'].forEach(evt => {
+                gbInput.addEventListener(evt, calculate);
+                costInput.addEventListener(evt, calculate);
+                savingsInput.addEventListener(evt, calculate);
+            });
+
+            calculate();
         })();
 
         // Contact form
