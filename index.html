@@ -4446,21 +4446,30 @@
             const status = document.getElementById('contactStatus');
             const btn = document.getElementById('contactSubmit');
 
+            const sendNative = () => {
+                form.removeEventListener('submit', submitAjax);
+                form.submit();
+            };
+
             async function submitAjax(e) {
                 e.preventDefault();
-                status.textContent = '';
+                status.textContent = 'Sending…';
                 btn.disabled = true;
 
                 if (!form.reportValidity()) {
+                    status.textContent = '';
                     btn.disabled = false;
                     return;
                 }
 
+                const payload = new FormData(form);
+
                 try {
                     const res = await fetch(form.action, {
-                        method: 'POST',
+                        method: form.method || 'POST',
+                        mode: 'cors',
                         headers: { 'Accept': 'application/json' },
-                        body: new FormData(form)
+                        body: payload
                     });
 
                     if (res.ok) {
@@ -4468,10 +4477,18 @@
                         form.reset();
                         status.textContent = "Thanks — we'll be in touch shortly.";
                     } else {
-                        status.textContent = "Sorry, something went wrong. Please email hello@cerbi.io.";
+                        try {
+                            const error = await res.json();
+                            const message = Array.isArray(error?.errors) ? error.errors.map(e => e.message).join(' ') : '';
+                            status.textContent = message || "Sorry, something went wrong. Please email hello@cerbi.io.";
+                        } catch {
+                            status.textContent = "Sorry, something went wrong. Please email hello@cerbi.io.";
+                        }
                     }
                 } catch {
-                    status.textContent = "Network error. Please try again or email hello@cerbi.io.";
+                    // If network or CORS fails, fall back to the native form submission
+                    status.textContent = "Network error. Submitting via backup…";
+                    sendNative();
                 } finally {
                     btn.disabled = false;
                 }
