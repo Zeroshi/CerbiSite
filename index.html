@@ -1384,10 +1384,11 @@
         .showcase { padding: 2rem 0 1rem; }
         .dashboards-title, .text-center { text-align: center; }
         #dashboards .mySwiper { width: 100vw; margin: 0 auto; }
-        .swiper-slide { width: min(1200px, 100vw); display: flex; justify-content: center; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
-        .swiper-slide img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
-        .img-cap { margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.85; text-align: center; color: var(--muted); }
-        .swiper-button-next, .swiper-button-prev { width: 48px; height: 48px; }
+          .swiper-slide { width: min(1200px, 100vw); display: flex; justify-content: center; align-items: center; background: #000; border-radius: 12px; overflow: hidden; }
+          .swiper-slide img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+          .img-cap { margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.85; text-align: center; color: var(--muted); }
+          .dash-caption { margin-top: 0.5rem; text-align: center; font-weight: 600; color: var(--text-strong); }
+          .swiper-button-next, .swiper-button-prev { width: 48px; height: 48px; }
 
         /* Signature art rotator */
         .sig-outer { width: 100vw; margin-left: 50%; transform: translateX(-50%) }
@@ -2536,30 +2537,40 @@
                 <div class="showcase">
                     <h2 class="dashboards-title">CerbiShield Dashboards</h2>
 
-                    <div class="swiper mySwiper">
-                        <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="assets/screenshots/cerbishield-hero-1600x900.jpg" alt="CerbiShield — Overview">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="assets/screenshots/cerbishield-profiles-2400x1800.jpg" alt="CerbiShield — Rules and policy editor">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="assets/screenshots/cerbishield-Deploy-1600x900.jpg" alt="CerbiShield — Deployment history">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="assets/architectrure/Governance_before_ingestion.png" alt="Governance before ingestion with routing you control">
-                            </div>
-                        </div>
+                      <div class="swiper mySwiper">
+                          <div class="swiper-wrapper">
+                              <div class="swiper-slide" data-summary="Overview dashboard summarizing governance posture, coverage scores, and tenant signals at a glance.">
+                                  <img src="assets/updated-dashboard/Overview.png" alt="CerbiShield overview dashboard with governance KPIs and coverage trends">
+                              </div>
+                              <div class="swiper-slide" data-summary="Validation run showing PII checks, schema validation status, and record-by-record outcomes.">
+                                  <img src="assets/updated-dashboard/Validation.png" alt="Validation dashboard with PII results, schema checks, and outcome details">
+                              </div>
+                              <div class="swiper-slide" data-summary="Rules workspace where governance policies, fields, and redaction logic are authored and versioned.">
+                                  <img src="assets/updated-dashboard/Rules.png" alt="Rules and policy editor for configuring governance standards">
+                              </div>
+                              <div class="swiper-slide" data-summary="Deployment history showing policy pushes, environments, and rollout status with timestamps.">
+                                  <img src="assets/updated-dashboard/Deployment.png" alt="Deployment history with rollout status and timestamps">
+                              </div>
+                              <div class="swiper-slide" data-summary="Reporting view with score trends, issues over time, and export-ready governance summaries.">
+                                  <img src="assets/updated-dashboard/Reporting.png" alt="Reporting dashboard charting governance scores and issues over time">
+                              </div>
+                              <div class="swiper-slide" data-summary="Audit trail that traces who changed policies, when they deployed, and what was impacted.">
+                                  <img src="assets/updated-dashboard/Audit.png" alt="Audit trail showing policy changes, deployments, and affected assets">
+                              </div>
+                              <div class="swiper-slide" data-summary="Tenant settings panel covering integrations, RBAC, and environment configuration.">
+                                  <img src="assets/updated-dashboard/Settings.png" alt="Settings panel for integrations, roles, and environment configuration">
+                              </div>
+                          </div>
 
-                        <div class="swiper-pagination"></div>
-                        <div class="swiper-button-next"></div>
-                        <div class="swiper-button-prev"></div>
-                    </div>
+                          <div class="swiper-pagination"></div>
+                          <div class="swiper-button-next"></div>
+                          <div class="swiper-button-prev"></div>
+                      </div>
 
-                    <div class="img-cap">
-                        Click or swipe through to explore all dashboards. Use arrows or drag on desktop.
-                    </div>
+                      <div class="dash-caption" id="dashCaption" aria-live="polite"></div>
+                      <div class="img-cap">
+                          Click or swipe through to explore all dashboards. Use arrows or drag on desktop.
+                      </div>
                 </div>
             </div>
         </section>
@@ -5141,6 +5152,15 @@
                     const swiperRoot = document.querySelector('.mySwiper');
                     if (!swiperRoot) return false;
 
+                    const captionEl = document.getElementById('dashCaption');
+                    const updateCaption = () => {
+                        if (!captionEl) return;
+                        const active = swiperRoot.querySelector('.swiper-slide-active');
+                        const summary = active?.dataset?.summary || '';
+                        captionEl.textContent = summary;
+                        captionEl.hidden = !summary;
+                    };
+
                     // Ensure coverflow/navigation modules are available in modular builds
                     if (window.Swiper.use && window.Swiper.EffectCoverflow) {
                         window.Swiper.use([
@@ -5171,7 +5191,12 @@
                             nextEl: ".swiper-button-next",
                             prevEl: ".swiper-button-prev",
                         },
+                        on: {
+                            afterInit: updateCaption,
+                            slideChange: updateCaption,
+                        }
                     });
+                    updateCaption();
                     return true;
                 } catch (e) {
                     console.warn('Swiper init failed', e);
