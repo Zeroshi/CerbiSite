@@ -2888,6 +2888,17 @@
                                 <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Runtime validator + score shipper.</p>
                             </button>
 
+                            <button type="button" class="repo-node" data-repo="demo-api">
+                                <div class="repo-icon">🧪</div>
+                                <h4 class="repo-name">CerbiStream.Governance.Demo.API</h4>
+                                <p class="repo-tagline">Minimal API wiring CerbiStream logging with runtime governance validation and Swagger.</p>
+                                <div class="repo-status">
+                                    <span class="badge badge-beta">Demo</span>
+                                    <span class="badge badge-api">API</span>
+                                </div>
+                                <p class="muted" style="font-size:12px;margin:6px 0 0;">Role: Hands-on demo for governed logging + request validation.</p>
+                            </button>
+
                             <button type="button" class="repo-node" data-repo="serilog">
                                 <div class="repo-icon">📊</div>
                                 <h4 class="repo-name">Cerbi.Serilog.GovernanceAnalyzer</h4>
@@ -3831,6 +3842,7 @@
             .badge-web { background: #f0e8ff; color: #4d1b99; }
             .badge-serilog { background: #fff0e8; color: #994d1b; }
             .badge-lib { background: #f5f5f5; color: #666; }
+            .badge-api { background: #e6f7ff; color: #0b63a5; }
 
             /* Detail panel */
             .repo-detail-panel {
@@ -5385,6 +5397,14 @@
                     tagline: 'Runtime adapter for Microsoft.Extensions.Logging pipelines.'
                 },
                 {
+                    key: 'demo-api',
+                    name: 'CerbiStream.Governance.Demo.API',
+                    status: 'Demo',
+                    tags: [{ class: 'api', label: 'API' }],
+                    role: 'Minimal API showing CerbiStream logging with runtime governance validation.',
+                    tagline: 'Hands-on demo for governed logging + request validation.'
+                },
+                {
                     key: 'serilog',
                     name: 'Cerbi.Serilog.GovernanceAnalyzer',
                     status: 'GA',
@@ -5516,6 +5536,20 @@
                     ],
                     github: 'https://github.com/Zeroshi/Cerbi.MEL.Governance',
                     nuget: 'https://www.nuget.org/packages/Cerbi.MEL.Governance'
+                },
+                'demo-api': {
+                    icon: '🧪',
+                    title: 'CerbiStream.Governance.Demo.API',
+                    tagline: 'Minimal API for governed logging and runtime validation.',
+                    description: 'Sample CerbiStream application that wires governed logging, runtime validation, and Swagger in a .NET 8 minimal API so teams can try enforcement locally.',
+                    features: [
+                        'CerbiStream logging paired with Cerbi.Governance.Runtime',
+                        'Governance profile loaded from config/cerbi_governance.json or CERBI_GOVERNANCE_PATH',
+                        'Endpoints for /healthz, /governance/profile, and governed POST /event',
+                        'Rejects events with governance violations (e.g., missing required metadata)',
+                        'Swagger UI enabled for hands-on testing'
+                    ],
+                    github: 'https://github.com/Zeroshi/Cerbistream.Governance.Demo.API'
                 },
                 runtime: {
                     icon: '🧮',
