@@ -1,0 +1,56 @@
+name: Apply Site Privacy Wiring
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/apply-site-privacy-wiring.yml
+      - scripts/apply_site_privacy_wiring.py
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    name: Patch index.html privacy wiring
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Apply privacy wiring patch
+        run: python scripts/apply_site_privacy_wiring.py
+
+      - name: Verify no eager analytics in head
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('index.html').read_text(encoding='utf-8')
+          head = text.split('<body', 1)[0]
+          assert 'googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH' not in head
+          assert 'cdn.amplitude.com/libs/analytics-browser' not in head
+          assert 'id="cerbi-cookie-consent-manager"' in text
+          assert '/docs/privacy/' in text
+          assert '/docs/cookies/' in text
+          assert '/docs/subprocessors/' in text
+          assert '/docs/dpa/' in text
+          assert '/docs/trust/' in text
+          assert 'data-cookie-settings' in text
+          print('privacy wiring verified')
+          PY
+
+      - name: Commit patched index.html
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No index.html changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Wire privacy docs and cookie consent on site"
+          git push
