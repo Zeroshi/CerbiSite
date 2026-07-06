@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="cerbi-light">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HQ6M9SCWYH"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-HQ6M9SCWYH');
-    </script>
-    <script type="text/javascript">
-    !function(){"use strict";!function(e,t){var r=e.amplitude||{_q:[],_iq:{}};if(r.invoked)e.console&&console.error&&console.error("Amplitude snippet has been loaded.");else{var n=function(e,t){e.prototype[t]=function(){return this._q.push({name:t,args:Array.prototype.slice.call(arguments,0)}),this}},s=function(e,t,r){return function(n){e._q.push({name:t,args:Array.prototype.slice.call(r,0),resolve:n})}},o=function(e,t,r){e._q.push({name:t,args:Array.prototype.slice.call(r,0)})},i=function(e,t,r){e[t]=function(){if(r)return{promise:new Promise(s(e,t,Array.prototype.slice.call(arguments)))};o(e,t,Array.prototype.slice.call(arguments))}},a=function(e){for(var t=0;t<g.length;t++)i(e,g[t],!1);for(var r=0;r<m.length;r++)i(e,m[r],!0)};r.invoked=!0;var c=t.createElement("script");c.type="text/javascript",c.integrity="sha384-K1KvcW5ay5cpQB4M23T3dC4N4z1ni0GPHpreY51koDicHJB6P1wwX8WA7xlFygXT",c.crossOrigin="anonymous",c.async=!0,c.src="https://cdn.amplitude.com/libs/analytics-browser-2.11.5-min.js.gz",c.onload=function(){e.amplitude.runQueuedFunctions||console.log("[Amplitude] Error: could not load SDK")};var u=t.getElementsByTagName("script")[0];u.parentNode.insertBefore(c,u);for(var l=function(){return this._q=[],this},p=["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","getUserProperties"],d=0;d<p.length;d++)n(l,p[d]);r.Identify=l;for(var f=function(){return this._q=[],this},v=["getEventProperties","setProductId","setQuantity","setPrice","setRevenue","setRevenueType","setEventProperties"],y=0;y<v.length;y++)n(f,v[y]);r.Revenue=f;var g=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],m=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"];a(r),r.createInstance=function(e){return r._iq[e]={_q:[]},a(r._iq[e]),r._iq[e]},e.amplitude=r}}(window,document)}();
-
-    amplitude.init("3dd27a1e247a95da81f5247d5d117069");
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CerbiSuite — Logging governance and governance scoring for .NET</title>
@@ -4277,7 +4264,7 @@
 
                         <label class="consent-row">
                             <input type="checkbox" name="consent" required>
-                            <span class="muted">I agree to the <a href="docs/terms.md">Terms</a> and <a href="docs/privacy.md">Privacy Policy</a>.</span>
+                            <span class="muted">I agree to the <a href="/docs/terms/">Terms</a> and <a href="/docs/privacy/">Privacy Policy</a>.</span>
                         </label>
 
                         <input type="hidden" name="_subject" value="Cerbi.io website contact">
@@ -4357,6 +4344,17 @@
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(20,40,72,.08);gap:16px;flex-wrap:wrap">
                 <span class="muted" style="font-size:14px">© <span id="year"></span> Cerbi, LLC — Built for the enterprise</span>
+
+                <div class="cerbi-cookie-footer-links" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                    <a class="chip" href="/docs/privacy/">Privacy</a>
+                    <a class="chip" href="/docs/cookies/">Cookies</a>
+                    <button type="button" class="chip" data-cookie-settings style="width:fit-content">Cookie Settings</button>
+                    <a class="chip" href="/docs/security/">Security</a>
+                    <a class="chip" href="/docs/subprocessors/">Subprocessors</a>
+                    <a class="chip" href="/docs/dpa/">DPA</a>
+                    <a class="chip" href="/docs/trust/">Trust</a>
+                    <a class="chip" href="/docs/terms/">Terms</a>
+                </div>
                 <div style="display:flex;gap:16px">
                     <a href="https://github.com/Zeroshi" target="_blank" rel="noopener" aria-label="GitHub" style="color:var(--muted);transition:color .2s">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -5705,6 +5703,147 @@
 
     <elevenlabs-convai agent-id="agent_4401k82dbmg4fp1rxvbfxnr4d2rb"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+
+    <script id="cerbi-cookie-consent-manager">
+        (function () {
+            const CONSENT_KEY = 'cerbi.cookieConsent.v1';
+            const GA_ID = 'G-HQ6M9SCWYH';
+            const AMPLITUDE_KEY = '3dd27a1e247a95da81f5247d5d117069';
+
+            function readConsent() {
+                try { return JSON.parse(localStorage.getItem(CONSENT_KEY) || 'null'); }
+                catch (_) { return null; }
+            }
+
+            function writeConsent(value) {
+                const record = Object.assign({ version: 1, updatedAt: new Date().toISOString() }, value);
+                localStorage.setItem(CONSENT_KEY, JSON.stringify(record));
+                return record;
+            }
+
+            function loadGoogleAnalytics() {
+                if (window.__cerbiGaLoaded || !GA_ID) return;
+                window.__cerbiGaLoaded = true;
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = window.gtag || function gtag(){ dataLayer.push(arguments); };
+                gtag('js', new Date());
+                gtag('config', GA_ID, { anonymize_ip: true });
+                const script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+                document.head.appendChild(script);
+            }
+
+            function loadAmplitude() {
+                if (window.__cerbiAmplitudeLoaded || !AMPLITUDE_KEY) return;
+                window.__cerbiAmplitudeLoaded = true;
+                const script = document.createElement('script');
+                script.async = true;
+                script.crossOrigin = 'anonymous';
+                script.src = 'https://cdn.amplitude.com/libs/analytics-browser-2.11.5-min.js.gz';
+                script.onload = function () {
+                    try { window.amplitude && amplitude.init(AMPLITUDE_KEY); }
+                    catch (_) { console.warn('[Cerbi] Amplitude init skipped'); }
+                };
+                document.head.appendChild(script);
+            }
+
+            function applyConsent(consent) {
+                if (!consent) return;
+                if (consent.analytics) loadGoogleAnalytics();
+                if (consent.productAnalytics) loadAmplitude();
+            }
+
+            function ensureStyles() {
+                if (document.getElementById('cerbi-cookie-consent-styles')) return;
+                const style = document.createElement('style');
+                style.id = 'cerbi-cookie-consent-styles';
+                style.textContent = `
+                    .cerbi-cookie-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;max-width:980px;margin:auto;background:#fff;border:1px solid rgba(20,40,72,.14);box-shadow:0 18px 50px rgba(10,16,30,.2);border-radius:18px;padding:18px;color:#182235;display:grid;gap:14px}
+                    .cerbi-cookie-banner h2{margin:0;font-size:18px}.cerbi-cookie-banner p{margin:0;color:#5a6a88;font-size:14px;line-height:1.5}.cerbi-cookie-actions{display:flex;gap:10px;flex-wrap:wrap}.cerbi-cookie-actions button,.cerbi-cookie-settings-panel button{border-radius:999px;border:1px solid rgba(20,40,72,.16);background:#fff;color:#182235;padding:9px 14px;font-weight:700;cursor:pointer}.cerbi-cookie-actions .primary,.cerbi-cookie-settings-panel .primary{background:#ff4d00;color:#fff;border-color:#ff4d00}.cerbi-cookie-actions .muted{background:#f6f8fb}.cerbi-cookie-settings-panel{position:fixed;inset:0;z-index:10000;background:rgba(10,16,30,.5);display:grid;place-items:center;padding:20px}.cerbi-cookie-modal{max-width:620px;background:#fff;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.28);display:grid;gap:16px}.cerbi-cookie-option{display:flex;gap:12px;align-items:flex-start;border:1px solid rgba(20,40,72,.1);border-radius:12px;padding:12px}.cerbi-cookie-option strong{display:block}.cerbi-cookie-option span{display:block;color:#5a6a88;font-size:13px}.cerbi-cookie-footer-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center}`;
+                document.head.appendChild(style);
+            }
+
+            function banner() {
+                ensureStyles();
+                document.querySelectorAll('.cerbi-cookie-banner,.cerbi-cookie-settings-panel').forEach(el => el.remove());
+                const el = document.createElement('section');
+                el.className = 'cerbi-cookie-banner';
+                el.setAttribute('aria-label', 'Cookie preferences');
+                el.innerHTML = `
+                    <div>
+                        <h2>Cookie preferences</h2>
+                        <p>Cerbi uses strictly necessary storage for site preferences. Analytics tools such as Google Analytics and Amplitude load only if you allow them.</p>
+                    </div>
+                    <div class="cerbi-cookie-actions">
+                        <button type="button" class="primary" data-cookie-accept>Accept all</button>
+                        <button type="button" class="muted" data-cookie-reject>Reject all</button>
+                        <button type="button" data-cookie-manage>Manage preferences</button>
+                        <a class="chip" href="/docs/cookies/">Cookie Policy</a>
+                    </div>`;
+                document.body.appendChild(el);
+                el.querySelector('[data-cookie-accept]').addEventListener('click', () => saveAndClose({ necessary: true, analytics: true, productAnalytics: true }));
+                el.querySelector('[data-cookie-reject]').addEventListener('click', () => saveAndClose({ necessary: true, analytics: false, productAnalytics: false }));
+                el.querySelector('[data-cookie-manage]').addEventListener('click', settingsPanel);
+            }
+
+            function settingsPanel() {
+                ensureStyles();
+                document.querySelectorAll('.cerbi-cookie-settings-panel').forEach(el => el.remove());
+                const current = readConsent() || { analytics: false, productAnalytics: false };
+                const panel = document.createElement('section');
+                panel.className = 'cerbi-cookie-settings-panel';
+                panel.setAttribute('aria-label', 'Cookie settings');
+                panel.innerHTML = `
+                    <div class="cerbi-cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookieSettingsTitle">
+                        <h2 id="cookieSettingsTitle">Cookie settings</h2>
+                        <label class="cerbi-cookie-option"><input type="checkbox" checked disabled><span><strong>Strictly necessary</strong><span>Required for site operation, security, and preference storage.</span></span></label>
+                        <label class="cerbi-cookie-option"><input type="checkbox" data-pref="analytics" ${current.analytics ? 'checked' : ''}><span><strong>Website analytics</strong><span>Allows Google Analytics to measure aggregate traffic and page performance.</span></span></label>
+                        <label class="cerbi-cookie-option"><input type="checkbox" data-pref="productAnalytics" ${current.productAnalytics ? 'checked' : ''}><span><strong>Product/demo analytics</strong><span>Allows Amplitude to measure product, demo, and behavior events.</span></span></label>
+                        <div class="cerbi-cookie-actions">
+                            <button type="button" class="primary" data-save>Save preferences</button>
+                            <button type="button" data-reject>Reject all</button>
+                            <button type="button" data-close>Close</button>
+                        </div>
+                    </div>`;
+                document.body.appendChild(panel);
+                panel.querySelector('[data-save]').addEventListener('click', () => {
+                    saveAndClose({
+                        necessary: true,
+                        analytics: panel.querySelector('[data-pref="analytics"]').checked,
+                        productAnalytics: panel.querySelector('[data-pref="productAnalytics"]').checked
+                    });
+                });
+                panel.querySelector('[data-reject]').addEventListener('click', () => saveAndClose({ necessary: true, analytics: false, productAnalytics: false }));
+                panel.querySelector('[data-close]').addEventListener('click', () => panel.remove());
+            }
+
+            function saveAndClose(consent) {
+                const saved = writeConsent(consent);
+                document.querySelectorAll('.cerbi-cookie-banner,.cerbi-cookie-settings-panel').forEach(el => el.remove());
+                applyConsent(saved);
+            }
+
+            window.CerbiCookieSettings = settingsPanel;
+            document.addEventListener('click', function (event) {
+                const trigger = event.target.closest('[data-cookie-settings]');
+                if (!trigger) return;
+                event.preventDefault();
+                settingsPanel();
+            });
+
+            if (navigator.globalPrivacyControl) {
+                const existing = readConsent();
+                if (!existing) writeConsent({ necessary: true, analytics: false, productAnalytics: false, globalPrivacyControl: true });
+            }
+
+            const consent = readConsent();
+            if (consent) applyConsent(consent);
+            else if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', banner);
+            else banner();
+        })();
+    </script>
 
 </body>
 </html>
