@@ -6,7 +6,7 @@
     <title>CerbiSuite — Logging governance and governance scoring for .NET</title>
 
     <meta name="theme-color" content="#fffdf7" />
-    <meta name="description" content="Governance-first logging for .NET that validates, redacts, and scores payloads without routing your logs. CerbiStream, CerbiShield, and the Scoring API keep your pipelines and log destinations unchanged." />
+    <meta name="description" content="Governance-first logging for .NET that validates, redacts, and scores payloads without routing your logs. Optional AI Logging Governance adds metadata-first AI telemetry governance without storing raw prompts or responses by default." />
     <meta name="keywords" content="logging governance, structured logging .NET, PII redaction logs, compile-time logging enforcement, governance policy as code, governance scoring, Scoring API, Cerbi, CerbiSuite, CerbiStream, CerbiShield, vendor agnostic" />
     <meta property="og:title" content="CerbiSuite — Governance-first logging and scoring" />
     <meta property="og:description" content="Validate, redact, and score every payload with CerbiStream at the source, CerbiShield managing policy, and the Scoring API grading governance while your pipelines keep routing to your log destinations." />
@@ -1763,7 +1763,7 @@
                 <div class="space-y-2">
                     <h2>Flat, per-tenant CerbiShield pricing</h2>
                     <p class="lead">CerbiStream logging SDK and governance analyzers are free to use across as many apps as you like. CerbiShield (dashboard + APIs) is a flat subscription per tenant—no per-GB charges, no per-event overages.</p>
-                    <p class="muted">CerbiStream + CerbiShield provide tenant-hosted structured logging governance. Cerbi does not replace your log platforms; you keep your collectors and destinations.</p>
+                    <p class="muted">CerbiStream + CerbiShield provide tenant-hosted structured logging governance. Optional AI Logging Governance can be enabled separately for AI telemetry metadata, findings, and redacted evidence. Cerbi does not replace your log platforms; you keep your collectors and destinations.</p>
                 </div>
                 <div class="pricing-badges">
                     <span class="pill">Flat per-tenant pricing.</span>
@@ -1774,6 +1774,7 @@
             <p class="app-note"><strong>What counts as a governed app?</strong> A logical application or service identity across dev/test/uat/stage/prod. Multiple environments for the same app are included within the app limits listed below.</p>
 
             <p class="pricing-clarifier">CerbiShield is paid; CerbiStream + analyzers remain free. Pricing is flat per tenant with governed app allowances—no per-GB ingestion fees and no surprise overages.</p>
+            <p class="app-note"><strong>Optional AI Logging Governance:</strong> available as a separate deployment option for customers who want CerbiShield views and controls for AI telemetry governance. It is disabled by default, independent from the Cerbi AI assistant, and does not store raw prompts or responses by default.</p>
 
             <div class="pricing-grid">
                 <article class="pricing-card">
@@ -1964,6 +1965,12 @@
                     <div class="compare-cell">Advanced packs</div>
                 </div>
                 <div class="compare-grid compare-row">
+                    <div class="compare-label">Optional AI Logging Governance</div>
+                    <div class="compare-cell">Available add-on</div>
+                    <div class="compare-cell">Available add-on</div>
+                    <div class="compare-cell">Available add-on</div>
+                </div>
+                <div class="compare-grid compare-row">
                     <div class="compare-label">API access for reporting & data integration</div>
                     <div class="compare-cell muted">—</div>
                     <div class="compare-cell muted">—</div>
@@ -2019,6 +2026,18 @@
                     <div class="faq-answer">
                         <p>
                             CerbiStream writes logs to destinations you configure (files, databases, queues, SIEMs) inside your environment. We don’t operate a centralized log-ingestion SaaS, and we don’t have access to your application log payloads. Optional analytics features can work on derived governance metadata if you explicitly enable them, but raw logs remain under your control.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is AI Logging Governance the same as the Cerbi AI assistant?</h3>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>
+                            No. The Cerbi AI assistant is optional help for operating Cerbi, such as rule writing, suggestions, explanations, and onboarding. AI Logging Governance is a separate optional deployment feature for AI telemetry governance views, settings, scanner findings, and redacted evidence. Enabling it does not provision Azure OpenAI, does not enable the assistant, and does not store raw prompts or responses by default.
                         </p>
                     </div>
                 </div>
@@ -2343,6 +2362,26 @@
             <div class="eyebrow">AI-ready</div>
             <h2>AI-ready, not <span class="hl">AI-locked-in</span></h2>
             <p class="lead">Cerbi doesn’t try to be your AI platform. It focuses on producing clean, structured, governance-tagged logs that any AI stack can consume. Whether you’re using Databricks, OpenSearch, self-hosted RAG, or vendor LLMs, Cerbi adds consistent fields like GovernanceViolations, GovernanceProfileUsed, and GovernanceRelaxed so downstream analysis and scoring stay predictable. You decide which models to run and where; Cerbi simply makes the data safe and usable.</p>
+        </section>
+
+        <section id="ai-logging-governance" class="container section">
+            <div class="eyebrow">Optional AI telemetry governance</div>
+            <h2>AI Logging Governance without turning Cerbi into your AI platform</h2>
+            <p class="lead">For teams adding copilots, LLM calls, or AI-assisted workflows, CerbiShield can surface metadata-first governance around AI telemetry: which app emitted the event, which policy evaluated it, what findings were raised, and what redacted evidence is available for review.</p>
+            <div class="grid">
+                <article class="col-4 card">
+                    <h3>Separate from the assistant</h3>
+                    <p class="muted">The Cerbi AI assistant helps write rules, explain findings, and guide onboarding. AI Logging Governance is a separate deployment flag for governing customer AI telemetry.</p>
+                </article>
+                <article class="col-4 card">
+                    <h3>Safe by default</h3>
+                    <p class="muted">Metadata-only capture is the default. Raw prompt and response storage is off by default, with redact-before-store behavior preserved when evidence is enabled.</p>
+                </article>
+                <article class="col-4 card">
+                    <h3>No execution claim</h3>
+                    <p class="muted">Cerbi helps govern AI-related logs and evidence. It does not claim to control every model decision, agent action, tool call, or AI runtime behavior.</p>
+                </article>
+            </div>
         </section>
 
         <section id="why" class="container section">
